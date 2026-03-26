@@ -20,8 +20,9 @@ public class SecurityConfig {
         http
                 // ★HTTPリクエストに対するセキュリティ設定
                 .authorizeHttpRequests(authz -> authz
-                        // 「ホーム、ログイン、登録画面、favicon.svg」へのアクセスは認証を必要としない
-                        .requestMatchers("/", "/spot/**", "/login", "/register", "/register/**").permitAll()
+                        // 「ホーム、スポット閲覧系、ログイン、登録画面、エラー画面」へのアクセスは認証を必要としない
+                        .requestMatchers("/", "/spot/**", "/login", "/register", "/register/**", "/error", "/error/**").permitAll()
+                        // 静的リソースはアクセスは認証を必要としない
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         // 【管理者権限設定】 url : /admin/**は管理者しかアクセスできない
                         .requestMatchers("/admin", "/admin/**").hasAuthority("ADMIN")

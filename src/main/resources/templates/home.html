@@ -128,11 +128,11 @@
 
     <!-- カテゴリナビ -->
     <nav class="category-nav" aria-label="カテゴリナビゲーション">
-        <a th:href="@{/category/1}">グルメ</a>
-        <a th:href="@{/category/2}">観光スポット</a>
-        <a th:href="@{/category/3}">ショッピング</a>
-        <a th:href="@{/category/4}">娯楽</a>
-        <a th:href="@{/category/5}">その他</a>
+        <a th:href="@{/spot/category/1}">グルメ</a>
+        <a th:href="@{/spot/category/2}">観光スポット</a>
+        <a th:href="@{/spot/category/3}">ショッピング</a>
+        <a th:href="@{/spot/category/4}">娯楽</a>
+        <a th:href="@{/spot/category/5}">その他</a>
     </nav>
 
     <!-- ヒーローセクション -->
@@ -144,8 +144,8 @@
             </h1>
             <p class="hero-subtitle">長堀橋駅周辺の魅力を発見しよう</p>
 
-            <form th:action="@{/search}" method="get" class="search-bar">
-                <input type="text" name="keyword" placeholder="キーワード検索...">
+            <form th:action="@{/spot/search}" method="get" class="search-bar">
+                <input type="text" name="q" placeholder="キーワード検索...">
                 <button type="submit">
                     <i class="bi bi-search"></i> 検索
                 </button>
