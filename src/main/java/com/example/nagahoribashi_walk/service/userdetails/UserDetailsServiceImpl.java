@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.nagahoribashi_walk.entity.User;
 import com.example.nagahoribashi_walk.repository.UserMapper;
@@ -16,6 +17,7 @@ import com.example.nagahoribashi_walk.repository.UserMapper;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 	
@@ -24,7 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		// login_userテーブルからusernameに対応するデータを取得する
+		// usersテーブルからusernameに対応するデータを取得する
 		User user = userMapper
 				.findByUsername(username);
 		

@@ -1,5 +1,6 @@
 package com.example.nagahoribashi_walk.config;
 
+import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,23 +15,18 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http) {
 
         http
                 // ★HTTPリクエストに対するセキュリティ設定
                 .authorizeHttpRequests(authz -> authz
-                		
-                		
-                		.anyRequest().permitAll()
-                		/*
                         // 「ホーム、ログイン、登録画面、favicon.svg」へのアクセスは認証を必要としない
-                        .requestMatchers("/", "/spot/**", "/user/login", "/user/register").permitAll()
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                        .permitAll()
+                        .requestMatchers("/", "/spot/**", "/login", "/register", "/register/**").permitAll()
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         // 【管理者権限設定】 url : /admin/**は管理者しかアクセスできない
-                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/admin", "/admin/**").hasAuthority("ADMIN")
                         // ★その他のリクエストはすべて認証が必要
-                        .anyRequest().authenticated()*/)
+                        .anyRequest().authenticated())
 
                 // ★フォームによるログイン設定
                 .formLogin(form -> form
