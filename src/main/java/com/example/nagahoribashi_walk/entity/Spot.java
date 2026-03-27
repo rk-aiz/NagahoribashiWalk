@@ -17,7 +17,7 @@ public class Spot {
 	private String spotName;
 	
 	//sub_categoriesテーブルのID。未分類の場合はNULLを許容
-	private Integer subCategoryId;
+	private Long subCategoryId;
 	
 	//公式サイトのURL。https://から始まる文字列
 	private String websiteUrl;
