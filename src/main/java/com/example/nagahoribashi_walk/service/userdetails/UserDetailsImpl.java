@@ -13,7 +13,7 @@ public class UserDetailsImpl implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
 	// ユーザー情報クラス
-	private final User user;
+	private final transient User user;
 	
 	// 権限コレクション
 	private Collection<GrantedAuthority> authorities;
