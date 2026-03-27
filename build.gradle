@@ -24,22 +24,37 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'org.postgresql:postgresql'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
-	testImplementation 'org.springframework.boot:spring-boot-starter-thymeleaf-test'
-	testImplementation 'org.springframework.boot:spring-boot-starter-validation-test'
-	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
-	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:4.0.1'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// --- Web / MVC ---
+	implementation 'org.springframework.boot:spring-boot-starter-webmvc'         // Spring MVC（コントローラ・ビュー）
+	implementation 'org.springframework.boot:spring-boot-starter-validation'     // 入力バリデーション（@NotNull等）
+
+	// --- テンプレートエンジン（Thymeleaf） ---
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'      // Thymeleaf本体
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'       // Thymeleaf上でSecurity情報を使う（sec:authorize等）
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'            // ヘッダー・フッターなどレイアウトの共通化
+
+	// --- セキュリティ ---
+	implementation 'org.springframework.boot:spring-boot-starter-security'       // 認証・認可（ログイン・アクセス制御）
+
+	// --- データベース ---
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1'   // MyBatis（SQLマッパー）
+	implementation 'org.springframework.data:spring-data-commons'                // Page・Pageable（ページネーション）
+	runtimeOnly 'org.postgresql:postgresql'                                       // PostgreSQLドライバ（実行時のみ必要）
+
+	// --- 開発効率化 ---
+	compileOnly 'org.projectlombok:lombok'                                        // @Getter/@Setter等の自動生成
+	annotationProcessor 'org.projectlombok:lombok'                               // Lombokのコード生成プロセッサ
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'              // ホットリロード（開発時のみ有効）
+
+	// --- テスト ---
+	testImplementation 'org.springframework.boot:spring-boot-starter-security-test'   // SecurityのテストサポートとJUnit5等一式
+	testImplementation 'org.springframework.boot:spring-boot-starter-thymeleaf-test'  // Thymeleafのテストサポート
+	testImplementation 'org.springframework.boot:spring-boot-starter-validation-test' // バリデーションのテストサポート
+	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'     // MockMvc等のWebテストサポート
+	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:4.0.1' // MyBatisのテストサポート
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'                 // JUnitテストの実行エンジン
+	testRuntimeOnly 'com.h2database:h2'                                          // テスト用インメモリDB（PostgreSQLの代わりに使用）
 }
 
 tasks.named('test') {

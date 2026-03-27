@@ -36,26 +36,28 @@ com.example.nagahoribashi   ← ベースパッケージ （プロジェクト�
 
 ### クラス名
 
-| 種類 | 命名パターン | 例 |
-|------|-------------|-----|
-| Controller | ○○Controller | SpotController |
-| Service（インターフェース） | ○○Service | SpotService |
-| Service（実装） | ○○ServiceImpl | SpotServiceImpl |
-| Mapper | ○○Mapper | SpotMapper |
-| Entity | テーブル名に対応 | Spot, User, Review |
-| Form | ○○Form | ReviewForm, LoginForm |
-| Config | ○○Config | SecurityConfig |
+| 種類                        | 命名パターン                                                        | 例                     |
+| --------------------------- | ------------------------------------------------------------------- | ---------------------- |
+| Controller                  | ○○Controller                                                        | SpotController         |
+| Service（インターフェース） | ○○Service                                                           | SpotService            |
+| Service（実装）             | ○○ServiceImpl                                                       | SpotServiceImpl        |
+| Mapper                      | ○○Mapper                                                            | SpotMapper             |
+| Entity                      | テーブル名に対応                                                    | Spot, User, Review     |
+| DTO                         | 用途に応じて○○Summaryなど。エンティティと名前が衝突する場合は ○○DTO | SpotSummary、ReviewDTO |
+| Form                        | ○○Form                                                              | ReviewForm, LoginForm  |
+| Config                      | ○○Config                                                            | SecurityConfig         |
 
 ### メソッド名
 
-| 処理内容 | プレフィックス | 例 |
-|---------|--------------|-----|
-| 一覧取得 | findAll / getAll | findAllSpots() |
-| 1件取得 | findById / getById | findSpotById(Long id) |
-| 検索 | search / findBy○○ | searchByCategory(String category) |
-| 登録 | create / insert / add | createReview(Review review) |
-| 更新 | update | updateSpot(Spot spot) |
-| 削除 | delete / remove | deleteFavorite(Long id) |
+| 処理内容     | プレフィックス        | 例                                                                                   |
+| ------------ | --------------------- | ------------------------------------------------------------------------------------ |
+| 一覧取得     | findAll               | findAll()                                                                            |
+| 1件取得      | findById              | findById(Long id)                                                                    |
+| ページで取得 | findByIdWithPaging    | findByIdWithPaging(Long id, @Param("offset") long offset, @Param("limit") int limit) |
+| 検索         | search / findBy○○     | searchByCategory(Long categoryId)                                                    |
+| 登録         | create / insert / add | create(Review review)                                                                |
+| 更新         | update                | update(Spot spot)                                                                    |
+| 削除         | delete / remove       | delete(Long id)                                                                      |
 
 ### 変数名
 
@@ -73,26 +75,22 @@ com.example.nagahoribashi   ← ベースパッケージ （プロジェクト�
 
 ```java
 @Controller
-@RequestMapping("/spots")
+@RequestMapping("/spot")
+@RequiredArgsConstructor
 public class SpotController {
 
     private final SpotService spotService;
 
-    // コンストラクタインジェクション（@Autowired は省略可）
-    public SpotController(SpotService spotService) {
-        this.spotService = spotService;
-    }
-
     // 一覧画面
-    @GetMapping
-    public String list(Model model) {
+    @GetMapping("/category/all")
+    public String showAllSpots(Model model) {
         model.addAttribute("spots", spotService.findAll());
         return "spot/list";  // templates/spot/list.html
     }
 
     // 詳細画面
     @GetMapping("/{id}")
-    public String detail(@PathVariable Long id, Model model) {
+    public String showDetail(@PathVariable Long id, Model model) {
         model.addAttribute("spot", spotService.findById(id));
         return "spot/detail";
     }
@@ -163,7 +161,7 @@ src/main/resources/mapper/SpotMapper.xml
 - SELECT文では `SELECT *` を使わず、カラムを明示する
 - テーブル名・カラム名はスネークケース: `spots`, `created_at`
 - Java側のフィールド名はキャメルケース: `createdAt`
-  - `application.properties` に `mybatis.configuration.map-underscore-to-camel-case=true` を設定
+    - `application.properties` に `mybatis.configuration.map-underscore-to-camel-case=true` を設定
 
 ---
 
@@ -179,11 +177,10 @@ src/main/resources/
 │   ├── spot/
 │   │   ├── list.html          ← スポット一覧
 │   │   └── detail.html        ← スポット詳細
-│   ├── review/
-│   │   └── form.html          ← レビュー投稿
 │   ├── user/
 │   │   ├── login.html         ← ログイン
-│   │   └── register.html      ← 会員登録
+│   │   ├── register.html      ← 会員登録
+│   │   └── register_complete.html      ← 会員登録完了
 │   └── error/
 │       └── 404.html
 └── static/
@@ -198,7 +195,6 @@ src/main/resources/
 
 - 共通レイアウト（ヘッダー・フッター）は `layout/default.html` にまとめる
 - CSS / JS は `static/` 配下に配置し、Thymeleaf の `@{/css/style.css}` で参照
-- HTMLファイル内にインラインCSSやインラインJSを書かない
 
 ---
 
@@ -227,7 +223,7 @@ master      ← 本番（常に動く状態を維持）
 
 ### ルール
 
-- `master直接 push しない
+- `masterに直接 push しない
 - 機能ごとに `feature/○○` ブランチを切る
 - 作業完了後、`master` へ Pull Request を出す
 - マージ前に最低1人がレビューする
@@ -295,4 +291,3 @@ if (loginUser == null) {
 - **Lombok プラグイン**: インストール済みであること
 
 ---
-
