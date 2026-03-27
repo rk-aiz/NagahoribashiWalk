@@ -51,7 +51,4 @@ public class Spot {
 	
 	//更新日時。データ更新時にシステムで自動設定
 	private LocalDateTime updatedAt;
-	
-	
-
 }
