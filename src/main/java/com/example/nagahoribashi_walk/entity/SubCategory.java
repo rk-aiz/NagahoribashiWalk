@@ -12,7 +12,7 @@ public class SubCategory {
 	private Long id;
 	
 	//親となるカテゴリのID（categories.id 参照）
-	private Long categoryid;
+	private Long categoryId;
 	
 	//サブカテゴリ名
 	private String name;
