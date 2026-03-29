@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.nagahoribashi_walk.repository.SpotMapper">
+	
+    <!-- ページネーション付き取得 -->
+    <select id="findAll" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
+        SELECT id, spot_name, sub_category_id, website_url, gmap_url, address, business_hours, closed_days, estimated_budget, keywords, details, deleted_at, created_at, updated_at
+        FROM spots
+        ORDER BY updated_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- スポット数のカウント -->
+    <select id="count" resultType="long">
+        SELECT count(*) FROM spots
+    </select>
+
+</mapper>
