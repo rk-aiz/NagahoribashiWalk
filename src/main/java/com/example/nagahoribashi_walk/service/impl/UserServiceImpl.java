@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.nagahoribashi_walk.dto.UserProfile;
 import com.example.nagahoribashi_walk.entity.User;
 import com.example.nagahoribashi_walk.repository.UserMapper;
 import com.example.nagahoribashi_walk.service.UserService;
@@ -26,6 +27,12 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
+
+    @Override
+    public UserProfile getProfileByUsername(String username) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getProfileByUsername'");
+    }
 
     @Override
     public void register(User user) {

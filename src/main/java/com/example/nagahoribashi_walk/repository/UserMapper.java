@@ -1,10 +1,12 @@
 package com.example.nagahoribashi_walk.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.example.nagahoribashi_walk.dto.UserProfile;
 import com.example.nagahoribashi_walk.entity.User;
 
 /**
@@ -18,12 +20,12 @@ public interface UserMapper {
     /**
      * ユーザー名から、Userインスタンスを取得する
      */
-    User findByUsername(String username);
+    Optional<User> findByUsername(String username);
 
     /**
      * ユーザー名から、UserProfileインスタンスを取得する
      */
-    // UserProfile findProfileByUsername(String username);
+    Optional<UserProfile> findProfileByUsername(String username);
 
     /**
      * Userを新規保存する

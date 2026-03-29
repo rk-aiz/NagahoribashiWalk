@@ -7,7 +7,8 @@ package com.example.nagahoribashi_walk.util;
  */
 public class StringUtils {
 
-    private StringUtils() {}
+    private StringUtils() {
+    }
 
     /**
      * 文字列の末尾に"/"かあるか確認し、なければ付与する
@@ -15,6 +16,4 @@ public class StringUtils {
     public static String ensureTrailingSlash(String path) {
         return path.endsWith("/") ? path : path + "/";
     }
-
-
 }
