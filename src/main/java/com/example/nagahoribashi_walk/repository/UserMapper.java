@@ -9,6 +9,7 @@ import com.example.nagahoribashi_walk.entity.User;
 
 /**
  * usersテーブルに対応したMapperのインターフェース
+ * 
  * @author 海津
  */
 @Mapper
@@ -17,27 +18,27 @@ public interface UserMapper {
     /**
      * ユーザー名から、Userインスタンスを取得する
      */
-	User findByUsername(String username);
-	
+    User findByUsername(String username);
+
     /**
      * Userを新規保存する
      */
-	void insert(User user);
-	
+    void insert(User user);
+
     /**
      * ソフトデリートを行う
      */
-	void softDelete(Long id);
-	
+    void softDelete(Long id);
+
     /**
      * ユーザーの有効・無効を切り替える
      */
-	void toggleEnabled(Long id);
-	
+    void toggleEnabled(Long id);
+
     /**
      * ページネーション付きでユーザー一覧を取得する
      */
-	List<User> findWithPaging(@Param("offset") long offset, @Param("limit") int limit);
+    List<User> findAll(@Param("offset") long offset, @Param("limit") int limit);
 
     /**
      * ユーザー数をカウントする
