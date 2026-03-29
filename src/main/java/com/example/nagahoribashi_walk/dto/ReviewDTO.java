@@ -7,7 +7,6 @@ import lombok.Data;
 /** 
  * @author 池田
  */
-
 @Data
 public class ReviewDTO {
 	
@@ -22,5 +21,8 @@ public class ReviewDTO {
 	//レビュー投稿日
 	//r.created_at
 	private LocalDateTime reviewDate;
+
+    // 5段階評価
+    private Integer rating;
 
 }
