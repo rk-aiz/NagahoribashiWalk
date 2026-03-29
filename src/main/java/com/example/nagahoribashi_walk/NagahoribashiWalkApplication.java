@@ -19,5 +19,7 @@ public class NagahoribashiWalkApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         log.info("長堀橋さんぽアプリ起動");
+
+        System.out.println();
     }
 }
