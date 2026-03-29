@@ -1,1176 +1,1751 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bootstrap 5 早見表 - 長堀橋観光サイト開発チーム用</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap 5 早見表</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
 
-    :root {
-      --bg-main: #f8f6f3;
-      --bg-code: #1e1e2e;
-      --accent: #e8503a;
-      --accent-light: #fff0ee;
-      --text-main: #2c2c2c;
-      --text-muted: #6b6b6b;
-      --border-color: #e2ddd7;
-      --section-bg: #ffffff;
-      --tag-bg: #f0ebe5;
-    }
+        :root {
+            --bg-main: #f8f6f3;
+            --bg-code: #1e1e2e;
+            --accent: #e8503a;
+            --accent-light: #fff0ee;
+            --text-main: #2c2c2c;
+            --text-muted: #6b6b6b;
+            --border-color: #e2ddd7;
+            --section-bg: #ffffff;
+            --tag-bg: #f0ebe5;
+        }
 
-    * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'Noto Sans JP', sans-serif;
-      background: var(--bg-main);
-      color: var(--text-main);
-      line-height: 1.8;
-      margin: 0;
-    }
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.8;
+            margin: 0;
+        }
 
-    /* ─── Sidebar Navigation ─── */
-    .sidebar {
-      position: fixed;
-      top: 0; left: 0;
-      width: 260px;
-      height: 100vh;
-      background: #fff;
-      border-right: 1px solid var(--border-color);
-      overflow-y: auto;
-      padding: 24px 0;
-      z-index: 100;
-    }
-    .sidebar-title {
-      font-weight: 900;
-      font-size: 14px;
-      color: var(--accent);
-      padding: 0 20px;
-      margin-bottom: 8px;
-      letter-spacing: 0.05em;
-    }
-    .sidebar-subtitle {
-      font-size: 11px;
-      color: var(--text-muted);
-      padding: 0 20px;
-      margin-bottom: 20px;
-    }
-    .sidebar-section {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text-muted);
-      padding: 16px 20px 6px;
-    }
-    .sidebar a {
-      display: block;
-      padding: 6px 20px;
-      font-size: 13px;
-      color: var(--text-main);
-      text-decoration: none;
-      transition: all 0.15s;
-    }
-    .sidebar a:hover {
-      background: var(--accent-light);
-      color: var(--accent);
-    }
+        /* ─── Sidebar Navigation ─── */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 100vh;
+            background: #fff;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            padding: 24px 0;
+            z-index: 100;
+        }
 
-    /* ─── Main Content ─── */
-    .main-content {
-      margin-left: 260px;
-      padding: 40px 48px 80px;
-      max-width: 1100px;
-    }
+        .sidebar-title {
+            font-weight: 900;
+            font-size: 14px;
+            color: var(--accent);
+            padding: 0 20px;
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+        }
 
-    h1.page-title {
-      font-size: 32px;
-      font-weight: 900;
-      margin-bottom: 4px;
-    }
-    .page-lead {
-      color: var(--text-muted);
-      font-size: 14px;
-      margin-bottom: 40px;
-    }
+        .sidebar-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            padding: 0 20px;
+            margin-bottom: 20px;
+        }
 
-    /* ─── Section ─── */
-    .cheat-section {
-      background: var(--section-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 32px;
-      margin-bottom: 28px;
-    }
-    .cheat-section h2 {
-      font-size: 20px;
-      font-weight: 900;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .cheat-section h2 .bi { color: var(--accent); font-size: 22px; }
-    .section-desc {
-      color: var(--text-muted);
-      font-size: 13px;
-      margin-bottom: 20px;
-    }
-    .cheat-section h3 {
-      font-size: 15px;
-      font-weight: 700;
-      margin: 24px 0 10px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border-color);
-    }
-    .cheat-section h3:first-of-type {
-      border-top: none;
-      padding-top: 0;
-    }
+        .sidebar-section {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            padding: 16px 20px 6px;
+        }
 
-    /* ─── Example blocks ─── */
-    .example-block {
-      margin-bottom: 20px;
-    }
-    .example-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .example-label .tag {
-      background: var(--tag-bg);
-      padding: 1px 8px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 500;
-    }
-    .example-preview {
-      background: var(--bg-main);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 8px;
-    }
-    .example-code {
-      background: var(--bg-code);
-      color: #cdd6f4;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12.5px;
-      line-height: 1.7;
-      padding: 16px 20px;
-      border-radius: 8px;
-      overflow-x: auto;
-      position: relative;
-    }
-    .example-code .tag-hl { color: #f38ba8; }
-    .example-code .attr-hl { color: #fab387; }
-    .example-code .val-hl { color: #a6e3a1; }
-    .example-code .comment-hl { color: #6c7086; font-style: italic; }
+        .sidebar a {
+            display: block;
+            padding: 6px 20px;
+            font-size: 13px;
+            color: var(--text-main);
+            text-decoration: none;
+            transition: all 0.15s;
+        }
 
-    /* ─── Class table ─── */
-    .class-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      margin-bottom: 16px;
-    }
-    .class-table th {
-      text-align: left;
-      font-weight: 700;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      padding: 8px 12px;
-      border-bottom: 2px solid var(--border-color);
-    }
-    .class-table td {
-      padding: 8px 12px;
-      border-bottom: 1px solid var(--border-color);
-      vertical-align: top;
-    }
-    .class-table code {
-      background: var(--accent-light);
-      color: var(--accent);
-      padding: 2px 7px;
-      border-radius: 4px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-    .class-table tr:last-child td { border-bottom: none; }
+        .sidebar a:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
 
-    /* ─── Tips ─── */
-    .tip-box {
-      background: #fff8e1;
-      border-left: 4px solid #ffb300;
-      padding: 12px 16px;
-      border-radius: 0 8px 8px 0;
-      font-size: 13px;
-      margin: 16px 0;
-    }
-    .tip-box strong { color: #e65100; }
+        /* ─── Main Content ─── */
+        .main-content {
+            margin-left: 260px;
+            padding: 40px 48px 80px;
+            max-width: 1100px;
+        }
 
-    .project-tip {
-      background: var(--accent-light);
-      border-left: 4px solid var(--accent);
-      padding: 12px 16px;
-      border-radius: 0 8px 8px 0;
-      font-size: 13px;
-      margin: 16px 0;
-    }
-    .project-tip strong { color: var(--accent); }
+        h1.page-title {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
 
-    /* ─── Responsive ─── */
-    @media (max-width: 900px) {
-      .sidebar { display: none; }
-      .main-content { margin-left: 0; padding: 24px 16px 60px; }
-    }
+        .page-lead {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 40px;
+        }
 
-    /* grid demo helpers */
-    .grid-demo .col, .grid-demo [class^="col-"] {
-      background: #dbeafe;
-      border: 1px solid #93c5fd;
-      border-radius: 6px;
-      padding: 10px;
-      text-align: center;
-      font-size: 13px;
-      font-weight: 500;
-      color: #1e40af;
-    }
-  </style>
+        /* ─── Section ─── */
+        .cheat-section {
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 28px;
+        }
+
+        .cheat-section h2 {
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cheat-section h2 .bi {
+            color: var(--accent);
+            font-size: 22px;
+        }
+
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .cheat-section h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 24px 0 10px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .cheat-section h3:first-of-type {
+            border-top: none;
+            padding-top: 0;
+        }
+
+        /* ─── Example blocks ─── */
+        .example-block {
+            margin-bottom: 20px;
+        }
+
+        .example-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .example-label .tag {
+            background: var(--tag-bg);
+            padding: 1px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .example-preview {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 8px;
+        }
+
+        .example-code {
+            background: var(--bg-code);
+            color: #cdd6f4;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            line-height: 1.7;
+            padding: 16px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .example-code .tag-hl {
+            color: #f38ba8;
+        }
+
+        .example-code .attr-hl {
+            color: #fab387;
+        }
+
+        .example-code .val-hl {
+            color: #a6e3a1;
+        }
+
+        .example-code .comment-hl {
+            color: #6c7086;
+            font-style: italic;
+        }
+
+        /* ─── Class table ─── */
+        .class-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .class-table th {
+            text-align: left;
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            padding: 8px 12px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .class-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+
+        .class-table code {
+            background: var(--accent-light);
+            color: var(--accent);
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .class-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ─── Tips ─── */
+        .tip-box {
+            background: #fff8e1;
+            border-left: 4px solid #ffb300;
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            font-size: 13px;
+            margin: 16px 0;
+        }
+
+        .tip-box strong {
+            color: #e65100;
+        }
+
+        .project-tip {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent);
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            font-size: 13px;
+            margin: 16px 0;
+        }
+
+        .project-tip strong {
+            color: var(--accent);
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 24px 16px 60px;
+            }
+        }
+
+        /* grid demo helpers */
+        .grid-demo .col,
+        .grid-demo [class^="col-"] {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1e40af;
+        }
+    </style>
 </head>
+
 <body>
 
-<!-- ━━━ Sidebar ━━━ -->
-<nav class="sidebar">
-  <div class="sidebar-title">Bootstrap 5 早見表</div>
-  <div class="sidebar-subtitle">長堀橋観光サイト開発チーム用</div>
-
-  <div class="sidebar-section">レイアウト</div>
-  <a href="#container">コンテナ</a>
-  <a href="#grid">グリッドシステム</a>
-  <a href="#grid-responsive">レスポンシブ</a>
-
-  <div class="sidebar-section">コンポーネント</div>
-  <a href="#card">カード</a>
-  <a href="#button">ボタン</a>
-  <a href="#form">フォーム</a>
-  <a href="#navbar">ナビバー</a>
-  <a href="#badge">バッジ</a>
-  <a href="#alert">アラート</a>
-  <a href="#modal">モーダル</a>
-  <a href="#pagination">ページネーション</a>
-
-  <div class="sidebar-section">ユーティリティ</div>
-  <a href="#text">テキスト</a>
-  <a href="#color">色（テキスト・背景）</a>
-  <a href="#spacing">余白 (margin / padding)</a>
-  <a href="#display">表示・非表示</a>
-  <a href="#flex">Flexbox</a>
-  <a href="#border-radius">角丸・影</a>
-
-  <div class="sidebar-section">実践テンプレート</div>
-  <a href="#tpl-spotcard">観光スポットカード</a>
-  <a href="#tpl-search">検索フォーム</a>
-  <a href="#tpl-review">レビュー投稿フォーム</a>
-</nav>
-
-<!-- ━━━ Main Content ━━━ -->
-<div class="main-content">
-
-  <h1 class="page-title">Bootstrap 5 クラス早見表</h1>
-  <p class="page-lead">長堀橋周辺・観光サイト開発で使うBootstrapクラスを実例付きでまとめました。<br>
-    Thymeleafテンプレートにそのままコピペして使えます。</p>
-
-  <!-- ════════════════════════════════════════════ -->
-  <!-- LAYOUT -->
-  <!-- ════════════════════════════════════════════ -->
-
-  <div class="cheat-section" id="container">
-    <h2><i class="bi bi-layout-text-window-reverse"></i> コンテナ (Container)</h2>
-    <p class="section-desc">ページの左右に適切な余白を作り、コンテンツの幅を制限するための基本クラス</p>
-
-    <table class="class-table">
-      <thead><tr><th>クラス名</th><th>動作</th><th>使いどころ</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><code>.container</code></td>
-          <td>ブレークポイントごとに固定幅。中央揃え</td>
-          <td>一般的なページ本文</td>
-        </tr>
-        <tr>
-          <td><code>.container-fluid</code></td>
-          <td>常に幅100%</td>
-          <td>ナビバーやヒーロー画像など全幅要素</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="example-block">
-      <div class="example-label">使い方の例</div>
-      <div class="example-code">
-<span class="comment-hl">&lt;!-- Thymeleafテンプレートの基本構造 --&gt;</span>
-<span class="tag-hl">&lt;body&gt;</span>
-  <span class="tag-hl">&lt;nav</span> <span class="attr-hl">class=</span><span class="val-hl">"navbar container-fluid"</span><span class="tag-hl">&gt;</span>...ナビバー(全幅)...<span class="tag-hl">&lt;/nav&gt;</span>
-  <span class="tag-hl">&lt;main</span> <span class="attr-hl">class=</span><span class="val-hl">"container"</span><span class="tag-hl">&gt;</span>...本文(中央揃え)...<span class="tag-hl">&lt;/main&gt;</span>
-  <span class="tag-hl">&lt;footer</span> <span class="attr-hl">class=</span><span class="val-hl">"container-fluid"</span><span class="tag-hl">&gt;</span>...フッター(全幅)...<span class="tag-hl">&lt;/footer&gt;</span>
-<span class="tag-hl">&lt;/body&gt;</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Grid -->
-  <div class="cheat-section" id="grid">
-    <h2><i class="bi bi-grid-3x3"></i> グリッドシステム</h2>
-    <p class="section-desc">12カラム制。<code>.row</code> の中に <code>.col-*</code> を並べるだけでレイアウトが組める</p>
-
-    <table class="class-table">
-      <thead><tr><th>クラス名</th><th>動作</th></tr></thead>
-      <tbody>
-        <tr><td><code>.row</code></td><td>横並びの行を作る（必須の親要素）</td></tr>
-        <tr><td><code>.col</code></td><td>均等幅で自動分割</td></tr>
-        <tr><td><code>.col-6</code></td><td>12カラム中の6つ分＝50%幅</td></tr>
-        <tr><td><code>.col-4</code></td><td>12カラム中の4つ分＝33.3%幅</td></tr>
-        <tr><td><code>.col-3</code></td><td>12カラム中の3つ分＝25%幅</td></tr>
-        <tr><td><code>.g-3</code></td><td>カラム間のgutter（溝）を設定</td></tr>
-      </tbody>
-    </table>
-
-    <div class="example-block">
-      <div class="example-label">プレビュー <span class="tag">均等3列</span></div>
-      <div class="example-preview grid-demo">
-        <div class="row g-3">
-          <div class="col-4">col-4</div>
-          <div class="col-4">col-4</div>
-          <div class="col-4">col-4</div>
-        </div>
-      </div>
-      <div class="example-code">
-<span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"row g-3"</span><span class="tag-hl">&gt;</span>
-  <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"col-4"</span><span class="tag-hl">&gt;</span>スポット1<span class="tag-hl">&lt;/div&gt;</span>
-  <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"col-4"</span><span class="tag-hl">&gt;</span>スポット2<span class="tag-hl">&lt;/div&gt;</span>
-  <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"col-4"</span><span class="tag-hl">&gt;</span>スポット3<span class="tag-hl">&lt;/div&gt;</span>
-<span class="tag-hl">&lt;/div&gt;</span>
-      </div>
-    </div>
-
-    <div class="example-block">
-      <div class="example-label">プレビュー <span class="tag">サイドバー + メイン</span></div>
-      <div class="example-preview grid-demo">
-        <div class="row g-3">
-          <div class="col-3">col-3<br>サイドバー</div>
-          <div class="col-9">col-9（メインコンテンツ）</div>
-        </div>
-      </div>
-      <div class="example-code">
-<span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"row g-3"</span><span class="tag-hl">&gt;</span>
-  <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"col-3"</span><span class="tag-hl">&gt;</span>カテゴリ一覧<span class="tag-hl">&lt;/div&gt;</span>
-  <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"col-9"</span><span class="tag-hl">&gt;</span>スポット一覧<span class="tag-hl">&lt;/div&gt;</span>
-<span class="tag-hl">&lt;/div&gt;</span>
-      </div>
-    </div>
-
-    <div class="tip-box">
-      <strong>💡 覚え方：</strong> 12を割り切れる数で分割すると均等になる → 12÷3=<code>col-4</code>で3列、12÷4=<code>col-3</code>で4列、12÷2=<code>col-6</code>で2列
-    </div>
-  </div>
-
-  <!-- Grid Responsive -->
-  <div class="cheat-section" id="grid-responsive">
-    <h2><i class="bi bi-phone"></i> レスポンシブ対応</h2>
-    <p class="section-desc">画面サイズに応じてカラム数を変えられる。<code>col-{ブレークポイント}-{数字}</code> の形式</p>
-
-    <table class="class-table">
-      <thead><tr><th>接頭辞</th><th>画面幅</th><th>対象デバイス</th></tr></thead>
-      <tbody>
-        <tr><td><code>col-</code>（なし）</td><td>0px 〜</td><td>全サイズ共通</td></tr>
-        <tr><td><code>col-sm-</code></td><td>576px 〜</td><td>スマホ横向き</td></tr>
-        <tr><td><code>col-md-</code></td><td>768px 〜</td><td>タブレット</td></tr>
-        <tr><td><code>col-lg-</code></td><td>992px 〜</td><td>デスクトップ</td></tr>
-        <tr><td><code>col-xl-</code></td><td>1200px 〜</td><td>大型モニター</td></tr>
-      </tbody>
-    </table>
-
-    <div class="example-block">
-      <div class="example-label">プレビュー <span class="tag">スマホ1列→PC3列</span></div>
-      <div class="example-preview grid-demo">
-        <div class="row g-3">
-          <div class="col-12 col-md-4">スポット1</div>
-          <div class="col-12 col-md-4">スポット2</div>
-          <div class="col-12 col-md-4">スポット3</div>
-        </div>
-      </div>
-      <div class="example-code">
-<span class="comment-hl">&lt;!-- スマホ: 1列（col-12） → タブレット以上: 3列（col-md-4） --&gt;</span>
-<span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"row g-3"</span><span class="tag-hl">&gt;</span>
-  <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"col-12 col-md-4"</span><span class="tag-hl">&gt;</span>スポット1<span class="tag-hl">&lt;/div&gt;</span>
-  <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"col-12 col-md-4"</span><span class="tag-hl">&gt;</span>スポット2<span class="tag-hl">&lt;/div&gt;</span>
-  <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"col-12 col-md-4"</span><span class="tag-hl">&gt;</span>スポット3<span class="tag-hl">&lt;/div&gt;</span>
-<span class="tag-hl">&lt;/div&gt;</span>
-      </div>
-    </div>
-
-    <div class="project-tip">
-      <strong>🏯 プロジェクトでの使い方：</strong> 観光スポット一覧ページで <code>col-12 col-md-6 col-lg-4</code> とすれば、スマホ1列→タブレット2列→PC3列 になる
-    </div>
-  </div>
-
-  <!-- ════════════════════════════════════════════ -->
-  <!-- COMPONENTS -->
-  <!-- ════════════════════════════════════════════ -->
-
-  <!-- Card -->
-  <div class="cheat-section" id="card">
-    <h2><i class="bi bi-card-heading"></i> カード (Card)</h2>
-    <p class="section-desc">画像＋テキストをまとめて表示するのに最適。観光スポット一覧のメインパーツ</p>
-
-    <table class="class-table">
-      <thead><tr><th>クラス名</th><th>役割</th></tr></thead>
-      <tbody>
-        <tr><td><code>.card</code></td><td>カードの外枠</td></tr>
-        <tr><td><code>.card-img-top</code></td><td>カード上部の画像</td></tr>
-        <tr><td><code>.card-body</code></td><td>テキスト部分の余白付きエリア</td></tr>
-        <tr><td><code>.card-title</code></td><td>カードのタイトル</td></tr>
-        <tr><td><code>.card-text</code></td><td>カードの説明文</td></tr>
-        <tr><td><code>.card-footer</code></td><td>カード下部のフッター</td></tr>
-      </tbody>
-    </table>
-
-    <div class="example-block">
-      <div class="example-label">プレビュー <span class="tag">基本カード</span></div>
-      <div class="example-preview">
-        <div class="card" style="width: 280px;">
-          <div style="height:140px;background:#dbeafe;display:flex;align-items:center;justify-content:center;color:#3b82f6;border-radius:6px 6px 0 0;">
-            <i class="bi bi-image" style="font-size:32px;"></i> 画像エリア
-          </div>
-          <div class="card-body">
-            <h5 class="card-title">長堀橋の老舗カフェ</h5>
-            <p class="card-text">心斎橋筋から一本入った場所にある、昭和レトロなカフェ。</p>
-            <a href="#" class="btn btn-primary btn-sm">詳しく見る</a>
-          </div>
-        </div>
-      </div>
-      <div class="example-code">
-<span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"card"</span><span class="tag-hl">&gt;</span>
-  <span class="tag-hl">&lt;img</span> <span class="attr-hl">src=</span><span class="val-hl">"画像URL"</span> <span class="attr-hl">class=</span><span class="val-hl">"card-img-top"</span> <span class="attr-hl">alt=</span><span class="val-hl">"スポット名"</span><span class="tag-hl">&gt;</span>
-  <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"card-body"</span><span class="tag-hl">&gt;</span>
-    <span class="tag-hl">&lt;h5</span> <span class="attr-hl">class=</span><span class="val-hl">"card-title"</span><span class="tag-hl">&gt;</span>スポット名<span class="tag-hl">&lt;/h5&gt;</span>
-    <span class="tag-hl">&lt;p</span> <span class="attr-hl">class=</span><span class="val-hl">"card-text"</span><span class="tag-hl">&gt;</span>説明文<span class="tag-hl">&lt;/p&gt;</span>
-    <span class="tag-hl">&lt;a</span> <span class="attr-hl">href=</span><span class="val-hl">"#"</span> <span class="attr-hl">class=</span><span class="val-hl">"btn btn-primary btn-sm"</span><span class="tag-hl">&gt;</span>詳しく見る<span class="tag-hl">&lt;/a&gt;</span>
-  <span class="tag-hl">&lt;/div&gt;</span>
-<span class="tag-hl">&lt;/div&gt;</span>
-      </div>
-    </div>
-
-    <div class="project-tip">
-      <strong>🏯 Thymeleafで使うとき：</strong>
-      <code>th:each="spot : ${spots}"</code> でループし、<code>th:text="${spot.name}"</code> で動的にデータを表示
-    </div>
-  </div>
-
-  <!-- Button -->
-  <div class="cheat-section" id="button">
-    <h2><i class="bi bi-hand-index"></i> ボタン (Button)</h2>
-    <p class="section-desc">色とサイズの組み合わせでバリエーションが作れる</p>
-
-    <h3>色のバリエーション</h3>
-    <div class="example-block">
-      <div class="example-preview">
-        <button class="btn btn-primary me-2 mb-2">btn-primary</button>
-        <button class="btn btn-secondary me-2 mb-2">btn-secondary</button>
-        <button class="btn btn-success me-2 mb-2">btn-success</button>
-        <button class="btn btn-danger me-2 mb-2">btn-danger</button>
-        <button class="btn btn-warning me-2 mb-2">btn-warning</button>
-        <button class="btn btn-info me-2 mb-2">btn-info</button>
-        <button class="btn btn-outline-primary me-2 mb-2">outline-primary</button>
-        <button class="btn btn-outline-danger me-2 mb-2">outline-danger</button>
-      </div>
-    </div>
-
-    <table class="class-table">
-      <thead><tr><th>クラス名</th><th>見た目</th><th>使いどころ</th></tr></thead>
-      <tbody>
-        <tr><td><code>.btn .btn-primary</code></td><td>青い塗りつぶしボタン</td><td>メインの操作（詳細を見る等）</td></tr>
-        <tr><td><code>.btn .btn-danger</code></td><td>赤いボタン</td><td>削除、お気に入り解除</td></tr>
-        <tr><td><code>.btn .btn-outline-*</code></td><td>枠線のみのボタン</td><td>サブの操作</td></tr>
-        <tr><td><code>.btn-sm</code></td><td>小さめボタン</td><td>カード内のボタン</td></tr>
-        <tr><td><code>.btn-lg</code></td><td>大きめボタン</td><td>目立たせたい操作</td></tr>
-      </tbody>
-    </table>
-
-    <div class="example-block">
-      <div class="example-label">サイズ比較</div>
-      <div class="example-preview">
-        <button class="btn btn-primary btn-sm me-2">btn-sm（小）</button>
-        <button class="btn btn-primary me-2">通常</button>
-        <button class="btn btn-primary btn-lg me-2">btn-lg（大）</button>
-      </div>
-    </div>
-
-    <div class="project-tip">
-      <strong>🏯 プロジェクトでの使い分け：</strong>
-      お気に入り登録 → <code>btn-outline-danger</code>（♡）、検索 → <code>btn-primary</code>、削除 → <code>btn-danger btn-sm</code>
-    </div>
-  </div>
-
-  <!-- Form -->
-  <div class="cheat-section" id="form">
-    <h2><i class="bi bi-input-cursor-text"></i> フォーム (Form)</h2>
-    <p class="section-desc">検索、ログイン、レビュー投稿に必須</p>
-
-    <table class="class-table">
-      <thead><tr><th>クラス名</th><th>役割</th></tr></thead>
-      <tbody>
-        <tr><td><code>.form-control</code></td><td>テキスト入力欄のスタイル</td></tr>
-        <tr><td><code>.form-select</code></td><td>セレクトボックスのスタイル</td></tr>
-        <tr><td><code>.form-label</code></td><td>ラベル（入力欄の上の文字）</td></tr>
-        <tr><td><code>.form-check</code></td><td>チェックボックス/ラジオボタンの親</td></tr>
-        <tr><td><code>.form-check-input</code></td><td>チェックボックス/ラジオ本体</td></tr>
-        <tr><td><code>.input-group</code></td><td>入力欄＋ボタンを横並びにまとめる</td></tr>
-        <tr><td><code>.form-control-sm</code></td><td>小さめの入力欄</td></tr>
-        <tr><td><code>.form-floating</code></td><td>フローティングラベル（おしゃれ）</td></tr>
-      </tbody>
-    </table>
-
-    <div class="example-block">
-      <div class="example-label">プレビュー <span class="tag">基本フォーム</span></div>
-      <div class="example-preview">
-        <div class="mb-3">
-          <label class="form-label">キーワード</label>
-          <input type="text" class="form-control" placeholder="例: カフェ、お寺、ラーメン">
-        </div>
-        <div class="mb-3">
-          <label class="form-label">カテゴリ</label>
-          <select class="form-select">
-            <option>すべて</option>
-            <option>グルメ</option>
-            <option>観光</option>
-            <option>ショッピング</option>
-          </select>
-        </div>
-      </div>
-      <div class="example-code">
-<span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"mb-3"</span><span class="tag-hl">&gt;</span>
-  <span class="tag-hl">&lt;label</span> <span class="attr-hl">class=</span><span class="val-hl">"form-label"</span><span class="tag-hl">&gt;</span>キーワード<span class="tag-hl">&lt;/label&gt;</span>
-  <span class="tag-hl">&lt;input</span> <span class="attr-hl">type=</span><span class="val-hl">"text"</span> <span class="attr-hl">class=</span><span class="val-hl">"form-control"</span> <span class="attr-hl">placeholder=</span><span class="val-hl">"例: カフェ"</span><span class="tag-hl">&gt;</span>
-<span class="tag-hl">&lt;/div&gt;</span>
-<span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"mb-3"</span><span class="tag-hl">&gt;</span>
-  <span class="tag-hl">&lt;label</span> <span class="attr-hl">class=</span><span class="val-hl">"form-label"</span><span class="tag-hl">&gt;</span>カテゴリ<span class="tag-hl">&lt;/label&gt;</span>
-  <span class="tag-hl">&lt;select</span> <span class="attr-hl">class=</span><span class="val-hl">"form-select"</span><span class="tag-hl">&gt;</span>
-    <span class="tag-hl">&lt;option&gt;</span>すべて<span class="tag-hl">&lt;/option&gt;</span>
-    <span class="tag-hl">&lt;option&gt;</span>グルメ<span class="tag-hl">&lt;/option&gt;</span>
-  <span class="tag-hl">&lt;/select&gt;</span>
-<span class="tag-hl">&lt;/div&gt;</span>
-      </div>
-    </div>
-
-    <div class="example-block">
-      <div class="example-label">プレビュー <span class="tag">検索バー（input-group）</span></div>
-      <div class="example-preview">
-        <div class="input-group" style="max-width:400px;">
-          <input type="text" class="form-control" placeholder="スポットを検索...">
-          <button class="btn btn-primary"><i class="bi bi-search"></i> 検索</button>
-        </div>
-      </div>
-      <div class="example-code">
-<span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"input-group"</span><span class="tag-hl">&gt;</span>
-  <span class="tag-hl">&lt;input</span> <span class="attr-hl">type=</span><span class="val-hl">"text"</span> <span class="attr-hl">class=</span><span class="val-hl">"form-control"</span> <span class="attr-hl">placeholder=</span><span class="val-hl">"スポットを検索..."</span><span class="tag-hl">&gt;</span>
-  <span class="tag-hl">&lt;button</span> <span class="attr-hl">class=</span><span class="val-hl">"btn btn-primary"</span><span class="tag-hl">&gt;</span>検索<span class="tag-hl">&lt;/button&gt;</span>
-<span class="tag-hl">&lt;/div&gt;</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Navbar -->
-  <div class="cheat-section" id="navbar">
-    <h2><i class="bi bi-list"></i> ナビバー (Navbar)</h2>
-    <p class="section-desc">ヘッダーのナビゲーション。スマホ時はハンバーガーメニューに自動変換される</p>
-
-    <table class="class-table">
-      <thead><tr><th>クラス名</th><th>役割</th></tr></thead>
-      <tbody>
-        <tr><td><code>.navbar</code></td><td>ナビバーの基本</td></tr>
-        <tr><td><code>.navbar-expand-lg</code></td><td>992px未満でハンバーガーメニュー化</td></tr>
-        <tr><td><code>.navbar-dark .bg-dark</code></td><td>暗い背景＋白い文字</td></tr>
-        <tr><td><code>.navbar-light .bg-light</code></td><td>明るい背景＋暗い文字</td></tr>
-        <tr><td><code>.navbar-brand</code></td><td>サイト名・ロゴ</td></tr>
-        <tr><td><code>.navbar-toggler</code></td><td>ハンバーガーボタン</td></tr>
-        <tr><td><code>.nav-link</code></td><td>各メニューリンク</td></tr>
-      </tbody>
-    </table>
-
-    <div class="example-block">
-      <div class="example-label">プレビュー</div>
-      <div class="example-preview p-0">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded">
-          <div class="container-fluid">
-            <a class="navbar-brand" href="#">🏯 長堀橋ナビ</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#demoNav">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="demoNav">
-              <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link active" href="#">ホーム</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">スポット一覧</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">カテゴリ</a></li>
-              </ul>
-              <a href="#" class="btn btn-outline-light btn-sm">ログイン</a>
-            </div>
-          </div>
-        </nav>
-      </div>
-      <div class="example-code">
-<span class="tag-hl">&lt;nav</span> <span class="attr-hl">class=</span><span class="val-hl">"navbar navbar-expand-lg navbar-dark bg-dark"</span><span class="tag-hl">&gt;</span>
-  <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"container-fluid"</span><span class="tag-hl">&gt;</span>
-    <span class="tag-hl">&lt;a</span> <span class="attr-hl">class=</span><span class="val-hl">"navbar-brand"</span> <span class="attr-hl">href=</span><span class="val-hl">"/"</span><span class="tag-hl">&gt;</span>🏯 長堀橋ナビ<span class="tag-hl">&lt;/a&gt;</span>
-    <span class="tag-hl">&lt;button</span> <span class="attr-hl">class=</span><span class="val-hl">"navbar-toggler"</span> <span class="attr-hl">data-bs-toggle=</span><span class="val-hl">"collapse"</span>
-            <span class="attr-hl">data-bs-target=</span><span class="val-hl">"#mainNav"</span><span class="tag-hl">&gt;</span>
-      <span class="tag-hl">&lt;span</span> <span class="attr-hl">class=</span><span class="val-hl">"navbar-toggler-icon"</span><span class="tag-hl">&gt;&lt;/span&gt;</span>
-    <span class="tag-hl">&lt;/button&gt;</span>
-    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"collapse navbar-collapse"</span> <span class="attr-hl">id=</span><span class="val-hl">"mainNav"</span><span class="tag-hl">&gt;</span>
-      <span class="tag-hl">&lt;ul</span> <span class="attr-hl">class=</span><span class="val-hl">"navbar-nav me-auto"</span><span class="tag-hl">&gt;</span>
-        <span class="tag-hl">&lt;li</span> <span class="attr-hl">class=</span><span class="val-hl">"nav-item"</span><span class="tag-hl">&gt;&lt;a</span> <span class="attr-hl">class=</span><span class="val-hl">"nav-link"</span> <span class="attr-hl">href=</span><span class="val-hl">"/spots"</span><span class="tag-hl">&gt;</span>スポット一覧<span class="tag-hl">&lt;/a&gt;&lt;/li&gt;</span>
-      <span class="tag-hl">&lt;/ul&gt;</span>
-      <span class="comment-hl">&lt;!-- Thymeleaf: ログイン状態で表示を切替 --&gt;</span>
-      <span class="tag-hl">&lt;a</span> <span class="attr-hl">th:if=</span><span class="val-hl">"${session.user == null}"</span> <span class="attr-hl">class=</span><span class="val-hl">"btn btn-outline-light btn-sm"</span><span class="tag-hl">&gt;</span>ログイン<span class="tag-hl">&lt;/a&gt;</span>
-    <span class="tag-hl">&lt;/div&gt;</span>
-  <span class="tag-hl">&lt;/div&gt;</span>
-<span class="tag-hl">&lt;/nav&gt;</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Badge -->
-  <div class="cheat-section" id="badge">
-    <h2><i class="bi bi-tag"></i> バッジ (Badge)</h2>
-    <p class="section-desc">カテゴリタグや件数表示に便利</p>
-
-    <div class="example-block">
-      <div class="example-preview">
-        <span class="badge bg-primary me-1">グルメ</span>
-        <span class="badge bg-success me-1">観光</span>
-        <span class="badge bg-warning text-dark me-1">ショッピング</span>
-        <span class="badge bg-info me-1">カフェ</span>
-        <span class="badge rounded-pill bg-danger me-1">♥ 12</span>
-      </div>
-      <div class="example-code">
-<span class="tag-hl">&lt;span</span> <span class="attr-hl">class=</span><span class="val-hl">"badge bg-primary"</span><span class="tag-hl">&gt;</span>グルメ<span class="tag-hl">&lt;/span&gt;</span>
-<span class="tag-hl">&lt;span</span> <span class="attr-hl">class=</span><span class="val-hl">"badge rounded-pill bg-danger"</span><span class="tag-hl">&gt;</span>♥ 12<span class="tag-hl">&lt;/span&gt;</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Alert -->
-  <div class="cheat-section" id="alert">
-    <h2><i class="bi bi-exclamation-triangle"></i> アラート (Alert)</h2>
-    <p class="section-desc">成功・エラーメッセージの表示に使う</p>
-
-    <div class="example-block">
-      <div class="example-preview">
-        <div class="alert alert-success">✅ お気に入りに登録しました！</div>
-        <div class="alert alert-danger">❌ ログインしてください。</div>
-        <div class="alert alert-warning">⚠️ このスポットは現在休業中です。</div>
-        <div class="alert alert-info">ℹ️ レビューは1スポットにつき1件まで投稿できます。</div>
-      </div>
-      <div class="example-code">
-<span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"alert alert-success"</span><span class="tag-hl">&gt;</span>お気に入りに登録しました！<span class="tag-hl">&lt;/div&gt;</span>
-<span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"alert alert-danger"</span><span class="tag-hl">&gt;</span>ログインしてください。<span class="tag-hl">&lt;/div&gt;</span>
-
-<span class="comment-hl">&lt;!-- Thymeleafでフラッシュメッセージ表示 --&gt;</span>
-<span class="tag-hl">&lt;div</span> <span class="attr-hl">th:if=</span><span class="val-hl">"${message}"</span> <span class="attr-hl">class=</span><span class="val-hl">"alert alert-success"</span>
-     <span class="attr-hl">th:text=</span><span class="val-hl">"${message}"</span><span class="tag-hl">&gt;&lt;/div&gt;</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal -->
-  <div class="cheat-section" id="modal">
-    <h2><i class="bi bi-window-stack"></i> モーダル (Modal)</h2>
-    <p class="section-desc">ポップアップ的なダイアログ。確認や詳細表示に使える</p>
-
-    <div class="example-block">
-      <div class="example-preview">
-        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#demoModal">
-          削除する（モーダルを開く）
-        </button>
-        <div class="modal fade" id="demoModal" tabindex="-1">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">確認</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-              </div>
-              <div class="modal-body">このレビューを削除しますか？</div>
-              <div class="modal-footer">
-                <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">キャンセル</button>
-                <button class="btn btn-danger btn-sm">削除する</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="example-code">
-<span class="comment-hl">&lt;!-- ① トリガーボタン --&gt;</span>
-<span class="tag-hl">&lt;button</span> <span class="attr-hl">data-bs-toggle=</span><span class="val-hl">"modal"</span> <span class="attr-hl">data-bs-target=</span><span class="val-hl">"#deleteModal"</span><span class="tag-hl">&gt;</span>削除<span class="tag-hl">&lt;/button&gt;</span>
-
-<span class="comment-hl">&lt;!-- ② モーダル本体 --&gt;</span>
-<span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"modal fade"</span> <span class="attr-hl">id=</span><span class="val-hl">"deleteModal"</span><span class="tag-hl">&gt;</span>
-  <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"modal-dialog"</span><span class="tag-hl">&gt;</span>
-    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"modal-content"</span><span class="tag-hl">&gt;</span>
-      <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"modal-header"</span><span class="tag-hl">&gt;</span> タイトル <span class="tag-hl">&lt;/div&gt;</span>
-      <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"modal-body"</span><span class="tag-hl">&gt;</span> 本文 <span class="tag-hl">&lt;/div&gt;</span>
-      <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"modal-footer"</span><span class="tag-hl">&gt;</span> ボタン <span class="tag-hl">&lt;/div&gt;</span>
-    <span class="tag-hl">&lt;/div&gt;</span>
-  <span class="tag-hl">&lt;/div&gt;</span>
-<span class="tag-hl">&lt;/div&gt;</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Pagination -->
-  <div class="cheat-section" id="pagination">
-    <h2><i class="bi bi-123"></i> ページネーション</h2>
-    <p class="section-desc">スポット一覧のページ切り替えに使う</p>
-
-    <div class="example-block">
-      <div class="example-preview">
-        <nav>
-          <ul class="pagination pagination-sm">
-            <li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-          </ul>
-        </nav>
-      </div>
-      <div class="example-code">
-<span class="tag-hl">&lt;ul</span> <span class="attr-hl">class=</span><span class="val-hl">"pagination"</span><span class="tag-hl">&gt;</span>
-  <span class="tag-hl">&lt;li</span> <span class="attr-hl">class=</span><span class="val-hl">"page-item disabled"</span><span class="tag-hl">&gt;&lt;a</span> <span class="attr-hl">class=</span><span class="val-hl">"page-link"</span><span class="tag-hl">&gt;</span>&amp;laquo;<span class="tag-hl">&lt;/a&gt;&lt;/li&gt;</span>
-  <span class="tag-hl">&lt;li</span> <span class="attr-hl">class=</span><span class="val-hl">"page-item active"</span><span class="tag-hl">&gt;&lt;a</span> <span class="attr-hl">class=</span><span class="val-hl">"page-link"</span><span class="tag-hl">&gt;</span>1<span class="tag-hl">&lt;/a&gt;&lt;/li&gt;</span>
-  <span class="tag-hl">&lt;li</span> <span class="attr-hl">class=</span><span class="val-hl">"page-item"</span><span class="tag-hl">&gt;&lt;a</span> <span class="attr-hl">class=</span><span class="val-hl">"page-link"</span><span class="tag-hl">&gt;</span>2<span class="tag-hl">&lt;/a&gt;&lt;/li&gt;</span>
-<span class="tag-hl">&lt;/ul&gt;</span>
-
-<span class="comment-hl">&lt;!-- active = 現在のページ, disabled = クリック不可 --&gt;</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════════════════════════════════════════ -->
-  <!-- UTILITIES -->
-  <!-- ════════════════════════════════════════════ -->
-
-  <!-- Text -->
-  <div class="cheat-section" id="text">
-    <h2><i class="bi bi-fonts"></i> テキスト</h2>
-    <p class="section-desc">文字サイズ・太さ・配置を手軽に変更</p>
-
-    <table class="class-table">
-      <thead><tr><th>クラス名</th><th>効果</th></tr></thead>
-      <tbody>
-        <tr><td><code>.fs-1</code> 〜 <code>.fs-6</code></td><td>フォントサイズ（1が最大、6が最小）</td></tr>
-        <tr><td><code>.fw-bold</code></td><td>太字</td></tr>
-        <tr><td><code>.fw-light</code></td><td>細い文字</td></tr>
-        <tr><td><code>.text-center</code></td><td>中央揃え</td></tr>
-        <tr><td><code>.text-end</code></td><td>右揃え</td></tr>
-        <tr><td><code>.text-truncate</code></td><td>はみ出す文字を「...」で省略</td></tr>
-        <tr><td><code>.text-decoration-none</code></td><td>下線を消す（リンクに便利）</td></tr>
-      </tbody>
-    </table>
-
-    <div class="example-block">
-      <div class="example-preview">
-        <p class="fs-3 fw-bold mb-1">fs-3 fw-bold（大きく太く）</p>
-        <p class="fs-5 fw-light mb-1">fs-5 fw-light（やや小さく細く）</p>
-        <p class="text-center mb-1">text-center（中央揃え）</p>
-        <p class="text-truncate mb-0" style="max-width:250px;">text-truncate: これはとても長いテキストですが途中で切れます</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Color -->
-  <div class="cheat-section" id="color">
-    <h2><i class="bi bi-palette"></i> 色（テキスト・背景）</h2>
-    <p class="section-desc"><code>text-*</code> で文字色、<code>bg-*</code> で背景色を指定</p>
-
-    <div class="example-block">
-      <div class="example-label">テキスト色</div>
-      <div class="example-preview">
-        <span class="text-primary fw-bold me-3">text-primary</span>
-        <span class="text-success fw-bold me-3">text-success</span>
-        <span class="text-danger fw-bold me-3">text-danger</span>
-        <span class="text-warning fw-bold me-3">text-warning</span>
-        <span class="text-info fw-bold me-3">text-info</span>
-        <span class="text-muted me-3">text-muted</span>
-      </div>
-    </div>
-
-    <div class="example-block">
-      <div class="example-label">背景色</div>
-      <div class="example-preview">
-        <span class="bg-primary text-white p-2 rounded me-2">bg-primary</span>
-        <span class="bg-success text-white p-2 rounded me-2">bg-success</span>
-        <span class="bg-danger text-white p-2 rounded me-2">bg-danger</span>
-        <span class="bg-warning p-2 rounded me-2">bg-warning</span>
-        <span class="bg-light p-2 rounded me-2">bg-light</span>
-        <span class="bg-dark text-white p-2 rounded me-2">bg-dark</span>
-      </div>
-    </div>
-
-    <table class="class-table">
-      <thead><tr><th>色名</th><th>用途の目安</th></tr></thead>
-      <tbody>
-        <tr><td><code>primary</code>（青）</td><td>メインの操作、リンク</td></tr>
-        <tr><td><code>success</code>（緑）</td><td>成功メッセージ</td></tr>
-        <tr><td><code>danger</code>（赤）</td><td>削除、エラー、お気に入り♥</td></tr>
-        <tr><td><code>warning</code>（黄）</td><td>注意、★評価</td></tr>
-        <tr><td><code>info</code>（水色）</td><td>情報、ヒント</td></tr>
-        <tr><td><code>muted</code>（グレー）</td><td>補足テキスト、日付表示</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Spacing -->
-  <div class="cheat-section" id="spacing">
-    <h2><i class="bi bi-arrows-expand"></i> 余白 (Margin / Padding)</h2>
-    <p class="section-desc">最も頻繁に使うユーティリティ。<code>{種類}{方向}-{サイズ}</code> の形式</p>
-
-    <table class="class-table">
-      <thead><tr><th>記号</th><th>意味</th></tr></thead>
-      <tbody>
-        <tr><td><code>m</code></td><td>margin（外側の余白）</td></tr>
-        <tr><td><code>p</code></td><td>padding（内側の余白）</td></tr>
-        <tr><td><code>t</code></td><td>top（上）</td></tr>
-        <tr><td><code>b</code></td><td>bottom（下）</td></tr>
-        <tr><td><code>s</code></td><td>start＝左</td></tr>
-        <tr><td><code>e</code></td><td>end＝右</td></tr>
-        <tr><td><code>x</code></td><td>左右両方</td></tr>
-        <tr><td><code>y</code></td><td>上下両方</td></tr>
-      </tbody>
-    </table>
-
-    <table class="class-table">
-      <thead><tr><th>サイズ</th><th>実際の値</th></tr></thead>
-      <tbody>
-        <tr><td><code>0</code></td><td>0</td></tr>
-        <tr><td><code>1</code></td><td>0.25rem（4px）</td></tr>
-        <tr><td><code>2</code></td><td>0.5rem（8px）</td></tr>
-        <tr><td><code>3</code></td><td>1rem（16px）</td></tr>
-        <tr><td><code>4</code></td><td>1.5rem（24px）</td></tr>
-        <tr><td><code>5</code></td><td>3rem（48px）</td></tr>
-        <tr><td><code>auto</code></td><td>自動（中央寄せに使う）</td></tr>
-      </tbody>
-    </table>
-
-    <div class="example-block">
-      <div class="example-label">よく使う組み合わせ</div>
-      <div class="example-code">
-<span class="comment-hl">&lt;!-- 下に余白16px --&gt;</span>  <span class="attr-hl">class=</span><span class="val-hl">"mb-3"</span>
-<span class="comment-hl">&lt;!-- 右に余白8px --&gt;</span>   <span class="attr-hl">class=</span><span class="val-hl">"me-2"</span>
-<span class="comment-hl">&lt;!-- 上下に余白24px --&gt;</span> <span class="attr-hl">class=</span><span class="val-hl">"my-4"</span>
-<span class="comment-hl">&lt;!-- 内側全方向16px --&gt;</span> <span class="attr-hl">class=</span><span class="val-hl">"p-3"</span>
-<span class="comment-hl">&lt;!-- 左右中央揃え --&gt;</span>   <span class="attr-hl">class=</span><span class="val-hl">"mx-auto"</span>
-      </div>
-    </div>
-
-    <div class="tip-box">
-      <strong>💡 超頻出：</strong> <code>mb-3</code>（下にマージン16px）は最もよく使うクラスの1つ。要素を縦に並べるとき、ほぼ毎回使う
-    </div>
-  </div>
-
-  <!-- Display -->
-  <div class="cheat-section" id="display">
-    <h2><i class="bi bi-eye"></i> 表示・非表示 (Display)</h2>
-    <p class="section-desc">要素の表示/非表示やレスポンシブ時の出し分け</p>
-
-    <table class="class-table">
-      <thead><tr><th>クラス名</th><th>効果</th></tr></thead>
-      <tbody>
-        <tr><td><code>.d-none</code></td><td>完全に非表示</td></tr>
-        <tr><td><code>.d-block</code></td><td>ブロック表示</td></tr>
-        <tr><td><code>.d-flex</code></td><td>Flex表示（次のFlexセクション参照）</td></tr>
-        <tr><td><code>.d-inline</code></td><td>インライン表示</td></tr>
-        <tr><td><code>.d-none .d-md-block</code></td><td>スマホで非表示→タブレット以上で表示</td></tr>
-        <tr><td><code>.d-md-none</code></td><td>タブレット以上で非表示</td></tr>
-      </tbody>
-    </table>
-
-    <div class="project-tip">
-      <strong>🏯 プロジェクトでの使い方：</strong>
-      <code>d-none d-md-block</code> でPC用のサイドバーをスマホでは隠す。Thymeleafの <code>th:if</code> と組み合わせると、「ログインユーザーにだけ表示」も簡単にできる
-    </div>
-  </div>
-
-  <!-- Flex -->
-  <div class="cheat-section" id="flex">
-    <h2><i class="bi bi-distribute-horizontal"></i> Flexbox</h2>
-    <p class="section-desc">要素の横並び・中央揃え・均等配置を簡単に実現</p>
-
-    <table class="class-table">
-      <thead><tr><th>クラス名</th><th>効果</th></tr></thead>
-      <tbody>
-        <tr><td><code>.d-flex</code></td><td>Flexコンテナにする</td></tr>
-        <tr><td><code>.justify-content-between</code></td><td>両端に寄せる（間にスペース）</td></tr>
-        <tr><td><code>.justify-content-center</code></td><td>中央揃え</td></tr>
-        <tr><td><code>.align-items-center</code></td><td>縦方向の中央揃え</td></tr>
-        <tr><td><code>.gap-2</code></td><td>子要素間の隙間（8px）</td></tr>
-        <tr><td><code>.flex-wrap</code></td><td>折り返し可能にする</td></tr>
-      </tbody>
-    </table>
-
-    <div class="example-block">
-      <div class="example-label">プレビュー <span class="tag">両端寄せ + 縦中央</span></div>
-      <div class="example-preview">
-        <div class="d-flex justify-content-between align-items-center p-2" style="background:#e8e4de;border-radius:8px;">
-          <span class="fw-bold">長堀橋カフェ巡り</span>
-          <span class="badge bg-danger">♥ お気に入り</span>
-        </div>
-      </div>
-      <div class="example-code">
-<span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"d-flex justify-content-between align-items-center"</span><span class="tag-hl">&gt;</span>
-  <span class="tag-hl">&lt;span&gt;</span>スポット名<span class="tag-hl">&lt;/span&gt;</span>
-  <span class="tag-hl">&lt;span</span> <span class="attr-hl">class=</span><span class="val-hl">"badge bg-danger"</span><span class="tag-hl">&gt;</span>♥ お気に入り<span class="tag-hl">&lt;/span&gt;</span>
-<span class="tag-hl">&lt;/div&gt;</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Border & Shadow -->
-  <div class="cheat-section" id="border-radius">
-    <h2><i class="bi bi-square"></i> 角丸・影・ボーダー</h2>
-    <p class="section-desc">カードやボタンの見た目を微調整</p>
-
-    <table class="class-table">
-      <thead><tr><th>クラス名</th><th>効果</th></tr></thead>
-      <tbody>
-        <tr><td><code>.rounded</code></td><td>角丸（小さめ）</td></tr>
-        <tr><td><code>.rounded-3</code></td><td>角丸（やや大きめ）</td></tr>
-        <tr><td><code>.rounded-circle</code></td><td>正円（アバター画像に）</td></tr>
-        <tr><td><code>.rounded-pill</code></td><td>丸薬型（タグやバッジに）</td></tr>
-        <tr><td><code>.shadow-sm</code></td><td>薄い影</td></tr>
-        <tr><td><code>.shadow</code></td><td>標準の影</td></tr>
-        <tr><td><code>.border</code></td><td>枠線を付ける</td></tr>
-        <tr><td><code>.border-0</code></td><td>枠線を消す</td></tr>
-      </tbody>
-    </table>
-
-    <div class="example-block">
-      <div class="example-preview d-flex gap-3 align-items-center flex-wrap">
-        <div class="bg-primary text-white p-3 rounded">rounded</div>
-        <div class="bg-primary text-white p-3 rounded-3">rounded-3</div>
-        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:60px;height:60px;">円</div>
-        <div class="bg-light p-3 shadow-sm rounded">shadow-sm</div>
-        <div class="bg-light p-3 shadow rounded">shadow</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════════════════════════════════════════ -->
-  <!-- PROJECT TEMPLATES -->
-  <!-- ════════════════════════════════════════════ -->
-
-  <h2 class="fs-4 fw-900 mt-5 mb-3" style="color:var(--accent);">
-    <i class="bi bi-lightning-charge"></i> 実践テンプレート集
-  </h2>
-  <p class="text-muted mb-4" style="font-size:14px;">観光サイトですぐ使えるThymeleaf + Bootstrapのテンプレート例</p>
-
-  <!-- Template: Spot Card -->
-  <div class="cheat-section" id="tpl-spotcard">
-    <h2><i class="bi bi-geo-alt"></i> 観光スポットカード一覧</h2>
-    <p class="section-desc">spotsテーブルのデータをカードで表示するテンプレート</p>
-
-    <div class="example-block">
-      <div class="example-label">プレビュー</div>
-      <div class="example-preview">
-        <div class="row g-3">
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="card h-100 shadow-sm">
-              <div style="height:160px;background:linear-gradient(135deg,#dbeafe,#bfdbfe);display:flex;align-items:center;justify-content:center;border-radius:6px 6px 0 0;">
-                <i class="bi bi-camera" style="font-size:28px;color:#3b82f6;"></i>
-              </div>
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-2">
-                  <h5 class="card-title mb-0 fs-6 fw-bold">心斎橋筋商店街</h5>
-                  <span class="badge bg-success">ショッピング</span>
+    <!-- ━━━ Sidebar ━━━ -->
+    <nav class="sidebar">
+        <div class="sidebar-title">Bootstrap 5 早見表</div>
+
+        <div class="sidebar-section">レイアウト</div>
+        <a href="#container">コンテナ</a>
+        <a href="#grid">グリッドシステム</a>
+        <a href="#grid-responsive">レスポンシブ</a>
+
+        <div class="sidebar-section">コンポーネント</div>
+        <a href="#card">カード</a>
+        <a href="#button">ボタン</a>
+        <a href="#form">フォーム</a>
+        <a href="#navbar">ナビバー</a>
+        <a href="#badge">バッジ</a>
+        <a href="#alert">アラート</a>
+        <a href="#modal">モーダル</a>
+        <a href="#pagination">ページネーション</a>
+
+        <div class="sidebar-section">ユーティリティ</div>
+        <a href="#text">テキスト</a>
+        <a href="#color">色（テキスト・背景）</a>
+        <a href="#spacing">余白 (margin / padding)</a>
+        <a href="#display">表示・非表示</a>
+        <a href="#flex">Flexbox</a>
+        <a href="#border-radius">角丸・影</a>
+
+        <div class="sidebar-section">実践テンプレート</div>
+        <a href="#tpl-spotcard">観光スポットカード</a>
+        <a href="#tpl-search">検索フォーム</a>
+        <a href="#tpl-review">レビュー投稿フォーム</a>
+    </nav>
+
+    <!-- ━━━ Main Content ━━━ -->
+    <div class="main-content">
+
+        <h1 class="page-title">Bootstrap 5 クラス早見表</h1>
+        <p class="page-lead">Webサイト開発で使うBootstrapクラスを実例付きでまとめました。<br>
+            Thymeleafテンプレートにそのままコピペして使えます。</p>
+
+        <!-- ════════════════════════════════════════════ -->
+        <!-- LAYOUT -->
+        <!-- ════════════════════════════════════════════ -->
+
+        <div class="cheat-section" id="container">
+            <h2><i class="bi bi-layout-text-window-reverse"></i> コンテナ (Container)</h2>
+            <p class="section-desc">ページの左右に適切な余白を作り、コンテンツの幅を制限するための基本クラス</p>
+
+            <table class="class-table">
+                <thead>
+                    <tr>
+                        <th>クラス名</th>
+                        <th>動作</th>
+                        <th>使いどころ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>.container</code></td>
+                        <td>ブレークポイントごとに固定幅。中央揃え</td>
+                        <td>一般的なページ本文</td>
+                    </tr>
+                    <tr>
+                        <td><code>.container-fluid</code></td>
+                        <td>常に幅100%</td>
+                        <td>ナビバーやヒーロー画像など全幅要素</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="example-block">
+                <div class="example-label">使い方の例</div>
+                <div class="example-code">
+                    <span class="comment-hl">&lt;!-- Thymeleafテンプレートの基本構造 --&gt;</span>
+                    <span class="tag-hl">&lt;body&gt;</span>
+                    <span class="tag-hl">&lt;nav</span> <span class="attr-hl">class=</span><span class="val-hl">"navbar
+                        container-fluid"</span><span class="tag-hl">&gt;</span>...ナビバー(全幅)...<span
+                        class="tag-hl">&lt;/nav&gt;</span>
+                    <span class="tag-hl">&lt;main</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"container"</span><span class="tag-hl">&gt;</span>...本文(中央揃え)...<span
+                        class="tag-hl">&lt;/main&gt;</span>
+                    <span class="tag-hl">&lt;footer</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"container-fluid"</span><span class="tag-hl">&gt;</span>...フッター(全幅)...<span
+                        class="tag-hl">&lt;/footer&gt;</span>
+                    <span class="tag-hl">&lt;/body&gt;</span>
                 </div>
-                <p class="card-text text-muted" style="font-size:13px;">大阪を代表する商店街。約600mのアーケード...</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <span class="text-warning">★★★★☆ <small class="text-muted">4.2</small></span>
-                  <a href="#" class="btn btn-primary btn-sm">詳細</a>
-                </div>
-              </div>
             </div>
-          </div>
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="card h-100 shadow-sm">
-              <div style="height:160px;background:linear-gradient(135deg,#fef3c7,#fde68a);display:flex;align-items:center;justify-content:center;border-radius:6px 6px 0 0;">
-                <i class="bi bi-camera" style="font-size:28px;color:#f59e0b;"></i>
-              </div>
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-2">
-                  <h5 class="card-title mb-0 fs-6 fw-bold">自家製麺 うどん屋</h5>
-                  <span class="badge bg-primary">グルメ</span>
-                </div>
-                <p class="card-text text-muted" style="font-size:13px;">もちもちの自家製麺が自慢のうどん専門店...</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <span class="text-warning">★★★★★ <small class="text-muted">4.8</small></span>
-                  <a href="#" class="btn btn-primary btn-sm">詳細</a>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
-      <div class="example-code">
-<span class="comment-hl">&lt;!-- スポット一覧（Thymeleaf + Bootstrap） --&gt;</span>
-<span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"row g-3"</span><span class="tag-hl">&gt;</span>
-  <span class="tag-hl">&lt;div</span> <span class="attr-hl">th:each=</span><span class="val-hl">"spot : ${spots}"</span>
-       <span class="attr-hl">class=</span><span class="val-hl">"col-12 col-md-6 col-lg-4"</span><span class="tag-hl">&gt;</span>
-    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"card h-100 shadow-sm"</span><span class="tag-hl">&gt;</span>
-      <span class="tag-hl">&lt;img</span> <span class="attr-hl">th:src=</span><span class="val-hl">"${spot.imageUrl}"</span>
-           <span class="attr-hl">class=</span><span class="val-hl">"card-img-top"</span> <span class="attr-hl">alt=</span><span class="val-hl">"スポット画像"</span><span class="tag-hl">&gt;</span>
-      <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"card-body"</span><span class="tag-hl">&gt;</span>
-        <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"d-flex justify-content-between align-items-start mb-2"</span><span class="tag-hl">&gt;</span>
-          <span class="tag-hl">&lt;h5</span> <span class="attr-hl">class=</span><span class="val-hl">"card-title fs-6 fw-bold"</span>
-              <span class="attr-hl">th:text=</span><span class="val-hl">"${spot.name}"</span><span class="tag-hl">&gt;</span>スポット名<span class="tag-hl">&lt;/h5&gt;</span>
-          <span class="tag-hl">&lt;span</span> <span class="attr-hl">class=</span><span class="val-hl">"badge bg-primary"</span>
-               <span class="attr-hl">th:text=</span><span class="val-hl">"${spot.category.name}"</span><span class="tag-hl">&gt;</span>カテゴリ<span class="tag-hl">&lt;/span&gt;</span>
-        <span class="tag-hl">&lt;/div&gt;</span>
-        <span class="tag-hl">&lt;p</span> <span class="attr-hl">class=</span><span class="val-hl">"card-text text-muted"</span>
-           <span class="attr-hl">th:text=</span><span class="val-hl">"${spot.description}"</span><span class="tag-hl">&gt;</span>説明<span class="tag-hl">&lt;/p&gt;</span>
-        <span class="tag-hl">&lt;a</span> <span class="attr-hl">th:href=</span><span class="val-hl">"@{/spots/{id}(id=${spot.id})}"</span>
-           <span class="attr-hl">class=</span><span class="val-hl">"btn btn-primary btn-sm"</span><span class="tag-hl">&gt;</span>詳しく見る<span class="tag-hl">&lt;/a&gt;</span>
-      <span class="tag-hl">&lt;/div&gt;</span>
-    <span class="tag-hl">&lt;/div&gt;</span>
-  <span class="tag-hl">&lt;/div&gt;</span>
-<span class="tag-hl">&lt;/div&gt;</span>
-      </div>
-    </div>
-  </div>
 
-  <!-- Template: Search -->
-  <div class="cheat-section" id="tpl-search">
-    <h2><i class="bi bi-search"></i> 検索フォーム</h2>
-    <p class="section-desc">キーワード＋カテゴリで絞り込むフォーム</p>
+        <!-- Grid -->
+        <div class="cheat-section" id="grid">
+            <h2><i class="bi bi-grid-3x3"></i> グリッドシステム</h2>
+            <p class="section-desc">12カラム制。<code>.row</code> の中に <code>.col-*</code> を並べるだけでレイアウトが組める</p>
 
-    <div class="example-block">
-      <div class="example-preview">
-        <div class="row g-2 align-items-end">
-          <div class="col-12 col-md-5">
-            <label class="form-label fw-bold" style="font-size:13px;">キーワード</label>
-            <input type="text" class="form-control" placeholder="スポット名で検索...">
-          </div>
-          <div class="col-12 col-md-4">
-            <label class="form-label fw-bold" style="font-size:13px;">カテゴリ</label>
-            <select class="form-select">
-              <option>すべて</option>
-              <option>グルメ</option>
-              <option>観光</option>
-              <option>ショッピング</option>
-              <option>カフェ</option>
-            </select>
-          </div>
-          <div class="col-12 col-md-3">
-            <button class="btn btn-primary w-100"><i class="bi bi-search"></i> 検索</button>
-          </div>
-        </div>
-      </div>
-      <div class="example-code">
-<span class="tag-hl">&lt;form</span> <span class="attr-hl">th:action=</span><span class="val-hl">"@{/spots}"</span> <span class="attr-hl">method=</span><span class="val-hl">"get"</span><span class="tag-hl">&gt;</span>
-  <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"row g-2 align-items-end"</span><span class="tag-hl">&gt;</span>
-    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"col-12 col-md-5"</span><span class="tag-hl">&gt;</span>
-      <span class="tag-hl">&lt;label</span> <span class="attr-hl">class=</span><span class="val-hl">"form-label"</span><span class="tag-hl">&gt;</span>キーワード<span class="tag-hl">&lt;/label&gt;</span>
-      <span class="tag-hl">&lt;input</span> <span class="attr-hl">type=</span><span class="val-hl">"text"</span> <span class="attr-hl">name=</span><span class="val-hl">"keyword"</span>
-             <span class="attr-hl">class=</span><span class="val-hl">"form-control"</span>
-             <span class="attr-hl">th:value=</span><span class="val-hl">"${keyword}"</span><span class="tag-hl">&gt;</span>
-    <span class="tag-hl">&lt;/div&gt;</span>
-    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"col-12 col-md-4"</span><span class="tag-hl">&gt;</span>
-      <span class="tag-hl">&lt;label</span> <span class="attr-hl">class=</span><span class="val-hl">"form-label"</span><span class="tag-hl">&gt;</span>カテゴリ<span class="tag-hl">&lt;/label&gt;</span>
-      <span class="tag-hl">&lt;select</span> <span class="attr-hl">name=</span><span class="val-hl">"categoryId"</span> <span class="attr-hl">class=</span><span class="val-hl">"form-select"</span><span class="tag-hl">&gt;</span>
-        <span class="tag-hl">&lt;option</span> <span class="attr-hl">value=</span><span class="val-hl">""</span><span class="tag-hl">&gt;</span>すべて<span class="tag-hl">&lt;/option&gt;</span>
-        <span class="tag-hl">&lt;option</span> <span class="attr-hl">th:each=</span><span class="val-hl">"cat : ${categories}"</span>
-                <span class="attr-hl">th:value=</span><span class="val-hl">"${cat.id}"</span>
-                <span class="attr-hl">th:text=</span><span class="val-hl">"${cat.name}"</span><span class="tag-hl">&gt;&lt;/option&gt;</span>
-      <span class="tag-hl">&lt;/select&gt;</span>
-    <span class="tag-hl">&lt;/div&gt;</span>
-    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"col-12 col-md-3"</span><span class="tag-hl">&gt;</span>
-      <span class="tag-hl">&lt;button</span> <span class="attr-hl">class=</span><span class="val-hl">"btn btn-primary w-100"</span><span class="tag-hl">&gt;</span>検索<span class="tag-hl">&lt;/button&gt;</span>
-    <span class="tag-hl">&lt;/div&gt;</span>
-  <span class="tag-hl">&lt;/div&gt;</span>
-<span class="tag-hl">&lt;/form&gt;</span>
-      </div>
-    </div>
-  </div>
+            <table class="class-table">
+                <thead>
+                    <tr>
+                        <th>クラス名</th>
+                        <th>動作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>.row</code></td>
+                        <td>横並びの行を作る（必須の親要素）</td>
+                    </tr>
+                    <tr>
+                        <td><code>.col</code></td>
+                        <td>均等幅で自動分割</td>
+                    </tr>
+                    <tr>
+                        <td><code>.col-6</code></td>
+                        <td>12カラム中の6つ分＝50%幅</td>
+                    </tr>
+                    <tr>
+                        <td><code>.col-4</code></td>
+                        <td>12カラム中の4つ分＝33.3%幅</td>
+                    </tr>
+                    <tr>
+                        <td><code>.col-3</code></td>
+                        <td>12カラム中の3つ分＝25%幅</td>
+                    </tr>
+                    <tr>
+                        <td><code>.g-3</code></td>
+                        <td>カラム間のgutter（溝）を設定</td>
+                    </tr>
+                </tbody>
+            </table>
 
-  <!-- Template: Review Form -->
-  <div class="cheat-section" id="tpl-review">
-    <h2><i class="bi bi-chat-left-text"></i> レビュー投稿フォーム</h2>
-    <p class="section-desc">ログインユーザーがレビューを投稿するフォーム</p>
-
-    <div class="example-block">
-      <div class="example-preview">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title fs-6 fw-bold mb-3">レビューを投稿する</h5>
-            <div class="mb-3">
-              <label class="form-label">評価</label>
-              <select class="form-select" style="max-width:160px;">
-                <option>★★★★★ (5)</option>
-                <option>★★★★☆ (4)</option>
-                <option>★★★☆☆ (3)</option>
-                <option>★★☆☆☆ (2)</option>
-                <option>★☆☆☆☆ (1)</option>
-              </select>
+            <div class="example-block">
+                <div class="example-label">プレビュー <span class="tag">均等3列</span></div>
+                <div class="example-preview grid-demo">
+                    <div class="row g-3">
+                        <div class="col-4">col-4</div>
+                        <div class="col-4">col-4</div>
+                        <div class="col-4">col-4</div>
+                    </div>
+                </div>
+                <div class="example-code">
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"row
+                        g-3"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"col-4"</span><span class="tag-hl">&gt;</span>スポット1<span
+                        class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"col-4"</span><span class="tag-hl">&gt;</span>スポット2<span
+                        class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"col-4"</span><span class="tag-hl">&gt;</span>スポット3<span
+                        class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                </div>
             </div>
-            <div class="mb-3">
-              <label class="form-label">コメント</label>
-              <textarea class="form-control" rows="3" placeholder="このスポットの感想を書いてください..."></textarea>
+
+            <div class="example-block">
+                <div class="example-label">プレビュー <span class="tag">サイドバー + メイン</span></div>
+                <div class="example-preview grid-demo">
+                    <div class="row g-3">
+                        <div class="col-3">col-3<br>サイドバー</div>
+                        <div class="col-9">col-9（メインコンテンツ）</div>
+                    </div>
+                </div>
+                <div class="example-code">
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"row
+                        g-3"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"col-3"</span><span class="tag-hl">&gt;</span>カテゴリ一覧<span
+                        class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"col-9"</span><span class="tag-hl">&gt;</span>スポット一覧<span
+                        class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                </div>
             </div>
-            <button class="btn btn-primary">投稿する</button>
-          </div>
+
+            <div class="tip-box">
+                <strong>💡 覚え方：</strong> 12を割り切れる数で分割すると均等になる →
+                12÷3=<code>col-4</code>で3列、12÷4=<code>col-3</code>で4列、12÷2=<code>col-6</code>で2列
+            </div>
         </div>
-      </div>
-      <div class="example-code">
-<span class="comment-hl">&lt;!-- ログインユーザーのみ表示 --&gt;</span>
-<span class="tag-hl">&lt;div</span> <span class="attr-hl">th:if=</span><span class="val-hl">"${session.user != null}"</span> <span class="attr-hl">class=</span><span class="val-hl">"card"</span><span class="tag-hl">&gt;</span>
-  <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"card-body"</span><span class="tag-hl">&gt;</span>
-    <span class="tag-hl">&lt;h5</span> <span class="attr-hl">class=</span><span class="val-hl">"card-title"</span><span class="tag-hl">&gt;</span>レビューを投稿する<span class="tag-hl">&lt;/h5&gt;</span>
-    <span class="tag-hl">&lt;form</span> <span class="attr-hl">th:action=</span><span class="val-hl">"@{/spots/{id}/reviews(id=${spot.id})}"</span>
-          <span class="attr-hl">method=</span><span class="val-hl">"post"</span><span class="tag-hl">&gt;</span>
-      <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"mb-3"</span><span class="tag-hl">&gt;</span>
-        <span class="tag-hl">&lt;label</span> <span class="attr-hl">class=</span><span class="val-hl">"form-label"</span><span class="tag-hl">&gt;</span>評価<span class="tag-hl">&lt;/label&gt;</span>
-        <span class="tag-hl">&lt;select</span> <span class="attr-hl">name=</span><span class="val-hl">"rating"</span> <span class="attr-hl">class=</span><span class="val-hl">"form-select"</span><span class="tag-hl">&gt;</span>
-          <span class="tag-hl">&lt;option</span> <span class="attr-hl">value=</span><span class="val-hl">"5"</span><span class="tag-hl">&gt;</span>★★★★★<span class="tag-hl">&lt;/option&gt;</span>
-          ...
-        <span class="tag-hl">&lt;/select&gt;</span>
-      <span class="tag-hl">&lt;/div&gt;</span>
-      <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"mb-3"</span><span class="tag-hl">&gt;</span>
-        <span class="tag-hl">&lt;label</span> <span class="attr-hl">class=</span><span class="val-hl">"form-label"</span><span class="tag-hl">&gt;</span>コメント<span class="tag-hl">&lt;/label&gt;</span>
-        <span class="tag-hl">&lt;textarea</span> <span class="attr-hl">name=</span><span class="val-hl">"comment"</span> <span class="attr-hl">class=</span><span class="val-hl">"form-control"</span>
-                  <span class="attr-hl">rows=</span><span class="val-hl">"3"</span><span class="tag-hl">&gt;&lt;/textarea&gt;</span>
-      <span class="tag-hl">&lt;/div&gt;</span>
-      <span class="tag-hl">&lt;button</span> <span class="attr-hl">class=</span><span class="val-hl">"btn btn-primary"</span><span class="tag-hl">&gt;</span>投稿する<span class="tag-hl">&lt;/button&gt;</span>
-    <span class="tag-hl">&lt;/form&gt;</span>
-  <span class="tag-hl">&lt;/div&gt;</span>
-<span class="tag-hl">&lt;/div&gt;</span>
 
-<span class="comment-hl">&lt;!-- 非ログイン時 --&gt;</span>
-<span class="tag-hl">&lt;div</span> <span class="attr-hl">th:unless=</span><span class="val-hl">"${session.user != null}"</span> <span class="attr-hl">class=</span><span class="val-hl">"alert alert-info"</span><span class="tag-hl">&gt;</span>
-  レビューを投稿するには<span class="tag-hl">&lt;a</span> <span class="attr-hl">th:href=</span><span class="val-hl">"@{/login}"</span><span class="tag-hl">&gt;</span>ログイン<span class="tag-hl">&lt;/a&gt;</span>してください
-<span class="tag-hl">&lt;/div&gt;</span>
-      </div>
-    </div>
-  </div>
+        <!-- Grid Responsive -->
+        <div class="cheat-section" id="grid-responsive">
+            <h2><i class="bi bi-phone"></i> レスポンシブ対応</h2>
+            <p class="section-desc">画面サイズに応じてカラム数を変えられる。<code>col-{ブレークポイント}-{数字}</code> の形式</p>
 
-</div><!-- /main-content -->
+            <table class="class-table">
+                <thead>
+                    <tr>
+                        <th>接頭辞</th>
+                        <th>画面幅</th>
+                        <th>対象デバイス</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>col-</code>（なし）</td>
+                        <td>0px 〜</td>
+                        <td>全サイズ共通</td>
+                    </tr>
+                    <tr>
+                        <td><code>col-sm-</code></td>
+                        <td>576px 〜</td>
+                        <td>スマホ横向き</td>
+                    </tr>
+                    <tr>
+                        <td><code>col-md-</code></td>
+                        <td>768px 〜</td>
+                        <td>タブレット</td>
+                    </tr>
+                    <tr>
+                        <td><code>col-lg-</code></td>
+                        <td>992px 〜</td>
+                        <td>デスクトップ</td>
+                    </tr>
+                    <tr>
+                        <td><code>col-xl-</code></td>
+                        <td>1200px 〜</td>
+                        <td>大型モニター</td>
+                    </tr>
+                </tbody>
+            </table>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+            <div class="example-block">
+                <div class="example-label">プレビュー <span class="tag">スマホ1列→PC3列</span></div>
+                <div class="example-preview grid-demo">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">スポット1</div>
+                        <div class="col-12 col-md-4">スポット2</div>
+                        <div class="col-12 col-md-4">スポット3</div>
+                    </div>
+                </div>
+                <div class="example-code">
+                    <span class="comment-hl">&lt;!-- スマホ: 1列（col-12） → タブレット以上: 3列（col-md-4） --&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"row
+                        g-3"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"col-12
+                        col-md-4"</span><span class="tag-hl">&gt;</span>スポット1<span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"col-12
+                        col-md-4"</span><span class="tag-hl">&gt;</span>スポット2<span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"col-12
+                        col-md-4"</span><span class="tag-hl">&gt;</span>スポット3<span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                </div>
+            </div>
+
+            <div class="project-tip">
+                <strong>🏯 プロジェクトでの使い方：</strong> 観光スポット一覧ページで <code>col-12 col-md-6 col-lg-4</code>
+                とすれば、スマホ1列→タブレット2列→PC3列 になる
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════ -->
+        <!-- COMPONENTS -->
+        <!-- ════════════════════════════════════════════ -->
+
+        <!-- Card -->
+        <div class="cheat-section" id="card">
+            <h2><i class="bi bi-card-heading"></i> カード (Card)</h2>
+            <p class="section-desc">画像＋テキストをまとめて表示するのに最適。観光スポット一覧のメインパーツ</p>
+
+            <table class="class-table">
+                <thead>
+                    <tr>
+                        <th>クラス名</th>
+                        <th>役割</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>.card</code></td>
+                        <td>カードの外枠</td>
+                    </tr>
+                    <tr>
+                        <td><code>.card-img-top</code></td>
+                        <td>カード上部の画像</td>
+                    </tr>
+                    <tr>
+                        <td><code>.card-body</code></td>
+                        <td>テキスト部分の余白付きエリア</td>
+                    </tr>
+                    <tr>
+                        <td><code>.card-title</code></td>
+                        <td>カードのタイトル</td>
+                    </tr>
+                    <tr>
+                        <td><code>.card-text</code></td>
+                        <td>カードの説明文</td>
+                    </tr>
+                    <tr>
+                        <td><code>.card-footer</code></td>
+                        <td>カード下部のフッター</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="example-block">
+                <div class="example-label">プレビュー <span class="tag">基本カード</span></div>
+                <div class="example-preview">
+                    <div class="card" style="width: 280px;">
+                        <div
+                            style="height:140px;background:#dbeafe;display:flex;align-items:center;justify-content:center;color:#3b82f6;border-radius:6px 6px 0 0;">
+                            <i class="bi bi-image" style="font-size:32px;"></i> 画像エリア
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">老舗カフェ</h5>
+                            <p class="card-text">昭和レトロなカフェ。</p>
+                            <a href="#" class="btn btn-primary btn-sm">詳しく見る</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="example-code">
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"card"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;img</span> <span class="attr-hl">src=</span><span
+                        class="val-hl">"画像URL"</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"card-img-top"</span> <span class="attr-hl">alt=</span><span
+                        class="val-hl">"スポット名"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"card-body"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;h5</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"card-title"</span><span class="tag-hl">&gt;</span>スポット名<span
+                        class="tag-hl">&lt;/h5&gt;</span>
+                    <span class="tag-hl">&lt;p</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"card-text"</span><span class="tag-hl">&gt;</span>説明文<span
+                        class="tag-hl">&lt;/p&gt;</span>
+                    <span class="tag-hl">&lt;a</span> <span class="attr-hl">href=</span><span class="val-hl">"#"</span>
+                    <span class="attr-hl">class=</span><span class="val-hl">"btn btn-primary btn-sm"</span><span
+                        class="tag-hl">&gt;</span>詳しく見る<span class="tag-hl">&lt;/a&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                </div>
+            </div>
+
+            <div class="project-tip">
+                <strong>🏯 Thymeleafで使うとき：</strong>
+                <code>th:each="spot : ${spots}"</code> でループし、<code>th:text="${spot.name}"</code> で動的にデータを表示
+            </div>
+        </div>
+
+        <!-- Button -->
+        <div class="cheat-section" id="button">
+            <h2><i class="bi bi-hand-index"></i> ボタン (Button)</h2>
+            <p class="section-desc">色とサイズの組み合わせでバリエーションが作れる</p>
+
+            <h3>色のバリエーション</h3>
+            <div class="example-block">
+                <div class="example-preview">
+                    <button class="btn btn-primary me-2 mb-2">btn-primary</button>
+                    <button class="btn btn-secondary me-2 mb-2">btn-secondary</button>
+                    <button class="btn btn-success me-2 mb-2">btn-success</button>
+                    <button class="btn btn-danger me-2 mb-2">btn-danger</button>
+                    <button class="btn btn-warning me-2 mb-2">btn-warning</button>
+                    <button class="btn btn-info me-2 mb-2">btn-info</button>
+                    <button class="btn btn-outline-primary me-2 mb-2">outline-primary</button>
+                    <button class="btn btn-outline-danger me-2 mb-2">outline-danger</button>
+                </div>
+            </div>
+
+            <table class="class-table">
+                <thead>
+                    <tr>
+                        <th>クラス名</th>
+                        <th>見た目</th>
+                        <th>使いどころ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>.btn .btn-primary</code></td>
+                        <td>青い塗りつぶしボタン</td>
+                        <td>メインの操作（詳細を見る等）</td>
+                    </tr>
+                    <tr>
+                        <td><code>.btn .btn-danger</code></td>
+                        <td>赤いボタン</td>
+                        <td>削除、お気に入り解除</td>
+                    </tr>
+                    <tr>
+                        <td><code>.btn .btn-outline-*</code></td>
+                        <td>枠線のみのボタン</td>
+                        <td>サブの操作</td>
+                    </tr>
+                    <tr>
+                        <td><code>.btn-sm</code></td>
+                        <td>小さめボタン</td>
+                        <td>カード内のボタン</td>
+                    </tr>
+                    <tr>
+                        <td><code>.btn-lg</code></td>
+                        <td>大きめボタン</td>
+                        <td>目立たせたい操作</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="example-block">
+                <div class="example-label">サイズ比較</div>
+                <div class="example-preview">
+                    <button class="btn btn-primary btn-sm me-2">btn-sm（小）</button>
+                    <button class="btn btn-primary me-2">通常</button>
+                    <button class="btn btn-primary btn-lg me-2">btn-lg（大）</button>
+                </div>
+            </div>
+
+            <div class="project-tip">
+                <strong>🏯 プロジェクトでの使い分け：</strong>
+                お気に入り登録 → <code>btn-outline-danger</code>（♡）、検索 → <code>btn-primary</code>、削除 →
+                <code>btn-danger btn-sm</code>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div class="cheat-section" id="form">
+            <h2><i class="bi bi-input-cursor-text"></i> フォーム (Form)</h2>
+            <p class="section-desc">検索、ログイン、レビュー投稿に必須</p>
+
+            <table class="class-table">
+                <thead>
+                    <tr>
+                        <th>クラス名</th>
+                        <th>役割</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>.form-control</code></td>
+                        <td>テキスト入力欄のスタイル</td>
+                    </tr>
+                    <tr>
+                        <td><code>.form-select</code></td>
+                        <td>セレクトボックスのスタイル</td>
+                    </tr>
+                    <tr>
+                        <td><code>.form-label</code></td>
+                        <td>ラベル（入力欄の上の文字）</td>
+                    </tr>
+                    <tr>
+                        <td><code>.form-check</code></td>
+                        <td>チェックボックス/ラジオボタンの親</td>
+                    </tr>
+                    <tr>
+                        <td><code>.form-check-input</code></td>
+                        <td>チェックボックス/ラジオ本体</td>
+                    </tr>
+                    <tr>
+                        <td><code>.input-group</code></td>
+                        <td>入力欄＋ボタンを横並びにまとめる</td>
+                    </tr>
+                    <tr>
+                        <td><code>.form-control-sm</code></td>
+                        <td>小さめの入力欄</td>
+                    </tr>
+                    <tr>
+                        <td><code>.form-floating</code></td>
+                        <td>フローティングラベル（おしゃれ）</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="example-block">
+                <div class="example-label">プレビュー <span class="tag">基本フォーム</span></div>
+                <div class="example-preview">
+                    <div class="mb-3">
+                        <label class="form-label">キーワード</label>
+                        <input type="text" class="form-control" placeholder="例: カフェ、お寺、ラーメン">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">カテゴリ</label>
+                        <select class="form-select">
+                            <option>すべて</option>
+                            <option>グルメ</option>
+                            <option>観光</option>
+                            <option>ショッピング</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="example-code">
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"mb-3"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;label</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"form-label"</span><span class="tag-hl">&gt;</span>キーワード<span
+                        class="tag-hl">&lt;/label&gt;</span>
+                    <span class="tag-hl">&lt;input</span> <span class="attr-hl">type=</span><span
+                        class="val-hl">"text"</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"form-control"</span> <span class="attr-hl">placeholder=</span><span
+                        class="val-hl">"例: カフェ"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"mb-3"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;label</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"form-label"</span><span class="tag-hl">&gt;</span>カテゴリ<span
+                        class="tag-hl">&lt;/label&gt;</span>
+                    <span class="tag-hl">&lt;select</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"form-select"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;option&gt;</span>すべて<span class="tag-hl">&lt;/option&gt;</span>
+                    <span class="tag-hl">&lt;option&gt;</span>グルメ<span class="tag-hl">&lt;/option&gt;</span>
+                    <span class="tag-hl">&lt;/select&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                </div>
+            </div>
+
+            <div class="example-block">
+                <div class="example-label">プレビュー <span class="tag">検索バー（input-group）</span></div>
+                <div class="example-preview">
+                    <div class="input-group" style="max-width:400px;">
+                        <input type="text" class="form-control" placeholder="スポットを検索...">
+                        <button class="btn btn-primary"><i class="bi bi-search"></i> 検索</button>
+                    </div>
+                </div>
+                <div class="example-code">
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"input-group"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;input</span> <span class="attr-hl">type=</span><span
+                        class="val-hl">"text"</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"form-control"</span> <span class="attr-hl">placeholder=</span><span
+                        class="val-hl">"スポットを検索..."</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;button</span> <span class="attr-hl">class=</span><span class="val-hl">"btn
+                        btn-primary"</span><span class="tag-hl">&gt;</span>検索<span class="tag-hl">&lt;/button&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navbar -->
+        <div class="cheat-section" id="navbar">
+            <h2><i class="bi bi-list"></i> ナビバー (Navbar)</h2>
+            <p class="section-desc">ヘッダーのナビゲーション。スマホ時はハンバーガーメニューに自動変換される</p>
+
+            <table class="class-table">
+                <thead>
+                    <tr>
+                        <th>クラス名</th>
+                        <th>役割</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>.navbar</code></td>
+                        <td>ナビバーの基本</td>
+                    </tr>
+                    <tr>
+                        <td><code>.navbar-expand-lg</code></td>
+                        <td>992px未満でハンバーガーメニュー化</td>
+                    </tr>
+                    <tr>
+                        <td><code>.navbar-dark .bg-dark</code></td>
+                        <td>暗い背景＋白い文字</td>
+                    </tr>
+                    <tr>
+                        <td><code>.navbar-light .bg-light</code></td>
+                        <td>明るい背景＋暗い文字</td>
+                    </tr>
+                    <tr>
+                        <td><code>.navbar-brand</code></td>
+                        <td>サイト名・ロゴ</td>
+                    </tr>
+                    <tr>
+                        <td><code>.navbar-toggler</code></td>
+                        <td>ハンバーガーボタン</td>
+                    </tr>
+                    <tr>
+                        <td><code>.nav-link</code></td>
+                        <td>各メニューリンク</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="example-block">
+                <div class="example-label">プレビュー</div>
+                <div class="example-preview p-0">
+                    <nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded">
+                        <div class="container-fluid">
+                            <a class="navbar-brand" href="#">🏯 観光ナビ</a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#demoNav">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="demoNav">
+                                <ul class="navbar-nav me-auto">
+                                    <li class="nav-item"><a class="nav-link active" href="#">ホーム</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#">スポット一覧</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#">カテゴリ</a></li>
+                                </ul>
+                                <a href="#" class="btn btn-outline-light btn-sm">ログイン</a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+                <div class="example-code">
+                    <span class="tag-hl">&lt;nav</span> <span class="attr-hl">class=</span><span class="val-hl">"navbar
+                        navbar-expand-lg navbar-dark bg-dark"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"container-fluid"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;a</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"navbar-brand"</span> <span class="attr-hl">href=</span><span
+                        class="val-hl">"/"</span><span class="tag-hl">&gt;</span>🏯 観光ナビ<span
+                        class="tag-hl">&lt;/a&gt;</span>
+                    <span class="tag-hl">&lt;button</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"navbar-toggler"</span> <span class="attr-hl">data-bs-toggle=</span><span
+                        class="val-hl">"collapse"</span>
+                    <span class="attr-hl">data-bs-target=</span><span class="val-hl">"#mainNav"</span><span
+                        class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;span</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"navbar-toggler-icon"</span><span class="tag-hl">&gt;&lt;/span&gt;</span>
+                    <span class="tag-hl">&lt;/button&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"collapse navbar-collapse"</span> <span class="attr-hl">id=</span><span
+                        class="val-hl">"mainNav"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;ul</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"navbar-nav me-auto"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;li</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"nav-item"</span><span class="tag-hl">&gt;&lt;a</span> <span
+                        class="attr-hl">class=</span><span class="val-hl">"nav-link"</span> <span
+                        class="attr-hl">href=</span><span class="val-hl">"/spots"</span><span
+                        class="tag-hl">&gt;</span>スポット一覧<span class="tag-hl">&lt;/a&gt;&lt;/li&gt;</span>
+                    <span class="tag-hl">&lt;/ul&gt;</span>
+                    <span class="comment-hl">&lt;!-- Thymeleaf: ログイン状態で表示を切替 --&gt;</span>
+                    <span class="tag-hl">&lt;a</span> <span class="attr-hl">th:if=</span><span
+                        class="val-hl">"${session.user == null}"</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"btn btn-outline-light btn-sm"</span><span class="tag-hl">&gt;</span>ログイン<span
+                        class="tag-hl">&lt;/a&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;/nav&gt;</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Badge -->
+        <div class="cheat-section" id="badge">
+            <h2><i class="bi bi-tag"></i> バッジ (Badge)</h2>
+            <p class="section-desc">カテゴリタグや件数表示に便利</p>
+
+            <div class="example-block">
+                <div class="example-preview">
+                    <span class="badge bg-primary me-1">グルメ</span>
+                    <span class="badge bg-success me-1">観光</span>
+                    <span class="badge bg-warning text-dark me-1">ショッピング</span>
+                    <span class="badge bg-info me-1">カフェ</span>
+                    <span class="badge rounded-pill bg-danger me-1">♥ 12</span>
+                </div>
+                <div class="example-code">
+                    <span class="tag-hl">&lt;span</span> <span class="attr-hl">class=</span><span class="val-hl">"badge
+                        bg-primary"</span><span class="tag-hl">&gt;</span>グルメ<span class="tag-hl">&lt;/span&gt;</span>
+                    <span class="tag-hl">&lt;span</span> <span class="attr-hl">class=</span><span class="val-hl">"badge
+                        rounded-pill bg-danger"</span><span class="tag-hl">&gt;</span>♥ 12<span
+                        class="tag-hl">&lt;/span&gt;</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert -->
+        <div class="cheat-section" id="alert">
+            <h2><i class="bi bi-exclamation-triangle"></i> アラート (Alert)</h2>
+            <p class="section-desc">成功・エラーメッセージの表示に使う</p>
+
+            <div class="example-block">
+                <div class="example-preview">
+                    <div class="alert alert-success">✅ お気に入りに登録しました！</div>
+                    <div class="alert alert-danger">❌ ログインしてください。</div>
+                    <div class="alert alert-warning">⚠️ このスポットは現在休業中です。</div>
+                    <div class="alert alert-info">ℹ️ レビューは1スポットにつき1件まで投稿できます。</div>
+                </div>
+                <div class="example-code">
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"alert
+                        alert-success"</span><span class="tag-hl">&gt;</span>お気に入りに登録しました！<span
+                        class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"alert
+                        alert-danger"</span><span class="tag-hl">&gt;</span>ログインしてください。<span
+                        class="tag-hl">&lt;/div&gt;</span>
+
+                    <span class="comment-hl">&lt;!-- Thymeleafでフラッシュメッセージ表示 --&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">th:if=</span><span
+                        class="val-hl">"${message}"</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"alert alert-success"</span>
+                    <span class="attr-hl">th:text=</span><span class="val-hl">"${message}"</span><span
+                        class="tag-hl">&gt;&lt;/div&gt;</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="cheat-section" id="modal">
+            <h2><i class="bi bi-window-stack"></i> モーダル (Modal)</h2>
+            <p class="section-desc">ポップアップ的なダイアログ。確認や詳細表示に使える</p>
+
+            <div class="example-block">
+                <div class="example-preview">
+                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#demoModal">
+                        削除する（モーダルを開く）
+                    </button>
+                    <div class="modal fade" id="demoModal" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">確認</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">このレビューを削除しますか？</div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">キャンセル</button>
+                                    <button class="btn btn-danger btn-sm">削除する</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="example-code">
+                    <span class="comment-hl">&lt;!-- ① トリガーボタン --&gt;</span>
+                    <span class="tag-hl">&lt;button</span> <span class="attr-hl">data-bs-toggle=</span><span
+                        class="val-hl">"modal"</span> <span class="attr-hl">data-bs-target=</span><span
+                        class="val-hl">"#deleteModal"</span><span class="tag-hl">&gt;</span>削除<span
+                        class="tag-hl">&lt;/button&gt;</span>
+
+                    <span class="comment-hl">&lt;!-- ② モーダル本体 --&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"modal
+                        fade"</span> <span class="attr-hl">id=</span><span class="val-hl">"deleteModal"</span><span
+                        class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"modal-dialog"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"modal-content"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"modal-header"</span><span class="tag-hl">&gt;</span> タイトル <span
+                        class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"modal-body"</span><span class="tag-hl">&gt;</span> 本文 <span
+                        class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"modal-footer"</span><span class="tag-hl">&gt;</span> ボタン <span
+                        class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="cheat-section" id="pagination">
+            <h2><i class="bi bi-123"></i> ページネーション</h2>
+            <p class="section-desc">スポット一覧のページ切り替えに使う</p>
+
+            <div class="example-block">
+                <div class="example-preview">
+                    <nav>
+                        <ul class="pagination pagination-sm">
+                            <li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="example-code">
+                    <span class="tag-hl">&lt;ul</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"pagination"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;li</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"page-item disabled"</span><span class="tag-hl">&gt;&lt;a</span> <span
+                        class="attr-hl">class=</span><span class="val-hl">"page-link"</span><span
+                        class="tag-hl">&gt;</span>&amp;laquo;<span class="tag-hl">&lt;/a&gt;&lt;/li&gt;</span>
+                    <span class="tag-hl">&lt;li</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"page-item active"</span><span class="tag-hl">&gt;&lt;a</span> <span
+                        class="attr-hl">class=</span><span class="val-hl">"page-link"</span><span
+                        class="tag-hl">&gt;</span>1<span class="tag-hl">&lt;/a&gt;&lt;/li&gt;</span>
+                    <span class="tag-hl">&lt;li</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"page-item"</span><span class="tag-hl">&gt;&lt;a</span> <span
+                        class="attr-hl">class=</span><span class="val-hl">"page-link"</span><span
+                        class="tag-hl">&gt;</span>2<span class="tag-hl">&lt;/a&gt;&lt;/li&gt;</span>
+                    <span class="tag-hl">&lt;/ul&gt;</span>
+
+                    <span class="comment-hl">&lt;!-- active = 現在のページ, disabled = クリック不可 --&gt;</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════ -->
+        <!-- UTILITIES -->
+        <!-- ════════════════════════════════════════════ -->
+
+        <!-- Text -->
+        <div class="cheat-section" id="text">
+            <h2><i class="bi bi-fonts"></i> テキスト</h2>
+            <p class="section-desc">文字サイズ・太さ・配置を手軽に変更</p>
+
+            <table class="class-table">
+                <thead>
+                    <tr>
+                        <th>クラス名</th>
+                        <th>効果</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>.fs-1</code> 〜 <code>.fs-6</code></td>
+                        <td>フォントサイズ（1が最大、6が最小）</td>
+                    </tr>
+                    <tr>
+                        <td><code>.fw-bold</code></td>
+                        <td>太字</td>
+                    </tr>
+                    <tr>
+                        <td><code>.fw-light</code></td>
+                        <td>細い文字</td>
+                    </tr>
+                    <tr>
+                        <td><code>.text-center</code></td>
+                        <td>中央揃え</td>
+                    </tr>
+                    <tr>
+                        <td><code>.text-end</code></td>
+                        <td>右揃え</td>
+                    </tr>
+                    <tr>
+                        <td><code>.text-truncate</code></td>
+                        <td>はみ出す文字を「...」で省略</td>
+                    </tr>
+                    <tr>
+                        <td><code>.text-decoration-none</code></td>
+                        <td>下線を消す（リンクに便利）</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="example-block">
+                <div class="example-preview">
+                    <p class="fs-3 fw-bold mb-1">fs-3 fw-bold（大きく太く）</p>
+                    <p class="fs-5 fw-light mb-1">fs-5 fw-light（やや小さく細く）</p>
+                    <p class="text-center mb-1">text-center（中央揃え）</p>
+                    <p class="text-truncate mb-0" style="max-width:250px;">text-truncate: これはとても長いテキストですが途中で切れます</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Color -->
+        <div class="cheat-section" id="color">
+            <h2><i class="bi bi-palette"></i> 色（テキスト・背景）</h2>
+            <p class="section-desc"><code>text-*</code> で文字色、<code>bg-*</code> で背景色を指定</p>
+
+            <div class="example-block">
+                <div class="example-label">テキスト色</div>
+                <div class="example-preview">
+                    <span class="text-primary fw-bold me-3">text-primary</span>
+                    <span class="text-success fw-bold me-3">text-success</span>
+                    <span class="text-danger fw-bold me-3">text-danger</span>
+                    <span class="text-warning fw-bold me-3">text-warning</span>
+                    <span class="text-info fw-bold me-3">text-info</span>
+                    <span class="text-muted me-3">text-muted</span>
+                </div>
+            </div>
+
+            <div class="example-block">
+                <div class="example-label">背景色</div>
+                <div class="example-preview">
+                    <span class="bg-primary text-white p-2 rounded me-2">bg-primary</span>
+                    <span class="bg-success text-white p-2 rounded me-2">bg-success</span>
+                    <span class="bg-danger text-white p-2 rounded me-2">bg-danger</span>
+                    <span class="bg-warning p-2 rounded me-2">bg-warning</span>
+                    <span class="bg-light p-2 rounded me-2">bg-light</span>
+                    <span class="bg-dark text-white p-2 rounded me-2">bg-dark</span>
+                </div>
+            </div>
+
+            <table class="class-table">
+                <thead>
+                    <tr>
+                        <th>色名</th>
+                        <th>用途の目安</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>primary</code>（青）</td>
+                        <td>メインの操作、リンク</td>
+                    </tr>
+                    <tr>
+                        <td><code>success</code>（緑）</td>
+                        <td>成功メッセージ</td>
+                    </tr>
+                    <tr>
+                        <td><code>danger</code>（赤）</td>
+                        <td>削除、エラー、お気に入り♥</td>
+                    </tr>
+                    <tr>
+                        <td><code>warning</code>（黄）</td>
+                        <td>注意、★評価</td>
+                    </tr>
+                    <tr>
+                        <td><code>info</code>（水色）</td>
+                        <td>情報、ヒント</td>
+                    </tr>
+                    <tr>
+                        <td><code>muted</code>（グレー）</td>
+                        <td>補足テキスト、日付表示</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Spacing -->
+        <div class="cheat-section" id="spacing">
+            <h2><i class="bi bi-arrows-expand"></i> 余白 (Margin / Padding)</h2>
+            <p class="section-desc">最も頻繁に使うユーティリティ。<code>{種類}{方向}-{サイズ}</code> の形式</p>
+
+            <table class="class-table">
+                <thead>
+                    <tr>
+                        <th>記号</th>
+                        <th>意味</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>m</code></td>
+                        <td>margin（外側の余白）</td>
+                    </tr>
+                    <tr>
+                        <td><code>p</code></td>
+                        <td>padding（内側の余白）</td>
+                    </tr>
+                    <tr>
+                        <td><code>t</code></td>
+                        <td>top（上）</td>
+                    </tr>
+                    <tr>
+                        <td><code>b</code></td>
+                        <td>bottom（下）</td>
+                    </tr>
+                    <tr>
+                        <td><code>s</code></td>
+                        <td>start＝左</td>
+                    </tr>
+                    <tr>
+                        <td><code>e</code></td>
+                        <td>end＝右</td>
+                    </tr>
+                    <tr>
+                        <td><code>x</code></td>
+                        <td>左右両方</td>
+                    </tr>
+                    <tr>
+                        <td><code>y</code></td>
+                        <td>上下両方</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="class-table">
+                <thead>
+                    <tr>
+                        <th>サイズ</th>
+                        <th>実際の値</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>0</code></td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><code>1</code></td>
+                        <td>0.25rem（4px）</td>
+                    </tr>
+                    <tr>
+                        <td><code>2</code></td>
+                        <td>0.5rem（8px）</td>
+                    </tr>
+                    <tr>
+                        <td><code>3</code></td>
+                        <td>1rem（16px）</td>
+                    </tr>
+                    <tr>
+                        <td><code>4</code></td>
+                        <td>1.5rem（24px）</td>
+                    </tr>
+                    <tr>
+                        <td><code>5</code></td>
+                        <td>3rem（48px）</td>
+                    </tr>
+                    <tr>
+                        <td><code>auto</code></td>
+                        <td>自動（中央寄せに使う）</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="example-block">
+                <div class="example-label">よく使う組み合わせ</div>
+                <div class="example-code">
+                    <span class="comment-hl">&lt;!-- 下に余白16px --&gt;</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"mb-3"</span>
+                    <span class="comment-hl">&lt;!-- 右に余白8px --&gt;</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"me-2"</span>
+                    <span class="comment-hl">&lt;!-- 上下に余白24px --&gt;</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"my-4"</span>
+                    <span class="comment-hl">&lt;!-- 内側全方向16px --&gt;</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"p-3"</span>
+                    <span class="comment-hl">&lt;!-- 左右中央揃え --&gt;</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"mx-auto"</span>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 超頻出：</strong> <code>mb-3</code>（下にマージン16px）は最もよく使うクラスの1つ。要素を縦に並べるとき、ほぼ毎回使う
+            </div>
+        </div>
+
+        <!-- Display -->
+        <div class="cheat-section" id="display">
+            <h2><i class="bi bi-eye"></i> 表示・非表示 (Display)</h2>
+            <p class="section-desc">要素の表示/非表示やレスポンシブ時の出し分け</p>
+
+            <table class="class-table">
+                <thead>
+                    <tr>
+                        <th>クラス名</th>
+                        <th>効果</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>.d-none</code></td>
+                        <td>完全に非表示</td>
+                    </tr>
+                    <tr>
+                        <td><code>.d-block</code></td>
+                        <td>ブロック表示</td>
+                    </tr>
+                    <tr>
+                        <td><code>.d-flex</code></td>
+                        <td>Flex表示（次のFlexセクション参照）</td>
+                    </tr>
+                    <tr>
+                        <td><code>.d-inline</code></td>
+                        <td>インライン表示</td>
+                    </tr>
+                    <tr>
+                        <td><code>.d-none .d-md-block</code></td>
+                        <td>スマホで非表示→タブレット以上で表示</td>
+                    </tr>
+                    <tr>
+                        <td><code>.d-md-none</code></td>
+                        <td>タブレット以上で非表示</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="project-tip">
+                <strong>🏯 プロジェクトでの使い方：</strong>
+                <code>d-none d-md-block</code> でPC用のサイドバーをスマホでは隠す。Thymeleafの <code>th:if</code>
+                と組み合わせると、「ログインユーザーにだけ表示」も簡単にできる
+            </div>
+        </div>
+
+        <!-- Flex -->
+        <div class="cheat-section" id="flex">
+            <h2><i class="bi bi-distribute-horizontal"></i> Flexbox</h2>
+            <p class="section-desc">要素の横並び・中央揃え・均等配置を簡単に実現</p>
+
+            <table class="class-table">
+                <thead>
+                    <tr>
+                        <th>クラス名</th>
+                        <th>効果</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>.d-flex</code></td>
+                        <td>Flexコンテナにする</td>
+                    </tr>
+                    <tr>
+                        <td><code>.justify-content-between</code></td>
+                        <td>両端に寄せる（間にスペース）</td>
+                    </tr>
+                    <tr>
+                        <td><code>.justify-content-center</code></td>
+                        <td>中央揃え</td>
+                    </tr>
+                    <tr>
+                        <td><code>.align-items-center</code></td>
+                        <td>縦方向の中央揃え</td>
+                    </tr>
+                    <tr>
+                        <td><code>.gap-2</code></td>
+                        <td>子要素間の隙間（8px）</td>
+                    </tr>
+                    <tr>
+                        <td><code>.flex-wrap</code></td>
+                        <td>折り返し可能にする</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="example-block">
+                <div class="example-label">プレビュー <span class="tag">両端寄せ + 縦中央</span></div>
+                <div class="example-preview">
+                    <div class="d-flex justify-content-between align-items-center p-2"
+                        style="background:#e8e4de;border-radius:8px;">
+                        <span class="fw-bold">カフェ巡り</span>
+                        <span class="badge bg-danger">♥ お気に入り</span>
+                    </div>
+                </div>
+                <div class="example-code">
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"d-flex
+                        justify-content-between align-items-center"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;span&gt;</span>スポット名<span class="tag-hl">&lt;/span&gt;</span>
+                    <span class="tag-hl">&lt;span</span> <span class="attr-hl">class=</span><span class="val-hl">"badge
+                        bg-danger"</span><span class="tag-hl">&gt;</span>♥ お気に入り<span
+                        class="tag-hl">&lt;/span&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Border & Shadow -->
+        <div class="cheat-section" id="border-radius">
+            <h2><i class="bi bi-square"></i> 角丸・影・ボーダー</h2>
+            <p class="section-desc">カードやボタンの見た目を微調整</p>
+
+            <table class="class-table">
+                <thead>
+                    <tr>
+                        <th>クラス名</th>
+                        <th>効果</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>.rounded</code></td>
+                        <td>角丸（小さめ）</td>
+                    </tr>
+                    <tr>
+                        <td><code>.rounded-3</code></td>
+                        <td>角丸（やや大きめ）</td>
+                    </tr>
+                    <tr>
+                        <td><code>.rounded-circle</code></td>
+                        <td>正円（アバター画像に）</td>
+                    </tr>
+                    <tr>
+                        <td><code>.rounded-pill</code></td>
+                        <td>丸薬型（タグやバッジに）</td>
+                    </tr>
+                    <tr>
+                        <td><code>.shadow-sm</code></td>
+                        <td>薄い影</td>
+                    </tr>
+                    <tr>
+                        <td><code>.shadow</code></td>
+                        <td>標準の影</td>
+                    </tr>
+                    <tr>
+                        <td><code>.border</code></td>
+                        <td>枠線を付ける</td>
+                    </tr>
+                    <tr>
+                        <td><code>.border-0</code></td>
+                        <td>枠線を消す</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="example-block">
+                <div class="example-preview d-flex gap-3 align-items-center flex-wrap">
+                    <div class="bg-primary text-white p-3 rounded">rounded</div>
+                    <div class="bg-primary text-white p-3 rounded-3">rounded-3</div>
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                        style="width:60px;height:60px;">円</div>
+                    <div class="bg-light p-3 shadow-sm rounded">shadow-sm</div>
+                    <div class="bg-light p-3 shadow rounded">shadow</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════ -->
+        <!-- PROJECT TEMPLATES -->
+        <!-- ════════════════════════════════════════════ -->
+
+        <h2 class="fs-4 fw-900 mt-5 mb-3" style="color:var(--accent);">
+            <i class="bi bi-lightning-charge"></i> 実践テンプレート集
+        </h2>
+        <p class="text-muted mb-4" style="font-size:14px;">観光サイトですぐ使えるThymeleaf + Bootstrapのテンプレート例</p>
+
+        <!-- Template: Spot Card -->
+        <div class="cheat-section" id="tpl-spotcard">
+            <h2><i class="bi bi-geo-alt"></i> 観光スポットカード一覧</h2>
+            <p class="section-desc">spotsテーブルのデータをカードで表示するテンプレート</p>
+
+            <div class="example-block">
+                <div class="example-label">プレビュー</div>
+                <div class="example-preview">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="card h-100 shadow-sm">
+                                <div
+                                    style="height:160px;background:linear-gradient(135deg,#dbeafe,#bfdbfe);display:flex;align-items:center;justify-content:center;border-radius:6px 6px 0 0;">
+                                    <i class="bi bi-camera" style="font-size:28px;color:#3b82f6;"></i>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="card-title mb-0 fs-6 fw-bold">商店街</h5>
+                                        <span class="badge bg-success">ショッピング</span>
+                                    </div>
+                                    <p class="card-text text-muted" style="font-size:13px;">大阪を代表する商店街。約600mのアーケード...
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-warning">★★★★☆ <small class="text-muted">4.2</small></span>
+                                        <a href="#" class="btn btn-primary btn-sm">詳細</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="card h-100 shadow-sm">
+                                <div
+                                    style="height:160px;background:linear-gradient(135deg,#fef3c7,#fde68a);display:flex;align-items:center;justify-content:center;border-radius:6px 6px 0 0;">
+                                    <i class="bi bi-camera" style="font-size:28px;color:#f59e0b;"></i>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="card-title mb-0 fs-6 fw-bold">自家製麺 うどん屋</h5>
+                                        <span class="badge bg-primary">グルメ</span>
+                                    </div>
+                                    <p class="card-text text-muted" style="font-size:13px;">もちもちの自家製麺が自慢のうどん専門店...</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-warning">★★★★★ <small class="text-muted">4.8</small></span>
+                                        <a href="#" class="btn btn-primary btn-sm">詳細</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="example-code">
+                    <span class="comment-hl">&lt;!-- スポット一覧（Thymeleaf + Bootstrap） --&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"row
+                        g-3"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">th:each=</span><span class="val-hl">"spot
+                        : ${spots}"</span>
+                    <span class="attr-hl">class=</span><span class="val-hl">"col-12 col-md-6 col-lg-4"</span><span
+                        class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"card
+                        h-100 shadow-sm"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;img</span> <span class="attr-hl">th:src=</span><span
+                        class="val-hl">"${spot.imageUrl}"</span>
+                    <span class="attr-hl">class=</span><span class="val-hl">"card-img-top"</span> <span
+                        class="attr-hl">alt=</span><span class="val-hl">"スポット画像"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"card-body"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"d-flex
+                        justify-content-between align-items-start mb-2"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;h5</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"card-title fs-6 fw-bold"</span>
+                    <span class="attr-hl">th:text=</span><span class="val-hl">"${spot.name}"</span><span
+                        class="tag-hl">&gt;</span>スポット名<span class="tag-hl">&lt;/h5&gt;</span>
+                    <span class="tag-hl">&lt;span</span> <span class="attr-hl">class=</span><span class="val-hl">"badge
+                        bg-primary"</span>
+                    <span class="attr-hl">th:text=</span><span class="val-hl">"${spot.category.name}"</span><span
+                        class="tag-hl">&gt;</span>カテゴリ<span class="tag-hl">&lt;/span&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;p</span> <span class="attr-hl">class=</span><span class="val-hl">"card-text
+                        text-muted"</span>
+                    <span class="attr-hl">th:text=</span><span class="val-hl">"${spot.description}"</span><span
+                        class="tag-hl">&gt;</span>説明<span class="tag-hl">&lt;/p&gt;</span>
+                    <span class="tag-hl">&lt;a</span> <span class="attr-hl">th:href=</span><span
+                        class="val-hl">"@{/spots/{id}(id=${spot.id})}"</span>
+                    <span class="attr-hl">class=</span><span class="val-hl">"btn btn-primary btn-sm"</span><span
+                        class="tag-hl">&gt;</span>詳しく見る<span class="tag-hl">&lt;/a&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template: Search -->
+        <div class="cheat-section" id="tpl-search">
+            <h2><i class="bi bi-search"></i> 検索フォーム</h2>
+            <p class="section-desc">キーワード＋カテゴリで絞り込むフォーム</p>
+
+            <div class="example-block">
+                <div class="example-preview">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-12 col-md-5">
+                            <label class="form-label fw-bold" style="font-size:13px;">キーワード</label>
+                            <input type="text" class="form-control" placeholder="スポット名で検索...">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label fw-bold" style="font-size:13px;">カテゴリ</label>
+                            <select class="form-select">
+                                <option>すべて</option>
+                                <option>グルメ</option>
+                                <option>観光</option>
+                                <option>ショッピング</option>
+                                <option>カフェ</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <button class="btn btn-primary w-100"><i class="bi bi-search"></i> 検索</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="example-code">
+                    <span class="tag-hl">&lt;form</span> <span class="attr-hl">th:action=</span><span
+                        class="val-hl">"@{/spots}"</span> <span class="attr-hl">method=</span><span
+                        class="val-hl">"get"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"row g-2
+                        align-items-end"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"col-12
+                        col-md-5"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;label</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"form-label"</span><span class="tag-hl">&gt;</span>キーワード<span
+                        class="tag-hl">&lt;/label&gt;</span>
+                    <span class="tag-hl">&lt;input</span> <span class="attr-hl">type=</span><span
+                        class="val-hl">"text"</span> <span class="attr-hl">name=</span><span
+                        class="val-hl">"keyword"</span>
+                    <span class="attr-hl">class=</span><span class="val-hl">"form-control"</span>
+                    <span class="attr-hl">th:value=</span><span class="val-hl">"${keyword}"</span><span
+                        class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"col-12
+                        col-md-4"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;label</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"form-label"</span><span class="tag-hl">&gt;</span>カテゴリ<span
+                        class="tag-hl">&lt;/label&gt;</span>
+                    <span class="tag-hl">&lt;select</span> <span class="attr-hl">name=</span><span
+                        class="val-hl">"categoryId"</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"form-select"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;option</span> <span class="attr-hl">value=</span><span
+                        class="val-hl">""</span><span class="tag-hl">&gt;</span>すべて<span
+                        class="tag-hl">&lt;/option&gt;</span>
+                    <span class="tag-hl">&lt;option</span> <span class="attr-hl">th:each=</span><span
+                        class="val-hl">"cat : ${categories}"</span>
+                    <span class="attr-hl">th:value=</span><span class="val-hl">"${cat.id}"</span>
+                    <span class="attr-hl">th:text=</span><span class="val-hl">"${cat.name}"</span><span
+                        class="tag-hl">&gt;&lt;/option&gt;</span>
+                    <span class="tag-hl">&lt;/select&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span class="val-hl">"col-12
+                        col-md-3"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;button</span> <span class="attr-hl">class=</span><span class="val-hl">"btn
+                        btn-primary w-100"</span><span class="tag-hl">&gt;</span>検索<span
+                        class="tag-hl">&lt;/button&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;/form&gt;</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template: Review Form -->
+        <div class="cheat-section" id="tpl-review">
+            <h2><i class="bi bi-chat-left-text"></i> レビュー投稿フォーム</h2>
+            <p class="section-desc">ログインユーザーがレビューを投稿するフォーム</p>
+
+            <div class="example-block">
+                <div class="example-preview">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title fs-6 fw-bold mb-3">レビューを投稿する</h5>
+                            <div class="mb-3">
+                                <label class="form-label">評価</label>
+                                <select class="form-select" style="max-width:160px;">
+                                    <option>★★★★★ (5)</option>
+                                    <option>★★★★☆ (4)</option>
+                                    <option>★★★☆☆ (3)</option>
+                                    <option>★★☆☆☆ (2)</option>
+                                    <option>★☆☆☆☆ (1)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">コメント</label>
+                                <textarea class="form-control" rows="3" placeholder="このスポットの感想を書いてください..."></textarea>
+                            </div>
+                            <button class="btn btn-primary">投稿する</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="example-code">
+                    <span class="comment-hl">&lt;!-- ログインユーザーのみ表示 --&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">th:if=</span><span
+                        class="val-hl">"${session.user != null}"</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"card"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"card-body"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;h5</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"card-title"</span><span class="tag-hl">&gt;</span>レビューを投稿する<span
+                        class="tag-hl">&lt;/h5&gt;</span>
+                    <span class="tag-hl">&lt;form</span> <span class="attr-hl">th:action=</span><span
+                        class="val-hl">"@{/spots/{id}/reviews(id=${spot.id})}"</span>
+                    <span class="attr-hl">method=</span><span class="val-hl">"post"</span><span
+                        class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"mb-3"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;label</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"form-label"</span><span class="tag-hl">&gt;</span>評価<span
+                        class="tag-hl">&lt;/label&gt;</span>
+                    <span class="tag-hl">&lt;select</span> <span class="attr-hl">name=</span><span
+                        class="val-hl">"rating"</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"form-select"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;option</span> <span class="attr-hl">value=</span><span
+                        class="val-hl">"5"</span><span class="tag-hl">&gt;</span>★★★★★<span
+                        class="tag-hl">&lt;/option&gt;</span>
+                    ...
+                    <span class="tag-hl">&lt;/select&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"mb-3"</span><span class="tag-hl">&gt;</span>
+                    <span class="tag-hl">&lt;label</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"form-label"</span><span class="tag-hl">&gt;</span>コメント<span
+                        class="tag-hl">&lt;/label&gt;</span>
+                    <span class="tag-hl">&lt;textarea</span> <span class="attr-hl">name=</span><span
+                        class="val-hl">"comment"</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"form-control"</span>
+                    <span class="attr-hl">rows=</span><span class="val-hl">"3"</span><span
+                        class="tag-hl">&gt;&lt;/textarea&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;button</span> <span class="attr-hl">class=</span><span class="val-hl">"btn
+                        btn-primary"</span><span class="tag-hl">&gt;</span>投稿する<span
+                        class="tag-hl">&lt;/button&gt;</span>
+                    <span class="tag-hl">&lt;/form&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                    <span class="tag-hl">&lt;/div&gt;</span>
+
+                    <span class="comment-hl">&lt;!-- 非ログイン時 --&gt;</span>
+                    <span class="tag-hl">&lt;div</span> <span class="attr-hl">th:unless=</span><span
+                        class="val-hl">"${session.user != null}"</span> <span class="attr-hl">class=</span><span
+                        class="val-hl">"alert alert-info"</span><span class="tag-hl">&gt;</span>
+                    レビューを投稿するには<span class="tag-hl">&lt;a</span> <span class="attr-hl">th:href=</span><span
+                        class="val-hl">"@{/login}"</span><span class="tag-hl">&gt;</span>ログイン<span
+                        class="tag-hl">&lt;/a&gt;</span>してください
+                    <span class="tag-hl">&lt;/div&gt;</span>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /main-content -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
