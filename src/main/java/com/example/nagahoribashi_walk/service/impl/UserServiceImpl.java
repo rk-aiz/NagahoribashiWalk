@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> getPage(Pageable pageable) {
         long total = userMapper.count();
-        List<User> users = userMapper.findPage(pageable.getOffset(), pageable.getPageSize());
+        List<User> users = userMapper.findAll(pageable.getOffset(), pageable.getPageSize());
         return new PageImpl<>(users, pageable, total);
     }
 }

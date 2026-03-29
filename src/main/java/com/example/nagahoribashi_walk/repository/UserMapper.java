@@ -38,7 +38,7 @@ public interface UserMapper {
     /**
      * ページネーション付きでユーザー一覧を取得する
      */
-    List<User> findPage(@Param("offset") long offset, @Param("limit") int limit);
+    List<User> findAll(@Param("offset") long offset, @Param("limit") int limit);
 
     /**
      * ユーザー数をカウントする
