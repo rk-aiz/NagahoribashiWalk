@@ -5,6 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * ホーム(トップ画面)用のコントローラー
+ * @author 海津
+ */
 @Controller
 @RequiredArgsConstructor
 public class HomeController {

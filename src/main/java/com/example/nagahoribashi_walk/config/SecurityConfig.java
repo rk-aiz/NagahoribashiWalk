@@ -9,6 +9,11 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import lombok.RequiredArgsConstructor;
 
+
+/**
+ * Spring Securityの設定
+ * @author 海津
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -24,6 +29,8 @@ public class SecurityConfig {
                         .requestMatchers("/", "/spot/**", "/login", "/register", "/register/**", "/error", "/error/**").permitAll()
                         // 静的リソースはアクセスは認証を必要としない
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        // アップロードリソースは認証を必要としない
+                        .requestMatchers("/uploads/**").permitAll()
                         // 【管理者権限設定】 url : /admin/**は管理者しかアクセスできない
                         .requestMatchers("/admin", "/admin/**").hasAuthority("ADMIN")
                         // ★その他のリクエストはすべて認証が必要
