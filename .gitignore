@@ -37,7 +37,7 @@ out/
 .vscode/
 
 ### files ###
-uploads/
+/uploads/
 
 # Eclipse
 .metadata/
