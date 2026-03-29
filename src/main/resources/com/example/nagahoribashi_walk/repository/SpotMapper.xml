@@ -6,7 +6,13 @@
     <select id="findAll" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
         SELECT id, spot_name, sub_category_id, website_url, gmap_url, address, business_hours, closed_days, estimated_budget, keywords, details, deleted_at, created_at, updated_at
         FROM spots
+        ORDER BY updated_at DESC
         LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- スポット数のカウント -->
+    <select id="count" resultType="long">
+        SELECT count(*) FROM spots
     </select>
 
 </mapper>

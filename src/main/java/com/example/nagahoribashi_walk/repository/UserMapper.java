@@ -21,6 +21,11 @@ public interface UserMapper {
     User findByUsername(String username);
 
     /**
+     * ユーザー名から、UserProfileインスタンスを取得する
+     */
+    // UserProfile findProfileByUsername(String username);
+
+    /**
      * Userを新規保存する
      */
     void insert(User user);

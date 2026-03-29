@@ -5,6 +5,11 @@ import org.springframework.data.domain.Pageable;
 
 import com.example.nagahoribashi_walk.dto.SpotSummary;
 
+/**
+ * スポット関連サービスのインターフェース
+ * 
+ * @author 海津
+ */
 public interface SpotService {
 
     Page<SpotSummary> getPage(Pageable pageable);

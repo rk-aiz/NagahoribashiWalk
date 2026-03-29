@@ -15,6 +15,7 @@ import com.example.nagahoribashi_walk.dto.SpotSummary;
 @Mapper
 public interface SpotMapper {
 
+    /** ページネーション付きでスポット一覧を取得する */
     List<SpotSummary> findAll(@Param("offset") long offset, @Param("limit") int limit);
 
     // findById
@@ -23,7 +24,9 @@ public interface SpotMapper {
 
     // findBySubCategoryId
 
-    // searchByKeywords findImagesBySpotId
+    // searchByKeywords
+
+    // findImagesBySpotId
 
     // findAllForAdmin
 
@@ -37,4 +40,6 @@ public interface SpotMapper {
 
     // deleteImage
 
+    /** スポット数をカウントする */
+    long count();
 }
