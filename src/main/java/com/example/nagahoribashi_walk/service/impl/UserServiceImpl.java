@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * ユーザー関連サービスの実装クラス
+ * 
  * @author 海津
  */
 @Service
@@ -49,20 +50,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> getWithPaging(Pageable pageable) {
-
-        // 総件数の取得
+    public Page<User> getPage(Pageable pageable) {
         long total = userMapper.count();
-
-        List<User> users;
-
-        if (total > 0) {
-            // ページング指定で取得
-            users = userMapper.findWithPaging(pageable.getOffset(), pageable.getPageSize());
-        } else {
-            users = Collections.emptyList();
-        }
-
+        List<User> users = userMapper.findPage(pageable.getOffset(), pageable.getPageSize());
         return new PageImpl<>(users, pageable, total);
     }
 }

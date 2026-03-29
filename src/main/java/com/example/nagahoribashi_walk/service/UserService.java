@@ -39,6 +39,6 @@ public interface UserService {
     /**
      * ページネーション付きでユーザー一覧を取得する
      */
-	Page<User> getWithPaging(Pageable pageable);
+	Page<User> getPage(Pageable pageable);
 
 }
