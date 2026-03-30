@@ -6,7 +6,7 @@ import lombok.Data;
  * @author 池田
  */
 @Data
-public class SpotPhotoDTO {
+public class SpotPhotoDTO	 {
 	
 	//画像ID
 	//sp.id
