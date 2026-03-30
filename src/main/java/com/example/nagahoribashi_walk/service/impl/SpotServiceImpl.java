@@ -41,7 +41,4 @@ public class SpotServiceImpl implements SpotService {
         // Page<T>インスタンスに詰めて返す
         return new PageImpl<>(spots, pageable, total);
     }
-
-	
-
 }
