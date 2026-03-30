@@ -41,7 +41,30 @@ public class SpotServiceImpl implements SpotService {
 		// Page<T>インスタンスに詰めて返す
 		return new PageImpl<>(spots, pageable, total);
 	}
+	
+	/**
+	 * ページとキーワードに対応したスポット一覧を返す
+	 */
+	@Override
+	public Page<SpotSummary> searchByKeywords(String keyword, Pageable pageable) {
+		
+		//空文字でもLike検索ではなく一覧表示になるように
+		if (keyword == null || keyword.isBlank()) {
+	        return getPage(pageable);
+	    }
 
+		long total = spotMapper.countByKeywords(keyword);
+
+		List<SpotSummary> spots =
+				spotMapper.searchByKeywords(
+						keyword,
+						pageable.getOffset(),
+						pageable.getPageSize()
+						);
+
+		return new PageImpl<>(spots, pageable, total);
+	}
+	
 	//トップページおすすめ３件表示用
 	@Override
 	public List<SpotSummary> getRecommendedSpots() {

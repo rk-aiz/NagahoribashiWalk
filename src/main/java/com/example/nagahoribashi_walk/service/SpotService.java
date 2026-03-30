@@ -15,6 +15,9 @@ import com.example.nagahoribashi_walk.dto.SpotSummary;
 public interface SpotService {
 
     Page<SpotSummary> getPage(Pageable pageable);
+    
+    Page<SpotSummary> searchByKeywords(String keyword, Pageable pageable);
 
     List<SpotSummary> getRecommendedSpots();
+    
 }

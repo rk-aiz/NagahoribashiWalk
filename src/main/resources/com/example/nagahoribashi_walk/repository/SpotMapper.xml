@@ -30,6 +30,41 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
+	<!-- キーワードで取得 -->
+	<select id="searchByKeywords"
+		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
+		SELECT id, spot_name, sub_category_id, website_url, gmap_url, address,
+		business_hours, closed_days, estimated_budget, keywords, details,
+		deleted_at, created_at, updated_at
+		FROM spots
+		<where>
+			deleted_at IS NULL<!-- 論理削除に対応 -->
+			<if test="keyword != null and keyword != ''"><!-- 空白とNULLに対応 -->
+				AND (
+				spot_name LIKE CONCAT('%', #{keyword}, '%')
+				OR
+				keywords LIKE CONCAT('%', #{keyword}, '%')
+				)
+			</if>
+		</where>
+		ORDER BY updated_at DESC
+		LIMIT #{limit} OFFSET #{offset}
+	</select>
+	
+	<!-- 検索時のスポット数のカウント -->
+	<select id="countByKeywords" resultType="long">
+		SELECT count(*) FROM spots
+		<where>
+			deleted_at IS NULL
+			<if test="keyword != null and keyword != ''">
+				AND (
+				spot_name LIKE CONCAT('%', #{keyword}, '%')
+				OR keywords LIKE CONCAT('%', #{keyword}, '%')
+				)
+			</if>
+		</where>
+	</select>
+
     <!-- スポット数のカウント -->
     <select id="count" resultType="long">
         SELECT count(*) FROM spots
