@@ -42,4 +42,6 @@ public class SpotServiceImpl implements SpotService {
         return new PageImpl<>(spots, pageable, total);
     }
 
+	
+
 }
