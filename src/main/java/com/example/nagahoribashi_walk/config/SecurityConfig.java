@@ -32,7 +32,7 @@ public class SecurityConfig {
                         // アップロードリソースは認証を必要としない
                         .requestMatchers("/uploads/**").permitAll()
                         // 【管理者権限設定】 url : /admin/**は管理者しかアクセスできない
-                        .requestMatchers("/admin", "/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/admin", "/admin/**").permitAll() //.hasAuthority("ADMIN")
                         // ★その他のリクエストはすべて認証が必要
                         .anyRequest().authenticated())
 

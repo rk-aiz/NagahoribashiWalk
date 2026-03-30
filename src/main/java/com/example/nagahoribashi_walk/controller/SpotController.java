@@ -23,10 +23,8 @@ public class SpotController {
     public String list(
     		@PageableDefault(size = 12) Pageable pageable, 
     		Model model) {
-    	
-    	model.addAttribute("category", "all");
+      model.addAttribute("category", "all");
     	model.addAttribute("spots", spotService.getPage(pageable));
-    	
-        return "spot/list";
+      return "spot/list";
     } 
 }
