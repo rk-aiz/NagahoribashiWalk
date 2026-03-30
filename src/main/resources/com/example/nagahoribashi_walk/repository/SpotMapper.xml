@@ -4,8 +4,28 @@
 	
     <!-- ページネーション付き取得 -->
     <select id="findAll" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
-        SELECT id, spot_name, sub_category_id, website_url, gmap_url, address, business_hours, closed_days, estimated_budget, keywords, details, deleted_at, created_at, updated_at
-        FROM spots
+         SELECT
+			s.id,
+			s.spot_name, 
+			sp.photo_url,
+			r.average_rating, 
+			sc.name AS sub_category_name,
+			c.name AS category_name,
+			s.keywords
+        FROM spots s
+        LEFT JOIN LATERAL (
+  			SELECT * FROM spot_photos
+  			WHERE spot_id = s.id
+  			ORDER BY created_at DESC
+  			LIMIT 1
+		) sp ON true
+		JOIN (
+  			SELECT spot_id, AVG(rating) AS average_rating
+  			FROM reviews
+  			GROUP BY spot_id
+		) r ON r.spot_id = s.id
+		JOIN sub_categories sc ON sc.id = s.sub_category_id
+		JOIN categories c ON c.id = sc.category_id
         ORDER BY updated_at DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
