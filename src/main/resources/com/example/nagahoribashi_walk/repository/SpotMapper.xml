@@ -19,13 +19,13 @@
   			ORDER BY created_at DESC
   			LIMIT 1
 		) sp ON true
-		JOIN (
+		LEFT JOIN (
   			SELECT spot_id, AVG(rating) AS average_rating
   			FROM reviews
   			GROUP BY spot_id
 		) r ON r.spot_id = s.id
-		JOIN sub_categories sc ON sc.id = s.sub_category_id
-		JOIN categories c ON c.id = sc.category_id
+		INNER JOIN sub_categories sc ON sc.id = s.sub_category_id
+		INNER JOIN categories c ON c.id = sc.category_id
         ORDER BY updated_at DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
