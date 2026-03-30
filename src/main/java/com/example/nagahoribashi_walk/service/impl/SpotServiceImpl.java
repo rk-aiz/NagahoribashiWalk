@@ -41,7 +41,7 @@ public class SpotServiceImpl implements SpotService {
 		// Page<T>インスタンスに詰めて返す
 		return new PageImpl<>(spots, pageable, total);
 	}
-
+	
 	/**
 	 * ページとキーワードに対応したスポット一覧を返す
 	 */
@@ -63,5 +63,11 @@ public class SpotServiceImpl implements SpotService {
 						);
 
 		return new PageImpl<>(spots, pageable, total);
+	}
+	
+	//トップページおすすめ３件表示用
+	@Override
+	public List<SpotSummary> getRecommendedSpots() {
+		return spotMapper.findRecommendedSpots();
 	}
 }

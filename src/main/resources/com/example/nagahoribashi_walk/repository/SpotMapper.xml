@@ -1,19 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper
-	namespace="com.example.nagahoribashi_walk.repository.SpotMapper">
-
-	<!-- ページネーション付き取得 -->
-	<select id="findAll"
-		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
-		SELECT id, spot_name, sub_category_id, website_url, gmap_url, address,
-		business_hours, closed_days, estimated_budget, keywords, details,
-		deleted_at, created_at, updated_at
-		FROM spots
-	    WHERE deleted_at IS NULL
-		ORDER BY updated_at DESC
-		LIMIT #{limit} OFFSET #{offset}
-	</select>
+<mapper namespace="com.example.nagahoribashi_walk.repository.SpotMapper">
+	
+    <!-- ページネーション付き取得 -->
+    <select id="findAll" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
+         SELECT
+			s.id,
+			s.spot_name, 
+			sp.photo_url,
+			r.average_rating, 
+			sc.name AS sub_category_name,
+			c.name AS category_name,
+			s.keywords
+        FROM spots s
+        LEFT JOIN LATERAL (
+  			SELECT * FROM spot_photos
+  			WHERE spot_id = s.id
+  			ORDER BY created_at DESC
+  			LIMIT 1
+		) sp ON true
+		LEFT JOIN (
+  			SELECT spot_id, AVG(rating) AS average_rating
+  			FROM reviews
+  			GROUP BY spot_id
+		) r ON r.spot_id = s.id
+		INNER JOIN sub_categories sc ON sc.id = s.sub_category_id
+		INNER JOIN categories c ON c.id = sc.category_id
+        ORDER BY updated_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
 
 	<!-- キーワードで取得 -->
 	<select id="searchByKeywords"
@@ -35,13 +50,7 @@
 		ORDER BY updated_at DESC
 		LIMIT #{limit} OFFSET #{offset}
 	</select>
-
-	<!-- スポット数のカウント -->
-	<select id="count" resultType="long">
-		SELECT count(*) FROM spots
-		WHERE deleted_at IS NULL
-	</select>
-
+	
 	<!-- 検索時のスポット数のカウント -->
 	<select id="countByKeywords" resultType="long">
 		SELECT count(*) FROM spots
@@ -56,4 +65,36 @@
 		</where>
 	</select>
 
+    <!-- スポット数のカウント -->
+    <select id="count" resultType="long">
+        SELECT count(*) FROM spots
+    </select>
+    
+    <!-- トップページおすすめ-->
+    <select id="findRecommendedSpots" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
+         SELECT
+			s.id,
+			s.spot_name, 
+			sp.photo_url,
+			r.average_rating, 
+			sc.name AS sub_category_name,
+			c.name AS category_name,
+			s.keywords
+        FROM spots s
+        LEFT JOIN LATERAL (
+  			SELECT * FROM spot_photos
+  			WHERE spot_id = s.id
+  			ORDER BY created_at DESC
+  			LIMIT 1
+		) sp ON true
+		JOIN (
+  			SELECT spot_id, AVG(rating) AS average_rating
+  			FROM reviews
+  			GROUP BY spot_id
+		) r ON r.spot_id = s.id
+		JOIN sub_categories sc ON sc.id = s.sub_category_id
+		JOIN categories c ON c.id = sc.category_id
+        ORDER BY average_rating DESC NULLS LAST
+        LIMIT 3
+    </select>
 </mapper>
