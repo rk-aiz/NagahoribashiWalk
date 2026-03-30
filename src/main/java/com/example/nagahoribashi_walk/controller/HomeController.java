@@ -25,7 +25,7 @@ public class HomeController {
 	@GetMapping("/")
 	public String showHome(Model model) {
 
-		//全スポット取得
+		//3スポット取得
 		Page<SpotSummary> threeSpots = spotService.getPage(Pageable.ofSize(3));
 
 		
