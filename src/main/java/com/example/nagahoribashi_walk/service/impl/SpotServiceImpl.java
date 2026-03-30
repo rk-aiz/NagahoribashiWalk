@@ -24,24 +24,50 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SpotServiceImpl implements SpotService {
 
-    private final SpotMapper spotMapper;
+	private final SpotMapper spotMapper;
 
-    /**
-     * ページに対応したスポット一覧を返す
-     */
-    @Override
-    public Page<SpotSummary> getPage(Pageable pageable) {
+	/**
+	 * ページに対応したスポット一覧を返す
+	 */
+	@Override
+	public Page<SpotSummary> getPage(Pageable pageable) {
 
-        // スポットの総数を取得する
-        long total = spotMapper.count();
+		// スポットの総数を取得する
+		long total = spotMapper.count();
 
-        // 対象ページに対応したスポットを取得する
-        List<SpotSummary> spots = spotMapper.findAll(pageable.getOffset(), pageable.getPageSize());
+		// 対象ページに対応したスポットを取得する
+		List<SpotSummary> spots = spotMapper.findAll(pageable.getOffset(), pageable.getPageSize());
 
-        // Page<T>インスタンスに詰めて返す
-        return new PageImpl<>(spots, pageable, total);
-    }
-
+		// Page<T>インスタンスに詰めて返す
+		return new PageImpl<>(spots, pageable, total);
+	}
 	
+	/**
+	 * ページとキーワードに対応したスポット一覧を返す
+	 */
+	@Override
+	public Page<SpotSummary> searchByKeywords(String keyword, Pageable pageable) {
+		
+		//空文字でもLike検索ではなく一覧表示になるように
+		if (keyword == null || keyword.isBlank()) {
+	        return getPage(pageable);
+	    }
 
+		long total = spotMapper.countByKeywords(keyword);
+
+		List<SpotSummary> spots =
+				spotMapper.searchByKeywords(
+						keyword,
+						pageable.getOffset(),
+						pageable.getPageSize()
+						);
+
+		return new PageImpl<>(spots, pageable, total);
+	}
+	
+	//トップページおすすめ３件表示用
+	@Override
+	public List<SpotSummary> getRecommendedSpots() {
+		return spotMapper.findRecommendedSpots();
+	}
 }

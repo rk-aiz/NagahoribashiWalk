@@ -1,6 +1,5 @@
 package com.example.nagahoribashi_walk.controller;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,13 +26,10 @@ public class HomeController {
 
 	@GetMapping("/")
 	public String showHome(Model model) {
-
 		// SpotSummaryを3件取得してmodelにセット
-		model.addAttribute("spots", spotService.getPage(Pageable.ofSize(3)));
+		model.addAttribute("spots", spotService.getRecommendedSpots());
 
 		// home.htmlを表示
 		return "home";
 	}
-
-
 }
