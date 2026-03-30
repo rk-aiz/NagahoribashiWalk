@@ -10,6 +10,10 @@ import lombok.Data;
 @Data
 public class ReviewDTO {
 	
+	//レビューID
+	//r.id
+	private Long id;
+	
 	//レビュー内容
 	//r.comment
 	private String comment;
