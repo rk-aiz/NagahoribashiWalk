@@ -34,32 +34,30 @@
 	<select id="findAll"
 		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
 		SELECT
-		s.id,
-		s.spot_name,
-		sp.photo_url,
-		r.average_rating,
-		sc.name AS sub_category_name,
-		c.name AS category_name,
-		s.keywords
+			s.id,
+			s.spot_name,
+			sp.photo_url,
+			r.average_rating,
+			sc.name AS sub_category_name,
+			c.name AS category_name,
+			s.keywords
 		FROM
-		spots s
+			spots s
 		LEFT JOIN LATERAL (
-		SELECT * FROM spot_photos
-		WHERE spot_id =
-		s.id
-		ORDER BY created_at DESC
-		LIMIT 1
+			SELECT * FROM spot_photos
+			WHERE spot_id = s.id
+			ORDER BY created_at DESC
+			LIMIT 1
 		) sp ON true
-		JOIN (
-		SELECT spot_id,
-		AVG(rating) AS average_rating
-		FROM reviews
-		GROUP BY spot_id
-		) r ON
-		r.spot_id = s.id
-		JOIN sub_categories sc ON sc.id =
-		s.sub_category_id
-		JOIN categories c ON c.id = sc.category_id
+		LEFT JOIN (
+			SELECT spot_id, AVG(rating) AS average_rating
+			FROM reviews
+			GROUP BY spot_id
+		) r ON r.spot_id = s.id
+		INNER JOIN sub_categories sc
+		ON sc.id = s.sub_category_id
+		INNER JOIN categories c
+		ON c.id = sc.category_id
 		ORDER BY updated_at DESC
 		LIMIT #{limit} OFFSET #{offset}
 	</select>
@@ -73,12 +71,14 @@
 		s.id,
 		s.spot_name AS spotName,
 		s.details,
-		s.business_hours AS businessHours,
+		s.business_hours AS
+		businessHours,
 		s.estimated_budget AS estimatedBudget,
 		s.address,
 		s.gmap_url AS gmapUrl,
 		s.website_url AS websiteUrl,
-		c.name AS categoryName,
+		c.name AS
+		categoryName,
 		sc.name AS subCategoryName,
 
 		<!-- レビューの平均評価と件数をサブクエリで集計 -->
@@ -100,7 +100,8 @@
 		SELECT
 		spot_id,
 		AVG(rating) AS avg_rating,
-		COUNT(id) AS review_count
+		COUNT(id) AS
+		review_count
 		FROM reviews
 		GROUP BY spot_id
 		) stats
@@ -131,7 +132,8 @@
 		<!-- SpotPhotoDTO 用 -->
 		sp.id AS photo_id,
 		sp.photo_url AS photoUrl,
-		sp.display_order AS displayOrder
+		sp.display_order AS
+		displayOrder
 
 		FROM spots s
 
