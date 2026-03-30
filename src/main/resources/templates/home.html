@@ -160,10 +160,11 @@
 		<div class="row g-4">
 			<div class="col-md-4" th:each="spot : ${spots}">
 				<div class="card h-100">
-					
+
 					<!--おすすめスポット3件の画像表示-->
-					<img th:src="@{/uploads/images/shrine_image_03.jpg}" 
-					class="card-img-top" th:alt="${spot.spotName}">
+					<img th:src="${spot.photoUrl != null ? '/uploads/' + spot.photoUrl : '/images/noimage.png'}" class="card-img-top"
+						th:alt="${spot.spotName}" style="height: 200px; object-fit: cover;">
+
 					<div class="card-body">
 
 						<!--スポット名-->
@@ -171,9 +172,9 @@
 
 						<!--カテゴリー/サブカテゴリー表示-->
 						<p class="text-muted mb-1">
-							<span th:text="観光スポット"></span>
+							<span th:text="${spot.categoryName}"></span>
 							/
-							<span th:text="神社"></span>
+							<span th:text="${spot.subCategoryName}"></span>
 						</p>
 						<a th:href="@{/spot/{id}(id=${spot.id})}" class="btn btn-primary btn-sm">詳しく見る</a>
 					</div>
