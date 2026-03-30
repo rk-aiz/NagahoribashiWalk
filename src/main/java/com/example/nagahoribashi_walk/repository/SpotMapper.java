@@ -24,7 +24,10 @@ public interface SpotMapper {
 
     // findBySubCategoryId
 
-    // searchByKeywords
+    List<SpotSummary> searchByKeywords(
+    		@Param("keyword") String keyword,
+    		@Param("offset") long offset,
+    		@Param("limit") int limit);
 
     // findImagesBySpotId
 
@@ -42,4 +45,6 @@ public interface SpotMapper {
 
     /** スポット数をカウントする */
     long count();
+    
+    long countByKeywords(@Param("keyword") String keyword);
 }
