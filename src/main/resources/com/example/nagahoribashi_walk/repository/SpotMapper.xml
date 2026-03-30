@@ -41,5 +41,39 @@
     <select id="count" resultType="long">
         SELECT count(*) FROM spots
     </select>
-
+    
+    <!-- トップページおすすめ-->
+    <select id="findRecommendedSpots" resultType="com.xxx.xxx.entity.Spot">
+        SELECT
+            s.id,
+            s.spot_name, 
+            sp.photo_url,
+            r.average_rating,
+            s.sub_category_id, 
+            s.website_url, 
+            s.gmap_url, 
+            s.address, 
+            s.business_hours, 
+            s.closed_days, 
+            s.estimated_budget, 
+            s.keywords, 
+            s.details, 
+            s.deleted_at, 
+            s.created_at, 
+            s.updated_at
+        FROM spots s
+        LEFT JOIN LATERAL (
+            SELECT * FROM spot_photos
+            WHERE spot_id = s.id
+            ORDER BY created_at DESC
+            LIMIT 1
+        ) sp ON true
+        LEFT JOIN (
+            SELECT spot_id, AVG(rating) AS average_rating
+            FROM reviews
+            GROUP BY spot_id
+        ) r ON r.spot_id = s.id
+        ORDER BY average_rating DESC NULLS LAST
+        LIMIT 3
+    </select>
 </mapper>

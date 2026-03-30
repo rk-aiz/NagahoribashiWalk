@@ -18,6 +18,7 @@ public interface SpotMapper {
     /** ページネーション付きでスポット一覧を取得する */
     List<SpotSummary> findAll(@Param("offset") long offset, @Param("limit") int limit);
 
+    List<SpotSummary> findRecommendedSpots();
     // findById
 
     // findByCategoryId
