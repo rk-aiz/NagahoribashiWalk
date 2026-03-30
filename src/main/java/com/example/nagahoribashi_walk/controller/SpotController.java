@@ -22,6 +22,7 @@ public class SpotController {
     @GetMapping("/spot/category/all")
     public String list(@PageableDefault(size = 12) Pageable pageable, Model model) {
     	
+    	//全件取得
     	model.addAttribute("spots", spotService.getPage(pageable));
     	
         return "spot/list";
