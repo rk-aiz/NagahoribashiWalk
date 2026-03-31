@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!--
+    スポットカード フラグメント
+    パラメータ:
+      spot : SpotSummary オブジェクト
+-->
+
+<!-- CSS（ページ内で1回だけ th:replace で読み込む） -->
+<th:block th:fragment="styles">
+<style>
+    .spot-card {
+        border-radius: 0.625rem !important;
+        transition: box-shadow 0.2s, transform 0.2s;
+        position: relative;
+    }
+    .spot-card:hover {
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
+        transform: translateY(-2px);
+    }
+    .spot-img-wrap {
+        position: relative;
+    }
+    .spot-img {
+        transition: transform 0.3s ease;
+    }
+    .spot-card:hover .spot-img {
+        transform: scale(1.04);
+    }
+</style>
+</th:block>
+
+<!-- カード本体（<div class="col"> などのラッパーは呼び出し側で用意） -->
+<a th:fragment="card(spot)"
+   th:href="@{/spot/{id}(id=${spot.id})}"
+   class="text-decoration-none">
+    <div class="card h-100 border-0 shadow-sm spot-card">
+
+        <!-- 画像 + 評価バッジ -->
+        <div class="spot-img-wrap overflow-hidden"
+             style="border-radius: 0.5rem 0.5rem 0 0;">
+            <img th:src="@{/uploads/{url}(url=${spot.photoUrl})}"
+                 th:alt="${spot.spotName}"
+                 class="card-img-top spot-img"
+                 style="height: 240px; object-fit: cover; display: block;">
+            <span class="position-absolute d-flex align-items-center gap-1"
+                  style="top:0.65rem; right:0.65rem;
+                         background:rgba(255,255,255,0.92); color:#374151;
+                         font-size:0.8rem; font-weight:600;
+                         padding:0.25em 0.65em; border-radius:9999px;
+                         box-shadow:0 1px 4px rgba(0,0,0,0.1);">
+                <i class="bi bi-star-fill" style="color:#f59e0b; font-size:0.75rem;"></i>
+                <span th:text="${spot.averageRating != null ? #numbers.formatDecimal(spot.averageRating, 1, 1) : '-'}">4.5</span>
+            </span>
+        </div>
+
+        <div class="card-body p-3 d-flex flex-column">
+            <!-- スポット名 -->
+            <h5 class="card-title fw-bold text-dark mb-2"
+                style="font-size:1rem;"
+                th:text="${spot.spotName}">スポット名</h5>
+
+            <!-- カテゴリ / サブカテゴリ -->
+            <p class="mb-0" style="font-size:0.82rem;">
+                <span th:text="${spot.categoryName}"
+                      style="color:#4b82f6; font-weight:600;">グルメ</span>
+                <span class="mx-1 text-secondary">/</span>
+                <span th:text="${spot.subCategoryName}" class="text-secondary">ラーメン</span>
+            </p>
+
+            <!-- キーワードバッジ（最大3件・下揃え） -->
+            <div class="d-flex flex-wrap gap-1 mt-auto pt-2">
+                <th:block th:if="${spot.keywords != null and !#strings.isEmpty(spot.keywords)}">
+                    <span th:each="kw, stat : ${#strings.arraySplit(spot.keywords, ',')}"
+                          th:if="${stat.index < 3}"
+                          class="badge rounded-pill"
+                          style="background:#f1f5f9; color:#475569; font-weight:400; font-size:0.72rem;"
+                          th:text="${'#' + #strings.trim(kw)}">タグ</span>
+                </th:block>
+            </div>
+        </div>
+
+    </div>
+</a>
+
+</body>
+</html>
