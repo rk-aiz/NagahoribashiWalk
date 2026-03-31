@@ -6,7 +6,8 @@ INSERT INTO users (username, password, email, role, display_name) VALUES
 ('user2', '$2a$10$1V6vPNeCXWU/3eaF8f9yC.LFMXMOELE2badil7dOyXreMpjqHKdXm', 'user2@nagahori.com', 'USER', 'ユーザー2'),
 ('user3', '$2a$10$1V6vPNeCXWU/3eaF8f9yC.LFMXMOELE2badil7dOyXreMpjqHKdXm', 'user3@nagahori.com', 'USER', 'ユーザー3'),
 ('user4', '$2a$10$1V6vPNeCXWU/3eaF8f9yC.LFMXMOELE2badil7dOyXreMpjqHKdXm', 'user4@nagahori.com', 'USER', 'ユーザー4'),
-('user5', '$2a$10$1V6vPNeCXWU/3eaF8f9yC.LFMXMOELE2badil7dOyXreMpjqHKdXm', 'user5@nagahori.com', 'USER', 'ユーザー5');
+('user5', '$2a$10$1V6vPNeCXWU/3eaF8f9yC.LFMXMOELE2badil7dOyXreMpjqHKdXm', 'user5@nagahori.com', 'USER', 'ユーザー5'),
+('demouser', '$2a$10$Is1NSJa.IIKXfQtd8Esl7esjQssijYS3J4jBEzbxXGyAR8szP6oEW', 'demouser@example.com', 'USER', 'デモユーザー');
 
 -- categories
 INSERT INTO categories (name, display_order) VALUES
