@@ -71,3 +71,6 @@ Thumbs.db
 # IDE共通
 *.iml
 .idea/
+
+.claude/
+CLAUDE.md

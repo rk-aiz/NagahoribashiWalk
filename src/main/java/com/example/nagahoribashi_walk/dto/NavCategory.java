@@ -1,5 +1,7 @@
 package com.example.nagahoribashi_walk.dto;
 
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -16,5 +18,8 @@ public class NavCategory {
 
     /** 表示順 */
     private Integer displayOrder;
+
+    /** サブカテゴリ */
+    List<NavSubCategory> subCategories;
 
 }

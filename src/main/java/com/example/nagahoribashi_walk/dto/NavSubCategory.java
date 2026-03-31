@@ -14,7 +14,4 @@ public class NavSubCategory {
     /** カテゴリ名 */
     private String name;
 
-    /** 表示順 */
-    private Integer displayOrder;
-
 }
