@@ -2,5 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.nagahoribashi_walk.repository.CategoryMapper">
 	
+    <select id="findAll" resultType="com.example.nagahoribashi_walk.dto.CategoryDTO">
+        SELECT id, name, display_order FROM categories ORDER BY display_order
+    </select>
 
 </mapper>

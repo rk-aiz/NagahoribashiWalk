@@ -1,14 +1,13 @@
 package com.example.nagahoribashi_walk.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 
-import com.example.nagahoribashi_walk.dto.SpotSummary;
+import com.example.nagahoribashi_walk.dto.NavCategory;
 
 /**
  * カテゴリ関連サービスのインターフェース
- * 
  */
 public interface CategoryService {
 
+    List<NavCategory> findAll();
 }
