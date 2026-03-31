@@ -95,14 +95,14 @@
                                         <img th:src="@{/uploads/{url}(url=${spot.photoUrl})}" th:alt="${spot.spotName}"
                                             class="card-img-top spot-img"
                                             style="height: 240px; object-fit: cover; display: block;">
-                                        <span class="position-absolute d-flex align-items-center gap-1"
-                                              style="top: 0.65rem; right: 0.65rem;
+                                        <span class="position-absolute d-flex align-items-center gap-1" style="top: 0.65rem; right: 0.65rem;
                                                      background: rgba(255,255,255,0.92); color: #374151;
                                                      font-size: 0.8rem; font-weight: 600;
                                                      padding: 0.25em 0.65em; border-radius: 9999px;
                                                      box-shadow: 0 1px 4px rgba(0,0,0,0.1);">
                                             <i class="bi bi-star-fill" style="color:#f59e0b; font-size:0.75rem;"></i>
-                                            <span th:text="${spot.averageRating != null ? #numbers.formatDecimal(spot.averageRating, 1, 1) : '-'}">4.5</span>
+                                            <span
+                                                th:text="${spot.averageRating != null ? #numbers.formatDecimal(spot.averageRating, 1, 1) : '-'}">4.5</span>
                                         </span>
                                     </div>
 
@@ -122,7 +122,8 @@
 
                                         <!-- キーワードタグ（最大3件） -->
                                         <div class="d-flex flex-wrap gap-1" style="min-height: 1.5rem;">
-                                            <th:block th:if="${spot.keywords != null and !#strings.isEmpty(spot.keywords)}">
+                                            <th:block
+                                                th:if="${spot.keywords != null and !#strings.isEmpty(spot.keywords)}">
                                                 <span th:each="kw, stat : ${#strings.arraySplit(spot.keywords, ',')}"
                                                     th:if="${stat.index < 3}" class="badge rounded-pill"
                                                     style="background: transparent; color: #94a3b8; font-weight: 400; font-size: 0.75rem;"
