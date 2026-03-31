@@ -4,7 +4,7 @@
 	
     <!-- ページネーション付き取得 -->
     <select id="findAll" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
-         SELECT
+        SELECT
 			s.id,
 			s.spot_name, 
 			sp.photo_url,
@@ -15,18 +15,18 @@
         FROM spots s
         LEFT JOIN LATERAL (
   			SELECT * FROM spot_photos
-  			WHERE spot_id = s.id
-  			ORDER BY created_at DESC
-  			LIMIT 1
+            WHERE spot_id = s.id
+            ORDER BY created_at DESC
+            LIMIT 1
 		) sp ON true
 		LEFT JOIN (
-  			SELECT spot_id, AVG(rating) AS average_rating
-  			FROM reviews
-  			GROUP BY spot_id
+            SELECT spot_id, AVG(rating) AS average_rating
+            FROM reviews
+            GROUP BY spot_id
 		) r ON r.spot_id = s.id
 		INNER JOIN sub_categories sc ON sc.id = s.sub_category_id
 		INNER JOIN categories c ON c.id = sc.category_id
-        ORDER BY updated_at DESC
+        ORDER BY s.updated_at DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
@@ -72,7 +72,7 @@
     
     <!-- トップページおすすめ-->
     <select id="findRecommendedSpots" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
-         SELECT
+        SELECT
 			s.id,
 			s.spot_name, 
 			sp.photo_url,
@@ -83,14 +83,14 @@
         FROM spots s
         LEFT JOIN LATERAL (
   			SELECT * FROM spot_photos
-  			WHERE spot_id = s.id
-  			ORDER BY created_at DESC
-  			LIMIT 1
+            WHERE spot_id = s.id
+            ORDER BY created_at DESC
+            LIMIT 1
 		) sp ON true
 		JOIN (
-  			SELECT spot_id, AVG(rating) AS average_rating
-  			FROM reviews
-  			GROUP BY spot_id
+            SELECT spot_id, AVG(rating) AS average_rating
+            FROM reviews
+            GROUP BY spot_id
 		) r ON r.spot_id = s.id
 		JOIN sub_categories sc ON sc.id = s.sub_category_id
 		JOIN categories c ON c.id = sc.category_id

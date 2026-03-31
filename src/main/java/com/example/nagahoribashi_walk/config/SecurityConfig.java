@@ -26,7 +26,7 @@ public class SecurityConfig {
                 // ★HTTPリクエストに対するセキュリティ設定
                 .authorizeHttpRequests(authz -> authz
                         // 「ホーム、スポット閲覧系、ログイン、登録画面、エラー画面」へのアクセスは認証を必要としない
-                        .requestMatchers("/", "/spot/**", "/login", "/register", "/register/**", "/error", "/error/**")
+                        .requestMatchers("/", "/about", "/spot/**", "/login", "/register", "/register/**", "/error", "/error/**")
                         .permitAll()
                         // static以下の"/css/**" "/js/**" "/images/**" "/fonts/**" "/favicon.* などは認証を必要としない
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
