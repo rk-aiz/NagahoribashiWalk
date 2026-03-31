@@ -9,9 +9,9 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import lombok.RequiredArgsConstructor;
 
-
 /**
  * Spring Securityの設定
+ * 
  * @author 海津
  */
 @Configuration
@@ -26,13 +26,16 @@ public class SecurityConfig {
                 // ★HTTPリクエストに対するセキュリティ設定
                 .authorizeHttpRequests(authz -> authz
                         // 「ホーム、スポット閲覧系、ログイン、登録画面、エラー画面」へのアクセスは認証を必要としない
-                        .requestMatchers("/", "/spot/**", "/login", "/register", "/register/**", "/error", "/error/**").permitAll()
+                        .requestMatchers("/", "/spot/**", "/login", "/register", "/register/**", "/error", "/error/**")
+                        .permitAll()
                         // 静的リソースはアクセスは認証を必要としない
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        // favicon（SVG）を明示的に許可
+                        .requestMatchers("/favicon.svg", "/favicon.ico").permitAll()
                         // アップロードリソースは認証を必要としない
                         .requestMatchers("/uploads/**").permitAll()
                         // 【管理者権限設定】 url : /admin/**は管理者しかアクセスできない
-                        .requestMatchers("/admin", "/admin/**").permitAll() //.hasAuthority("ADMIN")
+                        .requestMatchers("/admin", "/admin/**").permitAll() // .hasAuthority("ADMIN")
                         // ★その他のリクエストはすべて認証が必要
                         .anyRequest().authenticated())
 
