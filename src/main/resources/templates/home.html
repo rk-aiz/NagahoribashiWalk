@@ -1,100 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/default :: layout('トップ', ~{::main})}" xml:lang="ja">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/test :: layout('トップ', ~{::main})}" xml:lang="ja">
 
 <body>
     <main class="flex-grow-1">
-        <style>
-            .hero {
-                position: relative;
-                min-height: 500px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #fff;
-                text-align: center;
-                overflow: hidden;
-            }
-
-            .hero-slide {
-                position: absolute;
-                inset: 0;
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
-                opacity: 0;
-                transition: opacity 2s ease-in-out;
-            }
-
-            .hero-slide.active {
-                opacity: 1;
-            }
-
-            .hero-slide::after {
-                content: '';
-                position: absolute;
-                inset: 0;
-                background: rgba(0, 0, 0, 0.35);
-            }
-
-            .hero-content {
-                position: relative;
-                z-index: 1;
-                width: 100%;
-                max-width: 700px;
-                padding: 0 1rem;
-            }
-
-            .hero-title {
-                font-size: 2.5rem;
-                font-weight: 700;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 0.5rem;
-                margin-bottom: 0.5rem;
-            }
-
-            .hero-subtitle {
-                font-size: 1rem;
-                margin-bottom: 2rem;
-                opacity: 0.95;
-            }
-
-            .search-bar {
-                display: flex;
-                background: #fff;
-                border-radius: 9999px;
-                overflow: hidden;
-                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-            }
-
-            .search-bar input {
-                flex: 1;
-                border: none;
-                outline: none;
-                padding: 0.85rem 1.5rem;
-                font-size: 1rem;
-                color: #374151;
-            }
-
-            .search-bar button {
-                background: #2563eb;
-                color: #fff;
-                border: none;
-                border-radius: 9999px;
-                padding: 0.75rem 1.75rem;
-                font-size: 0.95rem;
-                margin: 0.3rem;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                gap: 0.4rem;
-            }
-
-            .search-bar button:hover {
-                background: #1d4ed8;
-            }
-        </style>
+        <link rel="stylesheet" th:href="@{/css/home.css}">
 
         <!-- ヒーローセクション -->
         <section class="hero">
@@ -130,23 +39,12 @@
         </script>
 
         <!-- おすすめスポット3件表示 -->
+        <th:block th:replace="~{fragments/spot-card :: styles}"></th:block>
         <section class="container my-5">
             <h3 class="mb-4 text-center">おすすめスポット</h3>
             <div class="row g-4">
                 <div class="col-md-4" th:each="spot : ${spots}">
-                    <div class="card h-100">
-                        <img th:src="${spot.photoUrl != null ? '/uploads/' + spot.photoUrl : '/images/noimage.png'}"
-                            class="card-img-top" th:alt="${spot.spotName}" style="height: 200px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title" th:text="${spot.spotName}"></h5>
-                            <p class="text-muted mb-1">
-                                <span th:text="${spot.categoryName}"></span>
-                                /
-                                <span th:text="${spot.subCategoryName}"></span>
-                            </p>
-                            <a th:href="@{/spot/{id}(id=${spot.id})}" class="btn btn-primary btn-sm">詳しく見る</a>
-                        </div>
-                    </div>
+                    <th:block th:replace="~{fragments/spot-card :: card(${spot})}"></th:block>
                 </div>
             </div>
         </section>
@@ -154,13 +52,13 @@
         <!-- 長堀橋エリア紹介 -->
         <section style="background-color: #f8fafc;" class="py-5">
             <div class="container text-center" style="max-width: 720px;">
-                <h3 class="mb-4">長堀橋エリアについて</h3>
-                <p class="text-muted lh-lg">
-                    大阪市営地下鉄長堀橋駅周辺は、ビジネス街と商業施設が融合した活気あるエリアです。
-                    地下街「クリスタ長堀」をはじめ、多様な飲食店、カフェ、ショップが軒を連ね、
-                    歴史ある神社や緑豊かな公園も点在しています。
-                    このサイトでは、長堀橋周辺の魅力的なスポットをご紹介します。
-                </p>
+                <h4 class="mb-4">長堀橋エリアについて</h3>
+                    <p class="text-muted lh-lg">
+                        大阪市営地下鉄長堀橋駅周辺は、ビジネス街と商業施設が融合した活気あるエリアです。
+                        地下街「クリスタ長堀」をはじめ、多様な飲食店、カフェ、ショップが軒を連ね、
+                        歴史ある神社や緑豊かな公園も点在しています。
+                        このサイトでは、長堀橋周辺の魅力的なスポットをご紹介します。
+                    </p>
             </div>
         </section>
     </main>
