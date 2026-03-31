@@ -38,6 +38,7 @@ out/
 
 ### files ###
 /uploads/
+src/main/resources/static/images/
 
 # Eclipse
 .metadata/

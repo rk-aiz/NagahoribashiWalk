@@ -28,10 +28,8 @@ public class SecurityConfig {
                         // 「ホーム、スポット閲覧系、ログイン、登録画面、エラー画面」へのアクセスは認証を必要としない
                         .requestMatchers("/", "/spot/**", "/login", "/register", "/register/**", "/error", "/error/**")
                         .permitAll()
-                        // 静的リソースはアクセスは認証を必要としない
+                        // static以下の"/css/**" "/js/**" "/images/**" "/fonts/**" "/favicon.* などは認証を必要としない
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        // favicon（SVG）を明示的に許可
-                        .requestMatchers("/favicon.svg", "/favicon.ico").permitAll()
                         // アップロードリソースは認証を必要としない
                         .requestMatchers("/uploads/**").permitAll()
                         // 【管理者権限設定】 url : /admin/**は管理者しかアクセスできない
