@@ -10,12 +10,26 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                background: url('/images/hero.jpg') center/cover no-repeat;
                 color: #fff;
                 text-align: center;
+                overflow: hidden;
             }
 
-            .hero::before {
+            .hero-slide {
+                position: absolute;
+                inset: 0;
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                opacity: 0;
+                transition: opacity 2s ease-in-out;
+            }
+
+            .hero-slide.active {
+                opacity: 1;
+            }
+
+            .hero-slide::after {
                 content: '';
                 position: absolute;
                 inset: 0;
@@ -84,6 +98,9 @@
 
         <!-- ヒーローセクション -->
         <section class="hero">
+            <div class="hero-slide active" style="background-image: url('/images/n_photo_01.jpg');"></div>
+            <div class="hero-slide" style="background-image: url('/images/n_photo_02.jpg');"></div>
+            <div class="hero-slide" style="background-image: url('/images/n_photo_03.jpg');"></div>
             <div class="hero-content">
                 <h1 class="hero-title">
                     <i class="bi bi-geo-alt"></i>
@@ -99,6 +116,18 @@
                 </form>
             </div>
         </section>
+
+        <script>
+            (function () {
+                const slides = document.querySelectorAll('.hero-slide');
+                let current = 0;
+                setInterval(function () {
+                    slides[current].classList.remove('active');
+                    current = (current + 1) % slides.length;
+                    slides[current].classList.add('active');
+                }, 7000);
+            })();
+        </script>
 
         <!-- おすすめスポット3件表示 -->
         <section class="container my-5">
