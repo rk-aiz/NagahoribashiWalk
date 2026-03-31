@@ -8,6 +8,8 @@ import com.example.nagahoribashi_walk.dto.NavCategory;
 
 /**
  * categoriesテーブルに対応したMapperのインターフェース
+ * 
+ * @author 海津
  */
 @Mapper
 public interface CategoryMapper {

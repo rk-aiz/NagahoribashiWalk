@@ -1,9 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.nagahoribashi_walk.repository.CategoryMapper">
-	
-    <select id="findAll" resultType="com.example.nagahoribashi_walk.dto.CategoryDTO">
-        SELECT id, name, display_order FROM categories ORDER BY display_order
+
+    <!-- resultMap を使って1対多をマッピング -->
+    <resultMap id="navCategoryResultMap" type="com.example.nagahoribashi_walk.dto.NavCategory">
+        <id property="id" column="category_id" />
+        <result property="name" column="category_name" />
+        <result property="displayOrder" column="category_display_order" />
+        <collection property="subCategories" ofType="com.example.nagahoribashi_walk.dto.NavSubCategory">
+            <id property="id" column="sub_category_id" />
+            <result property="name" column="sub_category_name" />
+        </collection>
+    </resultMap>
+
+    <!-- カテゴリナビゲーション用にcategoriesテーブルとsub_categoriesテーブルを全件取得 -->
+    <select id="findAll" resultMap="navCategoryResultMap">
+        SELECT 
+            c.id AS category_id, 
+            c.name AS category_name, 
+            c.display_order AS category_display_order,
+            sc.id AS sub_category_id, 
+            sc.name AS sub_category_name 
+        FROM 
+            categories c 
+        LEFT JOIN
+            sub_categories sc
+        ON
+            c.id = sc.category_id 
+        ORDER BY
+            display_order 
     </select>
 
 </mapper>
