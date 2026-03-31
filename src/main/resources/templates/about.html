@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/default :: layout('このサイトについて', ~{::main})}" xml:lang="ja">
+
+<body>
+    <main class="flex-grow-1">
+        <div class="container py-5" style="max-width: 800px;">
+
+            <h1 class="fw-bold mb-4" style="color: #1e293b;">
+                <i class="bi bi-info-circle me-2" style="color: #2563eb;"></i>このサイトについて
+            </h1>
+
+            <!-- サイト紹介 -->
+            <section class="mb-5">
+                <h2 class="h5 fw-semibold mb-3" style="color: #374151;">長堀橋さんぽとは</h2>
+                <p class="text-secondary lh-lg">
+                    「長堀橋さんぽ」は、大阪市中央区・長堀橋駅周辺の観光スポット・飲食店・カフェなどを紹介する地域情報サイトです。
+                    グルメ・観光・ショッピング・娯楽など、さまざまなジャンルのお気に入りスポットを探してみてください。
+                </p>
+            </section>
+
+            <!-- 機能紹介 -->
+            <section class="mb-5">
+                <h2 class="h5 fw-semibold mb-3" style="color: #374151;">主な機能</h2>
+                <ul class="list-unstyled">
+                    <li class="d-flex align-items-start mb-3">
+                        <i class="bi bi-search me-3 mt-1" style="color: #2563eb; font-size: 1.1rem;"></i>
+                        <div>
+                            <p class="fw-medium mb-1">スポット検索・閲覧</p>
+                            <p class="text-secondary small mb-0">会員登録不要で、スポットの検索・詳細閲覧が利用できます。</p>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start mb-3">
+                        <i class="bi bi-heart me-3 mt-1" style="color: #2563eb; font-size: 1.1rem;"></i>
+                        <div>
+                            <p class="fw-medium mb-1">お気に入り登録</p>
+                            <p class="text-secondary small mb-0">会員登録後、気になるスポットをお気に入りに追加して管理できます。</p>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start mb-3">
+                        <i class="bi bi-star me-3 mt-1" style="color: #2563eb; font-size: 1.1rem;"></i>
+                        <div>
+                            <p class="fw-medium mb-1">レビュー投稿</p>
+                            <p class="text-secondary small mb-0">訪れたスポットへの評価・コメントを投稿できます。</p>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- 免責事項 -->
+            <section class="mb-5">
+                <h2 class="h5 fw-semibold mb-3" style="color: #374151;">免責事項</h2>
+                <p class="text-secondary lh-lg small">
+                    本サイトは学習目的で制作されたものです。掲載情報（営業時間・定休日・料金等）は変更されている場合があります。
+                    最新情報は各店舗・施設の公式サイトにてご確認ください。
+                    また、掲載している画像は学習目的の範囲内で使用しており、商用利用は行っておりません。
+                </p>
+            </section>
+
+            <!-- 制作者 -->
+            <section>
+                <h2 class="h5 fw-semibold mb-3" style="color: #374151;">制作</h2>
+                <p class="text-secondary lh-lg small">
+                    CIC 304教室 Cチーム（2026年3月〜4月）<br>
+                    海津・大谷・篠原・臼井・池田・正本
+                </p>
+            </section>
+
+        </div>
+    </main>
+</body>
+
+</html>
