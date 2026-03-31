@@ -1,5 +1,7 @@
 package com.example.nagahoribashi_walk.dto;
 
+import java.util.List;
+
 import lombok.Data;
 
 /**

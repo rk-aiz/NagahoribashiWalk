@@ -1,5 +1,7 @@
 package com.example.nagahoribashi_walk.dto;
 
+import lombok.Data;
+
 /**
  * @author 海津
  */
