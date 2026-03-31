@@ -1,102 +1,237 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>長堀橋さんぽ</title>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-</head>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/default :: layout('スポット一覧', ~{::main})}"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <body>
 
+    <main class="flex-grow-1" style="background-color: #f8fafc;">
 
-	<section class="container my-5">
-		<h2 class="mb-4 text-center">スポット一覧</h2>
+        <!-- ページヘッダー -->
+        <div class="bg-white border-bottom py-3">
+            <div class="container">
+                <a href="javascript:history.back()"
+                    class="text-decoration-none text-secondary small d-inline-flex align-items-center mb-2">
+                    <i class="bi bi-arrow-left me-1"></i>戻る
+                </a>
+                <div class="d-flex align-items-baseline gap-3">
+                    <h1 th:if="${category == 'all'}" class="h3 mb-0 fw-bold text-dark">スポット一覧</h1>
+                    <th:block th:if="${category != 'all'}">
+                        <th:block th:each="cat : ${navCategories}" th:if="${cat.id.toString() == category}">
+                            <h1 class="h3 mb-0 fw-bold text-dark" th:text="${cat.name}">カテゴリ名</h1>
+                        </th:block>
+                    </th:block>
+                    <span class="text-secondary small" th:text="${spotPages.totalElements + '件のスポット'}">0件のスポット</span>
+                </div>
+            </div>
+        </div>
 
-		<!-- ===== ページネーション ===== -->
-		<!-- spots は Page<Spot> なので、ページ情報が入っている -->
-		<nav th:if="${spots.totalPages > 1}">
-			<ul class="pagination justify-content-center">
-				<!-- 「前へ」ボタン -->
-				<li class="page-item" th:classappend="${spots.first} ? 'disabled'">
-					<a class="page-link"
-						th:href="@{/spot/category/{category}(category=${category}, page=${spots.number - 1})}"
-						href="#">&laquo; 前へ</a>
-				</li>
+        <div class="container py-4">
+            <div class="row g-4 align-items-start">
 
-				<!-- ページ番号 -->
-				<li class="page-item" th:each="i : ${#numbers.sequence(0, spots.totalPages - 1)}"
-					th:classappend="${i == spots.number} ? 'active'">
-					<a class="page-link" th:href="@{/spot/category/{category}(category=${category}, page=${i})}"
-						th:text="${i + 1}" href="#">1</a>
-				</li>
+                <!-- ===== 左サイドバー ===== -->
+                <aside class="col-lg-3 col-md-4">
+                    <div class="bg-white rounded-3 border p-3">
+                        <p class="fw-bold text-dark mb-3" style="font-size: 0.95rem;">絞り込み</p>
 
-				<!-- 「次へ」ボタン -->
-				<li class="page-item" th:classappend="${spots.last} ? 'disabled'">
-					<a class="page-link"
-						th:href="@{/spot/category/{category}(category=${category}, page=${spots.number + 1})}"
-						href="#">次へ &raquo;</a>
-				</li>
-			</ul>
-		</nav>
+                        <!-- カテゴリー -->
+                        <p class="text-secondary mb-2 fw-semibold text-uppercase"
+                            style="font-size: 0.75rem; letter-spacing: 0.07em;">カテゴリー</p>
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-1">
+                                <a th:href="@{/spot/category/all}"
+                                    class="d-block text-decoration-none rounded-2 px-3 py-2"
+                                    th:classappend="${category == 'all'} ? 'bg-primary bg-opacity-10 text-primary fw-semibold' : 'text-secondary sidebar-item-link'"
+                                    style="font-size: 0.9rem;">すべて</a>
+                            </li>
+                            <li th:each="cat : ${navCategories}" class="mb-1">
+                                <a th:href="@{/spot/category/{id}(id=${cat.id})}" th:text="${cat.name}"
+                                    class="d-block text-decoration-none rounded-2 px-3 py-2"
+                                    th:classappend="${cat.id.toString() == category} ? 'bg-primary bg-opacity-10 text-primary fw-semibold' : 'text-secondary sidebar-item-link'"
+                                    style="font-size: 0.9rem;">カテゴリ</a>
+                            </li>
+                        </ul>
 
+                        <!-- サブカテゴリー（カテゴリ指定時のみ表示） -->
+                        <th:block th:if="${category != 'all'}">
+                            <th:block th:each="cat : ${navCategories}" th:if="${cat.id.toString() == category}">
+                                <th:block th:if="${not #lists.isEmpty(cat.subCategories)}">
+                                    <p class="text-secondary mb-2 fw-semibold text-uppercase"
+                                        style="font-size: 0.75rem; letter-spacing: 0.07em;"
+                                        th:text="${cat.name + 'の種類'}">種類</p>
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-1">
+                                            <a th:href="@{/spot/category/{id}(id=${cat.id})}"
+                                                class="d-block text-decoration-none rounded-2 px-3 py-2 bg-primary bg-opacity-10 text-primary fw-semibold"
+                                                style="font-size: 0.9rem;">すべて</a>
+                                        </li>
+                                        <li th:each="sub : ${cat.subCategories}" class="mb-1">
+                                            <a th:href="@{/spot/subcategory/{id}(id=${sub.id})}" th:text="${sub.name}"
+                                                class="d-block text-decoration-none rounded-2 px-3 py-2 text-secondary sidebar-item-link"
+                                                style="font-size: 0.9rem;">サブカテゴリ</a>
+                                        </li>
+                                    </ul>
+                                </th:block>
+                            </th:block>
+                        </th:block>
 
-		<div class="row g-4">
-			<div class="col-md-4" th:each="spot : ${spots}">
-				<div class="card h-100">
+                    </div>
+                </aside>
 
-					<!--画像表示-->
-					<img th:src="@{/uploads/{url}(url=${spot.photoUrl})}" class="card-img-top" th:alt="${spot.spotName}"
-						style="height: 200px; object-fit: cover;">
+                <!-- ===== メインコンテンツ ===== -->
+                <div class="col-lg-9 col-md-8">
 
-					<div class="card-body">
+                    <!-- 上部ページネーション -->
+                    <div th:replace="~{fragments/pagination :: pager(${spotPages}, ${category}, 'mb-3')}"></div>
 
-						<!--スポット名-->
-						<h5 class="card-title" th:text="${spot.spotName}"></h5>
+                    <!-- スポットグリッド（2カラム） -->
+                    <div class="row row-cols-1 row-cols-sm-2 g-3">
+                        <div class="col" th:each="spot : ${spotPages}">
+                            <a th:href="@{/spot/{id}(id=${spot.id})}" class="text-decoration-none">
+                                <div class="card h-100 border-0 shadow-sm spot-card">
 
-						<!--カテゴリー/サブカテゴリー表示-->
-						<p class="text-muted mb-1">
-							<span th:text="${spot.categoryName}"></span>
-							/
-							<span th:text="${spot.subCategoryName}"></span>
-						</p>
-						<a th:href="@{/spot/{id}(id=${spot.id})}" class="btn btn-primary btn-sm">詳しく見る</a>
-					</div>
-				</div>
-			</div>
-		</div>
+                                    <!-- 画像 + サブカテゴリバッジ -->
+                                    <div class="spot-img-wrap overflow-hidden"
+                                        style="border-radius: 0.5rem 0.5rem 0 0;">
+                                        <img th:src="@{/uploads/{url}(url=${spot.photoUrl})}" th:alt="${spot.spotName}"
+                                            class="card-img-top spot-img"
+                                            style="height: 240px; object-fit: cover; display: block;">
+                                        <span class="position-absolute d-flex align-items-center gap-1"
+                                              style="top: 0.65rem; right: 0.65rem;
+                                                     background: rgba(255,255,255,0.92); color: #374151;
+                                                     font-size: 0.8rem; font-weight: 600;
+                                                     padding: 0.25em 0.65em; border-radius: 9999px;
+                                                     box-shadow: 0 1px 4px rgba(0,0,0,0.1);">
+                                            <i class="bi bi-star-fill" style="color:#f59e0b; font-size:0.75rem;"></i>
+                                            <span th:text="${spot.averageRating != null ? #numbers.formatDecimal(spot.averageRating, 1, 1) : '-'}">4.5</span>
+                                        </span>
+                                    </div>
 
-		<!-- ===== ページネーション ===== -->
-		<!-- spots は Page<Spot> なので、ページ情報が入っている -->
-		<nav th:if="${spots.totalPages > 1}">
-			<ul class="pagination justify-content-center">
-				<!-- 「前へ」ボタン -->
-				<li class="page-item" th:classappend="${spots.first} ? 'disabled'">
-					<a class="page-link"
-						th:href="@{/spot/category/{category}(category=${category}, page=${spots.number - 1})}"
-						href="#">&laquo; 前へ</a>
-				</li>
+                                    <div class="card-body p-3">
+                                        <!-- スポット名 -->
+                                        <h5 class="card-title fw-bold text-dark mb-2" style="font-size: 1rem;"
+                                            th:text="${spot.spotName}">スポット名</h5>
 
-				<!-- ページ番号 -->
-				<li class="page-item" th:each="i : ${#numbers.sequence(0, spots.totalPages - 1)}"
-					th:classappend="${i == spots.number} ? 'active'">
-					<a class="page-link" th:href="@{/spot/category/{category}(category=${category}, page=${i})}"
-						th:text="${i + 1}" href="#">1</a>
-				</li>
+                                        <!-- カテゴリ名 / サブカテゴリ名 -->
+                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                            <span class="badge rounded-pill"
+                                                style="background:#eff6ff; color:#2563eb; font-weight:500; font-size:0.75rem;"
+                                                th:text="${spot.categoryName}">グルメ</span>
+                                            <span class="text-secondary" style="font-size:0.85rem;"
+                                                th:text="${spot.subCategoryName}">和食</span>
+                                        </div>
 
-				<!-- 「次へ」ボタン -->
-				<li class="page-item" th:classappend="${spots.last} ? 'disabled'">
-					<a class="page-link"
-						th:href="@{/spot/category/{category}(category=${category}, page=${spots.number + 1})}"
-						href="#">次へ &raquo;</a>
-				</li>
-			</ul>
-		</nav>
-	</section>
+                                        <!-- キーワードタグ（最大3件） -->
+                                        <div class="d-flex flex-wrap gap-1" style="min-height: 1.5rem;">
+                                            <th:block th:if="${spot.keywords != null and !#strings.isEmpty(spot.keywords)}">
+                                                <span th:each="kw, stat : ${#strings.arraySplit(spot.keywords, ',')}"
+                                                    th:if="${stat.index < 3}" class="badge rounded-pill"
+                                                    style="background: transparent; color: #94a3b8; font-weight: 400; font-size: 0.75rem;"
+                                                    th:text="${'#' + #strings.trim(kw)}">タグ</span>
+                                            </th:block>
+                                        </div>
+                                    </div>
 
+                                </div>
+                            </a>
+                        </div>
+                    </div>
 
+                    <!-- スポット0件時のメッセージ -->
+                    <div th:if="${spotPages.totalElements == 0}" class="text-center py-5 text-secondary">
+                        <i class="bi bi-search" style="font-size: 2.5rem;"></i>
+                        <p class="mt-3 mb-0">スポットが見つかりませんでした。</p>
+                    </div>
+
+                    <!-- 下部ページネーション -->
+                    <div th:replace="~{fragments/pagination :: pager(${spotPages}, ${category}, 'mt-4')}"></div>
+
+                </div>
+            </div>
+        </div>
+
+        <style>
+            /* ===== シンプルページネーション ===== */
+            .pager-minimal {
+                gap: 0.3rem;
+            }
+
+            .pager-minimal .page-item .page-link {
+                border: none;
+                background: transparent;
+                color: #64748b;
+                font-size: 0.875rem;
+                border-radius: 0.4rem;
+                padding: 0.35rem 0.65rem;
+                line-height: 1.4;
+                box-shadow: none;
+                transition: background-color 0.15s, color 0.15s;
+            }
+
+            .pager-minimal .page-item .page-link:hover {
+                background-color: #f1f5f9;
+                color: #334155;
+            }
+
+            .pager-minimal .page-item.active .page-link {
+                background-color: #dbeafe;
+                color: #1d4ed8;
+                font-weight: 600;
+            }
+
+            .pager-minimal .page-item.disabled .page-link {
+                color: #cbd5e1;
+                pointer-events: none;
+            }
+
+            .pager-minimal .pager-ellipsis {
+                color: #94a3b8;
+                cursor: default;
+                padding: 0.35rem 0.4rem;
+            }
+
+            .pager-minimal.pager-sm .page-link {
+                font-size: 0.8rem;
+                padding: 0.25rem 0.55rem;
+            }
+
+            .sidebar-item-link:hover {
+                background-color: #f8fafc;
+                color: #374151 !important;
+            }
+
+            .spot-card {
+                border-radius: 0.625rem !important;
+                transition: box-shadow 0.2s, transform 0.2s;
+                position: relative;
+            }
+
+            .spot-card:hover {
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+                transform: translateY(-2px);
+            }
+
+            .spot-img-wrap {
+                position: relative;
+            }
+
+            .spot-img {
+                transition: transform 0.3s ease;
+            }
+
+            .spot-card:hover .spot-img {
+                transform: scale(1.04);
+            }
+
+            .line-clamp-2 {
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+        </style>
+
+    </main>
 
 </body>
 
