@@ -6,6 +6,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,8 +34,10 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public UserProfile getProfileByUsername(String username) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getProfileByUsername'");
+    	return userMapper.findProfileByUsername(username).orElseThrow(() -> {
+            throw new UsernameNotFoundException(
+                    "ユーザーが存在しません");
+        });
     }
 
     @Override
