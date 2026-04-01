@@ -40,7 +40,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         Collection<GrantedAuthority> authorities = new ArrayList<>();
 
-        return new UserDetailsImpl(user, authorities);
+        return new LoginUser(user, authorities);
     }
 
 }
