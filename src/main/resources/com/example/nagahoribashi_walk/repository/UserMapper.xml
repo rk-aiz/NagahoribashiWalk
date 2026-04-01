@@ -46,5 +46,20 @@
     <select id="exists" resultType="boolean">
         SELECT EXISTS (SELECT 1 FROM users WHERE username = #{username})
     </select>
+    
+    <!-- 管理者用ユーザー一覧 -->
+    <select id="findAllForAdmin" resultType="com.example.nagahoribashi_walk.dto.AdminUserRow">
+    SELECT
+        id,
+        username,
+        display_name AS displayName,
+        email,
+        role,
+        created_at AS createdAt,
+        updated_at AS updatedAt,
+        enabled
+    FROM users
+    ORDER BY id DESC
+</select>
 
 </mapper>

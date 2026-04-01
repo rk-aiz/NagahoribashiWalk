@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.nagahoribashi_walk.dto.AdminUserRow;
 import com.example.nagahoribashi_walk.dto.UserProfile;
 import com.example.nagahoribashi_walk.entity.User;
 import com.example.nagahoribashi_walk.exception.UserAlreadyExistsException;
@@ -84,5 +85,10 @@ public class UserServiceImpl implements UserService {
         long total = userMapper.count();
         List<User> users = userMapper.findAll(pageable.getOffset(), pageable.getPageSize());
         return new PageImpl<>(users, pageable, total);
+    }
+    
+    @Override
+    public Page<AdminUserRow> getAdminUserPage(Pageable pageable) {
+        return userMapper.findAllForAdmin(pageable);
     }
 }

@@ -3,6 +3,7 @@ package com.example.nagahoribashi_walk.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.example.nagahoribashi_walk.dto.AdminUserRow;
 import com.example.nagahoribashi_walk.dto.UserProfile;
 import com.example.nagahoribashi_walk.entity.User;
 
@@ -42,5 +43,10 @@ public interface UserService {
      * ページネーション付きでユーザー一覧を取得する
      */
     Page<User> getPage(Pageable pageable);
+    
 
+    /**
+     * ページネーション付きで管理者側がユーザー一覧を取得する
+     */
+    Page<AdminUserRow> getAdminUserPage(Pageable pageable);
 }
