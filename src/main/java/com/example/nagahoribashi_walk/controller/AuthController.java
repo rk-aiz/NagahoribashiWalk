@@ -2,15 +2,19 @@ package com.example.nagahoribashi_walk.controller;
 
 import java.security.Principal;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
+import com.example.nagahoribashi_walk.entity.User;
 import com.example.nagahoribashi_walk.form.UserRegisterForm;
 import com.example.nagahoribashi_walk.service.UserService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * 
  * @author 海津
  */
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class AuthController {
@@ -45,10 +50,24 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String postMethodName(
-        UserRegisterForm userRegisterForm
-        
+    public String register(
+        @Validated UserRegisterForm userRegisterForm,
+        BindingResult bindingResult
         ) {
+    	
+    	if (bindingResult.hasErrors()) {
+    		return "/auth/register";
+    	}
+        
+        User newUser = new User();
+        BeanUtils.copyProperties(userRegisterForm, newUser, "password");
+        newUser.setRole("USER");
+        
+        userService.register(newUser, userRegisterForm.getPassword());
+        
+        log.info(String.format(
+        		"新規会員 : %s", userRegisterForm));
+    	
         return "redirect:/register/complete";
     }
     

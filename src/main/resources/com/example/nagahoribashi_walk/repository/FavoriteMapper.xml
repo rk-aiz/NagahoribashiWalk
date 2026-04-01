@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.nagahoribashi_walk.repository.FavoriteMapper">
-	
+
+    <!--おすすめ登録削除用xml （正本）-->
+    
+    <!-- ① お気に入り追加 -->
+    <insert id="insertFavorite">
+        INSERT INTO favorites (user_id, spot_id)
+        VALUES (#{userId}, #{spotId})
+    </insert>
+
+    <!-- ② お気に入り削除 -->
+    <delete id="deleteFavorite">
+        DELETE FROM favorites
+        WHERE user_id = #{userId}
+          AND spot_id = #{spotId}
+    </delete>
+
+    <!-- ③ 存在確認 -->
+    <select id="existsFavorite" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM favorites
+            WHERE user_id = #{userId}
+              AND spot_id = #{spotId}
+        )
+    </select>
 
 </mapper>
