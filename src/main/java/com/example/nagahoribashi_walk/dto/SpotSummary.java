@@ -36,5 +36,9 @@ public class SpotSummary {
 	//スポットの特徴・検索用キーワード。一覧画面で概要表示として利用する
 	//s.keywords
 	private String keywords;
+	
+	//スポット検索の際にひらがな等に対応する用
+	private String normalizedName;
+	private String normalizedKeywords;
 
 }
