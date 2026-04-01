@@ -24,7 +24,7 @@ public class UserController {
     		@AuthenticationPrincipal UserDetails userDetails,
     		Model model) {
     	
-    	System.out.println(userDetails.getUsername());
+    	System.out.println(userDetails.get);
     	
     	return "user/mypage";
     }
