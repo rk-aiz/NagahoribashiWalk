@@ -40,11 +40,11 @@
 		FROM spots
 		<where>
 			deleted_at IS NULL<!-- 論理削除に対応 -->
-			<if test="keyword != null and keyword != ''"><!-- 空白とNULLに対応 -->
+			<if test="normalizedkeyword != null and normalizedkeyword != ''"><!-- 空白とNULLに対応 -->
 				AND (
-				spot_name LIKE CONCAT('%', #{keyword}, '%')
+				normalized_name LIKE CONCAT('%', #{normalizedkeyword}, '%')
 				OR
-				keywords LIKE CONCAT('%', #{keyword}, '%')
+				normalized_keywords LIKE CONCAT('%', #{normalizedkeyword}, '%')
 				)
 			</if>
 		</where>
@@ -65,8 +65,8 @@
 			deleted_at IS NULL
 			<if test="keyword != null and keyword != ''">
 				AND (
-				spot_name LIKE CONCAT('%', #{keyword}, '%')
-				OR keywords LIKE CONCAT('%', #{keyword}, '%')
+				normalized_name LIKE CONCAT('%', #{normalizedkeyword}, '%')
+				OR normalized_keywords LIKE CONCAT('%', #{normalizedkeyword}, '%')
 				)
 			</if>
 		</where>

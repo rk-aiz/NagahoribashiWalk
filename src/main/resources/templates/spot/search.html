@@ -10,68 +10,54 @@
 </head>
 
 <body>
-	<div class="container mt-4">
+	<p>
+		「<span th:text="${keyword}">キーワード</span>」の検索結果
+	</p>
 
-		<h1 class="mb-4">スポット一覧</h1>
+	<p>
+		<span th:text="${page.totalElements}"></span>件のスポットが見つかりました
+	</p>
+	<div class="row">
 
-		<!-- 🔍 検索フォーム -->
-		<form th:action="@{/spots}" method="get" class="row g-2 mb-4">
-			<div class="col-auto">
-				<input type="text" name="keyword" th:value="${keyword}" class="form-control" placeholder="キーワード検索">
-			</div>
-			<div class="col-auto">
-				<button type="submit" class="btn btn-primary">
-					検索
-				</button>
-			</div>
-		</form>
+	    <div class="col-12 col-sm-6 col-md-4 mb-4"
+	         th:each="spot : ${page.content}">
 
-		<!-- 📋 一覧 -->
-		<table class="table table-striped">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>スポット名</th>
-					<th>住所</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="spot : ${page.content}">
-					<td th:text="${spot.id}"></td>
-					<td th:text="${spot.spotName}"></td>
-					<td th:text="${spot.address}"></td>
-				</tr>
-			</tbody>
-		</table>
+	        <a th:href="@{/spots/{id}(id=${spot.id})}"
+	           class="text-decoration-none text-dark">
 
-		<!-- 📄 ページング -->
-		<nav>
-			<ul class="pagination">
+	            <div class="card h-100 shadow-sm">
 
-				<!-- 前へ -->
-				<li class="page-item" th:classappend="${page.hasPrevious()} ? '' : 'disabled'">
-					<a class="page-link" th:href="@{/spots(page=${page.number - 1}, keyword=${keyword})}">
-						前へ
-					</a>
-				</li>
+	                <img th:src="${spot.photoUrl}" class="card-img-top">
 
-				<!-- ページ番号 -->
-				<li class="page-item" th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
-					th:classappend="${i == page.number} ? 'active'">
-					<a class="page-link" th:href="@{/spots(page=${i}, keyword=${keyword})}" th:text="${i + 1}">
-					</a>
-				</li>
+	                <div class="card-body">
+	                    <h5 class="card-title" th:text="${spot.spotName}"></h5>
+	                    <span class="badge bg-primary">検索</span>
+	                </div>
 
-				<!-- 次へ -->
-				<li class="page-item" th:classappend="${page.hasNext()} ? '' : 'disabled'">
-					<a class="page-link" th:href="@{/spots(page=${page.number + 1}, keyword=${keyword})}">
-						次へ
-					</a>
-				</li>
+	            </div>
 
-			</ul>
-		</nav>
+	        </a>
 
+	    </div>
+
+	</div>
+
+	<style>
+	.card-img-top {
+	    height: 200px;
+	    object-fit: cover;
+	}
+	</style>
+	<div class="mt-4 text-center">
+	    <a th:if="${page.hasPrevious()}"
+	       th:href="@{/spot/search(q=${keyword}, page=${page.number - 1})}">
+	       前へ
+	    </a>
+
+	    <a th:if="${page.hasNext()}"
+	       th:href="@{/spot/search(q=${keyword}, page=${page.number + 1})}">
+	       次へ
+	    </a>
 	</div>
 </body>
 

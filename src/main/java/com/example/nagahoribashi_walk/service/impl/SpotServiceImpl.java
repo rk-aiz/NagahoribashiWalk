@@ -64,4 +64,22 @@ public class SpotServiceImpl implements SpotService {
 
 		return new PageImpl<>(spots, pageable, total);
 	}
+//	private String normalize(String input) {
+//	    if (input == null) return null;
+//
+//	    String result = input.toLowerCase();
+//
+//	    // カタカナ→ひらがな
+//	    result = result.replaceAll("[ァ-ン]", ch ->
+//	        String.valueOf((char)(ch.group().charAt(0) - 0x60))
+//	    );
+//
+//	    // 全角スペース→半角
+//	    result = result.replace("　", " ");
+//
+//	    // スペース整理
+//	    result = result.trim().replaceAll("\\s+", " ");
+//
+//	    return result;
+//	}
 }

@@ -6,6 +6,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.nagahoribashi_walk.dto.SpotSummary;
 import com.example.nagahoribashi_walk.service.SpotService;
@@ -29,15 +30,17 @@ public class SpotController {
         return "spot/list";
     } 
     
-    @GetMapping("/spot")
-    public String search(String keyword, Pageable pageable, Model model) {
+    @GetMapping("/spot/search")
+    public String search(
+    		@RequestParam("q") String keyword, Pageable pageable, Model model) {
+    	 String normalizedKeyword = normalize(keyword);
 
-        Page<SpotSummary> page =
-                spotService.searchByKeywords(keyword, pageable);
+    	    Page<SpotSummary> page =
+    	            spotService.searchByKeywords(normalizedKeyword, pageable);
 
         model.addAttribute("page", page);
         model.addAttribute("keyword", keyword);
 
-        return "spot/list";
+        return "spot/search";
     }
 }
