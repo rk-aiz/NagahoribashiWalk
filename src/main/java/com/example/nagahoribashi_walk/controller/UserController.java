@@ -1,10 +1,13 @@
 package com.example.nagahoribashi_walk.controller;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.example.nagahoribashi_walk.service.FavoriteService;
 import com.example.nagahoribashi_walk.service.UserService;
 import com.example.nagahoribashi_walk.service.userdetails.LoginUser;
 
@@ -18,16 +21,21 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
     private final UserService userService;
+    private final FavoriteService favoriteService;
     
     @GetMapping("/mypage")
     public String mypage(
     		@AuthenticationPrincipal LoginUser loginUser,
+    		@PageableDefault(size = 12) Pageable pageable, 
     		Model model) {
     	
-    	System.out.println(loginUser.getUsername());
-    	System.out.println(loginUser.getId());
+    	model.addAttribute("profile", 
+    			userService.getProfileByUsername(loginUser.getUsername()));
     	
-    	return "user/mypage";
+    	model.addAttribute("favorites",
+    			favoriteService.getPage(loginUser.getId(), pageable));
+    	
+    	return "/user/mypage";
     }
 
 }
