@@ -8,19 +8,32 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.nagahoribashi_walk.service.FavoriteService;
 import com.example.nagahoribashi_walk.service.userdetails.LoginUser;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class FavoriteController {
 
-    private final FavoriteService favoriteService;
+    private final FavoriteService favoriteService ;
     
     @PostMapping("/favorite/remove")
-    public String favorite(@RequestParam Long spotId,
+    public String favoriteRemove(@RequestParam Long spotId,
     		@AuthenticationPrincipal LoginUser loginUser) {
 
         Long userId = loginUser.getId();
 
         favoriteService.removeFavorite(userId, spotId);
+
+        return "redirect:/spot/" + spotId;
+    }
+    
+    @PostMapping("/favorite/add")
+    public String favoriteAdd(@RequestParam Long spotId,
+    		@AuthenticationPrincipal LoginUser loginUser) {
+
+        Long userId = loginUser.getId();
+
+        favoriteService.addFavorite(userId, spotId);
 
         return "redirect:/spot/" + spotId;
     }
