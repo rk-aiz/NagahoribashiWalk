@@ -1,5 +1,6 @@
 package com.example.nagahoribashi_walk.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import lombok.Data;
@@ -9,7 +10,7 @@ import lombok.Data;
  * @Author 海津
  */
 @Data
-public class User {
+public class User implements Serializable {
 
 	// 主キー
 	private Long id;
