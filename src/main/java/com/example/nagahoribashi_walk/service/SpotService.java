@@ -20,4 +20,8 @@ public interface SpotService {
 
     List<SpotSummary> getRecommendedSpots();
     
+    Page<SpotSummary> getPageByCategoryId(Long categoryId, Pageable pageable);
+    
+    Page<SpotSummary> getPageBySubCategoryId(Long SubcategoryId, Pageable pageable);
+    
 }

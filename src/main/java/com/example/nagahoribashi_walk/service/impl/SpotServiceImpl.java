@@ -41,33 +41,53 @@ public class SpotServiceImpl implements SpotService {
 		// Page<T>インスタンスに詰めて返す
 		return new PageImpl<>(spots, pageable, total);
 	}
-	
+
 	/**
 	 * ページとキーワードに対応したスポット一覧を返す
 	 */
 	@Override
 	public Page<SpotSummary> searchByKeywords(String keyword, Pageable pageable) {
-		
+
 		//空文字でもLike検索ではなく一覧表示になるように
 		if (keyword == null || keyword.isBlank()) {
-	        return getPage(pageable);
-	    }
+			return getPage(pageable);
+		}
 
 		long total = spotMapper.countByKeywords(keyword);
 
-		List<SpotSummary> spots =
-				spotMapper.searchByKeywords(
-						keyword,
-						pageable.getOffset(),
-						pageable.getPageSize()
-						);
+		List<SpotSummary> spots = spotMapper.searchByKeywords(
+				keyword,
+				pageable.getOffset(),
+				pageable.getPageSize());
 
 		return new PageImpl<>(spots, pageable, total);
 	}
-	
+
 	//トップページおすすめ３件表示用
 	@Override
 	public List<SpotSummary> getRecommendedSpots() {
 		return spotMapper.findRecommendedSpots();
 	}
-}
+
+	@Override
+	public Page<SpotSummary> getPageByCategoryId(Long categoryId, Pageable pageable) {
+		
+		List<SpotSummary> content = spotMapper.findByCategoryId(categoryId, 
+		        pageable.getOffset(),pageable.getPageSize());
+		
+		long total = spotMapper.countByCategoryId(categoryId);
+		return new PageImpl<>(content, pageable, total);
+	}
+
+	@Override
+	public Page<SpotSummary> getPageBySubCategoryId(Long subCategoryId, Pageable pageable){
+		
+		List<SpotSummary> content = spotMapper.findBySubCategoryId(
+				subCategoryId,pageable.getOffset(),pageable.getPageSize());
+		
+		long total = spotMapper.countBySubCategoryId(subCategoryId);
+	    
+	    return new PageImpl<>(content, pageable, total);
+	}
+	}
+

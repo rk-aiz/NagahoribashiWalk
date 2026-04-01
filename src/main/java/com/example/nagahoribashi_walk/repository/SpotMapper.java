@@ -22,10 +22,16 @@ public interface SpotMapper {
     // findById
 
     // findByCategoryId
-    List<SpotSummary> findByCategoryId(@Param("categoryId") Long categoryId, @Param("offset") long offset, @Param("limit") int limit);
+    List<SpotSummary> findByCategoryId(
+    		@Param("categoryId") Long categoryId, 
+    		@Param("offset") long offset, 
+    		@Param("limit") int limit);
 
     // findBySubCategoryId
-    List<SpotSummary> findBySubCategoryId(@Param("subCategoryId") Long subCategoryId, @Param("offset") long offset, @Param("limit") int limit);
+    List<SpotSummary> findBySubCategoryId(
+    		@Param("subCategoryId") Long subCategoryId, 
+    		@Param("offset") long offset, 
+    		@Param("limit") int limit);
 
     List<SpotSummary> searchByKeywords(
     		@Param("keyword") String keyword,
@@ -50,4 +56,8 @@ public interface SpotMapper {
     long count();
     
     long countByKeywords(@Param("keyword") String keyword);
+    
+    long countByCategoryId(@Param("categoryId") Long categoryId);
+    
+    long countBySubCategoryId(@Param("subCategoryId") Long subCategoryId);
 }
