@@ -1,7 +1,7 @@
 package com.example.nagahoribashi_walk.service.userdetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
@@ -38,8 +38,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     username + " => 指定しているユーザーは有効ではありません");
         }
 
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-
+        Collection<GrantedAuthority> authorities = 
+        		List.of(new SimpleGrantedAuthority(user.getRole()));
+        
         return new LoginUser(user, authorities);
     }
 
