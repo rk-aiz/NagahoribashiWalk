@@ -40,7 +40,7 @@ CREATE TABLE categories(
 
 CREATE TABLE sub_categories (
     id SERIAL PRIMARY KEY,
-    category_id INTEGER NOT NULL,
+    category_id INTEGER,
     name VARCHAR(100) NOT NULL,
     CONSTRAINT fk_sub_categories_category
         FOREIGN KEY (category_id) REFERENCES categories(id)

@@ -28,7 +28,8 @@ public interface SpotMapper {
     // findBySubCategoryId
 
     List<SpotSummary> searchByKeywords(
-    		@Param("keyword") String keyword,
+    		@Param("hira") String hira,
+    		@Param("kana") String kana,
     		@Param("offset") long offset,
     		@Param("limit") int limit);
 
@@ -49,5 +50,5 @@ public interface SpotMapper {
     /** スポット数をカウントする */
     long count();
     
-    long countByKeywords(@Param("keyword") String keyword);
+    long countByKeywords(@Param("hira") String hira, @Param("kana") String kana);
 }

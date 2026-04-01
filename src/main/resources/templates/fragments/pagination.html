@@ -37,14 +37,16 @@
         </li>
 
         <!-- 中間ページ（current ± 2、先頭/末尾を除く） -->
-        <th:block th:each="i : ${#numbers.sequence(1, spotPages.totalPages - 2)}"
-                  th:if="${spotPages.totalPages <= 5 or (i >= spotPages.number - 2 and i <= spotPages.number + 2)}">
-            <li class="page-item" th:classappend="${i == spotPages.number} ? 'active'">
-                <a class="page-link"
-                   th:href="@{/spot/category/{category}(category=${category}, page=${i})}"
-                   th:text="${i + 1}">2</a>
-            </li>
-        </th:block>
+		<th:block th:if="${spotPages.totalPages >= 3}">
+	        <th:block th:each="i : ${#numbers.sequence(1, spotPages.totalPages - 2)}"
+	                  th:if="${spotPages.totalPages <= 5 or (i >= spotPages.number - 2 and i <= spotPages.number + 2)}">
+	            <li class="page-item" th:classappend="${i == spotPages.number} ? 'active'">
+	                <a class="page-link"
+	                   th:href="@{/spot/category/{category}(category=${category}, page=${i})}"
+	                   th:text="${i + 1}">2</a>
+	            </li>
+	        </th:block>
+		</th:block>
 
         <!-- 右省略記号 -->
         <li th:if="${spotPages.totalPages > 5 and spotPages.number < spotPages.totalPages - 4}"
@@ -67,6 +69,74 @@
             </a>
         </li>
 
+    </ul>
+</nav>
+
+<!-- 検索ページ用 -->
+<nav th:fragment="pagerSearch(spotPages, keyword, navClass)"
+     th:if="${spotPages.totalPages > 1}"
+     aria-label="ページネーション"
+     class="d-flex justify-content-center"
+     th:classappend="${navClass}">
+
+    <ul class="pagination pagerSearch-minimal mb-0">
+
+		<!-- 前へ -->
+		<li class="page-item" th:classappend="${spotPages.first} ? 'disabled'">
+		    <a class="page-link"
+		       th:href="${spotPages.first} ? '#' : @{/spot/search(q=${keyword}, page=${spotPages.number - 1})}">
+		        前へ
+		    </a>
+		</li>
+
+		<!-- ページ番号（ここを丸ごと置き換え） -->
+		<th:block th:if="${spotPages.totalPages <= 5}">
+		    <li class="page-item"
+		        th:each="i : ${#numbers.sequence(0, spotPages.totalPages - 1)}"
+		        th:classappend="${i == spotPages.number} ? 'active'">
+		        <a class="page-link"
+		           th:href="@{/spot/search(q=${keyword}, page=${i})}"
+		           th:text="${i + 1}">1</a>
+		    </li>
+		</th:block>
+
+		<th:block th:if="${spotPages.totalPages > 5}">
+
+		    <!-- 1ページ目 -->
+		    <li class="page-item"
+		        th:classappend="${spotPages.number == 0} ? 'active'">
+		        <a class="page-link"
+		           th:href="@{/spot/search(q=${keyword}, page=0)}">1</a>
+		    </li>
+
+		    <!-- 中間 -->
+		    <th:block th:each="i : ${#numbers.sequence(1, spotPages.totalPages - 2)}"
+		              th:if="${i >= spotPages.number - 2 and i <= spotPages.number + 2}">
+		        <li class="page-item"
+		            th:classappend="${i == spotPages.number} ? 'active'">
+		            <a class="page-link"
+		               th:href="@{/spot/search(q=${keyword}, page=${i})}"
+		               th:text="${i + 1}">2</a>
+		        </li>
+		    </th:block>
+
+		    <!-- 最終ページ -->
+		    <li class="page-item"
+		        th:classappend="${spotPages.number == spotPages.totalPages - 1} ? 'active'">
+		        <a class="page-link"
+		           th:href="@{/spot/search(q=${keyword}, page=${spotPages.totalPages - 1})}"
+		           th:text="${spotPages.totalPages}">N</a>
+		    </li>
+
+		</th:block>
+
+		<!-- 次へ -->
+		<li class="page-item" th:classappend="${spotPages.last} ? 'disabled'">
+		    <a class="page-link"
+		       th:href="${spotPages.last} ? '#' : @{/spot/search(q=${keyword}, page=${spotPages.number + 1})}">
+		        次へ
+		    </a>
+		</li>
     </ul>
 </nav>
 

@@ -16,7 +16,6 @@ import com.example.nagahoribashi_walk.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-
 /**
  * 認証関連のコントローラー
  * 
@@ -30,7 +29,7 @@ public class AuthController {
     private final UserService userService;
 
     /**
-     * トップページ(ログイン画面)を表示します。
+     * ログイン画面を表示します。
      * すでにログインしている場合はメニュー画面へリダイレクトします。
      */
     @GetMapping("/login")
@@ -51,26 +50,25 @@ public class AuthController {
 
     @PostMapping("/register")
     public String register(
-        @Validated UserRegisterForm userRegisterForm,
-        BindingResult bindingResult
-        ) {
-    	
-    	if (bindingResult.hasErrors()) {
-    		return "/auth/register";
-    	}
-        
+            @Validated UserRegisterForm userRegisterForm,
+            BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return "/auth/register";
+        }
+
         User newUser = new User();
         BeanUtils.copyProperties(userRegisterForm, newUser, "password");
         newUser.setRole("USER");
-        
+
         userService.register(newUser, userRegisterForm.getPassword());
-        
+
         log.info(String.format(
-        		"新規会員 : %s", userRegisterForm));
-    	
+                "新規会員 : %s", userRegisterForm));
+
         return "redirect:/register/complete";
     }
-    
+
     @GetMapping("/register/complete")
     public String complete() {
         return "/auth/register-complete";

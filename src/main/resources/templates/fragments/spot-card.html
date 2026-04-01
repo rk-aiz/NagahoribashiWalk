@@ -64,10 +64,10 @@
 
             <!-- カテゴリ / サブカテゴリ -->
             <p class="mb-0" style="font-size:0.82rem;">
-                <span th:text="${spot.categoryName}"
+                <span th:text="${spot.categoryName} ?: 'その他'"
                       style="color:#4b82f6; font-weight:600;">グルメ</span>
                 <span class="mx-1 text-secondary">/</span>
-                <span th:text="${spot.subCategoryName}" class="text-secondary">ラーメン</span>
+                <span th:text="${spot.subCategoryName} ?: 'その他'" class="text-secondary">ラーメン</span>
             </p>
 
             <!-- キーワードバッジ（最大3件・下揃え） -->

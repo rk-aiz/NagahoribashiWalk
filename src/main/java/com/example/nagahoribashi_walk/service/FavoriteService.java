@@ -1,7 +1,13 @@
 package com.example.nagahoribashi_walk.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.example.nagahoribashi_walk.dto.FavoriteSummary;
+
 public interface FavoriteService {
 	
+		Page<FavoriteSummary> getPage(Long userId, Pageable pageable);
 	
        //お気に入り登録
 	    void addFavorite(Long userId, Long spotId);
