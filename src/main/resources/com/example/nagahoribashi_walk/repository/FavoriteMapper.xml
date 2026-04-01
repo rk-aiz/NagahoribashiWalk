@@ -2,9 +2,49 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.nagahoribashi_walk.repository.FavoriteMapper">
 
-    <!-- マイページ用にお気に入り一覧をページネーションありで取得 -->
+    <!-- マイページ用にお気に入り一覧を取得 -->
     <select id="findByUserId" resultType="com.example.nagahoribashi_walk.dto.FavoriteSummary">
+        SELECT
+            s.id                AS spot_id,
+            s.spot_name,
+            sp.photo_url,
+            AVG(r.rating)       AS average_rating,
+            c.name              AS category_name,
+            sc.name             AS sub_category_name,
+            s.keywords,
+            f.created_at        AS favorited_at
+        FROM favorites f
+        JOIN spots s
+            ON f.spot_id = s.id
+            AND s.deleted_at IS NULL
+        LEFT JOIN sub_categories sc
+            ON s.sub_category_id = sc.id
+        LEFT JOIN categories c
+            ON sc.category_id = c.id
+        LEFT JOIN spot_photos sp
+            ON sp.spot_id = s.id
+            AND sp.display_order = (
+                SELECT MIN(sp2.display_order)
+                FROM spot_photos sp2
+                WHERE sp2.spot_id = s.id
+            )
+        LEFT JOIN reviews r
+            ON r.spot_id = s.id
+        WHERE f.user_id = #{userId}
+        GROUP BY
+            s.id, s.spot_name, sp.photo_url,
+            c.name, sc.name, s.keywords, f.created_at
+        ORDER BY f.created_at DESC
+    </select>
 
+    <!-- マイページ用ページネーション件数取得 -->
+    <select id="countByUserId" resultType="long">
+        SELECT COUNT(*)
+        FROM favorites f
+        JOIN spots s
+            ON f.spot_id = s.id
+            AND s.deleted_at IS NULL
+        WHERE f.user_id = #{userId}
     </select>
 
 
@@ -20,7 +60,7 @@
     <delete id="deleteFavorite">
         DELETE FROM favorites
         WHERE user_id = #{userId}
-          AND spot_id = #{spotId}
+        AND spot_id = #{spotId}
     </delete>
 
     <!-- ③ 存在確認 -->
@@ -29,7 +69,7 @@
             SELECT 1
             FROM favorites
             WHERE user_id = #{userId}
-              AND spot_id = #{spotId}
+            AND spot_id = #{spotId}
         )
     </select>
 

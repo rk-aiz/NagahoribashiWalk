@@ -35,13 +35,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         if (!user.isEnabled()) {
             throw new DisabledException(
-            		// ユーザーが見つからない場合と無効はメッセージ上は区別しない。
+                    // ユーザーが見つからない場合と無効はメッセージ上は区別しない。
                     username + " => 指定しているユーザーは存在しません");
         }
 
-        Collection<GrantedAuthority> authorities = 
-        		List.of(new SimpleGrantedAuthority(user.getRole()));
-        
+        Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole()));
+
         return new LoginUser(user, authorities);
     }
 
