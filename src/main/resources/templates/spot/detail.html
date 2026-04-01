@@ -18,6 +18,8 @@
 	</form>
 	<!--　お気に入り登録　-->
 	<form th:action="@{/favorite/add}" method="post">
+		<input type="hidden" name="spotId" th:value="${spotId}">
+		
 		<button type="submit" th:if="${!isFavorite}">
 		        お気に入り登録
 		  </button>

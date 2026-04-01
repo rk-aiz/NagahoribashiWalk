@@ -35,5 +35,11 @@ public class FavoriteServiceImpl implements FavoriteService {
             // 削除
             favoriteMapper.deleteFavorite(userId, spotId);
         }
+        
+        @Override
+        public boolean existsByUserAndSpot(Long userId, Long spotId) {
+        	
+        	return favoriteMapper.existsByUserAndSpot(userId, spotId);
+        }
     }
 

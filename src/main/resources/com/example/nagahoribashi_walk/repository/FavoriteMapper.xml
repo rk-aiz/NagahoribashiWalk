@@ -18,7 +18,7 @@
     </delete>
 
     <!-- ③ 存在確認 -->
-    <select id="existsFavorite" resultType="boolean">
+    <select id="existsByUserAndSpot" resultType="boolean">
         SELECT EXISTS (
             SELECT 1
             FROM favorites
