@@ -41,7 +41,6 @@ public class SpotServiceImpl implements SpotService {
 		// Page<T>インスタンスに詰めて返す
 		return new PageImpl<>(spots, pageable, total);
 	}
-
 	/**
 	 * ページとキーワードに対応したスポット一覧を返す
 	 */
@@ -64,22 +63,11 @@ public class SpotServiceImpl implements SpotService {
 
 		return new PageImpl<>(spots, pageable, total);
 	}
-//	private String normalize(String input) {
-//	    if (input == null) return null;
-//
-//	    String result = input.toLowerCase();
-//
-//	    // カタカナ→ひらがな
-//	    result = result.replaceAll("[ァ-ン]", ch ->
-//	        String.valueOf((char)(ch.group().charAt(0) - 0x60))
-//	    );
-//
-//	    // 全角スペース→半角
-//	    result = result.replace("　", " ");
-//
-//	    // スペース整理
-//	    result = result.trim().replaceAll("\\s+", " ");
-//
-//	    return result;
-//	}
+
+	
+	//トップページおすすめ３件表示用
+	@Override
+	public List<SpotSummary> getRecommendedSpots() {
+		return spotMapper.findRecommendedSpots();
+	}
 }

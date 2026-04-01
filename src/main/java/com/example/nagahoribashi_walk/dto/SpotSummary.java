@@ -11,7 +11,7 @@ public class SpotSummary {
 
 	//スポットID。詳細画面への遷移に使用する
 	//s.id
-	private Long id;
+	private Long id; 
 
 	//スポット名
 	//s.spot_name

@@ -23,20 +23,21 @@ public class SpotController {
     private final SpotService spotService;
     
     @GetMapping("/spot/category/all")
-    public String list(@PageableDefault(size = 12) Pageable pageable, Model model) {
-    	
-    	model.addAttribute("spots", spotService.getPage(pageable));
-    	
+    public String list(
+            @PageableDefault(size = 12) Pageable pageable, 
+            Model model) {
+        model.addAttribute("category", "all");
+        model.addAttribute("spotPages", spotService.getPage(pageable));
         return "spot/list";
     } 
     
     @GetMapping("/spot/search")
     public String search(
     		@RequestParam("q") String keyword, Pageable pageable, Model model) {
-    	 String normalizedKeyword = normalize(keyword);
+    	 //String normalizedKeyword = normalize(keyword);
 
     	    Page<SpotSummary> page =
-    	            spotService.searchByKeywords(normalizedKeyword, pageable);
+    	            spotService.searchByKeywords(keyword, pageable);
 
         model.addAttribute("page", page);
         model.addAttribute("keyword", keyword);
