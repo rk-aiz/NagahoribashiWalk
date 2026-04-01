@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.nagahoribashi_walk.repository.SpotMapper">
-	
+
+<mapper
+	namespace="com.example.nagahoribashi_walk.repository.SpotMapper">
+
     <!-- ページネーション付き取得 -->
     <select id="findAll" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
         SELECT
@@ -13,12 +15,8 @@
 			c.name AS category_name,
 			s.keywords
         FROM spots s
-        LEFT JOIN LATERAL (
-  			SELECT * FROM spot_photos
-            WHERE spot_id = s.id
-            ORDER BY created_at DESC
-            LIMIT 1
-		) sp ON true
+	    LEFT JOIN spot_photos sp
+	        ON s.id = sp.spot_id AND sp.display_order = 1
 		LEFT JOIN (
             SELECT spot_id, AVG(rating) AS average_rating
             FROM reviews
@@ -31,40 +29,60 @@
     </select>
 
 	<!-- キーワードで取得 -->
-	<select id="searchByKeywords"
-		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
-		SELECT id, spot_name, sub_category_id, website_url, gmap_url, address,
-		business_hours, closed_days, estimated_budget, keywords, details,
-		deleted_at, created_at, updated_at
-		FROM spots
-		<where>
-			deleted_at IS NULL<!-- 論理削除に対応 -->
-			<if test="keyword != null and keyword != ''"><!-- 空白とNULLに対応 -->
-				AND (
-				spot_name LIKE CONCAT('%', #{keyword}, '%')
-				OR
-				keywords LIKE CONCAT('%', #{keyword}, '%')
-				)
-			</if>
-		</where>
-		ORDER BY updated_at DESC
-		LIMIT #{limit} OFFSET #{offset}
+	<select id="searchByKeywords" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
+	    SELECT
+	    	s.id,
+	    	s.spot_name,
+	    	sp.photo_url,
+	    	r.average_rating,
+	    	COALESCE(c.name, 'その他')    AS category_name,
+	    	COALESCE(sc.name, 'その他')   AS sub_category_name,
+	    	s.keywords
+		FROM spots s
+	    LEFT JOIN sub_categories sc ON s.sub_category_id = sc.id
+	    LEFT JOIN categories c      ON sc.category_id = c.id
+	    LEFT JOIN spot_photos sp
+	        ON s.id = sp.spot_id AND sp.display_order = 1
+	    LEFT JOIN (
+	        SELECT spot_id, AVG(rating) AS average_rating
+	        FROM reviews
+	        GROUP BY spot_id
+	    ) r ON r.spot_id = s.id
+	    <where>
+	        s.deleted_at IS NULL
+	        <if test="hira != null and hira != ''">
+	            AND (s.spot_name LIKE CONCAT('%', #{hira}, '%') OR s.keywords LIKE CONCAT('%', #{hira}, '%')
+	                <if test="kana != null and kana != '' and kana != hira">
+	                    OR s.spot_name LIKE CONCAT('%', #{kana}, '%')
+	                    OR s.keywords LIKE CONCAT('%', #{kana}, '%')
+	                </if>
+	            )
+	        </if>
+    	</where>
+    	ORDER BY r.average_rating DESC NULLS LAST
+    	LIMIT #{limit} OFFSET #{offset}
 	</select>
 	
 	<!-- 検索時のスポット数のカウント -->
 	<select id="countByKeywords" resultType="long">
-		SELECT count(*) FROM spots
-		<where>
-			deleted_at IS NULL
-			<if test="keyword != null and keyword != ''">
-				AND (
-				spot_name LIKE CONCAT('%', #{keyword}, '%')
-				OR keywords LIKE CONCAT('%', #{keyword}, '%')
-				)
-			</if>
-		</where>
+	    SELECT count(*) FROM spots s
+	    <where>
+	        s.deleted_at IS NULL
+	        <if test="hira != null and hira != ''">
+	            AND (
+	                s.spot_name LIKE CONCAT('%', #{hira}, '%')
+	                OR s.keywords LIKE CONCAT('%', #{hira}, '%')
+	                <if test="kana != null 
+	                          and kana != '' 
+	                          and kana != hira">
+	                    OR s.spot_name LIKE CONCAT('%', #{kana}, '%')
+	                    OR s.keywords LIKE CONCAT('%', #{kana}, '%')
+	                </if>
+	            )
+	        </if>
+	    </where>
 	</select>
-
+	
     <!-- スポット数のカウント -->
     <select id="count" resultType="long">
         SELECT count(*) FROM spots
