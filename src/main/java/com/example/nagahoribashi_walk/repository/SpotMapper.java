@@ -22,8 +22,10 @@ public interface SpotMapper {
     // findById
 
     // findByCategoryId
+    List<SpotSummary> findByCategoryId(@Param("categoryId") Long categoryId, @Param("offset") long offset, @Param("limit") int limit);
 
     // findBySubCategoryId
+    List<SpotSummary> findBySubCategoryId(@Param("subCategoryId") Long subCategoryId, @Param("offset") long offset, @Param("limit") int limit);
 
     List<SpotSummary> searchByKeywords(
     		@Param("keyword") String keyword,
