@@ -107,7 +107,7 @@
         FROM spots s
 		JOIN sub_categories sc ON sc.id = s.sub_category_id
 		JOIN categories c ON c.id = sc.category_id
-		WHERE c.name = #{name}
+		WHERE c.id = #{id}
 		ORDER BY s.updated_at DESC
 </select>
 
@@ -117,7 +117,7 @@
         FROM spots s
 		JOIN sub_categories sc ON sc.id = s.sub_category_id
 		JOIN categories c ON c.id = sc.category_id
-		WHERE sc.name = #{name}
+		WHERE sc.id = #{id}
 		ORDER BY s.updated_at DESC
     </select>
     
