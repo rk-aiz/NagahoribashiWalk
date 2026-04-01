@@ -1,12 +1,12 @@
 package com.example.nagahoribashi_walk.controller;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example.nagahoribashi_walk.service.UserService;
+import com.example.nagahoribashi_walk.service.userdetails.LoginUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,10 +21,11 @@ public class UserController {
     
     @GetMapping("/mypage")
     public String mypage(
-    		@AuthenticationPrincipal UserDetails userDetails,
+    		@AuthenticationPrincipal LoginUser loginUser,
     		Model model) {
     	
-    	System.out.println(userDetails.getUsername());
+    	System.out.println(loginUser.getUsername());
+    	System.out.println(loginUser.getId());
     	
     	return "user/mypage";
     }
