@@ -68,7 +68,11 @@ public class SecurityConfig {
                 // ログアウト時にセッションを破棄する
                 .invalidateHttpSession(true)
                 // ログアウト時にセッションCookieを削除する
-                .deleteCookies("JSESSIONID"));
+                .deleteCookies("JSESSIONID"))
+
+            // ★403処理: ADMIN以外の認証済みユーザーが /admin/** にアクセスした場合
+            .exceptionHandling(ex -> ex
+                .accessDeniedPage("/admin/login?error=forbidden"));
 
         return http.build();
     }
@@ -86,7 +90,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(authz -> authz
                 // 認証不要のURL（非ログインユーザーも閲覧可能）
                 .requestMatchers("/", "/about", "/spot/**", "/login", "/register", "/register/**",
-                        "/error", "/error/**").permitAll()
+                        "/error", "/error/**", "/403").permitAll()
                 // CSS・JS・画像などの静的リソースは認証不要
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 // アップロード画像も認証不要
@@ -121,7 +125,11 @@ public class SecurityConfig {
                 // ログアウト時にセッションを破棄する
                 .invalidateHttpSession(true)
                 // ログアウト時にセッションCookieを削除する
-                .deleteCookies("JSESSIONID"));
+                .deleteCookies("JSESSIONID"))
+
+            // ★403処理: ADMINが /mypage/** など一般ユーザー専用ページにアクセスした場合
+            .exceptionHandling(ex -> ex
+                .accessDeniedPage("/403"));
 
         return http.build();
     }
