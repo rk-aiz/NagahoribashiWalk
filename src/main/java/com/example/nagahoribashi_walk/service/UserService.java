@@ -21,7 +21,7 @@ public interface UserService {
     /**
      * Userを新規保存する
      */
-    void register(User user);
+    void register(User user, String rawPassword);
 
     /**
      * プロフィールを更新する
