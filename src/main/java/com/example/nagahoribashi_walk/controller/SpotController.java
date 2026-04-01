@@ -33,8 +33,8 @@ public class SpotController {
     
     @GetMapping("/spot/search")
     public String search(
-    		@RequestParam("q") String keyword, Pageable pageable, Model model) {
-    	 //String normalizedKeyword = normalize(keyword);
+    		@RequestParam("q") String keyword, 
+    		@PageableDefault(size = 12) Pageable pageable, Model model) {
 
     	    Page<SpotSummary> page =
     	            spotService.searchByKeywords(keyword, pageable);
