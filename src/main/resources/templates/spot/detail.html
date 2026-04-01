@@ -7,4 +7,17 @@
     </main>
 </body>
 
+    <!--　お気に入り登録解除　-->
+	<form th:action="@{/favorite}" method="post">
+	    <input type="hidden" name="spotId" th:value="${spotId}">
+
+	    <button type="submit" th:if="${isFavorite}">
+	        お気に入り解除
+	    </button>
+
+	    <button type="submit" th:if="${!isFavorite}">
+	        お気に入り登録
+	    </button>
+	</form>
+
 </html>
