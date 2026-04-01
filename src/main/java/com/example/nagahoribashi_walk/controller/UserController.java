@@ -1,5 +1,7 @@
 package com.example.nagahoribashi_walk.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +20,11 @@ public class UserController {
     private final UserService userService;
     
     @GetMapping("/mypage")
-    public String mypage(Model model) {
+    public String mypage(
+    		@AuthenticationPrincipal UserDetails userDetails,
+    		Model model) {
+    	
+    	System.out.println(userDetails.getUsername());
     	
     	return "user/mypage";
     }
