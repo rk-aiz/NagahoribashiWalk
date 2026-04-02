@@ -15,6 +15,6 @@ public interface ReviewMapper {
 	Long update(Review review);
 	
 	//削除
-	void deletet(Long userId, Long SpotId);
+	void delete(Long userId, Long SpotId);
 	
 }
