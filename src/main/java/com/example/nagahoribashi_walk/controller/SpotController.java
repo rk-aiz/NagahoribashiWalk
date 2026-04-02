@@ -6,6 +6,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.nagahoribashi_walk.dto.SpotSummary;
@@ -35,13 +36,34 @@ public class SpotController {
     public String search(
     		@RequestParam("q") String keyword, 
     		@PageableDefault(size = 12) Pageable pageable, Model model) {
-
     	    Page<SpotSummary> page =
     	            spotService.searchByKeywords(keyword, pageable);
-
         model.addAttribute("page", page);
         model.addAttribute("keyword", keyword);
 
         return "spot/search";
     }
+
+    //大谷記載
+    @GetMapping("/spot/category/{categoryId}")
+    public String ListByCategoryId(
+    		@PathVariable("categoryId") Long categoryId,
+        @PageableDefault(size = 12) Pageable pageable,Model model) {
+    	    	Page<SpotSummary> spotPages = spotService.getPageByCategoryId(categoryId, pageable);
+        model.addAttribute("spotPages", spotPages);
+        model.addAttribute("category", categoryId);
+        return "spot/list";
+    } 
+    
+    @GetMapping("/spot/subcategory/{subCategoryId}")
+    public String ListBySubCategoryId(
+    		@PathVariable("subCategoryId") Long subCategoryId,
+        @PageableDefault(size = 12) Pageable pageable,Model model) {
+    	    Page<SpotSummary> spotPages = spotService.getPageBySubCategoryId(subCategoryId, pageable);
+        model.addAttribute("category", subCategoryId);
+        model.addAttribute("spotPages", spotPages);
+        return "spot/list";
+    } 
+    
+    
 }

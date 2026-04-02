@@ -111,6 +111,7 @@ public class SpotServiceImpl implements SpotService {
 		return spotMapper.findRecommendedSpots();
 	}
 
+	//大谷記載
 	@Override
 	public Page<SpotSummary> getPageByCategoryId(Long categoryId, Pageable pageable) {
 		
