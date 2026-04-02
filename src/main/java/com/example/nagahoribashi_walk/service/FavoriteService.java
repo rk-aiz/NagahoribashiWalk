@@ -16,6 +16,6 @@ public interface FavoriteService {
 	    void removeFavorite(Long userId, Long spotId);
 	    
 	   //お気に入り存在確認
-	    boolean existsByUserAndSpot(Long userid, Long spotId);
+	    boolean isFavorite(Long userid, Long spotId);
 	}
 
