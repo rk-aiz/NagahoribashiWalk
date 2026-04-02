@@ -325,6 +325,8 @@ INSERT INTO reviews (user_id, spot_id, rating, comment) VALUES
 INSERT INTO spot_photos (spot_id, photo_url, display_order) VALUES
 -- 劇場
 (1,  'images/theater_image_01.jpg', 1),   -- なんばグランド花月
+(1,  'images/theater_image_01.jpg', 2),   -- なんばグランド花月
+(1,  'images/theater_image_01.jpg', 3),   -- なんばグランド花月
 (2,  'images/theater_image_02.jpg', 1),   -- よしもと漫才劇場
 (3,  'images/theater_image_01.jpg', 1),   -- よしもと道頓堀シアター
 (24, 'images/theater_image_02.jpg', 1),   -- 梅田芸術劇場
@@ -377,6 +379,8 @@ INSERT INTO spot_photos (spot_id, photo_url, display_order) VALUES
 (33, 'images/miscgoods_image_01.jpg', 1), -- SARISARI MAMA
 -- 外国料理
 (34, 'images/ethnicfood_image_01.jpg', 1), -- タワンタイ（タイ料理）
+(34, 'images/ethnicfood_image_01.jpg', 2), -- タワンタイ（タイ料理）
+(34, 'images/ethnicfood_image_01.jpg', 3), -- タワンタイ（タイ料理）
 (36, 'images/ethnicfood_image_01.jpg', 1), -- オーサカバインミー（ベトナム料理）
 (38, 'images/ethnicfood_image_01.jpg', 1), -- トルコ料理ナザール
 (39, 'images/ethnicfood_image_01.jpg', 1), -- EL PANCHO（メキシコ料理）
