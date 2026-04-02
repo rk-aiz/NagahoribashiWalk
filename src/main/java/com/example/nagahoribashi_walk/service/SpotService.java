@@ -21,3 +21,4 @@ public interface SpotService {
     List<SpotSummary> getRecommendedSpots();
     
 }
+

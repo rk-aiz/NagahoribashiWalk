@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find F:Eclipseworkspace202511projectNagahoribashiWalksrcmainjava -name *Category* -o -name *SubCategory* -o -name *Subcategory*)"
+    ]
+  }
+}
