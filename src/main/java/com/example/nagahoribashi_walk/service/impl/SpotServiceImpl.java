@@ -117,7 +117,14 @@ public class SpotServiceImpl implements SpotService {
 	
 	@Override
 	public SpotDetail findById(Long id) {
-		return spotMapper.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("指定したスポットが存在しません。id=" + id));
+		SpotDetail spotDetail = spotMapper.findById(id)
+	            .orElseThrow(() -> new IllegalArgumentException("指定したスポットが存在しません。id=" + id));
+
+	    if (spotDetail.getAverageRating() != null) {
+	        double rounded = Math.round(spotDetail.getAverageRating() * 10.0) / 10.0;
+	        spotDetail.setAverageRating(rounded);
+	    }
+
+	    return spotDetail;
 	}
 }
