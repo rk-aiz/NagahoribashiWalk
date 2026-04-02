@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
 import com.example.nagahoribashi_walk.service.FavoriteService;
 import com.example.nagahoribashi_walk.service.SpotService;
@@ -57,17 +58,27 @@ public class SpotController {
     public String detail(
     		@AuthenticationPrincipal LoginUser loginUser,
     		@PathVariable("spotId") Long spotId, Model model) {
+    	
+    	Long loginUserId = null;
+    	
+    	if (loginUser != null) {
+    		loginUserId = loginUser.getId();
+    	}    	
+    	
+        SpotDetail spotDetail = spotService.findById(spotId, loginUserId);
+        
+        model.addAttribute("spotDetail", spotDetail);
         
         if (loginUser != null) {
         	model.addAttribute("isFavorite", 
-        		favoriteService.isFavorite(loginUser.getId(), spotId));
+        		favoriteService.isFavorite(loginUserId, spotId));
         } else {
         	// null参照を避けるためにfalseをセット
         	model.addAttribute("isFavorite", false);
         }
         
         model.addAttribute("spotDetail", 
-        		spotService.findById(spotId));
+        		spotService.findById(spotId, loginUserId));
         
         return "spot/detail";
     }
