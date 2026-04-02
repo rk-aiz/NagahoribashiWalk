@@ -10,6 +10,9 @@ import com.example.nagahoribashi_walk.entity.Review;
  */
 @Mapper
 public interface ReviewMapper {
+	
+	//投稿
+	void insert(Review review);
 
 	//編集
 	Long update(Review review);
