@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
 
 /**
@@ -19,6 +20,12 @@ public interface SpotService {
     Page<SpotSummary> searchByKeywords(String keyword, Pageable pageable);
 
     List<SpotSummary> getRecommendedSpots();
+    
+    Page<SpotSummary> getPageByCategoryId(Long categoryId, Pageable pageable);
+    
+    Page<SpotSummary> getPageBySubCategoryId(Long SubcategoryId, Pageable pageable);
+    
+    SpotDetail findById(Long id, Long loginUserId);
     
 }
 
