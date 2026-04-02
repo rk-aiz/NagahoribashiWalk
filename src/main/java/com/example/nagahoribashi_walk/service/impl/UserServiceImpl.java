@@ -83,10 +83,15 @@ public class UserServiceImpl implements UserService {
         throw new UnsupportedOperationException("Unimplemented method 'toggleEnabled'");
     }
 
-    @Override
-    public Page<User> getPage(Pageable pageable) {
-        long total = userMapper.count();
-        List<User> users = userMapper.findAll(pageable.getOffset(), pageable.getPageSize());
-        return new PageImpl<>(users, pageable, total);
-    }
+	@Override
+	public Page<User> getPage(Pageable pageable) {
+		
+		long total = userMapper.count();
+		
+		// 対象ページに対応したスポットを取得する
+		List<User> users = userMapper.findAll(pageable.getOffset(), pageable.getPageSize());
+
+		// Page<T>インスタンスに詰めて返す
+		return new PageImpl<>(users, pageable, total);
+	}
 }

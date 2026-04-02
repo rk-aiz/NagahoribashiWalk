@@ -32,7 +32,6 @@ dependencies {
 	// --- テンプレートエンジン（Thymeleaf） ---
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'      // Thymeleaf本体
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'       // Thymeleaf上でSecurity情報を使う（sec:authorize等）
-	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'            // ヘッダー・フッターなどレイアウトの共通化
 
 	// --- セキュリティ ---
 	implementation 'org.springframework.boot:spring-boot-starter-security'       // 認証・認可（ログイン・アクセス制御）

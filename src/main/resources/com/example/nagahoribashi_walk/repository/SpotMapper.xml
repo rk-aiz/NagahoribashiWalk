@@ -118,4 +118,45 @@
         ORDER BY average_rating DESC NULLS LAST
         LIMIT 3
     </select>
+    
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    	INSERT INTO spots (
+    		spot_name, 
+    		sub_category_id, 
+    		address, 
+    		business_hours, 
+    		closed_days, 
+    		estimated_budget, 
+    		details, 
+    		website_url, 
+    		gmap_url, 
+    		keywords) 
+    	VALUES (
+    		#{spotName}, 
+    		#{subCategoryId}, 
+    		#{address}, 
+    		#{businessHours},
+    		#{closedDays},
+    		#{estimatedBudget}, 
+    		#{details}, 
+    		#{websiteUrl}, 
+    		#{gmapUrl}, 
+    		#{keywords}
+    	);
+    </insert>
+    
+    <update id="update"> 
+        UPDATE spots 
+        SET spot_name = #{spotName}, 
+            sub_category_id = #{subCategoryId},
+            address = #{address},
+            business_hours = #{businessHours},
+            closed_days = #{closedDays},
+            estimated_budget = #{estimatedBudget},
+            details = #{details},
+            website_url = #{websiteUrl},
+            gmap_url = #{gmapUrl},
+            keywords = #{keywords}
+        WHERE id = #{id} 
+    </update>
 </mapper>

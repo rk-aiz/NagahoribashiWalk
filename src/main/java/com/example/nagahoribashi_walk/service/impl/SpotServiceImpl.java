@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.nagahoribashi_walk.dto.SpotSummary;
+import com.example.nagahoribashi_walk.entity.Spot;
 import com.example.nagahoribashi_walk.repository.SpotMapper;
 import com.example.nagahoribashi_walk.service.SpotService;
 
@@ -112,5 +113,15 @@ public class SpotServiceImpl implements SpotService {
 	@Override
 	public List<SpotSummary> getRecommendedSpots() {
 		return spotMapper.findRecommendedSpots();
+	}
+	
+	@Override
+	public void addSpot(Spot spot) {
+		spotMapper.insert(spot);
+	}
+	
+	@Override
+	public void updateSpot(Spot spot) {
+		spotMapper.update(spot);
 	}
 }
