@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
+import com.example.nagahoribashi_walk.entity.Spot;
 import com.example.nagahoribashi_walk.repository.SpotMapper;
 import com.example.nagahoribashi_walk.service.SpotService;
 
@@ -160,5 +161,15 @@ public class SpotServiceImpl implements SpotService {
         }
 
         return spotDetail;
+    }
+
+    @Override
+    public void addSpot(Spot spot) {
+        spotMapper.insert(spot);
+    }
+
+    @Override
+    public void updateSpot(Spot spot) {
+        spotMapper.update(spot);
     }
 }
