@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.nagahoribashi_walk.dto.AdminUserRow;
@@ -19,12 +20,13 @@ import lombok.RequiredArgsConstructor;
  * @author 海津
  */
 @Controller
+@RequestMapping("/admin/users")
 @RequiredArgsConstructor
 public class AdminUserController {
 
     private final UserService userService;
-    
-    @GetMapping("/admin/user/list")
+
+    @GetMapping
     public String userList(
             @PageableDefault(size = 12) Pageable pageable,
             Model model) {
@@ -35,16 +37,16 @@ public class AdminUserController {
 
         return "admin/user/list";
     }
-    @PostMapping("/admin/users/toggle")
+
+    @PostMapping("/toggle")
     public String toggle(@RequestParam Long id) {
         userService.toggleEnabled(id);
-        return "redirect:/admin/user/list";
+        return "redirect:/admin/users";
     }
 
-    @PostMapping("/admin/users/delete")
+    @PostMapping("/delete")
     public String delete(@RequestParam Long id) {
         userService.delete(id);
-        return "redirect:/admin/user/list";
+        return "redirect:/admin/users";
     }
-
 }

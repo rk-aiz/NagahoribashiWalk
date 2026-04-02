@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.example.nagahoribashi_walk.entity.User;
 
-public class UserDetailsImpl implements UserDetails, Serializable  {
+public class LoginUser implements UserDetails, Serializable  {
 
 	private static final long serialVersionUID = 1L;
 
@@ -20,7 +20,7 @@ public class UserDetailsImpl implements UserDetails, Serializable  {
 	private Collection<GrantedAuthority> authorities;
 	
 	// コンストラクタ
-	public UserDetailsImpl(
+	public LoginUser(
 			User loginUser,
 			Collection<GrantedAuthority> authorities
 			) {
@@ -42,6 +42,12 @@ public class UserDetailsImpl implements UserDetails, Serializable  {
 		return user.getPassword();
 	}
 
+	public Long getId() {
+		if (this.user == null) return null;
+		
+		return this.user.getId();
+	}
+	
 	@Override
 	public String getUsername() {
 		if (this.user == null) return null;

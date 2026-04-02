@@ -1,7 +1,7 @@
 package com.example.nagahoribashi_walk.service.userdetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,17 +30,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // usersテーブルからusernameに対応するデータを取得する
         User user = userMapper.findByUsername(username).orElseThrow(() -> {
             throw new UsernameNotFoundException(
-                    username + " => 指定しているユーザー名は存在しません");
+                    username + " => 指定しているユーザーは存在しません");
         });
 
         if (!user.isEnabled()) {
             throw new DisabledException(
-                    username + " => 指定しているユーザーは有効ではありません");
+                    // ユーザーが見つからない場合と無効はメッセージ上は区別しない。
+                    username + " => 指定しているユーザーは存在しません");
         }
 
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole()));
 
-        return new UserDetailsImpl(user, authorities);
+        return new LoginUser(user, authorities);
     }
 
 }

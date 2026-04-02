@@ -2,9 +2,12 @@ package com.example.nagahoribashi_walk.entity;
 
 import java.time.LocalDateTime;
 
+import lombok.Data;
+
 /**
  * @author 臼井
  */
+@Data
 public class Review {
 	
 	//主キー

@@ -9,19 +9,18 @@
         <!-- ページヘッダー -->
         <div class="bg-white border-bottom py-3">
             <div class="container">
-                <a href="javascript:history.back()"
+                <a th:href="@{/}"
                     class="text-decoration-none text-secondary small d-inline-flex align-items-center mb-2">
-                    <i class="bi bi-arrow-left me-1"></i>戻る
+                    <i class="bi bi-arrow-left me-1"></i>トップへ戻る
                 </a>
                 <div class="d-flex align-items-baseline gap-3">
-                    <h2 th:if="${category == 'all'}" class="h3 mb-0 fw-bold text-dark">スポット一覧</h1>
-                        <th:block th:if="${category != 'all'}">
-                            <th:block th:each="cat : ${navCategories}" th:if="${cat.id.toString() == category}">
-                                <h2 class="h3 mb-0 fw-bold text-dark" th:text="${cat.name}">カテゴリ名</h1>
-                            </th:block>
+                    <h2 th:if="${category == 'all'}" class="h3 mb-0 fw-bold text-dark">スポット一覧</h2>
+                    <th:block th:if="${category != 'all'}">
+                        <th:block th:each="cat : ${navCategories}" th:if="${cat.id.toString() == category}">
+                            <h2 class="h3 mb-0 fw-bold text-dark" th:text="${cat.name}">カテゴリ名</h2>
                         </th:block>
-                        <span class="text-secondary small"
-                            th:text="${spotPages.totalElements + '件のスポット'}">0件のスポット</span>
+                    </th:block>
+                    <span class="text-secondary small" th:text="${spotPages.totalElements + '件のスポット'}">0件のスポット</span>
                 </div>
             </div>
         </div>

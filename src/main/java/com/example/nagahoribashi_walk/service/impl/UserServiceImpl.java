@@ -6,6 +6,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,35 +32,38 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    
+
     @Override
     public UserProfile getProfileByUsername(String username) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getProfileByUsername'");
+        return userMapper.findProfileByUsername(username).orElseThrow(() -> {
+            throw new UsernameNotFoundException(
+                    "ユーザーが存在しません");
+        });
     }
 
     @Override
     public void register(User user, String rowPassword) {
-        
-    	// ユーザー名が既に存在するか確認
-    	if (userMapper.exists(user.getUsername())) {
-    		throw new UserAlreadyExistsException("ユーザー名はすでに存在します。");
-    	}
-    	
-    	/** Emailを一意にする
-    	if (userMapper.findByEmail(user.getUsername()).isPresent()) {
-    		throw new UserAlreadyExistsException("すでに登録されたメールアドレスです。");
-    	}
-    	*/
-    	
-    	// パスワードをハッシュ化
-    	user.setPassword(passwordEncoder.encode(rowPassword));
-    	
-    	try {
-    		userMapper.insert(user);
-    	} catch (Exception e) {
-    		throw new DataIntegrityViolationException(e.getLocalizedMessage());
-    	}
+
+        // ユーザー名が既に存在するか確認
+        if (userMapper.exists(user.getUsername())) {
+            throw new UserAlreadyExistsException("ユーザー名はすでに存在します。");
+        }
+
+        /**
+         * Emailを一意にする
+         * if (userMapper.findByEmail(user.getUsername()).isPresent()) {
+         * throw new UserAlreadyExistsException("すでに登録されたメールアドレスです。");
+         * }
+         */
+
+        // パスワードをハッシュ化
+        user.setPassword(passwordEncoder.encode(rowPassword));
+
+        try {
+            userMapper.insert(user);
+        } catch (Exception e) {
+            throw new DataIntegrityViolationException(e.getLocalizedMessage());
+        }
     }
 
     @Override
