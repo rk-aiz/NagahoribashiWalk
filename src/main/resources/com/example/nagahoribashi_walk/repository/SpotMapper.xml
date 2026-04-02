@@ -91,19 +91,17 @@
 		s.keywords
 		FROM spots s
 		LEFT
-		JOIN sub_categories sc ON s.sub_category_id = sc.id
-		LEFT JOIN
-		categories c ON sc.category_id = c.id
+		LEFT JOIN sub_categories sc ON s.sub_category_id = sc.id
+		LEFT JOIN categories c ON sc.category_id = c.id
 		LEFT JOIN spot_photos sp
 		ON s.id =
 		sp.spot_id AND sp.display_order = 1
 		LEFT JOIN (
-		SELECT spot_id,
-		AVG(rating) AS average_rating
-		FROM reviews
-		GROUP BY spot_id
-		) r ON
-		r.spot_id = s.id
+            SELECT spot_id,
+            AVG(rating) AS average_rating
+            FROM reviews
+            GROUP BY spot_id
+		) r ON r.spot_id = s.id
 		<where>
 			s.deleted_at IS NULL
 			<if test="hira != null and hira != ''">
@@ -152,14 +150,17 @@
     </select>
     
     <!-- 大谷記載箇所 -->
-    <!-- カテゴリー数のカウント -->
+    <!-- 指定されたカテゴリーに対応するスポット数のカウント -->
     <select id="countByCategoryId" resultType="long">
-        SELECT count(id) FROM categories
+        SELECT count(*) FROM spots s
+        LEFT JOIN sub_categories sc ON s.sub_category_id = sc.id
+        WHERE (sc.category_id = #{categoryId}) AND (s.deleted_at IS NULL)
     </select>
     
-    <!-- サブカテゴリー数のカウント -->
+    <!-- 指定されたサブカテゴリーに対応するスポット数のカウント -->
     <select id="countBySubCategoryId" resultType="long">
-        SELECT count(id) FROM sub_categories
+        SELECT count(*) FROM spots
+        WHERE (sub_category_id = #{subCategoryId}) AND (deleted_at IS NULL)
     </select>
     
     <!-- トップページおすすめ-->
@@ -179,23 +180,23 @@
             ORDER BY created_at DESC
             LIMIT 1
 		) sp ON true
-		JOIN (
+		LEFT JOIN (
 			SELECT spot_id,
 			AVG(rating) AS average_rating
 			FROM reviews
 			GROUP BY spot_id
 		) r ON r.spot_id = s.id
-		JOIN sub_categories sc ON sc.id = s.sub_category_id
-		JOIN categories c ON c.id = sc.category_id
+		LEFT JOIN sub_categories sc ON sc.id = s.sub_category_id
+		LEFT JOIN categories c ON c.id = sc.category_id
         WHERE s.deleted_at IS NULL
         ORDER BY average_rating DESC NULLS LAST
         LIMIT 3
     </select>
     
- 	<!-- 大谷記載 -->
+    <!-- 大谷記載 -->
     <select id="findByCategoryId" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
         SELECT 
-        		s.id,
+            s.id,
 			s.spot_name, 
 			sp.photo_url,
 			r.average_rating, 
@@ -209,20 +210,20 @@
             ORDER BY created_at DESC
             LIMIT 1
 		) sp ON true
-		JOIN (
+		LEFT JOIN (
             SELECT spot_id, AVG(rating) AS average_rating
             FROM reviews
             GROUP BY spot_id
 		) r ON r.spot_id = s.id
-		JOIN sub_categories sc ON sc.id = s.sub_category_id
-		JOIN categories c ON c.id = sc.category_id
-		WHERE c.id = #{categoryId}
+		LEFT JOIN sub_categories sc ON sc.id = s.sub_category_id
+		LEFT JOIN categories c ON c.id = sc.category_id
+		WHERE (sc.category_id = #{categoryId}) AND (s.deleted_at IS NULL)
 		ORDER BY s.updated_at DESC
     </select>
 
     <select id="findBySubCategoryId" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
         SELECT
-        		s.id,
+            s.id,
 			s.spot_name, 
 			sp.photo_url,
 			r.average_rating, 
@@ -236,14 +237,14 @@
             ORDER BY created_at DESC
             LIMIT 1
 		) sp ON true
-		JOIN (
+		LEFT JOIN (
             SELECT spot_id, AVG(rating) AS average_rating
             FROM reviews
             GROUP BY spot_id
 		) r ON r.spot_id = s.id
-		JOIN sub_categories sc ON sc.id = s.sub_category_id
-		JOIN categories c ON c.id = sc.category_id
-		WHERE sc.id = #{subCategoryId}
+		LEFT JOIN sub_categories sc ON sc.id = s.sub_category_id
+		LEFT JOIN categories c ON c.id = sc.category_id
+		WHERE (s.sub_category_id = #{subCategoryId}) AND (s.deleted_at IS NULL)
 		ORDER BY s.updated_at DESC
     </select>
 
@@ -284,11 +285,11 @@
 
 		FROM spots s
 
-		INNER JOIN sub_categories sc
+		LEFT JOIN sub_categories sc
 		ON
 		s.sub_category_id = sc.id
 
-		INNER JOIN categories c
+		LEFT JOIN categories c
 		ON sc.category_id =
 		c.id
 
