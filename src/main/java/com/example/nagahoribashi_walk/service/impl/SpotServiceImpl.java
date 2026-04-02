@@ -27,22 +27,6 @@ public class SpotServiceImpl implements SpotService {
 
 	private final SpotMapper spotMapper;
 
-	/**
-	 * IDに対応したスポットの詳細を取得
-	 */
-	@Override
-	public SpotDetail findById(Long id) {
-		
-		SpotDetail spotDetail = spotMapper.findById(id)
-	            .orElseThrow(() -> new IllegalArgumentException("指定したスポットが存在しません。id=" + id));
-
-	    if (spotDetail.getAverageRating() != null) {
-	        double rounded = Math.round(spotDetail.getAverageRating() * 10.0) / 10.0;
-	        spotDetail.setAverageRating(rounded);
-	    }
-
-	    return spotDetail;
-	}
 	
 	/**
 	 * ページに対応したスポット一覧を返す
@@ -129,5 +113,29 @@ public class SpotServiceImpl implements SpotService {
 	@Override
 	public List<SpotSummary> getRecommendedSpots() {
 		return spotMapper.findRecommendedSpots();
+	}
+
+	/**
+	 * IDに対応したスポットの詳細を取得
+	 */
+	@Override
+	public SpotDetail findById(Long id, Long loginUserId) {
+		SpotDetail spotDetail = spotMapper.findById(id)
+	            .orElseThrow(() -> new IllegalArgumentException("指定したスポットが存在しません。id=" + id));
+
+		if (loginUserId != null) {
+			spotDetail.getReviews().stream().forEach(review -> {
+				if (review.getUserId() == loginUserId) {
+					review.setMyReview(true);
+				}
+			});
+		}
+		
+	    if (spotDetail.getAverageRating() != null) {
+	        double rounded = Math.round(spotDetail.getAverageRating() * 10.0) / 10.0;
+	        spotDetail.setAverageRating(rounded);
+	    }
+
+	    return spotDetail;
 	}
 }

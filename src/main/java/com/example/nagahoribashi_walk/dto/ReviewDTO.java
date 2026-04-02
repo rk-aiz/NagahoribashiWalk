@@ -14,6 +14,9 @@ public class ReviewDTO {
 	//r.id
 	private Long id;
 	
+	// 投稿者のID
+	private Long userId;
+	
 	//レビュー内容
 	//r.comment
 	private String comment;
@@ -28,5 +31,7 @@ public class ReviewDTO {
 
     // 5段階評価
     private Integer rating;
+    
+    private boolean isMyReview;
 
 }
