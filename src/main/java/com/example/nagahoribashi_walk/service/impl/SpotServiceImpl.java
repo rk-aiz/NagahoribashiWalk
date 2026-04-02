@@ -41,24 +41,66 @@ public class SpotServiceImpl implements SpotService {
 		// Page<T>インスタンスに詰めて返す
 		return new PageImpl<>(spots, pageable, total);
 	}
+	/**
+	 * カタカナ → ひらがな変換
+	 */
+	private String toHiragana(String input) {
+		if (input == null) return null;
 
+		StringBuilder sb = new StringBuilder();
+		for (char c : input.toCharArray()) {
+			// カタカナ範囲ならひらがなへ変換
+			if (c >= 'ァ' && c <= 'ン') {
+				sb.append((char) (c - 0x60));
+			} else {
+				sb.append(c);
+			}
+		}
+		return sb.toString();
+	}
+	/**
+	 * ひらがな → カタカナ変換
+	 */
+	private String toKatakana(String input) {
+		if (input == null) return null;
+
+		StringBuilder sb = new StringBuilder();
+		for (char c : input.toCharArray()) {
+			// ひらがな範囲ならカタカナへ変換
+			if (c >= 'ぁ' && c <= 'ん') {
+				sb.append((char) (c + 0x60));
+			} else {
+				sb.append(c);
+			}
+		}
+		return sb.toString();
+	}
 	/**
 	 * ページとキーワードに対応したスポット一覧を返す
 	 */
 	@Override
 	public Page<SpotSummary> searchByKeywords(String keyword, Pageable pageable) {
 
-		//空文字でもLike検索ではなく一覧表示になるように
+		// 空文字は一覧にフォールバック
 		if (keyword == null || keyword.isBlank()) {
 			return getPage(pageable);
 		}
 
-		long total = spotMapper.countByKeywords(keyword);
+		// ひらがな・カタカナに変換
+		String hiraganaKeyword = toHiragana(keyword);
+		String katakanaKeyword = toKatakana(keyword);
 
-		List<SpotSummary> spots = spotMapper.searchByKeywords(
-				keyword,
-				pageable.getOffset(),
-				pageable.getPageSize());
+		// 件数取得
+		long total = spotMapper.countByKeywords(hiraganaKeyword, katakanaKeyword);
+		
+		// データ取得
+		List<SpotSummary> spots =
+				spotMapper.searchByKeywords(
+						hiraganaKeyword,
+						katakanaKeyword,
+						pageable.getOffset(),
+						pageable.getPageSize()
+						);
 
 		return new PageImpl<>(spots, pageable, total);
 	}

@@ -31,7 +31,7 @@
         /* カテゴリリンク */
         .cat-nav .nav-link {
             color: #374151;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             letter-spacing: 0.03em;
             padding: 0.8rem 1.25rem;
             border-bottom: 2px solid transparent;
@@ -94,13 +94,16 @@
         /* ヘッダーボタン — 枠線を薄く */
         .btn-header {
             border-color: #d1d5db;
-            color: #6b7280;
-            border-radius: 0.6rem;
+            color: #273141;
+            font-weight: 500;
+            font-size: 0.85rem;
+            border-radius: 0.5rem;
+            padding: 0.2rem 0.9rem;
         }
 
         .btn-header:hover {
             border-color: #9ca3af;
-            color: #374151;
+            color: #272131;
             background-color: #f9fafb;
         }
 
@@ -138,14 +141,7 @@
                         style="font-family: 'Nunito', sans-serif; color: #1e293b;">
                         <i class="bi bi-geo-alt me-1" style="color: #2563eb;"></i>長堀橋さんぽ
                     </a>
-                    <a th:href="@{/spot/category/all}" class="header-nav-link d-flex align-items-center px-4"
-                        style="font-size: 0.95rem;">
-                        <i class="bi bi-pin-map-fill me-1"></i>スポット一覧
-                    </a>
-                    <a th:href="@{/about}" class="header-nav-link d-flex align-items-center px-4"
-                        style="font-size: 0.95rem;">
-                        <i class="bi bi-info-circle-fill me-1"></i>このサイトについて
-                    </a>
+
                 </div>
 
                 <!-- アカウントエリア -->
@@ -161,7 +157,7 @@
                     </form>
 
                     <!-- 未ログイン -->
-                    <div sec:authorize="isAnonymous()" class="d-flex gap-2">
+                    <div sec:authorize="isAnonymous()" class="d-flex gap-2 ms-2">
                         <a th:href="@{/login}" class="btn btn-sm btn-outline-secondary btn-header">
                             <i class="bi bi-box-arrow-in-right me-1"></i>ログイン
                         </a>
@@ -171,7 +167,7 @@
                     </div>
 
                     <!-- ログイン済み -->
-                    <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-2">
+                    <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-2 ms-2">
                         <span class="small text-secondary" th:text="${account?.displayName}">ユーザー名</span>
                         <a th:href="@{/mypage}" class="btn btn-sm btn-outline-secondary btn-header">
                             <i class="bi bi-person me-1"></i>プロフィール
@@ -189,7 +185,7 @@
         </nav>
 
         <!-- 下段: カテゴリナビ -->
-        <nav class="cat-nav bg-white border-bottom" aria-label="カテゴリナビゲーション">
+        <nav class="cat-nav border-bottom" style="background-color: #f8fafc;" aria-label="カテゴリナビゲーション">
             <div class="container">
                 <ul class="nav justify-content-center" id="categoryNav">
                     <li class="nav-item cat-item" th:each="cat : ${navCategories}">
@@ -269,6 +265,15 @@
                         <li class="mb-1" sec:authorize="isAuthenticated()">
                             <a th:href="@{/mypage/favorites}" class="footer-link small">お気に入り</a>
                         </li>
+                        <li class="mb-1">
+                            <a th:href="@{/spot/category/all}" class="footer-link small">スポット一覧</a>
+                        </li>
+                        <li class="mb-1">
+                            <a th:href="@{/about}" class="footer-link small">このサイトについて</a>
+                        </li>
+                        <li class="mb-1">
+                            <a th:href="@{/admin/login}" class="footer-link small">管理者ログイン</a>
+                        </li>
                     </ul>
                 </div>
 
@@ -305,7 +310,8 @@
     </footer>
 
     <!-- ログアウトトースト -->
-    <div th:if="${logoutSuccess}" class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index:1070;">
+    <div th:if="${logoutSuccess}" class="toast-container position-fixed top-0 start-50 translate-middle-x p-3"
+        style="z-index:1070;">
         <div id="logoutToast" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive"
             style="font-size: 0.8rem; min-width: 0;">
             <div class="d-flex px-2 py-1">

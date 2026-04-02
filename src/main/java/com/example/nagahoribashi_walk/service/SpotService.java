@@ -25,3 +25,4 @@ public interface SpotService {
     Page<SpotSummary> getPageBySubCategoryId(Long SubcategoryId, Pageable pageable);
     
 }
+
