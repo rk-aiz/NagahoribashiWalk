@@ -192,6 +192,7 @@
 		<!-- SpotDetail 本体 -->
 		s.id AS spot_id,
 		s.spot_name AS spotName,
+		r.user_id,
 		s.details AS details,
 		s.business_hours AS businessHours,
 		s.estimated_budget AS

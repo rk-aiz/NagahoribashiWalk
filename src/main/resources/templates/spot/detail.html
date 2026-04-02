@@ -280,6 +280,7 @@
 									<div>
 										<p class="mb-0 fw-bold" style="color: #1e293b;"
 											th:text="${review.reviewerName}">投稿者名</p>
+											<th:block th:if="${review.isMyReview}"><p>編集ボタン</p></th:block>
 										<p class="mb-0 text-secondary" style="font-size: 0.85rem;">
 											<span
 												th:text="${#temporals.format(review.reviewDate, 'yyyy/MM/dd HH:mm')}">2026/04/02

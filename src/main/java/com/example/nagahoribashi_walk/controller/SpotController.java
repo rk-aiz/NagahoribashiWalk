@@ -54,11 +54,17 @@ public class SpotController {
     /**
      * スポット詳細画面表示
      */
-    @GetMapping("/spots/{id}")
+    @GetMapping("/spot/{id}")
     public String detail(
     		@AuthenticationPrincipal LoginUser loginUser,
     		@PathVariable Long id, Model model) {
-        SpotDetail spotDetail = spotService.findById(id);
+    	
+    	Long loginUserId = null;
+    	if (loginUser != null) {
+    		loginUserId = loginUser.getId();
+    	}    	
+    	
+        SpotDetail spotDetail = spotService.findById(id, loginUserId);
         
         model.addAttribute("spotDetail", spotDetail);
         

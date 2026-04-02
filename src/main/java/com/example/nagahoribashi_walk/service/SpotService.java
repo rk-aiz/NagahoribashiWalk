@@ -21,7 +21,7 @@ public interface SpotService {
 
     List<SpotSummary> getRecommendedSpots();
     
-    SpotDetail findById(Long id);
+    SpotDetail findById(Long id, Long loginUserId);
     
 }
 
