@@ -68,16 +68,19 @@
 	<form th:action="@{/favorite/remove}" method="post">
 	    <input type="hidden" name="spotId" th:value="${spotId}">
 
-	    <button type="submit" th:if="${isFavorite}">
+		<button type="submit">
+	    <!-- <button type="submit" th:if="${isFavorite}"> -->
 	        お気に入り解除
 	    </button>
 		
 	</form>
+	
 	<!--　お気に入り登録　-->
 	<form th:action="@{/favorite/add}" method="post">
 		<input type="hidden" name="spotId" th:value="${spotId}">
 		
-		<button type="submit" th:if="${!isFavorite}">
+		<button type="submit">
+		<!-- <button type="submit" th:if="${!isFavorite}"> -->
 		        お気に入り登録
 		  </button>
 	</form>

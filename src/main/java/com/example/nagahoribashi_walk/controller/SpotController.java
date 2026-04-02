@@ -3,6 +3,7 @@ package com.example.nagahoribashi_walk.controller;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
+import com.example.nagahoribashi_walk.service.FavoriteService;
 import com.example.nagahoribashi_walk.service.SpotService;
+import com.example.nagahoribashi_walk.service.userdetails.LoginUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class SpotController {
 
     private final SpotService spotService;
+    private final FavoriteService favoriteService;
     
     @GetMapping("/spot/category/all")
     public String list(
@@ -51,9 +55,18 @@ public class SpotController {
      * スポット詳細画面表示
      */
     @GetMapping("/spots/{id}")
-    public String detail(@PathVariable Long id, Model model) {
+    public String detail(
+    		@AuthenticationPrincipal LoginUser loginUser,
+    		@PathVariable Long id, Model model) {
         SpotDetail spotDetail = spotService.findById(id);
+        
         model.addAttribute("spotDetail", spotDetail);
+        
+        if (loginUser != null) {
+	    	model.addAttribute("isFavorite", 
+	    			favoriteService.existsByUserAndSpot(loginUser.getId(), id));
+        }
+    	
         return "spot/detail";
     }
 }
