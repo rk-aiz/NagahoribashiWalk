@@ -1,10 +1,12 @@
 package com.example.nagahoribashi_walk.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
 import com.example.nagahoribashi_walk.entity.Spot;
 
@@ -22,6 +24,7 @@ public interface SpotMapper {
     List<SpotSummary> findRecommendedSpots();
     
     // findById
+    Optional<SpotDetail> findById(@Param("id") Long id);
 
     // findByCategoryId
     List<SpotSummary> findByCategoryId(

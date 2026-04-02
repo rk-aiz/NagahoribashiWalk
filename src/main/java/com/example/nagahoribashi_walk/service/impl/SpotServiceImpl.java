@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
 import com.example.nagahoribashi_walk.repository.SpotMapper;
 import com.example.nagahoribashi_walk.service.SpotService;
@@ -26,6 +27,7 @@ public class SpotServiceImpl implements SpotService {
 
 	private final SpotMapper spotMapper;
 
+	
 	/**
 	 * ページに対応したスポット一覧を返す
 	 */
@@ -132,5 +134,28 @@ public class SpotServiceImpl implements SpotService {
 	    
 	    return new PageImpl<>(content, pageable, total);
 	}
-	}
+	
+	/**
+	 * IDに対応したスポットの詳細を取得
+	 */
+	@Override
+	public SpotDetail findById(Long id, Long loginUserId) {
+		SpotDetail spotDetail = spotMapper.findById(id)
+	            .orElseThrow(() -> new IllegalArgumentException("指定したスポットが存在しません。id=" + id));
 
+		if (loginUserId != null) {
+			spotDetail.getReviews().stream().forEach(review -> {
+				if (review.getUserId() == loginUserId) {
+					review.setMyReview(true);
+				}
+			});
+		}
+		
+	    if (spotDetail.getAverageRating() != null) {
+	        double rounded = Math.round(spotDetail.getAverageRating() * 10.0) / 10.0;
+	        spotDetail.setAverageRating(rounded);
+	    }
+
+	    return spotDetail;
+	}
+}
