@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.nagahoribashi_walk.repository.ReviewMapper">
-	
+
+<!-- 【UPDATE】レビュー編集 -->
+<update id="update"
+        parameterType="com.example.nagahoribashi_walk.entity.Review">
+		UPDATE reviews SET rating = #{rating},comment = #{comment}
+		WHERE user_id = #{userId}
+		AND spot_id = #{spotId}
+</update>
+
+<!-- 【DELETE】レビュー削除 -->
+<delete id="delete"parameterType="com.example.nagahoribashi_walk.entity.Review">
+DELETE FROM reviews
+WHERE user_id = #{userId}
+AND spot_id = #{spotId}
+
+</delete>
 
 </mapper>
