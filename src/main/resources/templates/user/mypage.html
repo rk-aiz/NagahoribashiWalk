@@ -1,7 +1,49 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/default :: layout('マイページ', ~{::main})}"
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/default :: layout('マイページ', ~{::main}, ~{:: headStyles})}"
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>マイページ</title>
+    <th:block th:fragment="headStyles">
+        <th:block th:replace="~{fragments/spot-card :: styles}"></th:block>
+        <style>
+            .mypage-tabs {
+                display: flex;
+                background-color: #f1f5f9;
+                border: 1px solid #e2e8f0;
+                border-radius: 9999px;
+                padding: 0.1rem;
+                gap: 0.1rem;
+            }
 
+            .tab-btn {
+                flex: 1;
+                border: none;
+                background: transparent;
+                border-radius: 9999px;
+                padding: 0.3rem 1rem;
+                font-size: 0.775rem;
+                color: #475569;
+                cursor: pointer;
+                transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
+            }
+
+            .tab-btn.active {
+                background-color: #ffffff;
+                color: #1e293b;
+                font-weight: 500;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+
+            .tab-panel {
+                display: none;
+            }
+
+            .tab-panel.active {
+                display: block;
+            }
+        </style>
+    </th:block>
+</head>
 <body>
     <main class="flex-grow-1" style="background-color: #f8fafc;" th:data-active-tab="${activeTab}">
 
@@ -75,44 +117,6 @@
 
         </div>
 
-        <th:block th:replace="~{fragments/spot-card :: styles}"></th:block>
-        <style>
-            .mypage-tabs {
-                display: flex;
-                background-color: #f1f5f9;
-                border: 1px solid #e2e8f0;
-                border-radius: 9999px;
-                padding: 0.1rem;
-                gap: 0.1rem;
-            }
-
-            .tab-btn {
-                flex: 1;
-                border: none;
-                background: transparent;
-                border-radius: 9999px;
-                padding: 0.3rem 1rem;
-                font-size: 0.775rem;
-                color: #475569;
-                cursor: pointer;
-                transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
-            }
-
-            .tab-btn.active {
-                background-color: #ffffff;
-                color: #1e293b;
-                font-weight: 500;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            }
-
-            .tab-panel {
-                display: none;
-            }
-
-            .tab-panel.active {
-                display: block;
-            }
-        </style>
         <script>
             (function () {
                 var main = document.querySelector('main[data-active-tab]');

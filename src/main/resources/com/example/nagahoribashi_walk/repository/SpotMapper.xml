@@ -19,6 +19,7 @@
 		<result property="address" column="address" />
 		<result property="gmapUrl" column="gmapUrl" />
 		<result property="websiteUrl" column="websiteUrl" />
+        <result property="keywords" column="keywords" />
 		<result property="categoryName" column="categoryName" />
 		<result property="subCategoryName" column="subCategoryName" />
 		<result property="averageRating" column="averageRating" />
@@ -260,9 +261,9 @@
 		s.address AS address,
 		s.gmap_url AS gmapUrl,
 		s.website_url AS websiteUrl,
+        s.keywords,
 		c.name AS categoryName,
-		sc.name AS
-		subCategoryName,
+		sc.name AS subCategoryName,
 
 		<!-- レビュー統計 -->
 		stats.avg_rating AS averageRating,
