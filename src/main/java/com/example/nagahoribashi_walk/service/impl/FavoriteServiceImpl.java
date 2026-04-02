@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.nagahoribashi_walk.dto.FavoriteSummary;
-import com.example.nagahoribashi_walk.dto.SpotSummary;
 import com.example.nagahoribashi_walk.repository.FavoriteMapper;
 import com.example.nagahoribashi_walk.service.FavoriteService;
 
@@ -48,6 +47,12 @@ public class FavoriteServiceImpl implements FavoriteService {
         if (!favoriteMapper.existsByUserAndSpot(userId, spotId)) {
             favoriteMapper.insertFavorite(userId, spotId);
         }
+    }
+    
+    @Override
+    public boolean existsByUserAndSpot(Long userId, Long spotId) {
+    	
+    	return favoriteMapper.existsByUserAndSpot(userId, spotId);
     }
 
     /**
