@@ -57,7 +57,7 @@
 		<h2>画像一覧</h2>
 		<div th:if="${spotDetail.images != null and !#lists.isEmpty(spotDetail.images)}">
 			<div th:each="image : ${spotDetail.images}">
-				<img th:src="${image.photoUrl}" alt="スポット画像" style="max-width: 300px;">
+				<img th:src="${'/uploads/' + image.photoUrl}" alt="スポット画像" style="max-width: 300px;">
 			</div>
 		</div>
 		<div th:if="${spotDetail.images == null or #lists.isEmpty(spotDetail.images)}">
