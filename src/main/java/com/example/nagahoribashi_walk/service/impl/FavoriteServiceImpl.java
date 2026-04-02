@@ -48,6 +48,12 @@ public class FavoriteServiceImpl implements FavoriteService {
             favoriteMapper.insertFavorite(userId, spotId);
         }
     }
+    
+    @Override
+    public boolean isFavorite(Long userId, Long spotId) {
+    	
+    	return favoriteMapper.existsByUserAndSpot(userId, spotId);
+    }
 
     /**
      * お気に入り解除

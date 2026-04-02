@@ -1,11 +1,10 @@
 package com.example.nagahoribashi_walk.repository;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
 
-import com.example.nagahoribashi_walk.entity.SubCategory;
+import com.example.nagahoribashi_walk.dto.SubCategoryDTO;
 
 /**
  * sub_categoriesテーブルに対応したMapperのインターフェース
@@ -14,6 +13,6 @@ import com.example.nagahoribashi_walk.entity.SubCategory;
 @Mapper
 public interface SubCategoryMapper {
 
-    @Select("SELECT id, category_id, name FROM sub_categories ORDER BY name")
-    List<SubCategory> findAll();
+    Optional<SubCategoryDTO> findById(Long id);
+
 }

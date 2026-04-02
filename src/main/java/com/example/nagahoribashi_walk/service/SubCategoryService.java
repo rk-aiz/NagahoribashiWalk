@@ -1,14 +1,11 @@
 package com.example.nagahoribashi_walk.service;
 
-import java.util.List;
-import java.util.Map;
-
-import com.example.nagahoribashi_walk.entity.SubCategory;
+import com.example.nagahoribashi_walk.dto.SubCategoryDTO;
 
 /**
  * サブカテゴリ関連サービスのインターフェース
  */
 public interface SubCategoryService {
 
-    Map<Long, List<SubCategory>> findAllGroupedByCategory();
+    SubCategoryDTO getById(Long subCategoryId);
 }

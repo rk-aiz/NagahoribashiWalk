@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-    th:fragment="layout(title, content, headExtra)" xml:lang="ja">
+    th:fragment="layout(title, content)" xml:lang="ja">
 
 <head>
     <meta charset="UTF-8" />
@@ -128,7 +128,6 @@
             color: #e2e8f0;
         }
     </style>
-    <th:block th:replace="${headExtra}"></th:block>
 </head>
 
 <body class="d-flex flex-column min-vh-100">

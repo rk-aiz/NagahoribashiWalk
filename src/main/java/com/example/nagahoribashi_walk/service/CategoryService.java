@@ -2,6 +2,7 @@ package com.example.nagahoribashi_walk.service;
 
 import java.util.List;
 
+import com.example.nagahoribashi_walk.dto.CategoryDTO;
 import com.example.nagahoribashi_walk.dto.NavCategory;
 
 /**
@@ -10,4 +11,6 @@ import com.example.nagahoribashi_walk.dto.NavCategory;
 public interface CategoryService {
 
     List<NavCategory> findAll();
+
+    CategoryDTO getById(Long categoryId);
 }
