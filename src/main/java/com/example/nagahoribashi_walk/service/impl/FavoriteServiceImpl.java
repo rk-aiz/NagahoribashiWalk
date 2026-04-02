@@ -50,7 +50,7 @@ public class FavoriteServiceImpl implements FavoriteService {
     }
     
     @Override
-    public boolean existsByUserAndSpot(Long userId, Long spotId) {
+    public boolean isFavorite(Long userId, Long spotId) {
     	
     	return favoriteMapper.existsByUserAndSpot(userId, spotId);
     }
