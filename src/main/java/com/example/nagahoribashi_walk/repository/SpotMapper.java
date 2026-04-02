@@ -27,8 +27,16 @@ public interface SpotMapper {
     Optional<SpotDetail> findById(@Param("id") Long id);
 
     // findByCategoryId
+    List<SpotSummary> findByCategoryId(
+    		@Param("categoryId") Long categoryId, 
+    		@Param("offset") long offset, 
+    		@Param("limit") int limit);
 
     // findBySubCategoryId
+    List<SpotSummary> findBySubCategoryId(
+    		@Param("subCategoryId") Long subCategoryId, 
+    		@Param("offset") long offset, 
+    		@Param("limit") int limit);
 
     List<SpotSummary> searchByKeywords(
     		@Param("hira") String hira,
@@ -53,5 +61,10 @@ public interface SpotMapper {
     /** スポット数をカウントする */
     long count();
     
+    long countByCategoryId(@Param("categoryId") Long categoryId);
+    
+    long countBySubCategoryId(@Param("subCategoryId") Long subCategoryId);
+
     long countByKeywords(@Param("hira") String hira, @Param("kana") String kana);
+
 }

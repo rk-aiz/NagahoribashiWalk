@@ -94,8 +94,6 @@ public class SpotServiceImpl implements SpotService {
 
 		// 件数取得
 		long total = spotMapper.countByKeywords(hiraganaKeyword, katakanaKeyword);
-
-		System.out.println(total);
 		
 		// データ取得
 		List<SpotSummary> spots =
@@ -115,6 +113,28 @@ public class SpotServiceImpl implements SpotService {
 		return spotMapper.findRecommendedSpots();
 	}
 
+	//大谷記載
+	@Override
+	public Page<SpotSummary> getPageByCategoryId(Long categoryId, Pageable pageable) {
+		
+		List<SpotSummary> content = spotMapper.findByCategoryId(categoryId, 
+		        pageable.getOffset(),pageable.getPageSize());
+		
+		long total = spotMapper.countByCategoryId(categoryId);
+		return new PageImpl<>(content, pageable, total);
+	}
+
+	@Override
+	public Page<SpotSummary> getPageBySubCategoryId(Long subCategoryId, Pageable pageable){
+		
+		List<SpotSummary> content = spotMapper.findBySubCategoryId(
+				subCategoryId,pageable.getOffset(),pageable.getPageSize());
+		
+		long total = spotMapper.countBySubCategoryId(subCategoryId);
+	    
+	    return new PageImpl<>(content, pageable, total);
+	}
+	
 	/**
 	 * IDに対応したスポットの詳細を取得
 	 */
