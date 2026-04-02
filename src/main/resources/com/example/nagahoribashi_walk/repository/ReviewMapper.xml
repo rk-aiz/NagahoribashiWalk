@@ -5,6 +5,6 @@
 	<!--【insert】レビュー投稿　-->
 	<insert id="insert"
 		parameterType="com.example.nagahoribashi_walk.entity.Review">
-INSERT INTO reviews (userId, spotId, rating, comment)values(#{userId}, #{spotId}, #{rating}, #{comment}) 
+INSERT INTO reviews (user_id, spot_id, rating, comment)values(#{userId}, #{spotId}, #{rating}, #{comment}) 
 	</insert>	
 </mapper>
