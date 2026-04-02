@@ -1,5 +1,7 @@
 package com.example.nagahoribashi_walk.controller;
 
+
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -28,5 +30,4 @@ public class UserController {
     	
     	return "user/mypage";
     }
-
 }
