@@ -124,8 +124,6 @@ public class SpotServiceImpl implements SpotService {
 
         long total = spotMapper.countByCategoryId(categoryId);
 
-        System.out.println(total);
-
         return new PageImpl<>(content, pageable, total);
     }
 

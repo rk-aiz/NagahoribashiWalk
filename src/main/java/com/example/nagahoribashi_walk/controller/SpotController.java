@@ -65,9 +65,6 @@ public class SpotController {
             @PageableDefault(size = 12) Pageable pageable, Model model) {
 
         model.addAttribute("spotPages", spotService.getPageByCategoryId(categoryId, pageable));
-
-        System.out.println(spotService.getPageByCategoryId(categoryId, pageable).getTotalElements());
-
         model.addAttribute("categoryId", categoryId);
         model.addAttribute("categoryName", categoryService.getById(categoryId).getName());
         model.addAttribute("sidebar", new SidebarDTO(categoryService.findAll(), categoryId, null));
