@@ -45,7 +45,7 @@ public class AdminUserController {
     @PostMapping("/toggle")
     public String toggle(@RequestParam Long id) {
         userService.toggleEnabled(id);
-        return "redirect:/admin/user";
+        return "redirect:/admin/user/list";
     }
 
     @PostMapping("/delete")

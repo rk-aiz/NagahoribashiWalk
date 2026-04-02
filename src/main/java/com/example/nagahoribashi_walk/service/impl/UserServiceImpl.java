@@ -72,16 +72,11 @@ public class UserServiceImpl implements UserService {
         throw new UnsupportedOperationException("Unimplemented method 'updateProfile'");
     }
 
-//    @Override
-//    public void delete(String userName, String loginUsername) {
-//        // TODO Auto-generated method stub
-//        throw new UnsupportedOperationException("Unimplemented method 'delete'");
-//    }
-
     @Override
     public void toggleEnabled(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'toggleEnabled'");
+
+    	    // ユーザー取得
+    	    userMapper.toggleEnabled(id);
     }
 
     @Override

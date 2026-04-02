@@ -64,6 +64,7 @@
                 <!-- 有効/無効切り替え -->
                 <form th:action="@{/admin/user/toggle}" method="post" style="display:inline;">
                     <input type="hidden" name="id" th:value="${user.id}">
+					<input type="hidden" name="page" th:value="${page.number}">
                     <button class="btn btn-sm btn-warning">切替</button>
                 </form>
 

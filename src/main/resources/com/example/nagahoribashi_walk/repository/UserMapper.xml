@@ -89,8 +89,8 @@
     </update>
     
     <update id="toggleEnabled">
-        UPDATE users
-        SET enabled = (SELECT !enabled FROM users WHERE id = #{id})
+		UPDATE users
+		SET enabled = NOT enabled
         WHERE id = #{id}
     </update>
 
