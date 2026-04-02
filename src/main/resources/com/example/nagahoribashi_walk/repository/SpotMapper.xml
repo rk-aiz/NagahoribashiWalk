@@ -2,32 +2,47 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.nagahoribashi_walk.repository.SpotMapper">
 
-	<!-- SpotDetail 用 resultMap 役割： ・1スポットに紐づく「レビュー一覧」と「画像一覧」を SpotDetail の子要素として詰めるための設定 
-		注意： ・これは SQL ではなく、SQL結果を DTO にどう入れるかの定義 -->
-	<resultMap id="SpotDetailChildrenMap"
-		type="com.example.nagahoribashi_walk.dto.SpotDetail">
+	<!-- SpotDetail 全体取得用 resultMap
+     役割：
+     ・1スポットの基本情報
+     ・レビュー一覧
+     ・画像一覧
+     を SpotDetail にまとめて詰める
+-->
+<resultMap id="SpotDetailMap" type="com.example.nagahoribashi_walk.dto.SpotDetail">
 
-		<!-- 親DTO（SpotDetail）の識別キー -->
-		<id property="id" column="spot_id" />
+    <!-- 親DTO（SpotDetail）の識別キー -->
+    <id property="id" column="spot_id" />
 
-		<!-- reviews プロパティに ReviewDTO の一覧を詰める review_id をキーにして、同じレビューの重複を防ぐ -->
-		<collection property="reviews"
-			ofType="com.example.nagahoribashi_walk.dto.ReviewDTO">
-			<id property="id" column="review_id" />
-			<result property="comment" column="comment" />
-			<result property="reviewerName" column="reviewerName" />
-			<result property="reviewDate" column="reviewDate" />
-			<result property="rating" column="rating" />
-		</collection>
+    <!-- SpotDetail の基本情報 -->
+    <result property="spotName" column="spotName" />
+    <result property="details" column="details" />
+    <result property="businessHours" column="businessHours" />
+    <result property="estimatedBudget" column="estimatedBudget" />
+    <result property="address" column="address" />
+    <result property="gmapUrl" column="gmapUrl" />
+    <result property="websiteUrl" column="websiteUrl" />
+    <result property="categoryName" column="categoryName" />
+    <result property="subCategoryName" column="subCategoryName" />
+    <result property="averageRating" column="averageRating" />
+    <result property="reviewCount" column="reviewCount" />
 
-		<!-- images プロパティに SpotPhotoDTO の一覧を詰める photo_id をキーにして、同じ画像の重複を防ぐ -->
-		<collection property="images"
-			ofType="com.example.nagahoribashi_walk.dto.SpotPhotoDTO">
-			<id property="id" column="photo_id" />
-			<result property="photoUrl" column="photoUrl" />
-			<result property="displayOrder" column="displayOrder" />
-		</collection>
-	</resultMap>
+    <!-- reviews 一覧 -->
+    <collection property="reviews" ofType="com.example.nagahoribashi_walk.dto.ReviewDTO">
+        <id property="id" column="review_id" />
+        <result property="comment" column="comment" />
+        <result property="reviewerName" column="reviewerName" />
+        <result property="reviewDate" column="reviewDate" />
+        <result property="rating" column="rating" />
+    </collection>
+
+    <!-- images 一覧 -->
+    <collection property="images" ofType="com.example.nagahoribashi_walk.dto.SpotPhotoDTO">
+        <id property="id" column="photo_id" />
+        <result property="photoUrl" column="photoUrl" />
+        <result property="displayOrder" column="displayOrder" />
+    </collection>
+</resultMap>
 
     <!-- ページネーション付き取得 -->
     <select id="findAll" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
