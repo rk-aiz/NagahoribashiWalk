@@ -6,8 +6,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
 import com.example.nagahoribashi_walk.service.SpotService;
 
@@ -43,5 +45,15 @@ public class SpotController {
         model.addAttribute("keyword", keyword);
 
         return "spot/search";
+    }
+    
+    /**
+     * スポット詳細画面表示
+     */
+    @GetMapping("/spots/{id}")
+    public String detail(@PathVariable Long id, Model model) {
+        SpotDetail spotDetail = spotService.findById(id);
+        model.addAttribute("spotDetail", spotDetail);
+        return "spot/detail";
     }
 }

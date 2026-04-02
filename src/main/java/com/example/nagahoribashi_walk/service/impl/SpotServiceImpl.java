@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
 import com.example.nagahoribashi_walk.repository.SpotMapper;
 import com.example.nagahoribashi_walk.service.SpotService;
@@ -112,5 +113,11 @@ public class SpotServiceImpl implements SpotService {
 	@Override
 	public List<SpotSummary> getRecommendedSpots() {
 		return spotMapper.findRecommendedSpots();
+	}
+	
+	@Override
+	public SpotDetail findById(Long id) {
+		return spotMapper.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("指定したスポットが存在しません。id=" + id));
 	}
 }
