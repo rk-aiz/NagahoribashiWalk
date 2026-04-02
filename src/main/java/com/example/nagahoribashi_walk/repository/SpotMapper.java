@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.example.nagahoribashi_walk.dto.SpotSummary;
+import com.example.nagahoribashi_walk.entity.Spot;
 
 /**
  * spotsテーブルに対応したMapperのインターフェース
@@ -18,20 +19,26 @@ public interface SpotMapper {
     /** ページネーション付きでスポット一覧を取得する */
     List<SpotSummary> findAll(@Param("offset") long offset, @Param("limit") int limit);
 
+    List<SpotSummary> findRecommendedSpots();
+    
     // findById
 
     // findByCategoryId
 
     // findBySubCategoryId
 
-    // searchByKeywords
+    List<SpotSummary> searchByKeywords(
+    		@Param("hira") String hira,
+    		@Param("kana") String kana,
+    		@Param("offset") long offset,
+    		@Param("limit") int limit);
 
     // findImagesBySpotId
 
     // findAllForAdmin
 
-    // insert
-
+     void insert(Spot spot);
+    
     // update
 
     // softDelete
@@ -42,4 +49,6 @@ public interface SpotMapper {
 
     /** スポット数をカウントする */
     long count();
+    
+    long countByKeywords(@Param("hira") String hira, @Param("kana") String kana);
 }

@@ -1,46 +1,162 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>長堀橋さんぽ</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-</head>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/test :: layout('スポット一覧', ~{::main})}"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <body>
-	
-	<section class="container my-5">
-		<h2 class="mb-4 text-center">スポット一覧</h2>
 
-		<div class="row g-4">
-			<div class="col-md-4" th:each="spot : ${spots}">
-				<div class="card h-100">
-					
-					<!--画像表示-->
-					<img th:src="@{/uploads/{url}(url=${spot.photoUrl})}"
-						class="card-img-top" th:alt="${spot.spotName}"
-						style="height: 200px; object-fit: cover;">
-						
-					<div class="card-body">
+    <main class="flex-grow-1" style="background-color: #f8fafc;">
 
-						<!--スポット名-->
-						<h5 class="card-title" th:text="${spot.spotName}"></h5>
+        <!-- ページヘッダー -->
+        <div class="bg-white border-bottom py-3">
+            <div class="container">
+                <a th:href="@{/}"
+                    class="text-decoration-none text-secondary small d-inline-flex align-items-center mb-2">
+                    <i class="bi bi-arrow-left me-1"></i>トップへ戻る
+                </a>
+                <div class="d-flex align-items-baseline gap-3">
+                    <h2 th:if="${category == 'all'}" class="h3 mb-0 fw-bold text-dark">スポット一覧</h2>
+                    <th:block th:if="${category != 'all'}">
+                        <th:block th:each="cat : ${navCategories}" th:if="${cat.id.toString() == category}">
+                            <h2 class="h3 mb-0 fw-bold text-dark" th:text="${cat.name}">カテゴリ名</h2>
+                        </th:block>
+                    </th:block>
+                    <span class="text-secondary small" th:text="${spotPages.totalElements + '件のスポット'}">0件のスポット</span>
+                </div>
+            </div>
+        </div>
 
-						<!--カテゴリー/サブカテゴリー表示-->
-						<p class="text-muted mb-1">
-							<span th:text="${spot.categoryName}"></span>
-							/
-							<span th:text="${spot.subCategoryName}"></span>
-						</p>
-						<a th:href="@{/spot/{id}(id=${spot.id})}" class="btn btn-primary btn-sm">詳しく見る</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	
+        <div class="container py-4">
+            <div class="row g-4 align-items-start">
+
+                <!-- ===== 左サイドバー ===== -->
+                <aside class="col-lg-3 col-md-4">
+                    <div class="bg-white rounded-3 border p-3">
+                        <p class="fw-bold text-dark mb-3" style="font-size: 0.95rem;">絞り込み</p>
+
+                        <!-- カテゴリー -->
+                        <p class="text-secondary mb-2 fw-semibold text-uppercase"
+                            style="font-size: 0.75rem; letter-spacing: 0.07em;">カテゴリー</p>
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-1">
+                                <a th:href="@{/spot/category/all}"
+                                    class="d-block text-decoration-none rounded-2 px-3 py-2"
+                                    th:classappend="${category == 'all'} ? 'bg-primary bg-opacity-10 text-primary fw-semibold' : 'text-secondary sidebar-item-link'"
+                                    style="font-size: 0.9rem;">すべて</a>
+                            </li>
+                            <li th:each="cat : ${navCategories}" class="mb-1">
+                                <a th:href="@{/spot/category/{id}(id=${cat.id})}" th:text="${cat.name}"
+                                    class="d-block text-decoration-none rounded-2 px-3 py-2"
+                                    th:classappend="${cat.id.toString() == category} ? 'bg-primary bg-opacity-10 text-primary fw-semibold' : 'text-secondary sidebar-item-link'"
+                                    style="font-size: 0.9rem;">カテゴリ</a>
+                            </li>
+                        </ul>
+
+                        <!-- サブカテゴリー（カテゴリ指定時のみ表示） -->
+                        <th:block th:if="${category != 'all'}">
+                            <th:block th:each="cat : ${navCategories}" th:if="${cat.id.toString() == category}">
+                                <th:block th:if="${not #lists.isEmpty(cat.subCategories)}">
+                                    <p class="text-secondary mb-2 fw-semibold text-uppercase"
+                                        style="font-size: 0.75rem; letter-spacing: 0.07em;"
+                                        th:text="${cat.name + 'の種類'}">種類</p>
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-1">
+                                            <a th:href="@{/spot/category/{id}(id=${cat.id})}"
+                                                class="d-block text-decoration-none rounded-2 px-3 py-2 bg-primary bg-opacity-10 text-primary fw-semibold"
+                                                style="font-size: 0.9rem;">すべて</a>
+                                        </li>
+                                        <li th:each="sub : ${cat.subCategories}" class="mb-1">
+                                            <a th:href="@{/spot/subcategory/{id}(id=${sub.id})}" th:text="${sub.name}"
+                                                class="d-block text-decoration-none rounded-2 px-3 py-2 text-secondary sidebar-item-link"
+                                                style="font-size: 0.9rem;">サブカテゴリ</a>
+                                        </li>
+                                    </ul>
+                                </th:block>
+                            </th:block>
+                        </th:block>
+
+                    </div>
+                </aside>
+
+                <!-- ===== メインコンテンツ ===== -->
+                <div class="col-lg-9 col-md-8">
+
+                    <!-- 上部ページネーション -->
+                    <div th:replace="~{fragments/pagination :: pager(${spotPages}, ${category}, 'mb-3')}"></div>
+
+                    <!-- スポットグリッド（2カラム） -->
+                    <div class="row row-cols-1 row-cols-sm-2 g-3">
+                        <div class="col" th:each="spot : ${spotPages}">
+                            <th:block th:replace="~{fragments/spot-card :: card(${spot})}"></th:block>
+                        </div>
+                    </div>
+
+                    <!-- スポット0件時のメッセージ -->
+                    <div th:if="${spotPages.totalElements == 0}" class="text-center py-5 text-secondary">
+                        <i class="bi bi-search" style="font-size: 2.5rem;"></i>
+                        <p class="mt-3 mb-0">スポットが見つかりませんでした。</p>
+                    </div>
+
+                    <!-- 下部ページネーション -->
+                    <div th:replace="~{fragments/pagination :: pager(${spotPages}, ${category}, 'mt-4')}"></div>
+
+                </div>
+            </div>
+        </div>
+
+        <th:block th:replace="~{fragments/spot-card :: styles}"></th:block>
+        <style>
+            /* ===== シンプルページネーション ===== */
+            .pager-minimal {
+                gap: 0.3rem;
+            }
+
+            .pager-minimal .page-item .page-link {
+                border: none;
+                background: transparent;
+                color: #64748b;
+                font-size: 0.875rem;
+                border-radius: 0.4rem;
+                padding: 0.35rem 0.65rem;
+                line-height: 1.4;
+                box-shadow: none;
+                transition: background-color 0.15s, color 0.15s;
+            }
+
+            .pager-minimal .page-item .page-link:hover {
+                background-color: #f1f5f9;
+                color: #334155;
+            }
+
+            .pager-minimal .page-item.active .page-link {
+                background-color: #dbeafe;
+                color: #1d4ed8;
+                font-weight: 600;
+            }
+
+            .pager-minimal .page-item.disabled .page-link {
+                color: #cbd5e1;
+                pointer-events: none;
+            }
+
+            .pager-minimal .pager-ellipsis {
+                color: #94a3b8;
+                cursor: default;
+                padding: 0.35rem 0.4rem;
+            }
+
+            .pager-minimal.pager-sm .page-link {
+                font-size: 0.8rem;
+                padding: 0.25rem 0.55rem;
+            }
+
+            .sidebar-item-link:hover {
+                background-color: #f8fafc;
+                color: #374151 !important;
+            }
+        </style>
+
+    </main>
+
 </body>
 
 </html>

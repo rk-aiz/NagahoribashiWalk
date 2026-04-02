@@ -38,6 +38,7 @@ out/
 
 ### files ###
 /uploads/
+src/main/resources/static/images/
 
 # Eclipse
 .metadata/
@@ -71,3 +72,6 @@ Thumbs.db
 # IDE共通
 *.iml
 .idea/
+
+.claude/
+CLAUDE.md

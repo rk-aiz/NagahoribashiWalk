@@ -1,5 +1,7 @@
 package com.example.nagahoribashi_walk.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,5 +15,10 @@ import com.example.nagahoribashi_walk.dto.SpotSummary;
 public interface SpotService {
 
     Page<SpotSummary> getPage(Pageable pageable);
+    
+    Page<SpotSummary> searchByKeywords(String keyword, Pageable pageable);
 
+    List<SpotSummary> getRecommendedSpots();
+    
 }
+
