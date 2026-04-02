@@ -72,11 +72,11 @@ public class UserServiceImpl implements UserService {
         throw new UnsupportedOperationException("Unimplemented method 'updateProfile'");
     }
 
-    @Override
-    public void delete(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
-    }
+//    @Override
+//    public void delete(String userName, String loginUsername) {
+//        // TODO Auto-generated method stub
+//        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+//    }
 
     @Override
     public void toggleEnabled(Long id) {
@@ -92,7 +92,30 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public Page<AdminUserRow> getAdminUserPage(Pageable pageable) {
-        return userMapper.findAllForAdmin(pageable);
+    public Page<AdminUserRow> getAdminUserPage(Pageable pageable,String sort) {
+
+    	long offset = (int) pageable.getOffset();
+        int pageSize = pageable.getPageSize();
+
+        List<AdminUserRow> list =
+                userMapper.findAllForAdmin(pageSize, offset, sort);
+
+        long total = userMapper.countAdminUsers();
+
+        return new PageImpl<>(list, pageable, total);
     }
+    
+    public void delete(String username, String loginUsername) {
+        // ★ 自分削除禁止
+        if (username.equals(loginUsername)) {
+            throw new IllegalStateException("自分自身は削除できません");
+        }
+        
+        User user = userMapper.findByUsername(username)
+        		.orElseThrow(() -> new UsernameNotFoundException(username));
+
+        // ★ 論理削除
+        userMapper.softDelete(user.getId());
+    
+}
 }

@@ -5,8 +5,6 @@ import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import com.example.nagahoribashi_walk.dto.AdminUserRow;
 import com.example.nagahoribashi_walk.dto.UserProfile;
@@ -63,6 +61,12 @@ public interface UserMapper {
     /**
      * 管理者側ユーザー一覧
      */
-    Page<AdminUserRow> findAllForAdmin(Pageable pageable);
+    List<AdminUserRow> findAllForAdmin(
+    	    @Param("limit") int limit,
+    	    @Param("offset") long offset,
+    	    @Param("sort") String sort
+    	);
+
+    long countAdminUsers();
     
 }
