@@ -2,11 +2,11 @@ package com.example.nagahoribashi_walk.service.impl;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.nagahoribashi_walk.dto.SubCategoryDTO;
 import com.example.nagahoribashi_walk.entity.SubCategory;
 import com.example.nagahoribashi_walk.repository.SubCategoryMapper;
 import com.example.nagahoribashi_walk.service.SubCategoryService;
@@ -19,10 +19,12 @@ import lombok.RequiredArgsConstructor;
 public class SubCategoryServiceImpl implements SubCategoryService {
 
     private final SubCategoryMapper subCategoryMapper;
+    private final SubCategoryDTO SUBCATEGORY_OTHER = new SubCategoryDTO(null, "その他");
 
     @Override
-    public Map<Long, List<SubCategory>> findAllGroupedByCategory() {
-        return subCategoryMapper.findAll().stream()
-                .collect(Collectors.groupingBy(SubCategory::getCategoryId));
+    public SubCategoryDTO getById(Long subCategoryId) {
+        return subCategoryMapper.findById(subCategoryId)
+                .orElse(SUBCATEGORY_OTHER);
     }
+
 }
