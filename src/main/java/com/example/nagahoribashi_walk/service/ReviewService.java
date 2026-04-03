@@ -10,5 +10,5 @@ public interface ReviewService {
 	 * @param review レビュー情報
 	 * @param username ログイン中のユーザー名
 	 */
-	void addReview(Review review,String username);
+	void addReview(Review review, Long userId);
 }

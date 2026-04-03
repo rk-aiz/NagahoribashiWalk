@@ -1,7 +1,6 @@
 package com.example.nagahoribashi_walk.controller;
 
-import java.security.Principal;
-
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +9,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.nagahoribashi_walk.entity.Review;
 import com.example.nagahoribashi_walk.form.ReviewForm;
 import com.example.nagahoribashi_walk.service.ReviewService;
+import com.example.nagahoribashi_walk.service.userdetails.LoginUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,11 +31,11 @@ public class ReviewController {
     public String addReview(
     		@PathVariable Long id,
     		ReviewForm reviewForm,
-    		Principal principal,
+    		@AuthenticationPrincipal LoginUser loginUser,
     		RedirectAttributes redirectAttributes) {
     	
     	// 未ログインの場合は投稿させない
-    	if(principal == null) {
+    	if(loginUser == null) {
     		redirectAttributes.addFlashAttribute("errorMessage","レビューを投稿するにはログインが必要です。");
     		return "redirect:/spot/" + id;
     	}
@@ -52,7 +52,7 @@ public class ReviewController {
     	
     	try {
         	//Service呼び出し
-    		reviewService.addReview(review,principal.getName()); // ←失敗したらthrow
+    		reviewService.addReview(review, loginUser.getId()); // ←失敗したらthrow
     		
     		// 成功メッセージを設定する
     	    redirectAttributes.addFlashAttribute("message", "レビューを投稿しました。");	
