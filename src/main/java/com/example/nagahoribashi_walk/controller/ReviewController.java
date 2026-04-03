@@ -1,11 +1,14 @@
 package com.example.nagahoribashi_walk.controller;
 
+import java.security.Principal;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.nagahoribashi_walk.entity.Review;
+import com.example.nagahoribashi_walk.form.ReviewForm;
 import com.example.nagahoribashi_walk.service.ReviewService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,16 +29,34 @@ public class ReviewController {
     
     @PostMapping("/spot/{id}/reviews")
     public String addReview(
-    		@PathVariable Long id,Review review,
+    		@PathVariable Long id,
+    		ReviewForm reviewForm,
+    		Principal principal,
     		RedirectAttributes redirectAttributes) {
+    	
+    	// 未ログインの場合は投稿させない
+    	if(principal == null) {
+    		redirectAttributes.addFlashAttribute("errorMessage","レビューを投稿するにはログインが必要です。");
+    		return "redirect:/spot/" + id;
+    	}
+    	
+    	//レビュー情報を生成する
+    	Review review = new Review();
+    	
     	//スポットidをセット
     	review.setSpotId(id);
     	
+    	//フォームの入力値をセット
+    	review.setRating(reviewForm.getRating());
+    	review.setComment(reviewForm.getComment());
+    	
     	try {
         	//Service呼び出し
-    		reviewService.addReview(review); // ←失敗したらthrow
+    		reviewService.addReview(review,principal.getName()); // ←失敗したらthrow
+    		
     	} catch (Exception e) {
-    		redirectAttributes.addFlashAttribute("errorMassage", e.getLocalizedMessage());
+    		//エラーメッセージを設定する
+    		redirectAttributes.addFlashAttribute("errorMessage", e.getLocalizedMessage());
     	} 
     	
     	//投稿後は詳細画面にリダイレクト

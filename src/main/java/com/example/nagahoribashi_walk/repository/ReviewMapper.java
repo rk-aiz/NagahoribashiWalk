@@ -20,5 +20,22 @@ public interface ReviewMapper {
 
 	//削除
 	void delete(@Param("userId") Long userId, @Param("spotId") Long spotId);
+	
+	/**
+	 * ユーザー名に対応するユーザーIDを取得する
+	 * 
+	 * @param username ユーザー名
+	 * @return ユーザーID
+	 */
+	Long findUserIdByUsername(String username);
+	
+	/**
+	 * 指定したユーザーが指定したスポットにレビュー投稿済みか確認する
+	 * 
+	 * @param userId ユーザーID
+	 * @param spotId スポットID
+	 * @return 投稿済みならtrue
+	 */
+	boolean existsByUserIdAndSpotId(@Param("userId") Long userId, @Param("spotId") Long spotId);
 
 }

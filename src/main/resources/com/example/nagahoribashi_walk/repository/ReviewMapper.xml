@@ -3,6 +3,23 @@
 <mapper
 	namespace="com.example.nagahoribashi_walk.repository.ReviewMapper">
 
+	<!-- ユーザー名に対応するユーザIDを取得 -->
+	<select id="findUserIdByUsername" resultType="long">
+		SELECT id
+		FROM users
+		WHERE username = #{username}
+	</select>
+
+	<!-- 指定したユーザーが指定したスポットにレビュー投稿済みか確認 -->
+	<select id="existsByUserIdAndSpotId" resultType="boolean">
+		SELECT EXISTS (
+		SELECT 1
+		FROM reviews
+		WHERE user_id = #{userId}
+		AND spot_id = #{spotId}
+		)
+	</select>
+
 
 	<!-- 【UPDATE】レビュー編集 -->
 	<update id="update"
@@ -29,4 +46,5 @@
 		comment)values(#{userId},
 		#{spotId}, #{rating}, #{comment})
 	</insert>
+
 </mapper>

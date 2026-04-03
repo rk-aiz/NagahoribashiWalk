@@ -8,6 +8,7 @@ public interface ReviewService {
 	 * レビュー情報を登録する
 	 * 
 	 * @param review レビュー情報
+	 * @param username ログイン中のユーザー名
 	 */
-	void addReview(Review review);
+	void addReview(Review review,String username);
 }

@@ -6,7 +6,7 @@ import lombok.Data;
  * レビュー投稿フォーム
  */
 @Data
-public class ReviwForm {
+public class ReviewForm {
 	
 	// ５段階評価
 	private Integer rating;
