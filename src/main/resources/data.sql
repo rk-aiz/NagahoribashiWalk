@@ -330,6 +330,11 @@ INSERT INTO spot_photos (spot_id, photo_url, display_order) VALUES
 (2,  'images/theater_image_02.jpg', 1),   -- よしもと漫才劇場
 (3,  'images/theater_image_01.jpg', 1),   -- よしもと道頓堀シアター
 (24, 'images/theater_image_02.jpg', 1),   -- 梅田芸術劇場
+(24, 'images/theater_image_02.jpg', 2),   -- 梅田芸術劇場
+(24, 'images/theater_image_02.jpg', 3),   -- 梅田芸術劇場
+(24, 'images/theater_image_02.jpg', 4),   -- 梅田芸術劇場
+(24, 'images/theater_image_02.jpg', 5),   -- 梅田芸術劇場
+
 -- 肉料理・居酒屋系
 (4,  'images/yakiniku_image_01.jpg', 1),  -- 牛かつ 富田
 (10, 'images/yakiniku_image_01.jpg', 1),  -- 豚と炭火 こぶた家

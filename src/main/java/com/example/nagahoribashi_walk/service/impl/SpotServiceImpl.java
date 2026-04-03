@@ -149,7 +149,7 @@ public class SpotServiceImpl implements SpotService {
 
         if (loginUserId != null) {
             spotDetail.getReviews().stream().forEach(review -> {
-                if (review.getUserId() == loginUserId) {
+                if (review.getUserId() != null && review.getUserId().equals(loginUserId)){
                     review.setMyReview(true);
                 }
             });
