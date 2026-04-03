@@ -49,39 +49,58 @@
 	        GROUP BY spot_id
 	    ) r ON r.spot_id = s.id
 	    <where>
-	        s.deleted_at IS NULL
-	        <if test="hira != null and hira != ''">
-	            AND (s.spot_name LIKE CONCAT('%', #{hira}, '%') OR s.keywords LIKE CONCAT('%', #{hira}, '%')
-	                <if test="kana != null and kana != '' and kana != hira">
-	                    OR s.spot_name LIKE CONCAT('%', #{kana}, '%')
-	                    OR s.keywords LIKE CONCAT('%', #{kana}, '%')
-	                </if>
-	            )
-	        </if>
-    	</where>
-    	ORDER BY r.average_rating DESC NULLS LAST
-    	LIMIT #{limit} OFFSET #{offset}
-	</select>
+        s.deleted_at IS NULL
+
+        <if test="keywordList != null and keywordList.size() > 0">
+            <foreach collection="keywordList" item="k">
+                AND (
+                    s.spot_name LIKE CONCAT('%', #{k.origin}, '%')
+                    OR 
+                    s.keywords LIKE CONCAT('%', #{k.origin}, '%')
+                    OR 
+                    s.spot_name LIKE CONCAT('%', #{k.hira}, '%')
+                    OR 
+                    s.keywords LIKE CONCAT('%', #{k.hira}, '%')
+                    OR 
+                    s.spot_name LIKE CONCAT('%', #{k.kana}, '%')
+                    OR 
+                    s.keywords LIKE CONCAT('%', #{k.kana}, '%')
+                )
+            </foreach>
+        </if>
+
+    </where>
+
+    ORDER BY r.average_rating DESC NULLS LAST
+    LIMIT #{limit} OFFSET #{offset}
+</select>
 	
 	<!-- 検索時のスポット数のカウント -->
 	<select id="countByKeywords" resultType="long">
-	    SELECT count(*) FROM spots s
-	    <where>
-	        s.deleted_at IS NULL
-	        <if test="hira != null and hira != ''">
-	            AND (
-	                s.spot_name LIKE CONCAT('%', #{hira}, '%')
-	                OR s.keywords LIKE CONCAT('%', #{hira}, '%')
-	                <if test="kana != null 
-	                          and kana != '' 
-	                          and kana != hira">
-	                    OR s.spot_name LIKE CONCAT('%', #{kana}, '%')
-	                    OR s.keywords LIKE CONCAT('%', #{kana}, '%')
-	                </if>
-	            )
-	        </if>
-	    </where>
-	</select>
+    SELECT count(*) FROM spots s
+    <where>
+        s.deleted_at IS NULL
+
+        <if test="keywordList != null and keywordList.size() > 0">
+            <foreach collection="keywordList" item="k">
+                AND (
+                    s.spot_name LIKE CONCAT('%', #{k.origin}, '%')
+                    OR 
+                    s.keywords LIKE CONCAT('%', #{k.origin}, '%')
+                    OR 
+                    s.spot_name LIKE CONCAT('%', #{k.hira}, '%')
+                    OR 
+                    s.keywords LIKE CONCAT('%', #{k.hira}, '%')
+                    OR 
+                    s.spot_name LIKE CONCAT('%', #{k.kana}, '%')
+                    OR 
+                    s.keywords LIKE CONCAT('%', #{k.kana}, '%')
+                )
+            </foreach>
+        </if>
+
+    </where>
+</select>
 	
     <!-- スポット数のカウント -->
     <select id="count" resultType="long">

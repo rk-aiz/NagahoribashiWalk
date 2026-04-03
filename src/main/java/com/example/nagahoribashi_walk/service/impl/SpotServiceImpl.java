@@ -1,6 +1,9 @@
 package com.example.nagahoribashi_walk.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -85,26 +88,42 @@ public class SpotServiceImpl implements SpotService {
 		if (keyword == null || keyword.isBlank()) {
 			return getPage(pageable);
 		}
+		// 🔸 全角スペース → 半角
+	    keyword = keyword.replace("　", " ");
 
-		// ひらがな・カタカナに変換
-		String hiraganaKeyword = toHiragana(keyword);
-		String katakanaKeyword = toKatakana(keyword);
+	    // 🔸 スペースで分割
+	    String[] splitKeywords = keyword.trim().split("\\s+");
 
-		// 件数取得
-		long total = spotMapper.countByKeywords(hiraganaKeyword, katakanaKeyword);
+	    // 🔸 List化
+	    //List<String> originList = new ArrayList<>();
+	    //List<String> hiraList = new ArrayList<>();
+	    //List<String> kanaList = new ArrayList<>();
 
-		System.out.println(total);
-		
-		// データ取得
-		List<SpotSummary> spots =
-				spotMapper.searchByKeywords(
-						hiraganaKeyword,
-						katakanaKeyword,
-						pageable.getOffset(),
-						pageable.getPageSize()
-						);
+	    List<Map<String, String>> keywordMapList = new ArrayList<>();
+	    
+	    for (String kw : splitKeywords) {
+	    	
+	    	Map<String, String> map = new HashMap<>();
+	    	map.put("origin", kw);
+	    	map.put("hira", toHiragana(kw));
+	    	map.put("kana", toKatakana(kw));
+	    	keywordMapList.add(map);
+	    }
 
-		return new PageImpl<>(spots, pageable, total);
+	    // 🔸 件数取得
+	    long total = spotMapper.countByKeywords(
+	            keywordMapList
+	    );
+
+	    // 🔸 データ取得
+	    List<SpotSummary> spots =
+	            spotMapper.searchByKeywords(
+	            		keywordMapList,
+	                    pageable.getOffset(),
+	                    pageable.getPageSize()
+	            );
+
+	    return new PageImpl<>(spots, pageable, total);
 	}
 
 
