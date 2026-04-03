@@ -30,5 +30,21 @@
         ORDER BY
             display_order 
     </select>
+    
+    
+    <!-- 大谷記載 -->
+    <!-- 新規追加 -->
+    <insert id="insertCategory" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO categories (name, display_order)
+        VALUES (#{name}, #{displayOrder})
+    </insert>
+
+
+    <!-- 削除 -->
+    <delete id="deleteCategory">
+        DELETE FROM categories WHERE id = #{id}
+    </delete>
+    
+
 
 </mapper>
