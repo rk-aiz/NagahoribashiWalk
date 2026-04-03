@@ -55,7 +55,7 @@ public class ReviewController {
     		reviewService.addReview(review,principal.getName()); // ←失敗したらthrow
     		
     		// 成功メッセージを設定する
-    	    redirectAttributes.addFlashAttribute("successMessage", "レビューを投稿しました。");	
+    	    redirectAttributes.addFlashAttribute("message", "レビューを投稿しました。");	
     	} catch (Exception e) {
     		//エラーメッセージを設定する
     		redirectAttributes.addFlashAttribute("errorMessage", e.getLocalizedMessage());
