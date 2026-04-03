@@ -200,6 +200,17 @@
                             </div>
                         </div>
                     </li>
+					<li class="nav-item cat-item">
+					    <a class="nav-link fw-medium" th:href="@{/spot/category/other}">その他</a>
+
+					    <!-- その他メガメニューパネル -->
+					    <!--<div class="mega-panel" th:if="${not #lists.isEmpty(otherSubCategories)}">
+					        <div class="container">
+					            <a th:each="sub : ${cat.subCategories}" class="mega-item"
+					                th:href="@{/spot/subcategory/{id}(id=${sub.id})}" th:text="${sub.name}">サブカテゴリ</a>
+					        </div>
+					    </div>-->
+					</li>
                 </ul>
             </div>
         </nav>
