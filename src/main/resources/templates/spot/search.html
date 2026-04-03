@@ -1,155 +1,95 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org"
-	th:replace="~{layout/default :: layout('検索結果', ~{::main}, ~{:: headStyles})}"
-	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/default :: layout('検索結果', ~{::main}, ~{:: headStyles})}"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-	<title>検索結果</title>
-	<th:block th:fragment="headStyles">
-		<th:block th:replace="~{fragments/spot-card :: styles}"></th:block>
-		<style>
-			/* ===== シンプルページネーション ===== */
-			.pager-minimal {
-				gap: 0.3rem;
-			}
+    <title>検索結果</title>
+    <th:block th:fragment="headStyles">
+        <th:block th:replace="~{fragments/spot-card :: styles}"></th:block>
+        <style>
+            /* ===== シンプルページネーション ===== */
+            .pager-minimal {
+                gap: 0.3rem;
+            }
 
-			.pager-minimal .page-item .page-link,
-			.pagerSearch-minimal .page-item .page-link {
-				border: none;
-				background: transparent;
-				color: #64748b;
-				font-size: 0.875rem;
-				border-radius: 0.4rem;
-				padding: 0.35rem 0.65rem;
-				line-height: 1.4;
-				box-shadow: none;
-				transition: background-color 0.15s, color 0.15s;
-			}
+            .pager-minimal .page-item .page-link,
+            .pagerSearch-minimal .page-item .page-link {
+                border: none;
+                background: transparent;
+                color: #64748b;
+                font-size: 0.875rem;
+                border-radius: 0.4rem;
+                padding: 0.35rem 0.65rem;
+                line-height: 1.4;
+                box-shadow: none;
+                transition: background-color 0.15s, color 0.15s;
+            }
 
-			.pager-minimal .page-item .page-link:hover,
-			.pagerSearch-minimal .page-item .page-link:hover {
-				background-color: #f1f5f9;
-				color: #334155;
-			}
+            .pager-minimal .page-item .page-link:hover,
+            .pagerSearch-minimal .page-item .page-link:hover {
+                background-color: #f1f5f9;
+                color: #334155;
+            }
 
-			.pager-minimal .page-item.active .page-link,
-			.pagerSearch-minimal .page-item.active .page-link {
-				background-color: #dbeafe;
-				color: #1d4ed8;
-				font-weight: 600;
-			}
+            .pager-minimal .page-item.active .page-link,
+            .pagerSearch-minimal .page-item.active .page-link {
+                background-color: #dbeafe;
+                color: #1d4ed8;
+                font-weight: 600;
+            }
 
-			.pager-minimal .page-item.disabled .page-link,
-			.pagerSearch-minimal .page-item.disabled .page-link {
-				color: #cbd5e1;
-				pointer-events: none;
-			}
-		</style>
-	</th:block>
+            .pager-minimal .page-item.disabled .page-link,
+            .pagerSearch-minimal .page-item.disabled .page-link {
+                color: #cbd5e1;
+                pointer-events: none;
+            }
+        </style>
+    </th:block>
 </head>
+<body>
 
-<body class="bg-light">
-	<!-- ===================== -->
-	<!-- ヘッダー -->
-	<!-- ===================== -->
-	<div class="bg-white border-bottom shadow-sm py-3 mb-3">
-		<div class="container">
-			<main class="flex-grow-1" style="background-color: #f8fafc;">
+    <main class="flex-grow-1" style="background-color: #f8fafc;">
 
-				<!-- 戻る -->
-				<a href="javascript:history.back()"
-					class="text-decoration-none text-secondary small d-inline-flex align-items-center mb-2">
-					← 戻る
-				</a>
+        <!-- ページヘッダー -->
+        <div class="bg-white border-bottom py-3">
+            <div class="container">
+                <a th:href="@{/}"
+                    class="text-decoration-none text-secondary small d-inline-flex align-items-center mb-2">
+                    <i class="bi bi-arrow-left me-1"></i>トップへ戻る
+                </a>
+                <div class="d-flex align-items-baseline gap-3">
+                    <h2 class="h3 mb-0 fw-bold text-dark">
+                        「<span th:text="${keyword}">キーワード</span>」の検索結果
+                    </h2>
+                    <span class="text-secondary small"
+                        th:text="${page.totalElements + '件のスポット'}">0件のスポット</span>
+                </div>
+            </div>
+        </div>
 
-				<!-- ページヘッダー -->
-				<div class="bg-white border-bottom py-3">
-					<div class="container">
-						<a th:href="@{/}"
-							class="text-decoration-none text-secondary small d-inline-flex align-items-center mb-2">
-							<i class="bi bi-arrow-left me-1"></i>トップへ戻る
-						</a>
-						<div class="d-flex align-items-baseline gap-3">
-							<h2 class="h3 mb-0 fw-bold text-dark">
-								「<span th:text="${keyword}">キーワード</span>」の検索結果
-							</h2>
-							<span class="text-secondary small" th:text="${page.totalElements + '件のスポット'}">0件のスポット</span>
-						</div>
-					</div>
-				</div>
-		</div>
-	</div>
+        <div class="container py-4">
 
-	<!-- ===================== -->
-	<!-- ページネーション -->
-	<!-- ===================== -->
-	<div class="container">
-		<div th:replace="~{fragments/pagination :: pagerSearch(${page}, ${keyword}, 'mb-4')}"></div>
-	</div>
+            <!-- 上部ページネーション -->
+            <div th:replace="~{fragments/pagination :: pagerSearch(${page}, ${keyword}, 'mb-3')}"></div>
 
-	<!-- ===================== -->
-	<!-- スポット一覧 -->
-	<!-- ===================== -->
-	<div class="container">
-		<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+            <!-- スポットグリッド（2カラム） -->
+            <div class="row row-cols-1 row-cols-sm-3 g-3">
+                <div class="col" th:each="spot : ${page}">
+                    <th:block th:replace="~{fragments/spot-card :: card(${spot})}"></th:block>
+                </div>
+            </div>
 
-			<div class="col" th:each="spot : ${page}">
-				<div class="card h-100 shadow-sm border-0">
+            <!-- スポット0件時のメッセージ -->
+            <div th:if="${page.totalElements == 0}" class="text-center py-5 text-secondary">
+                <i class="bi bi-search" style="font-size: 2.5rem;"></i>
+                <p class="mt-3 mb-0">スポットが見つかりませんでした。</p>
+            </div>
 
-					<th:block th:replace="~{fragments/spot-card :: card(${spot})}"></th:block>
+            <!-- 下部ページネーション -->
+            <div th:replace="~{fragments/pagination :: pagerSearch(${page}, ${keyword}, 'mt-4')}"></div>
 
-				</div>
-			</div>
+        </div>
 
-		</div>
-	</div>
-
-	<!-- ===================== -->
-	<!-- 0件メッセージ -->
-	<!-- ===================== -->
-	<div th:if="${page.totalElements == 0}" class="text-center py-5 text-secondary">
-		<div class="mb-3" style="font-size: 2.5rem;">🔍</div>
-		<h5 class="fw-bold">見つかりませんでした</h5>
-		<p class="mb-0 small">検索キーワードを変えてみてください</p>
-	</div>
-
-	<!-- ===================== -->
-	<!-- スタイル -->
-	<!-- ===================== -->
-	<style>
-		.card-img-top {
-			height: 200px;
-			object-fit: cover;
-			border-radius: 0.5rem 0.5rem 0 0;
-		}
-
-		.card {
-			transition: transform 0.2s ease, box-shadow 0.2s ease;
-		}
-
-		.card:hover {
-			transform: translateY(-5px);
-			box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-		}
-	</style>
-	<!-- スポットグリッド（2カラム） -->
-	<div class="row row-cols-1 row-cols-sm-3 g-3">
-		<div class="col" th:each="spot : ${page}">
-			<th:block th:replace="~{fragments/spot-card :: card(${spot})}"></th:block>
-		</div>
-	</div>
-
-	<!-- スポット0件時のメッセージ -->
-	<div th:if="${page.totalElements == 0}" class="text-center py-5 text-secondary">
-		<i class="bi bi-search" style="font-size: 2.5rem;"></i>
-		<p class="mt-3 mb-0">スポットが見つかりませんでした。</p>
-	</div>
-
-	<!-- 下部ページネーション -->
-	<div th:replace="~{fragments/pagination :: pagerSearch(${page}, ${keyword}, 'mt-4')}"></div>
-
-
-	</main>
+    </main>
 
 </body>
 

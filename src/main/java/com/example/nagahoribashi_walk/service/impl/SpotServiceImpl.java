@@ -91,7 +91,7 @@ public class SpotServiceImpl implements SpotService {
     public Page<SpotSummary> searchByKeywords(String keyword, Pageable pageable) {
 	
 	    // 🔸 スペースで分割
-	    String[] splitKeywords = keyword.trim().split("\\s+");
+	    String[] splitKeywords = keyword.trim().replace('　', ' ').split("\\s+");
 	
 	    List<Map<String, String>> keywordMapList = new ArrayList<>();
 	    

@@ -159,6 +159,24 @@
         SELECT count(*) FROM spots
     </select>
     
+    	<!-- 大谷記載箇所 -->
+	<!-- 指定されたカテゴリーに対応するスポット数のカウント -->
+	<select id="countByCategoryId" resultType="long">
+		SELECT count(*) FROM
+		spots s
+		LEFT JOIN sub_categories sc ON s.sub_category_id = sc.id
+		WHERE
+		(sc.category_id = #{categoryId}) AND (s.deleted_at IS NULL)
+	</select>
+
+	<!-- 指定されたサブカテゴリーに対応するスポット数のカウント -->
+	<select id="countBySubCategoryId" resultType="long">
+		SELECT count(*)
+		FROM spots
+		WHERE (sub_category_id = #{subCategoryId}) AND (deleted_at
+		IS NULL)
+	</select>
+    
     <!-- トップページおすすめ-->
     <select id="findRecommendedSpots" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
         SELECT
