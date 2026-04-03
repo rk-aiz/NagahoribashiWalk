@@ -44,7 +44,7 @@ CREATE TABLE sub_categories (
     name VARCHAR(100) NOT NULL,
     CONSTRAINT fk_sub_categories_category
         FOREIGN KEY (category_id) REFERENCES categories(id)
-        ON DELETE CASCADE,
+        ON DELETE SET NULL,
     CONSTRAINT uq_sub_categories_category_name
         UNIQUE (category_id, name)
 );

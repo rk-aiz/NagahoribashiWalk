@@ -25,4 +25,20 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         return subCategoryMapper.findAll().stream()
                 .collect(Collectors.groupingBy(SubCategory::getCategoryId));
     }
+
+	@Override
+	public void insertSubCategory(SubCategory subCategory) {
+		subCategoryMapper.insertSubCategory(subCategory);
+		
+	}
+
+	@Override
+	public void deleteSubCategory(Long id) {
+		subCategoryMapper.deleteSubCategory(id);
+		
+	}
+    
+    
+    
+    
 }

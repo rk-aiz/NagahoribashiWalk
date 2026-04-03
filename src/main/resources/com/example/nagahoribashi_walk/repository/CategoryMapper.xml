@@ -44,7 +44,6 @@
     <delete id="deleteCategory">
         DELETE FROM categories WHERE id = #{id}
     </delete>
-    
-
+   
 
 </mapper>

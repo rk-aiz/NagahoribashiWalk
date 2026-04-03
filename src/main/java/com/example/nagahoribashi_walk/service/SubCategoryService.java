@@ -11,4 +11,11 @@ import com.example.nagahoribashi_walk.entity.SubCategory;
 public interface SubCategoryService {
 
     Map<Long, List<SubCategory>> findAllGroupedByCategory();
+    
+    //大谷記載
+    //追加
+    void insertSubCategory(SubCategory subCategory);
+    
+    //削除
+    void deleteSubCategory(Long id);
 }
