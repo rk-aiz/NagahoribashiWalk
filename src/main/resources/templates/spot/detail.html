@@ -1,88 +1,88 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org"
-    th:replace="~{layout/default :: layout(${spotDetail.spotName}, ~{::main}, ~{::style})}"
-    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	th:replace="~{layout/default :: layout(${spotDetail.spotName}, ~{::main}, ~{::style})}"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-    <title>スポット詳細</title>
-    <style>
-        .detail-card {
-            background: #ffffff;
-            border-radius: 1rem;
-            box-shadow: 0 0.5rem 1.5rem rgba(15, 23, 42, 0.08);
-            border: 1px solid #e2e8f0;
-        }
+	<title>スポット詳細</title>
+	<style>
+		.detail-card {
+			background: #ffffff;
+			border-radius: 1rem;
+			box-shadow: 0 0.5rem 1.5rem rgba(15, 23, 42, 0.08);
+			border: 1px solid #e2e8f0;
+		}
 
-        .section-card {
-            background: #ffffff;
-            border-radius: 1rem;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 0.25rem 1rem rgba(15, 23, 42, 0.05);
-        }
+		.section-card {
+			background: #ffffff;
+			border-radius: 1rem;
+			border: 1px solid #e2e8f0;
+			box-shadow: 0 0.25rem 1rem rgba(15, 23, 42, 0.05);
+		}
 
-        .info-label {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #475569;
-            margin-bottom: 0.35rem;
-        }
+		.info-label {
+			font-size: 0.85rem;
+			font-weight: 700;
+			color: #475569;
+			margin-bottom: 0.35rem;
+		}
 
-        .info-value {
-            font-size: 0.95rem;
-            color: #1e293b;
-            margin-bottom: 0;
-            word-break: break-word;
-        }
+		.info-value {
+			font-size: 0.95rem;
+			color: #1e293b;
+			margin-bottom: 0;
+			word-break: break-word;
+		}
 
-        .section-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 1rem;
-        }
+		.section-title {
+			font-size: 1.15rem;
+			font-weight: 700;
+			color: #1e293b;
+			margin-bottom: 1rem;
+		}
 
-        .subtle-box {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 0.75rem;
-        }
+		.subtle-box {
+			background: #f8fafc;
+			border: 1px solid #e2e8f0;
+			border-radius: 0.75rem;
+		}
 
-        .photo-frame {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 0.75rem;
-            padding: 0.5rem;
-            height: 100%;
-        }
+		.photo-frame {
+			background: #f8fafc;
+			border: 1px solid #e2e8f0;
+			border-radius: 0.75rem;
+			padding: 0.5rem;
+			height: 100%;
+		}
 
-        .photo-frame img {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-            border-radius: 0.5rem;
-        }
+		.photo-frame img {
+			width: 100%;
+			height: 220px;
+			object-fit: cover;
+			border-radius: 0.5rem;
+		}
 
-        .review-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 0.9rem;
-        }
+		.review-card {
+			background: #f8fafc;
+			border: 1px solid #e2e8f0;
+			border-radius: 0.9rem;
+		}
 
-        .link-button {
-            text-decoration: none;
-        }
+		.link-button {
+			text-decoration: none;
+		}
 
-        .favorite-form {
-            display: inline-block;
-        }
+		.favorite-form {
+			display: inline-block;
+		}
 
-        .empty-box {
-            background: #f8fafc;
-            border: 1px dashed #cbd5e1;
-            border-radius: 0.9rem;
-            color: #64748b;
-        }
-    </style>
+		.empty-box {
+			background: #f8fafc;
+			border: 1px dashed #cbd5e1;
+			border-radius: 0.9rem;
+			color: #64748b;
+		}
+	</style>
 </head>
 
 <body class="d-flex flex-column min-vh-100" style="background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);">
