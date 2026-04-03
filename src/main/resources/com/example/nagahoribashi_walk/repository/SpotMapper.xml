@@ -109,14 +109,20 @@
                     s.spot_name LIKE CONCAT('%', #{k.origin}, '%')
                     OR 
                     s.keywords LIKE CONCAT('%', #{k.origin}, '%')
-                    OR 
+                    OR
+                    s.details LIKE CONCAT('%', #{k.origin}, '%') 
+                    OR
                     s.spot_name LIKE CONCAT('%', #{k.hira}, '%')
                     OR 
                     s.keywords LIKE CONCAT('%', #{k.hira}, '%')
-                    OR 
+                    OR
+                    s.details LIKE CONCAT('%', #{k.hira}, '%')
+                    OR  
                     s.spot_name LIKE CONCAT('%', #{k.kana}, '%')
                     OR 
                     s.keywords LIKE CONCAT('%', #{k.kana}, '%')
+                    OR
+                    s.details LIKE CONCAT('%', #{k.kana}, '%')
                 )
             </foreach>
         </if>
@@ -139,14 +145,20 @@
                     s.spot_name LIKE CONCAT('%', #{k.origin}, '%')
                     OR 
                     s.keywords LIKE CONCAT('%', #{k.origin}, '%')
-                    OR 
+                    OR
+                    s.details LIKE CONCAT('%', #{k.origin}, '%') 
+                    OR
                     s.spot_name LIKE CONCAT('%', #{k.hira}, '%')
                     OR 
                     s.keywords LIKE CONCAT('%', #{k.hira}, '%')
-                    OR 
+                    OR
+                    s.details LIKE CONCAT('%', #{k.hira}, '%')
+                    OR  
                     s.spot_name LIKE CONCAT('%', #{k.kana}, '%')
                     OR 
                     s.keywords LIKE CONCAT('%', #{k.kana}, '%')
+                    OR
+                    s.details LIKE CONCAT('%', #{k.kana}, '%')
                 )
             </foreach>
         </if>
