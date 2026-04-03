@@ -49,6 +49,9 @@
                 <!-- ログインフォーム -->
                 <form th:action="@{/authentication}" method="post">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+					
+					<!-- returnUrlをhiddenで引き継ぐ -->
+					<input type="hidden" name="returnUrl" th:value="${param.returnUrl}">
 
                     <!-- ユーザー名 -->
                     <div class="mb-3">
@@ -84,6 +87,7 @@
                         style="border-radius: 0.5rem; font-size: 1rem;">
                         ログイン
                     </button>
+					
                 </form>
 
                 <!-- 新規登録へ -->
