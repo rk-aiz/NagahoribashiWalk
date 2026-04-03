@@ -9,9 +9,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminHomeController {
 
-	@GetMapping("/admin/home")
-	public String home() {
-		return "admin/admin_home";
-	}
-	
+    @GetMapping("/admin")
+    public String home() {
+        return "admin/admin_home";
+    }
+
+    @GetMapping("/admin/login")
+    public String login() {
+        return "admin/admin_login";
+    }
+
 }

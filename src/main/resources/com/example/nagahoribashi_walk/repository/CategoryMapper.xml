@@ -31,4 +31,9 @@
             display_order 
     </select>
 
+    <select id="findById" resultType="com.example.nagahoribashi_walk.dto.CategoryDTO">
+        SELECT id, name FROM categories
+        WHERE id = #{id}
+    </select>
+
 </mapper>

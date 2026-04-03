@@ -1,43 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper
 	namespace="com.example.nagahoribashi_walk.repository.SpotMapper">
 
-    <!-- ページネーション付き取得 -->
-    <select id="findAll" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
-        SELECT
-			s.id,
-			s.spot_name, 
-			sp.photo_url,
-			r.average_rating, 
-			sc.name AS sub_category_name,
-			c.name AS category_name,
-			s.keywords
-        FROM spots s
-	    LEFT JOIN spot_photos sp
-	        ON s.id = sp.spot_id AND sp.display_order = 1
+	<!-- SpotDetail 全体取得用 resultMap 役割： ・1スポットの基本情報 ・レビュー一覧 ・画像一覧 を SpotDetail 
+		にまとめて詰める -->
+	<resultMap id="SpotDetailMap"
+		type="com.example.nagahoribashi_walk.dto.SpotDetail">
+
+		<!-- 親DTO（SpotDetail）の識別キー -->
+		<id property="id" column="spot_id" />
+
+		<!-- SpotDetail の基本情報 -->
+		<result property="spotName" column="spotName" />
+		<result property="details" column="details" />
+		<result property="businessHours" column="businessHours" />
+		<result property="estimatedBudget" column="estimatedBudget" />
+		<result property="address" column="address" />
+		<result property="gmapUrl" column="gmapUrl" />
+		<result property="websiteUrl" column="websiteUrl" />
+		<result property="keywords" column="keywords" />
+		<result property="categoryName" column="categoryName" />
+		<result property="subCategoryName" column="subCategoryName" />
+		<result property="averageRating" column="averageRating" />
+		<result property="reviewCount" column="reviewCount" />
+
+		<!-- reviews 一覧 -->
+		<collection property="reviews"
+			ofType="com.example.nagahoribashi_walk.dto.ReviewDTO">
+			<id property="id" column="review_id" />
+			<result property="userId" column="user_id" />
+			<result property="comment" column="comment" />
+			<result property="reviewerName" column="reviewerName" />
+			<result property="reviewDate" column="reviewDate" />
+			<result property="rating" column="rating" />
+		</collection>
+
+		<!-- images 一覧 -->
+		<collection property="images"
+			ofType="com.example.nagahoribashi_walk.dto.SpotPhotoDTO">
+			<id property="id" column="photo_id" />
+			<result property="photoUrl" column="photoUrl" />
+			<result property="displayOrder" column="displayOrder" />
+		</collection>
+	</resultMap>
+
+	<!-- ページネーション付き取得 -->
+	<select id="findAll"
+		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
+		SELECT
+		s.id,
+		s.spot_name,
+		sp.photo_url,
+		r.average_rating,
+		sc.name AS sub_category_name,
+		c.name AS category_name,
+		s.keywords
+		FROM
+		spots s
+		LEFT JOIN spot_photos sp
+		ON s.id = sp.spot_id AND
+		sp.display_order = 1
 		LEFT JOIN (
-            SELECT spot_id, AVG(rating) AS average_rating
-            FROM reviews
-            GROUP BY spot_id
+		SELECT spot_id, AVG(rating) AS
+		average_rating
+		FROM reviews
+		GROUP BY spot_id
 		) r ON r.spot_id = s.id
-		INNER JOIN sub_categories sc ON sc.id = s.sub_category_id
-		INNER JOIN categories c ON c.id = sc.category_id
-        ORDER BY s.updated_at DESC
-        LIMIT #{limit} OFFSET #{offset}
-    </select>
+		INNER JOIN sub_categories sc ON
+		sc.id = s.sub_category_id
+		INNER JOIN
+		categories c ON c.id =
+		sc.category_id
+		WHERE s.deleted_at IS NULL
+		ORDER BY
+		s.updated_at DESC
+		LIMIT #{limit} OFFSET #{offset}
+	</select>
 
 	<!-- キーワードで取得 -->
-	<select id="searchByKeywords" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
-	    SELECT
-	    	s.id,
-	    	s.spot_name,
-	    	sp.photo_url,
-	    	r.average_rating,
-	    	COALESCE(c.name, 'その他')    AS category_name,
-	    	COALESCE(sc.name, 'その他')   AS sub_category_name,
-	    	s.keywords
+	<select id="searchByKeywords"
+		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
+		SELECT
+		s.id,
+		s.spot_name,
+		sp.photo_url,
+		r.average_rating,
+		c.name AS
+		category_name,
+		sc.name AS sub_category_name,
+		s.keywords
 		FROM spots s
 	    LEFT JOIN sub_categories sc ON s.sub_category_id = sc.id
 	    LEFT JOIN categories c      ON sc.category_id = c.id
@@ -124,14 +176,215 @@
             ORDER BY created_at DESC
             LIMIT 1
 		) sp ON true
-		JOIN (
-            SELECT spot_id, AVG(rating) AS average_rating
-            FROM reviews
-            GROUP BY spot_id
-		) r ON r.spot_id = s.id
-		JOIN sub_categories sc ON sc.id = s.sub_category_id
-		JOIN categories c ON c.id = sc.category_id
-        ORDER BY average_rating DESC NULLS LAST
-        LIMIT 3
-    </select>
+		LEFT JOIN (
+		SELECT
+		spot_id,
+		AVG(rating) AS average_rating
+		FROM reviews
+		GROUP BY spot_id
+		) r
+		ON r.spot_id = s.id
+		LEFT JOIN sub_categories sc ON sc.id
+		=
+		s.sub_category_id
+		LEFT JOIN categories c ON c.id = sc.category_id
+		WHERE
+		s.deleted_at IS NULL
+		ORDER BY average_rating DESC NULLS LAST
+		LIMIT 3
+	</select>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT
+		INTO spots (
+		spot_name,
+		sub_category_id,
+		address,
+		business_hours,
+		closed_days,
+		estimated_budget,
+		details,
+		website_url,
+		gmap_url,
+		keywords
+		)
+		VALUES (
+		#{spotName},
+		#{subCategoryId},
+		#{address},
+		#{businessHours},
+		#{closedDays},
+		#{estimatedBudget},
+		#{details},
+		#{websiteUrl},
+		#{gmapUrl},
+		#{keywords}
+		);
+	</insert>
+
+	<update id="update">
+		UPDATE spots
+		SET spot_name = #{spotName},
+		sub_category_id = #{subCategoryId},
+		address = #{address},
+		business_hours = #{businessHours},
+		closed_days = #{closedDays},
+		estimated_budget = #{estimatedBudget},
+		details = #{details},
+		website_url = #{websiteUrl},
+		gmap_url = #{gmapUrl},
+		keywords =
+		#{keywords}
+		WHERE id = #{id}
+	</update>
+	<!-- 大谷記載 -->
+	<select id="findByCategoryId"
+		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
+		SELECT
+		s.id,
+		s.spot_name,
+		sp.photo_url,
+		r.average_rating,
+		sc.name AS sub_category_name,
+		c.name AS category_name,
+		s.keywords
+		FROM
+		spots s
+		LEFT JOIN LATERAL (
+		SELECT * FROM spot_photos
+		WHERE spot_id =
+		s.id
+		ORDER BY created_at DESC
+		LIMIT 1
+		) sp ON true
+		LEFT JOIN (
+		SELECT
+		spot_id, AVG(rating) AS average_rating
+		FROM reviews
+		GROUP BY spot_id
+		) r
+		ON r.spot_id = s.id
+		LEFT JOIN sub_categories sc ON sc.id
+		=
+		s.sub_category_id
+		LEFT JOIN categories c ON c.id = sc.category_id
+		WHERE
+		(sc.category_id = #{categoryId}) AND (s.deleted_at IS NULL)
+		ORDER BY
+		s.updated_at DESC
+		LIMIT #{limit} OFFSET #{offset}
+	</select>
+
+	<select id="findBySubCategoryId"
+		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
+		SELECT
+		s.id,
+		s.spot_name,
+		sp.photo_url,
+		r.average_rating,
+		sc.name AS sub_category_name,
+		c.name AS category_name,
+		s.keywords
+		FROM
+		spots s
+		LEFT JOIN LATERAL (
+		SELECT * FROM spot_photos
+		WHERE spot_id =
+		s.id
+		ORDER BY created_at DESC
+		LIMIT 1
+		) sp ON true
+		LEFT JOIN (
+		SELECT
+		spot_id, AVG(rating) AS average_rating
+		FROM reviews
+		GROUP BY spot_id
+		) r
+		ON r.spot_id = s.id
+		LEFT JOIN sub_categories sc ON sc.id
+		=
+		s.sub_category_id
+		LEFT JOIN categories c ON c.id = sc.category_id
+		WHERE
+		(s.sub_category_id = #{subCategoryId}) AND (s.deleted_at IS
+		NULL)
+		ORDER
+		BY s.updated_at DESC
+		LIMIT #{limit} OFFSET #{offset}
+	</select>
+
+	<!-- SpotDetail を findById 1本で取得 -->
+	<select id="findById" resultMap="SpotDetailMap">
+		SELECT
+		<!-- SpotDetail 本体 -->
+		s.id AS spot_id,
+		s.spot_name AS spotName,
+		r.user_id,
+		s.details AS
+		details,
+		s.business_hours AS businessHours,
+		s.estimated_budget AS
+		estimatedBudget,
+		s.address AS address,
+		s.gmap_url AS gmapUrl,
+		s.website_url AS websiteUrl,
+		s.keywords,
+		c.name AS categoryName,
+		sc.name
+		AS subCategoryName,
+
+		<!-- レビュー統計 -->
+		stats.avg_rating AS averageRating,
+		stats.review_count AS reviewCount,
+
+		<!-- ReviewDTO 用 -->
+		r.id AS review_id,
+		r.comment AS comment,
+		u.display_name AS reviewerName,
+		r.created_at AS reviewDate,
+		r.rating AS rating,
+
+		<!-- SpotPhotoDTO 用 -->
+		sp.id AS photo_id,
+		sp.photo_url AS photoUrl,
+		sp.display_order AS
+		displayOrder
+
+		FROM spots s
+
+		LEFT JOIN sub_categories sc
+		ON
+		s.sub_category_id = sc.id
+
+		LEFT JOIN categories c
+		ON sc.category_id =
+		c.id
+
+		LEFT JOIN (
+		SELECT
+		spot_id,
+		AVG(rating) AS avg_rating,
+		COUNT(id) AS
+		review_count
+		FROM reviews
+		GROUP BY spot_id
+		) stats
+		ON s.id = stats.spot_id
+
+		LEFT JOIN reviews r
+		ON s.id = r.spot_id
+
+		LEFT JOIN users u
+		ON r.user_id =
+		u.id
+
+		LEFT JOIN spot_photos sp
+		ON s.id = sp.spot_id
+
+		WHERE s.id = #{id}
+		AND
+		s.deleted_at IS NULL
+
+		ORDER BY r.created_at DESC, sp.display_order ASC
+	</select>
 </mapper>

@@ -31,10 +31,10 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    
+
     @Override
     public UserProfile getProfileByUsername(String username) {
-    	return userMapper.findProfileByUsername(username).orElseThrow(() -> {
+        return userMapper.findProfileByUsername(username).orElseThrow(() -> {
             throw new UsernameNotFoundException(
                     "ユーザーが存在しません");
         });
@@ -42,26 +42,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void register(User user, String rowPassword) {
-        
-    	// ユーザー名が既に存在するか確認
-    	if (userMapper.exists(user.getUsername())) {
-    		throw new UserAlreadyExistsException("ユーザー名はすでに存在します。");
-    	}
-    	
-    	/** Emailを一意にする
-    	if (userMapper.findByEmail(user.getUsername()).isPresent()) {
-    		throw new UserAlreadyExistsException("すでに登録されたメールアドレスです。");
-    	}
-    	*/
-    	
-    	// パスワードをハッシュ化
-    	user.setPassword(passwordEncoder.encode(rowPassword));
-    	
-    	try {
-    		userMapper.insert(user);
-    	} catch (Exception e) {
-    		throw new DataIntegrityViolationException(e.getLocalizedMessage());
-    	}
+
+        // ユーザー名が既に存在するか確認
+        if (userMapper.exists(user.getUsername())) {
+            throw new UserAlreadyExistsException("ユーザー名はすでに存在します。");
+        }
+
+        /**
+         * Emailを一意にする
+         * if (userMapper.findByEmail(user.getUsername()).isPresent()) {
+         * throw new UserAlreadyExistsException("すでに登録されたメールアドレスです。");
+         * }
+         */
+
+        // パスワードをハッシュ化
+        user.setPassword(passwordEncoder.encode(rowPassword));
+
+        try {
+            userMapper.insert(user);
+        } catch (Exception e) {
+            throw new DataIntegrityViolationException(e.getLocalizedMessage());
+        }
     }
 
     @Override
@@ -82,10 +83,15 @@ public class UserServiceImpl implements UserService {
         throw new UnsupportedOperationException("Unimplemented method 'toggleEnabled'");
     }
 
-    @Override
-    public Page<User> getPage(Pageable pageable) {
-        long total = userMapper.count();
-        List<User> users = userMapper.findAll(pageable.getOffset(), pageable.getPageSize());
-        return new PageImpl<>(users, pageable, total);
-    }
+	@Override
+	public Page<User> getPage(Pageable pageable) {
+		
+		long total = userMapper.count();
+		
+		// 対象ページに対応したスポットを取得する
+		List<User> users = userMapper.findAll(pageable.getOffset(), pageable.getPageSize());
+
+		// Page<T>インスタンスに詰めて返す
+		return new PageImpl<>(users, pageable, total);
+	}
 }

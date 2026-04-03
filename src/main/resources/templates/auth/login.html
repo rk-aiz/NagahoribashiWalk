@@ -49,6 +49,9 @@
                 <!-- ログインフォーム -->
                 <form th:action="@{/authentication}" method="post">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+					
+					<!-- returnUrlをhiddenで引き継ぐ -->
+					<input type="hidden" name="returnUrl" th:value="${param.returnUrl}">
 
                     <!-- ユーザー名 -->
                     <div class="mb-3">
@@ -60,7 +63,7 @@
                             </span>
                             <input type="text" id="username" name="username" class="form-control border-start-0 ps-0"
                                 style="border-color: #e5e7eb; background: #f9fafb;" placeholder="ユーザー名を入力"
-                                autocomplete="username" required>
+                                autocomplete="username" value="demouser" required>
                         </div>
                     </div>
 
@@ -75,7 +78,7 @@
                             <input type="password" id="password" name="password"
                                 class="form-control border-start-0 ps-0"
                                 style="border-color: #e5e7eb; background: #f9fafb;" placeholder="パスワードを入力"
-                                autocomplete="current-password" required>
+                                autocomplete="current-password" value="demopass" required>
                         </div>
                     </div>
 
@@ -84,6 +87,7 @@
                         style="border-radius: 0.5rem; font-size: 1rem;">
                         ログイン
                     </button>
+					
                 </form>
 
                 <!-- 新規登録へ -->

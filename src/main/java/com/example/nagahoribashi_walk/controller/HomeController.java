@@ -32,4 +32,5 @@ public class HomeController {
 		// home.htmlを表示
 		return "home";
 	}
+
 }
