@@ -20,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final CustomLogoutSuccessHandler logoutSuccessHandler;
 
     // =========================================================
@@ -104,7 +106,7 @@ public class SecurityConfig {
             // ★ログイン設定
             .formLogin(form -> form
                 // ログイン画面のURL
-                .loginPage("/login")
+                //.loginPage("/login")
                 // ログインフォームの送信先URL（Spring Securityが処理）
                 .loginProcessingUrl("/authentication")
                 // フォームの name 属性に合わせる（デフォルトも "username" だが明示）
@@ -112,7 +114,7 @@ public class SecurityConfig {
                 // フォームの name 属性に合わせる（デフォルトも "password" だが明示）
                 .passwordParameter("password")
                 // ログイン成功時はトップページへ
-                .defaultSuccessUrl("/")
+                .successHandler(customAuthenticationSuccessHandler) // ← 追加
                 // ログイン失敗時はログイン画面にエラーパラメーター付きで戻る
                 .failureUrl("/login?error"))
 
@@ -129,7 +131,9 @@ public class SecurityConfig {
 
             // ★403処理: ADMINが /mypage/** など一般ユーザー専用ページにアクセスした場合
             .exceptionHandling(ex -> ex
-                .accessDeniedPage("/403"));
+            	.authenticationEntryPoint(customAuthenticationEntryPoint)
+                .accessDeniedPage("/403")
+                );
 
         return http.build();
     }
