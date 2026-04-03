@@ -34,27 +34,33 @@ public class AdminUserController {
             @PageableDefault(size = 5) Pageable pageable,
             Model model) {
 
-        Page<AdminUserRow> page = userService.getAdminUserPage(pageable,sort);
-
+        Page<AdminUserRow> page = userService.getAdminUserPage(pageable, sort);
+        
         model.addAttribute("page", page);
-        model.addAttribute("sort",sort);
+        model.addAttribute("sort", sort);
 
         return "admin/user/list";
     }
 
     @PostMapping("/toggle")
-    public String toggle(@RequestParam Long id) {
+    public String toggle(@RequestParam Long id,
+    		@RequestParam int page,
+    		@RequestParam String sort) {
+    	
         userService.toggleEnabled(id);
-        return "redirect:/admin/user/list";
+        return "redirect:/admin/user/list?page="+ page+ "&sort=" + sort;
     }
 
     @PostMapping("/delete")
     public String delete(
-    		@RequestParam("username") String username, 
-    		@AuthenticationPrincipal LoginUser loginUser) {
+    		@RequestParam("username") String username,
+    		@RequestParam String sort,
+    		@RequestParam int page,
+    		@AuthenticationPrincipal LoginUser loginUser
+    		) {
 
         userService.delete(username, loginUser.getUsername());
 
-        return "redirect:/admin/user/list";
+        return "redirect:/admin/user/list?page="+ page+ "&sort=" + sort;
     }
 }

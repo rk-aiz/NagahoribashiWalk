@@ -62,11 +62,14 @@
             <!-- 操作 -->
             <td>
                 <!-- 有効/無効切り替え -->
-                <form th:action="@{/admin/user/toggle}" method="post" style="display:inline;">
-                    <input type="hidden" name="id" th:value="${user.id}">
-					<input type="hidden" name="page" th:value="${page.number}">
-                    <button class="btn btn-sm btn-warning">切替</button>
-                </form>
+				<form th:action="@{/admin/user/toggle}" method="post" style="display:inline;">
+				    <input type="hidden" name="id" th:value="${user.id}">
+				    <input type="hidden" name="page" th:value="${page.number}">
+				    <input type="hidden" name="sort" th:value="${sort}">
+				    
+				    <button class="btn btn-sm btn-warning" 
+						th:unless="${#authentication.name == user.username}">切替</button>
+				</form>
 
                 <!-- 削除 -->
 				<form th:action="@{/admin/user/delete}" method="post"
@@ -74,14 +77,16 @@
 				      onsubmit="return confirm('削除しますか？');">
 
 				    <input type="hidden" name="username" th:value="${user.username}">
-
+					<input type="hidden" name="page" th:value="${page.number}">
+					<input type="hidden" name="sort" th:value="${sort}">
+					
 				    <!-- CSRF -->
 				    <input type="hidden"
 				           th:name="${_csrf.parameterName}"
 				           th:value="${_csrf.token}">
 
 				    <button class="btn btn-sm btn-danger"
-				            th:disabled="${#authentication.name == user.email}">
+				            th:unless="${#authentication.name == user.username}">
 				        削除
 				    </button>
 				</form>
