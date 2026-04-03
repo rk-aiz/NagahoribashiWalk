@@ -38,10 +38,7 @@ public interface UserService {
      * ユーザーの有効・無効を切り替える
      */
     void toggleEnabled(Long id);
-
-    /**
-     * ページネーション付きでユーザー一覧を取得する
-     */
+    
     Page<User> getPage(Pageable pageable);
     
 

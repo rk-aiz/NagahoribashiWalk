@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         }
 
         /**
-         * Emailを一意にする
+         * TODO: Emailを一意にする
          * if (userMapper.findByEmail(user.getUsername()).isPresent()) {
          * throw new UserAlreadyExistsException("すでに登録されたメールアドレスです。");
          * }
@@ -78,13 +78,6 @@ public class UserServiceImpl implements UserService {
     	    // ユーザー取得
     	    userMapper.toggleEnabled(id);
     }
-
-    @Override
-    public Page<User> getPage(Pageable pageable) {
-        long total = userMapper.count();
-        List<User> users = userMapper.findAll(pageable.getOffset(), pageable.getPageSize());
-        return new PageImpl<>(users, pageable, total);
-    }
     
     @Override
     public Page<AdminUserRow> getAdminUserPage(Pageable pageable,String sort) {
@@ -111,6 +104,17 @@ public class UserServiceImpl implements UserService {
 
         // ★ 論理削除
         userMapper.softDelete(user.getId());
+    }
     
-}
+	@Override
+	public Page<User> getPage(Pageable pageable) {
+		
+		long total = userMapper.count();
+		
+		// 対象ページに対応したスポットを取得する
+		List<User> users = userMapper.findAll(pageable.getOffset(), pageable.getPageSize());
+
+		// Page<T>インスタンスに詰めて返す
+		return new PageImpl<>(users, pageable, total);
+	}
 }

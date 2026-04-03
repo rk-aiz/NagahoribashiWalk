@@ -50,7 +50,7 @@ public interface SpotMapper {
 
      void insert(Spot spot);
     
-    // update
+     void update(Spot spot);
 
     // softDelete
 
