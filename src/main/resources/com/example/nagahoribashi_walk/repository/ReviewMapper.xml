@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.nagahoribashi_walk.repository.ReviewMapper">
+<mapper
+	namespace="com.example.nagahoribashi_walk.repository.ReviewMapper">
 
 
-<!-- 【UPDATE】レビュー編集 -->
-<update id="update"
-        parameterType="com.example.nagahoribashi_walk.entity.Review">
-		UPDATE reviews SET rating = #{rating},comment = #{comment}
+	<!-- 【UPDATE】レビュー編集 -->
+	<update id="update"
+		parameterType="com.example.nagahoribashi_walk.entity.Review">
+		UPDATE reviews SET rating = #{rating},comment =
+		#{comment}
 		WHERE user_id = #{userId}
 		AND spot_id = #{spotId}
-</update>
+	</update>
 
-<!-- 【DELETE】レビュー削除 -->
-<delete id="delete"
-		parameterType="com.example.nagahoribashi_walk.entity.Review">
-DELETE FROM reviews
-WHERE user_id = #{userId}
-AND spot_id = #{spotId}
+	<!-- 【DELETE】レビュー削除 -->
+	<delete id="delete">
+		DELETE FROM reviews
+		WHERE user_id = #{userId}
+		AND spot_id = #{spotId}
 
-</delete>
+	</delete>
 
-	<!--【insert】レビュー投稿　-->
+	<!--【insert】レビュー投稿　 -->
 	<insert id="insert"
 		parameterType="com.example.nagahoribashi_walk.entity.Review">
-INSERT INTO reviews (user_id, spot_id, rating, comment)values(#{userId}, #{spotId}, #{rating}, #{comment}) 
-	</insert>	
+		INSERT INTO reviews (user_id, spot_id, rating, comment)values(#{userId},
+		#{spotId}, #{rating}, #{comment})
+	</insert>
 </mapper>
