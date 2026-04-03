@@ -1,6 +1,9 @@
 package com.example.nagahoribashi_walk.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -62,14 +65,13 @@ public class SpotServiceImpl implements SpotService {
         }
         return sb.toString();
     }
-
+    
     /**
      * ひらがな → カタカナ変換
      */
     private String toKatakana(String input) {
         if (input == null)
             return null;
-
         StringBuilder sb = new StringBuilder();
         for (char c : input.toCharArray()) {
             // ひらがな範囲ならカタカナへ変換
@@ -81,34 +83,47 @@ public class SpotServiceImpl implements SpotService {
         }
         return sb.toString();
     }
-
+    
     /**
      * ページとキーワードに対応したスポット一覧を返す
      */
     @Override
     public Page<SpotSummary> searchByKeywords(String keyword, Pageable pageable) {
-
+	
+	    // 🔸 スペースで分割
+	    String[] splitKeywords = keyword.trim().replace('　', ' ').split("\\s+");
+	
+	    List<Map<String, String>> keywordMapList = new ArrayList<>();
+	    
+	    for (String kw : splitKeywords) {
+	    	
+	    	Map<String, String> map = new HashMap<>();
+	    	map.put("origin", kw);
+	    	map.put("hira", toHiragana(kw));
+	    	map.put("kana", toKatakana(kw));
+	    	keywordMapList.add(map);
+	    }
         // 空文字は一覧にフォールバック
         if (keyword == null || keyword.isBlank()) {
             return getPage(pageable);
         }
+	    // 🔸 件数取得
+	    long total = spotMapper.countByKeywords(
+	            keywordMapList
+	    );
 
-        // ひらがな・カタカナに変換
-        String hiraganaKeyword = toHiragana(keyword);
-        String katakanaKeyword = toKatakana(keyword);
+	    // 🔸 データ取得
+	    List<SpotSummary> spots =
+	            spotMapper.searchByKeywords(
+	            		keywordMapList,
+	                    pageable.getOffset(),
+	                    pageable.getPageSize()
+	            );
 
-        // 件数取得
-        long total = spotMapper.countByKeywords(hiraganaKeyword, katakanaKeyword);
+	    return new PageImpl<>(spots, pageable, total);
+	}
 
-        // データ取得
-        List<SpotSummary> spots = spotMapper.searchByKeywords(
-                hiraganaKeyword,
-                katakanaKeyword,
-                pageable.getOffset(),
-                pageable.getPageSize());
 
-        return new PageImpl<>(spots, pageable, total);
-    }
 
     // トップページおすすめ３件表示用
     @Override

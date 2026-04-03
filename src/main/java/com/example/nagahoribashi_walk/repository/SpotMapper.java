@@ -1,6 +1,7 @@
 package com.example.nagahoribashi_walk.repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -39,10 +40,10 @@ public interface SpotMapper {
     		@Param("limit") int limit);
 
     List<SpotSummary> searchByKeywords(
-    		@Param("hira") String hira,
-    		@Param("kana") String kana,
-    		@Param("offset") long offset,
-    		@Param("limit") int limit);
+    	    @Param("keywordList") List<Map<String, String>> keywordList,
+    	    @Param("offset") long offset,
+    	    @Param("limit") int limit
+    	);
 
     // findImagesBySpotId
 
@@ -61,10 +62,11 @@ public interface SpotMapper {
     /** スポット数をカウントする */
     long count();
     
+    long countByKeywords(@Param("keywordList") List<Map<String, String>> keywordList);
+
     long countByCategoryId(@Param("categoryId") Long categoryId);
     
     long countBySubCategoryId(@Param("subCategoryId") Long subCategoryId);
 
-    long countByKeywords(@Param("hira") String hira, @Param("kana") String kana);
 
 }
