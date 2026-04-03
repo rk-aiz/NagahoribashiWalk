@@ -1,5 +1,7 @@
 package com.example.nagahoribashi_walk.controller;
 
+
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,5 +43,4 @@ public class UserController {
 
     	return "/user/mypage";
     }
-
 }

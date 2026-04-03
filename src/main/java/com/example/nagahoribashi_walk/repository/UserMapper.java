@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.example.nagahoribashi_walk.dto.AdminUserRow;
 import com.example.nagahoribashi_walk.dto.UserProfile;
 import com.example.nagahoribashi_walk.entity.User;
 
@@ -56,4 +57,16 @@ public interface UserMapper {
      * ユーザーの存在チェック
      */
     boolean exists(@Param("username") String username);
+    
+    /**
+     * 管理者側ユーザー一覧
+     */
+    List<AdminUserRow> findAllForAdmin(
+    	    @Param("limit") int limit,
+    	    @Param("offset") long offset,
+    	    @Param("sort") String sort
+    	);
+
+    long countAdminUsers();
+    
 }
