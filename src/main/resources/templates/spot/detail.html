@@ -109,28 +109,41 @@
                             th:text="${spotDetail.spotName}">スポット名</h1>
 
                         <div class="d-flex gap-2 flex-shrink-0">
+							
+							<th:block sec:authorize="isAnonymous()">
+								<form th:action="@{/login(returnUrl=@{/spots/{id}(id=${spotDetail.id})})}" method="get"
+								    class="favorite-form">
+									<input type="hidden" name="returnUrl" th:value="'/spot/' + ${spotDetail.id}">
+								    <button type="submit" class="btn rounded-pill fw-semibold"
+								        style="background:#1e293b; color:#fff; border:none; padding:0.4rem 1.1rem; font-size:0.9rem;">
+								        <i class="bi bi-heart me-1" style="color:#f87171;"></i>ログインしてお気に入りに追加
+								    </button>
+								</form>
+							</th:block>
 
-                            <th:block th:if="${isFavorite}">
-                                <form th:action="@{/favorite/delete/{spotId}(spotId=${spotDetail.id})}" method="post"
-                                    class="favorite-form">
-                                    <input type="hidden" name="spotId" th:value="${spotId}">
-                                    <button type="submit" class="btn rounded-pill fw-semibold"
-                                        style="background:#fff0f0; color:#991b1b; border:1px solid #fca5a5; padding:0.4rem 1.1rem; font-size:0.9rem;">
-                                        <i class="bi bi-heart-fill me-1" style="color:#991b1b;"></i>お気に入り解除
-                                    </button>
-                                </form>
-                            </th:block>
-
-                            <th:block th:unless="${isFavorite}">
-                                <form th:action="@{/favorite/add/{spotId}(spotId=${spotDetail.id})}" method="post"
-                                    class="favorite-form">
-                                    <input type="hidden" name="spotId" th:value="${spotId}">
-                                    <button type="submit" class="btn rounded-pill fw-semibold"
-                                        style="background:#1e293b; color:#fff; border:none; padding:0.4rem 1.1rem; font-size:0.9rem;">
-                                        <i class="bi bi-heart me-1" style="color:#f87171;"></i>お気に入り
-                                    </button>
-                                </form>
-                            </th:block>
+							<th:block sec:authorize="isAuthenticated()">
+	                            <th:block th:if="${isFavorite}">
+	                                <form th:action="@{/favorite/delete/{spotId}(spotId=${spotDetail.id})}" method="post"
+	                                    class="favorite-form">
+	                                    <input type="hidden" name="spotId" th:value="${spotId}">
+	                                    <button type="submit" class="btn rounded-pill fw-semibold"
+	                                        style="background:#fff0f0; color:#991b1b; border:1px solid #fca5a5; padding:0.4rem 1.1rem; font-size:0.9rem;">
+	                                        <i class="bi bi-heart-fill me-1" style="color:#991b1b;"></i>お気に入り解除
+	                                    </button>
+	                                </form>
+	                            </th:block>
+	
+	                            <th:block th:unless="${isFavorite}">
+	                                <form th:action="@{/favorite/add/{spotId}(spotId=${spotDetail.id})}" method="post"
+	                                    class="favorite-form">
+	                                    <input type="hidden" name="spotId" th:value="${spotId}">
+	                                    <button type="submit" class="btn rounded-pill fw-semibold"
+	                                        style="background:#1e293b; color:#fff; border:none; padding:0.4rem 1.1rem; font-size:0.9rem;">
+	                                        <i class="bi bi-heart me-1" style="color:#f87171;"></i>お気に入り登録
+	                                    </button>
+	                                </form>
+	                            </th:block>
+							</th:block>
                         </div><!-- /ボタングループ -->
                     </div><!-- /タイトル行 -->
 
@@ -231,7 +244,7 @@
                         <i class="bi bi-pencil-square me-2 text-primary"></i>レビュー投稿
                     </h2>
 
-                    <div th:if="${session.user != null}" class="subtle-box p-4">
+                    <div sec:authorize="isAuthenticated()" class="subtle-box p-4">
                         <h5 class="fw-bold mb-3" style="color: #1e293b;">レビューを投稿する</h5>
 
                         <form th:action="@{/spots/{id}/reviews(id=${spotDetail.id})}" method="post">
@@ -260,8 +273,8 @@
                         </form>
                     </div>
 
-                    <div th:unless="${session.user != null}" class="alert alert-info mb-0">
-                        レビューを投稿するには<a th:href="@{/login}" class="fw-semibold ms-1">ログイン</a>してください
+                    <div sec:authorize="isAnonymous()" class="alert alert-info mb-0">
+                        レビューを投稿するには<a th:href="@{/login(returnUrl=@{/spot/{id}(id=${spotDetail.id})})}" class="fw-semibold ms-1">ログイン</a>してください
                     </div>
                 </div>
 
