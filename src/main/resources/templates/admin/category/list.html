@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout/admin :: layout('カテゴリ管理', 'カテゴリ管理', ~{::style}, ~{::main})}" xml:lang="ja">
+
+<head>
+    <style>
+        .category-card {
+            background: white;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+        .category-header {
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.7rem 1rem;
+        }
+        .subcategory-row {
+            display: flex;
+            align-items: center;
+            padding: 0.45rem 1rem 0.45rem 2.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.9rem;
+        }
+        .subcategory-row:last-of-type {
+            border-bottom: none;
+        }
+        .subcategory-add-row {
+            padding: 0.4rem 1rem 0.4rem 2rem;
+            background: #fafafa;
+            border-top: 1px solid #f1f5f9;
+        }
+        .order-btn {
+            padding: 0.1rem 0.35rem;
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+        .badge-default-tag {
+            background-color: #fef9c3;
+            color: #854d0e;
+            font-size: 0.68rem;
+            padding: 0.15rem 0.45rem;
+            border-radius: 0.25rem;
+        }
+    </style>
+</head>
+
+<main th:fragment="content">
+    <div class="container" style="max-width: 860px;">
+
+        <!-- タイトル + カテゴリ追加ボタン -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h5 class="fw-bold mb-0">カテゴリ管理</h5>
+                <p class="text-muted small mb-0 mt-1">カテゴリ・サブカテゴリの追加・編集・並び替えができます</p>
+            </div>
+            <button type="button" class="btn btn-sm text-white fw-semibold"
+                    style="background-color: #7c3aed;"
+                    onclick="document.getElementById('newCategoryForm').classList.toggle('d-none')">
+                <i class="bi bi-plus-lg me-1"></i>カテゴリを追加
+            </button>
+        </div>
+
+        <!-- カテゴリ追加フォーム（トグル表示） -->
+        <div id="newCategoryForm" class="d-none mb-3 p-3 rounded border bg-white">
+            <p class="small fw-semibold mb-2" style="color: #7c3aed;">新規カテゴリ</p>
+            <form action="#" method="post" class="d-flex gap-2 align-items-center flex-wrap">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <input type="text" class="form-control form-control-sm"
+                       placeholder="カテゴリ名（例：スポーツ）" style="max-width: 280px;">
+                <button type="submit" class="btn btn-sm text-white" style="background-color: #7c3aed;">追加</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary"
+                        onclick="document.getElementById('newCategoryForm').classList.add('d-none')">
+                    キャンセル
+                </button>
+            </form>
+        </div>
+
+        <!-- カテゴリカード一覧 -->
+        <div class="d-flex flex-column gap-3">
+
+            <div th:each="cat, catStat : ${categories}" class="category-card">
+
+                <!-- カテゴリヘッダー行 -->
+                <div class="category-header d-flex align-items-center gap-2">
+                    <i class="bi bi-tag text-secondary"></i>
+                    <span class="fw-semibold" th:text="${cat.name}">カテゴリ名</span>
+                    <span class="text-muted" style="font-size: 0.78rem;"
+                          th:text="'（' + ${#lists.size(cat.subCategories)} + ' サブカテゴリ）'">
+                        （3 サブカテゴリ）
+                    </span>
+
+                    <div class="ms-auto d-flex align-items-center gap-1">
+
+                        <!-- 並び替え -->
+                        <form action="#" method="post" class="m-0">
+                            <input type="hidden" name="id" th:value="${cat.id}">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <button type="submit" class="btn btn-sm btn-outline-secondary order-btn"
+                                    th:disabled="${catStat.first}" title="上へ">
+                                <i class="bi bi-chevron-up"></i>
+                            </button>
+                        </form>
+                        <form action="#" method="post" class="m-0">
+                            <input type="hidden" name="id" th:value="${cat.id}">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <button type="submit" class="btn btn-sm btn-outline-secondary order-btn"
+                                    th:disabled="${catStat.last}" title="下へ">
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                        </form>
+
+                        <div class="vr mx-1" style="height: 1.2rem; opacity: 0.3;"></div>
+
+                        <!-- カテゴリ名編集 -->
+                        <button type="button" class="btn btn-sm btn-outline-secondary order-btn" title="名前を編集"
+                                th:onclick="|toggleEdit('cat-edit-' + ${cat.id})|">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+
+                        <!-- カテゴリ削除 -->
+                        <form action="#" method="post" class="m-0"
+                              onsubmit="return confirm('カテゴリを削除します。紐づくスポットは「未分類 / その他」へ移動されます。よろしいですか？')">
+                            <input type="hidden" name="id" th:value="${cat.id}">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger order-btn" title="削除">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+
+                <!-- カテゴリ名インライン編集フォーム（非表示） -->
+                <!--/*
+                    TODO: 実装時は AdminCategoryRow.isDefault で「未分類」カテゴリの
+                    削除ボタンを disabled にすること（現スタブでは制御なし）
+                */-->
+                <div th:id="|cat-edit-${cat.id}|" class="d-none px-3 py-2 border-bottom bg-white">
+                    <form action="#" method="post" class="d-flex gap-2 align-items-center">
+                        <input type="hidden" name="id" th:value="${cat.id}">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <input type="text" class="form-control form-control-sm"
+                               th:value="${cat.name}" style="max-width: 240px;">
+                        <button type="submit" class="btn btn-sm btn-primary">保存</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                th:onclick="|toggleEdit('cat-edit-' + ${cat.id})|">
+                            キャンセル
+                        </button>
+                    </form>
+                </div>
+
+                <!-- サブカテゴリ行 -->
+                <!--/*
+                    TODO: 実装時は AdminSubCategoryRow.isDefault を使い、
+                    「その他」の削除ボタンを disabled にすること。
+                    現スタブは名前が「その他」のものをデフォルト扱いで代替。
+                */-->
+                <div th:each="sub, subStat : ${cat.subCategories}" class="subcategory-row">
+
+                    <i class="bi bi-dash text-secondary me-2" style="font-size: 0.75rem;"></i>
+                    <span th:text="${sub.name}">サブカテゴリ名</span>
+
+                    <!-- デフォルトバッジ（スタブ: 名前で判定） -->
+                    <span th:if="${sub.name == 'その他'}" class="badge-default-tag ms-2">デフォルト</span>
+
+                    <div class="ms-auto d-flex align-items-center gap-1">
+
+                        <!-- 並び替え -->
+                        <form action="#" method="post" class="m-0">
+                            <input type="hidden" name="id" th:value="${sub.id}">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <button type="submit" class="btn btn-sm btn-outline-secondary order-btn"
+                                    th:disabled="${subStat.first}" title="上へ">
+                                <i class="bi bi-chevron-up"></i>
+                            </button>
+                        </form>
+                        <form action="#" method="post" class="m-0">
+                            <input type="hidden" name="id" th:value="${sub.id}">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <button type="submit" class="btn btn-sm btn-outline-secondary order-btn"
+                                    th:disabled="${subStat.last}" title="下へ">
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                        </form>
+
+                        <!-- サブカテゴリ名編集 -->
+                        <button type="button" class="btn btn-sm btn-outline-secondary order-btn" title="名前を編集"
+                                th:onclick="|toggleEdit('sub-edit-' + ${sub.id})|">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+
+                        <!-- サブカテゴリ削除（デフォルトは無効） -->
+                        <form action="#" method="post" class="m-0"
+                              onsubmit="return confirm('このサブカテゴリを削除します。紐づくスポットは同カテゴリの「その他」へ移動されます。よろしいですか？')">
+                            <input type="hidden" name="id" th:value="${sub.id}">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger order-btn"
+                                    th:disabled="${sub.name == 'その他'}"
+                                    th:title="${sub.name == 'その他'} ? 'デフォルトは削除できません' : '削除'">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+
+                <!-- サブカテゴリ名インライン編集フォーム（th:eachの外なので注意） -->
+                <div th:each="sub : ${cat.subCategories}"
+                     th:id="|sub-edit-${sub.id}|" class="d-none px-3 py-2 border-bottom bg-white" style="padding-left: 2.5rem !important;">
+                    <form action="#" method="post" class="d-flex gap-2 align-items-center">
+                        <input type="hidden" name="id" th:value="${sub.id}">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <input type="text" class="form-control form-control-sm"
+                               th:value="${sub.name}" style="max-width: 220px;">
+                        <button type="submit" class="btn btn-sm btn-primary">保存</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                th:onclick="|toggleEdit('sub-edit-' + ${sub.id})|">
+                            キャンセル
+                        </button>
+                    </form>
+                </div>
+
+                <!-- サブカテゴリ追加行 -->
+                <div class="subcategory-add-row">
+                    <button type="button" class="btn btn-sm btn-link text-secondary p-0"
+                            style="font-size: 0.8rem; text-decoration: none;"
+                            th:onclick="|document.getElementById('sub-add-${cat.id}').classList.toggle('d-none')|">
+                        <i class="bi bi-plus-circle me-1"></i>サブカテゴリを追加
+                    </button>
+                    <div th:id="|sub-add-${cat.id}|" class="d-none mt-2">
+                        <form action="#" method="post" class="d-flex gap-2 align-items-center">
+                            <input type="hidden" name="categoryId" th:value="${cat.id}">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <input type="text" class="form-control form-control-sm"
+                                   placeholder="サブカテゴリ名" style="max-width: 220px;">
+                            <button type="submit" class="btn btn-sm btn-primary">追加</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|document.getElementById('sub-add-${cat.id}').classList.add('d-none')|">
+                                キャンセル
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleEdit(id) {
+            document.getElementById(id).classList.toggle('d-none');
+        }
+    </script>
+
+</main>
+
+</html>

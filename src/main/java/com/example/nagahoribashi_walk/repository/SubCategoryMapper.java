@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.example.nagahoribashi_walk.dto.NavSubCategory;
-import com.example.nagahoribashi_walk.dto.SubCategoryDTO;
 
 /**
  * sub_categoriesテーブルに対応したMapperのインターフェース
@@ -16,7 +15,7 @@ import com.example.nagahoribashi_walk.dto.SubCategoryDTO;
 @Mapper
 public interface SubCategoryMapper {
 
-    Optional<SubCategoryDTO> findById(Long id);
+    Optional<NavSubCategory> findById(Long id);
 
     List<NavSubCategory> findSiblings(@Param("subCategoryId") Long subCategoryId);
 

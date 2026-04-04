@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.nagahoribashi_walk.dto.CategoryDTO;
+import com.example.nagahoribashi_walk.dto.AdminCategoryRow;
 import com.example.nagahoribashi_walk.dto.NavCategory;
 import com.example.nagahoribashi_walk.dto.NavSubCategory;
 import com.example.nagahoribashi_walk.dto.SidebarDTO;
@@ -29,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDTO getById(Long categoryId) {
+    public NavCategory getById(Long categoryId) {
         return categoryMapper.findById(categoryId).orElseThrow();
     }
 

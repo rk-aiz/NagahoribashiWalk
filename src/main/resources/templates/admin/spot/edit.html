@@ -53,7 +53,7 @@
                                 <th:block th:each="cat : ${navCategories}">
                                     <optgroup th:label="${cat.name}">
                                         <option th:each="sub : ${cat.subCategories}" th:value="${sub.id}"
-                                            th:text="${sub.name}">サブカテゴリ</option>
+                                            th:text="${cat.name + ' / ' + sub.name}">サブカテゴリ</option>
                                     </optgroup>
                                 </th:block>
                             </select>

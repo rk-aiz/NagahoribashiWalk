@@ -83,7 +83,7 @@ public class SpotController {
     @GetMapping("/spot/category/{categoryId}")
     public String listByCategoryId(
             @PathVariable("categoryId") Long categoryId,
-            @PageableDefault(size = 2) Pageable pageable, Model model) {
+            @PageableDefault(size = 12) Pageable pageable, Model model) {
 
         model.addAttribute("sidebar",
                 categoryService.getSidebarDTO(categoryId));
@@ -108,7 +108,7 @@ public class SpotController {
     @GetMapping("/spot/subcategory/{subCategoryId}")
     public String listBySubCategoryId(
             @PathVariable("subCategoryId") Long subCategoryId,
-            @PageableDefault(size = 2) Pageable pageable, Model model) {
+            @PageableDefault(size = 12) Pageable pageable, Model model) {
 
         model.addAttribute("sidebar",
                 subCategoryService.getSidebarDTO(subCategoryId));

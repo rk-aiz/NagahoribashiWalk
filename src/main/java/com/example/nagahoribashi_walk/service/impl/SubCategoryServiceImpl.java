@@ -1,13 +1,11 @@
 package com.example.nagahoribashi_walk.service.impl;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.nagahoribashi_walk.dto.NavCategory;
+import com.example.nagahoribashi_walk.dto.AdminSubCategoryRow;
+import com.example.nagahoribashi_walk.dto.NavSubCategory;
 import com.example.nagahoribashi_walk.dto.SidebarDTO;
-import com.example.nagahoribashi_walk.dto.SubCategoryDTO;
 import com.example.nagahoribashi_walk.repository.CategoryMapper;
 import com.example.nagahoribashi_walk.repository.SubCategoryMapper;
 import com.example.nagahoribashi_walk.service.SubCategoryService;
@@ -23,7 +21,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     private final SubCategoryMapper subCategoryMapper;
 
     @Override
-    public SubCategoryDTO getById(Long subCategoryId) {
+    public NavSubCategory getById(Long subCategoryId) {
         return subCategoryMapper.findById(subCategoryId)
                 .orElseThrow();
     }

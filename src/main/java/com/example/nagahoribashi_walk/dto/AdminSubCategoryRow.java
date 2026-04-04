@@ -5,14 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * IDから名前を解決するためのDTO
+ * サブカテゴリ管理用DTO
  *
  * @author 海津
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubCategoryDTO {
+public class AdminSubCategoryRow {
 
     /** 主キー */
     private Long id;
@@ -22,4 +22,11 @@ public class SubCategoryDTO {
 
     /** 属するカテゴリのID */
     private Long categoryId;
+
+    private boolean isDefault;
+
+    /** Thymeleafから参照用 */
+    public boolean getIsDefault() {
+        return this.isDefault;
+    }
 }

@@ -2,21 +2,19 @@ package com.example.nagahoribashi_walk.dto;
 
 import java.util.List;
 
-import com.example.nagahoribashi_walk.entity.SubCategory;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * カテゴリ用DTO
+ * カテゴリ管理用DTO
  *
  * @author 海津
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryDTO {
+public class AdminCategoryRow {
 
     /** 主キー */
     private long id;
@@ -26,4 +24,13 @@ public class CategoryDTO {
 
     /** 表示順 */
     private int displayOrder;
+
+    private boolean isDefault;
+
+    private List<AdminSubCategoryRow> subCategories;
+
+    /** Thymeleaf参照用 */
+    public boolean getIsDefault() {
+        return this.isDefault;
+    }
 }
