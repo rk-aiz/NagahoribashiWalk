@@ -33,12 +33,12 @@ RETURNS TRIGGER AS '
 -- カテゴリ新規追加時に「未分類」サブカテゴリを自動生成する。
 -- これにより spots.sub_category_id は常に有効なレコードを参照できる
 -- （フォールバック設計: カテゴリを作るだけで受け皿が必ず存在する）。
--- display_order=999 で一覧の末尾に固定、is_default=TRUE で削除不可とする。
+-- display_order=99999 で一覧の末尾に固定、is_default=TRUE で削除不可とする。
 CREATE OR REPLACE FUNCTION add_default_sub_category()
 RETURNS TRIGGER AS '
     BEGIN
     INSERT INTO sub_categories (category_id, name, display_order, is_default)
-    VALUES (NEW.id, ''未分類'', 999, TRUE);
+    VALUES (NEW.id, ''未分類'', 99999, TRUE);
     RETURN NEW;
     END;
 ' LANGUAGE 'plpgsql';
@@ -144,7 +144,7 @@ CREATE TABLE sub_categories (
 	name VARCHAR(100) NOT NULL,
 
 	-- カテゴリ内での表示順（1始まりの連番）
-	-- 「未分類」は add_default_sub_category トリガーが 999 を自動セットする
+	-- 「未分類」は add_default_sub_category トリガーが 99999 を自動セットする
     display_order INTEGER NOT NULL,
 
 	-- TRUE は「未分類」サブカテゴリ。カテゴリINSERT時にトリガーが自動生成する。
@@ -169,7 +169,7 @@ ON sub_categories (category_id, is_default) WHERE is_default = TRUE;
 CREATE TABLE spots(
 	id SERIAL PRIMARY KEY,
 	spot_name VARCHAR(100) NOT NULL,
-	sub_category_id INTEGER,     -- フォールバック設計では NOT NULL を予定（現在は暫定で NULL 許容）
+	sub_category_id INTEGER NOT NULL,
 	website_url VARCHAR(255),
 	gmap_url VARCHAR(500),
 	address VARCHAR(255),
