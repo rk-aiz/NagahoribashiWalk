@@ -26,9 +26,14 @@
         LEFT JOIN
             sub_categories sc
         ON
-            c.id = sc.category_id 
+            c.id = sc.category_id AND
+            EXISTS (
+                SELECT 1 FROM spots s
+                WHERE s.sub_category_id = sc.id
+                AND s.deleted_at IS NULL
+            )
         ORDER BY
-            display_order 
+            c.display_order, sc.display_order
     </select>
 
     <select id="findById" resultType="com.example.nagahoribashi_walk.dto.NavCategory">
@@ -45,7 +50,7 @@
         FROM 
             categories c 
         ORDER BY
-            display_order 
+            c.display_order
     </select>
 
 </mapper>
