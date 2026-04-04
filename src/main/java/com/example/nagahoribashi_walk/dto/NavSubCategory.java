@@ -14,4 +14,7 @@ public class NavSubCategory {
     /** カテゴリ名 */
     private String name;
 
+    /** 属するカテゴリのID */
+    private String categoryId;
+
 }

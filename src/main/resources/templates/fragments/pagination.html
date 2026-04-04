@@ -10,22 +10,21 @@
       category   : カテゴリ識別子（URL組み立て用）
       navClass   : <nav> に追加するクラス（例: "mb-3", "mt-4"）
 -->
-    <nav th:fragment="pager(spotPages, categoryId, navClass)" th:if="${spotPages.totalPages > 1}" aria-label="ページネーション"
-        class="d-flex justify-content-center" th:classappend="${navClass}">
+    <nav th:fragment="pager(spotPages, categoryId, pagerBaseUrl, navClass)" th:if="${spotPages.totalPages > 1}"
+        aria-label="ページネーション" class="d-flex justify-content-center" th:classappend="${navClass}">
 
         <ul class="pagination pager-minimal mb-0">
 
             <!-- 前へ -->
             <li class="page-item" th:classappend="${spotPages.first} ? 'disabled'">
-                <a class="page-link"
-                    th:href="@{/spot/category/{category}(category=${categoryId}, page=${spotPages.number - 1})}">
+                <a class="page-link" th:href="@{${pagerBaseUrl + categoryId}(page=${spotPages.number - 1})}">
                     <i class="bi bi-chevron-left"></i> 前へ
                 </a>
             </li>
 
             <!-- 1ページ目（常に表示） -->
             <li class="page-item" th:classappend="${spotPages.number == 0} ? 'active'">
-                <a class="page-link" th:href="@{/spot/category/{category}(category=${categoryId}, page=0)}">1</a>
+                <a class="page-link" th:href="@{${pagerBaseUrl + categoryId}(page=0)}">1</a>
             </li>
 
             <!-- 左省略記号 -->
@@ -38,7 +37,7 @@
                 <th:block th:each="i : ${#numbers.sequence(1, spotPages.totalPages - 2)}"
                     th:if="${spotPages.totalPages <= 5 or (i >= spotPages.number - 2 and i <= spotPages.number + 2)}">
                     <li class="page-item" th:classappend="${i == spotPages.number} ? 'active'">
-                        <a class="page-link" th:href="@{/spot/category/{category}(category=${categoryId}, page=${i})}"
+                        <a class="page-link" th:href="@{${pagerBaseUrl + categoryId}(page=${i})}"
                             th:text="${i + 1}">2</a>
                     </li>
                 </th:block>
@@ -52,15 +51,13 @@
 
             <!-- 最終ページ（常に表示） -->
             <li class="page-item" th:classappend="${spotPages.number == spotPages.totalPages - 1} ? 'active'">
-                <a class="page-link"
-                    th:href="@{/spot/category/{category}(category=${categoryId}, page=${spotPages.totalPages - 1})}"
+                <a class="page-link" th:href="@{${pagerBaseUrl + categoryId}(page=${spotPages.totalPages - 1})}"
                     th:text="${spotPages.totalPages}">N</a>
             </li>
 
             <!-- 次へ -->
             <li class="page-item" th:classappend="${spotPages.last} ? 'disabled'">
-                <a class="page-link"
-                    th:href="@{/spot/category/{category}(category=${categoryId}, page=${spotPages.number + 1})}">
+                <a class="page-link" th:href="@{${pagerBaseUrl + categoryId}(page=${spotPages.number + 1})}">
                     次へ <i class="bi bi-chevron-right"></i>
                 </a>
             </li>

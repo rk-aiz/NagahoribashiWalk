@@ -224,6 +224,38 @@
 		LIMIT 3
 	</select>
 
+	<!-- 全スポットの平均評価（小数第1位）-->
+	<select id="findAverageRatingAll" resultType="java.lang.Double">
+		SELECT ROUND(AVG(r.rating)::NUMERIC, 1)
+		FROM reviews r
+		INNER JOIN spots s ON r.spot_id = s.id
+		WHERE s.deleted_at IS NULL
+	</select>
+
+	<!-- 最近登録されたスポットをN件取得 -->
+	<select id="findRecent" resultType="com.example.nagahoribashi_walk.dto.AdminSpotRow">
+		SELECT
+			s.id,
+			s.spot_name,
+			sp.photo_url,
+			r.average_rating,
+			sc.name AS sub_category_name,
+			c.name AS category_name,
+			s.updated_at
+		FROM spots s
+		LEFT JOIN spot_photos sp ON s.id = sp.spot_id AND sp.display_order = 1
+		LEFT JOIN (
+			SELECT spot_id, AVG(rating) AS average_rating
+			FROM reviews
+			GROUP BY spot_id
+		) r ON r.spot_id = s.id
+		INNER JOIN sub_categories sc ON sc.id = s.sub_category_id
+		INNER JOIN categories c ON c.id = sc.category_id
+		WHERE s.deleted_at IS NULL
+		ORDER BY s.created_at DESC
+		LIMIT #{limit}
+	</select>
+
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
 		INSERT
 		INTO spots (

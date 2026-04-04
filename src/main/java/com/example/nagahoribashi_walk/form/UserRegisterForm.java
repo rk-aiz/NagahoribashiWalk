@@ -11,6 +11,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 新規ユーザー登録用のFormオブジェクト
+ *
+ * @author 海津
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

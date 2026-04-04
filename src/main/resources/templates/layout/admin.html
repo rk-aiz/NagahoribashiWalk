@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-    th:fragment="layout(title, subtitle, content)" xml:lang="ja">
+    th:fragment="layout(title, subtitle, headExtra, content)" xml:lang="ja">
 
 <head>
     <meta charset="UTF-8" />
@@ -13,55 +13,148 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         body {
-            background-color: #f3f4f6;
+            background-color: #f1f5f9;
+            color: #1e293b;
         }
 
         .admin-header {
-            background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+            background-color: #1e293b;
+            border-bottom: 1px solid #0f172a;
+        }
+
+        .admin-footer {
+            background-color: #1e293b;
+            border-top: 1px solid #0f172a;
+            color: #e2e8f0;
         }
 
         .admin-brand-title {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #fff;
-            font-family: 'Nunito', sans-serif;
+            letter-spacing: 0.04em;
             line-height: 1.2;
         }
 
-        .admin-brand-subtitle {
-            font-size: 0.78rem;
-            color: rgba(255, 255, 255, 0.75);
-            line-height: 1.2;
+        .admin-badge {
+            display: inline-flex;
+            gap: 0.3rem;
+            background-color: #1e3a5f;
+            color: #60a5fa;
+            border: 1px solid #1d4ed8;
+            border-radius: 0.375rem;
+            font-size: 0.475rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            padding: 0.15rem 0.55rem;
+            text-transform: uppercase;
+            vertical-align: text-top;
+        }
+
+        .subtitle-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: #ffffff;
+            font-size: 0.5rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            padding: 0.15rem 0.55rem;
+            text-transform: uppercase;
+        }
+
+        /* コンテンツエリアのカード共通スタイル */
+        .admin-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        /* テーブル共通スタイル */
+        .admin-table {
+            --bs-table-bg: transparent;
+            --bs-table-color: #1e293b;
+            --bs-table-border-color: #e2e8f0;
+            --bs-table-hover-bg: #f8fafc;
+            --bs-table-striped-bg: transparent;
+        }
+
+        .admin-table thead th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-size: 0.83rem;
+            font-weight: 600;
+            border-bottom: 1px solid #e2e8f0;
+            border-top: none;
+        }
+
+        .admin-table tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .admin-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        /* ページネーション */
+        .admin-pagination .page-link {
+            background-color: #ffffff;
+            border-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .admin-pagination .page-link:hover {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+
+        .admin-pagination .page-item.active .page-link {
+            background-color: #1d4ed8;
+            border-color: #1d4ed8;
+            color: #fff;
+        }
+
+        .admin-pagination .page-item.disabled .page-link {
+            background-color: #f8fafc;
+            border-color: #e2e8f0;
+            color: #6f7b8d;
         }
     </style>
+    <th:block th:replace="${headExtra}"></th:block>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
     <header class="admin-header py-3">
         <div class="container d-flex justify-content-between align-items-center">
-            <!-- ブランド -->
-            <a th:href="@{/admin}" class="text-decoration-none d-flex align-items-center gap-2">
-                <i class="bi bi-geo-alt-fill text-white" style="font-size: 1.6rem;"></i>
-                <div>
-                    <div class="admin-brand-title">長堀橋さんぽ 管理画面</div>
-                    <div class="admin-brand-subtitle" th:text="${subtitle}">管理画面</div>
+            <div class="d-flex align-items-center gap-3">
+                <!-- ブランド -->
+                <a th:href="@{/admin}" class="text-decoration-none d-flex align-items-center gap-2">
+                    <i class="bi bi-geo-alt-fill" style="font-size: 1.5rem; color: #3b82f6;"></i>
+                    <div>
+                        <div class="admin-brand-title">長堀橋さんぽ</div>
+                        <span class="admin-badge">
+                            <i class="bi bi-shield-lock-fill"></i>
+                            Administration
+                        </span>
+                    </div>
+                </a>
+                <!-- ページタイトル(subtitle) -->
+                <div th:if="${subtitle}" class="subtitle-badge">
+                    <span class="text-white fw-medium" style="font-size: 1rem; opacity: 0.9;"
+                        th:text="${subtitle}">サブタイトル</span>
                 </div>
-            </a>
+            </div>
 
             <!-- ナビ -->
             <div class="d-flex align-items-center gap-2">
-                <a th:href="@{/admin}" class="btn btn-sm btn-outline-light">
-                    <i class="bi bi-speedometer2 me-1"></i>ダッシュボード
-                </a>
-                <a th:href="@{/admin/spot/list}" class="btn btn-sm btn-outline-light">
-                    <i class="bi bi-list-ul me-1"></i>スポット一覧
-                </a>
-                <a th:href="@{/admin/user/list}" class="btn btn-sm btn-outline-light">
-                    <i class="bi bi-people me-1"></i>ユーザー管理
+                <a th:href="@{/}" target="_blank" class="btn btn-sm btn-outline-light">
+                    <i class="bi bi-box-arrow-up-right me-1"></i>一般サイト
                 </a>
                 <form th:action="@{/logout}" method="post" class="m-0">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                    <button type="submit" class="btn btn-sm btn-light ms-1">
+                    <button type="submit" class="btn btn-sm btn-primary ms-1" style="font-weight: 600;">
                         <i class="bi bi-box-arrow-right me-1"></i>ログアウト
                     </button>
                 </form>
@@ -89,7 +182,7 @@
         <div th:replace="${content}"><!-- ページコンテンツ --></div>
     </main>
 
-    <footer style="background-color: #1e293b; color: #94a3b8;" class="py-3">
+    <footer class="admin-footer py-3">
         <div class="container text-center">
             <p class="mb-0 small">&copy; 2026 CIC 304教室 Cチーム長堀橋さんぽプロジェクト. All rights reserved.</p>
         </div>

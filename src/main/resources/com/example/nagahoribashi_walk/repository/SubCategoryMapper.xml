@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.nagahoribashi_walk.repository.SubCategoryMapper">
-	
+
     <select id="findById" resultType="com.example.nagahoribashi_walk.dto.SubCategoryDTO">
-        SELECT id, name FROM sub_categories
+        SELECT id, name, category_id FROM sub_categories
         WHERE id = #{id}
+    </select>
+
+    <select id="findSiblings" resultType="com.example.nagahoribashi_walk.dto.NavSubCategory">
+        SELECT sc.id, sc.name, sc.category_id
+        FROM categories c
+        RIGHT JOIN sub_categories sc
+        ON c.id = sc.category_id
+        WHERE c.id = (SELECT category_id FROM sub_categories WHERE id = #{subCategoryId})
+    </select>
+
+    <select id="findByCategoryId" resultType="com.example.nagahoribashi_walk.dto.NavSubCategory">
+        SELECT id, name, category_id
+        FROM sub_categories
+        WHERE category_id = #{categoryId}
     </select>
 
 </mapper>

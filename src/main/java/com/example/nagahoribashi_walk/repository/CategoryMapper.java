@@ -18,5 +18,7 @@ public interface CategoryMapper {
 
     List<NavCategory> findAllNavCategories();
 
+    List<NavCategory> findFlatAllNavCategories();
+
     Optional<CategoryDTO> findById(Long id);
 }

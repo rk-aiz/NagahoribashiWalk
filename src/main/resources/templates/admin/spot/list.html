@@ -1,39 +1,45 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-    th:replace="~{layout/admin :: layout('スポット管理', 'スポット管理', ~{::main})}" xml:lang="ja">
+    th:replace="~{layout/admin :: layout('スポット管理', 'スポット管理', ~{::style}, ~{::main})}" xml:lang="ja">
 
-<head><title>スポット管理 - 長堀橋さんぽ 管理画面</title></head>
-
-<main th:fragment="content">
+<head>
+    <title>スポット管理 - 長堀橋さんぽ 管理画面</title>
     <style>
         .badge-gourmet      { background-color: #dbeafe; color: #1d4ed8; }
         .badge-tourism      { background-color: #ede9fe; color: #6d28d9; }
         .badge-shopping     { background-color: #ccfbf1; color: #0f766e; }
         .badge-entertainment{ background-color: #fef3c7; color: #b45309; }
         .badge-cafe         { background-color: #fce7f3; color: #be185d; }
-        .badge-default      { background-color: #f3f4f6; color: #374151; }
+        .badge-default      { background-color: #f1f5f9; color: #475569; }
 
+        #spotTable {
+            --bs-table-bg: transparent;
+            --bs-table-color: #1e293b;
+            --bs-table-border-color: #e2e8f0;
+        }
         #spotTable thead th {
             font-weight: 600;
             font-size: 0.85rem;
-            color: #6b7280;
-            border-bottom: 1px solid #e5e7eb;
-            background: #fff;
+            color: #64748b;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
         }
         #spotTable tbody tr {
-            border-bottom: 1px solid #f3f4f6;
+            border-bottom: 1px solid #e2e8f0;
         }
         #spotTable tbody tr:last-child {
             border-bottom: none;
         }
         .spot-row:hover {
-            background-color: #fafafa;
+            background-color: #f8fafc;
         }
     </style>
+</head>
 
+<main th:fragment="content">
     <div class="container" style="max-width: 1100px;">
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-4">
+        <div class="admin-card">
+            <div class="p-4">
 
                 <!-- タイトル + 新規登録ボタン -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -43,7 +49,7 @@
                               th:text="'（' + ${spots != null ? #lists.size(spots) : 0} + '件）'">（0件）</span>
                     </h5>
                     <a th:href="@{/admin/spot/new}" class="btn btn-sm text-white fw-semibold"
-                       style="background-color: #7c3aed;">
+                       style="background-color: #1d4ed8; border-color: #1d4ed8;">
                         <i class="bi bi-plus-lg me-1"></i>新規登録
                     </a>
                 </div>
@@ -53,13 +59,13 @@
                     <i class="bi bi-search"
                        style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none;"></i>
                     <input type="text" id="spotSearch" class="form-control"
-                           style="padding-left: 2.25rem; border-color: #e5e7eb; border-radius: 0.5rem;"
+                           style="padding-left: 2.25rem; border-color: #e2e8f0; border-radius: 0.5rem;"
                            placeholder="スポット名、カテゴリー、住所で検索...">
                 </div>
 
                 <!-- テーブル -->
                 <div class="table-responsive">
-                    <table class="table table-borderless align-middle mb-0" id="spotTable">
+                    <table class="table table-borderless align-middle mb-0 admin-table" id="spotTable">
                         <thead>
                             <tr>
                                 <th scope="col" style="width: 60px;">ID</th>
@@ -119,7 +125,7 @@
                                     </a>
                                     <!--/* 編集画面へ。コントローラー側で ?id= を受け取るよう実装要 */-->
                                     <a th:href="@{/admin/spot/edit(id=${spot.id})}"
-                                       class="btn btn-sm btn-link p-1" style="color: #7c3aed;" title="編集">
+                                       class="btn btn-sm btn-link p-1" style="color: #3b82f6;" title="編集">
                                         <i class="bi bi-pencil-square" style="font-size: 1rem;"></i>
                                     </a>
                                 </td>

@@ -14,7 +14,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SubCategoryDTO {
 
+    /** 主キー */
     private Long id;
 
+    /** サブカテゴリ名 */
     private String name;
+
+    /** 属するカテゴリのID */
+    private Long categoryId;
 }

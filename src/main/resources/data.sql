@@ -11,7 +11,7 @@ INSERT INTO users (username, password, email, role, display_name) VALUES
 
 -- categories
 INSERT INTO categories (name, display_order, is_default) VALUES
-('その他', 2147483647, true), -- その他は常に最後になる
+('その他', 999, true), -- その他は常に最後になる
 ('グルメ', 1, false),
 ('観光スポット', 2, false),
 ('ショッピング', 3, false),

@@ -105,18 +105,18 @@
                         </ul>
 
                         <!-- サブカテゴリー（選択中カテゴリのみ表示） -->
-                        <th:block th:each="cat : ${sidebar.categories}"
-                            th:if="${cat.id == sidebar.selectedCategoryId and not #lists.isEmpty(cat.subCategories)}">
+                        <th:block th:unless="${#lists.isEmpty(sidebar.subCategories)}">
                             <p class="text-secondary mb-2 fw-semibold text-uppercase"
-                                style="font-size: 0.75rem; letter-spacing: 0.07em;" th:text="${cat.name + 'の種類'}">種類</p>
+                                style="font-size: 0.75rem; letter-spacing: 0.07em;" th:text="${categoryName + 'の種類'}">種類
+                            </p>
                             <ul class="list-unstyled mb-0">
                                 <li class="mb-1">
-                                    <a th:href="@{/spot/category/{id}(id=${cat.id})}"
+                                    <a th:href="@{/spot/category/{id}(id=${categoryId})}"
                                         class="d-block text-decoration-none rounded-2 px-3 py-2"
                                         th:classappend="${sidebar.selectedSubCategoryId == null} ? 'bg-primary bg-opacity-10 text-primary fw-semibold' : 'text-secondary sidebar-item-link'"
                                         style="font-size: 0.9rem;">すべて</a>
                                 </li>
-                                <li th:each="sub : ${cat.subCategories}" class="mb-1">
+                                <li th:each="sub : ${sidebar.subCategories}" class="mb-1">
                                     <a th:href="@{/spot/subcategory/{id}(id=${sub.id})}" th:text="${sub.name}"
                                         class="d-block text-decoration-none rounded-2 px-3 py-2"
                                         th:classappend="${sub.id == sidebar.selectedSubCategoryId} ? 'bg-primary bg-opacity-10 text-primary fw-semibold' : 'text-secondary sidebar-item-link'"
@@ -132,7 +132,9 @@
                 <div class="col-lg-9 col-md-8">
 
                     <!-- 上部ページネーション -->
-                    <div th:replace="~{fragments/pagination :: pager(${spotPages}, ${categoryId}, 'mb-3')}"></div>
+                    <div
+                        th:replace="~{fragments/pagination :: pager(${spotPages}, ${categoryId}, ${pagerBaseUrl}, 'mb-3')}">
+                    </div>
 
                     <!-- スポットグリッド（2カラム） -->
                     <div class="row row-cols-1 row-cols-sm-2 g-3">
@@ -148,7 +150,9 @@
                     </div>
 
                     <!-- 下部ページネーション -->
-                    <div th:replace="~{fragments/pagination :: pager(${spotPages}, ${categoryId}, 'mt-4')}"></div>
+                    <div
+                        th:replace="~{fragments/pagination :: pager(${spotPages}, ${categoryId}, ${pagerBaseUrl}, 'mt-4')}">
+                    </div>
 
                 </div>
             </div>

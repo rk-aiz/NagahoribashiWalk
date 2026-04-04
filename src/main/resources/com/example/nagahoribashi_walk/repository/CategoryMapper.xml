@@ -36,4 +36,16 @@
         WHERE id = #{id}
     </select>
 
+    <!-- サイドバー用にcategoriesテーブルを全件取得 -->
+    <select id="findFlatAllNavCategories" resultType="com.example.nagahoribashi_walk.dto.NavCategory">
+        SELECT 
+            c.id, 
+            c.name, 
+            c.display_order
+        FROM 
+            categories c 
+        ORDER BY
+            display_order 
+    </select>
+
 </mapper>

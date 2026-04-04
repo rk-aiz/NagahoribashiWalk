@@ -1,11 +1,15 @@
 package com.example.nagahoribashi_walk.dto;
 
+import java.util.List;
+
+import com.example.nagahoribashi_walk.entity.SubCategory;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * IDから名前を解決するためのDTO
+ * カテゴリ用DTO
  *
  * @author 海津
  */
@@ -14,7 +18,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CategoryDTO {
 
-    private Long id;
+    /** 主キー */
+    private long id;
 
+    /** カテゴリ名 */
     private String name;
+
+    /** 表示順 */
+    private int displayOrder;
 }

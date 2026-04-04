@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout/admin :: layout('ダッシュボード', 'ダッシュボード', ~{::style}, ~{::main})}" xml:lang="ja">
+
+<head>
+    <title>ダッシュボード - 長堀橋さんぽ 管理画面</title>
+    <style>
+        .stat-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .stat-label {
+            font-size: 0.78rem;
+            color: #64748b;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1.2;
+        }
+
+        .stat-desc {
+            font-size: 0.78rem;
+            color: #94a3b8;
+        }
+
+        .menu-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            text-decoration: none;
+            display: block;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .menu-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+        }
+
+        .menu-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 0.625rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+
+        .menu-title {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.95rem;
+            margin-bottom: 0.15rem;
+        }
+
+        .menu-subtitle {
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+
+        .menu-desc {
+            color: #94a3b8;
+            font-size: 0.82rem;
+            margin: 0;
+        }
+
+        .recent-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .recent-row:last-child {
+            border-bottom: none;
+        }
+
+        .recent-thumb {
+            width: 52px;
+            height: 52px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            background-color: #f1f5f9;
+            flex-shrink: 0;
+        }
+
+        .recent-thumb-placeholder {
+            width: 52px;
+            height: 52px;
+            border-radius: 0.5rem;
+            background-color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+
+<main th:fragment="content">
+    <div class="container" style="max-width: 1100px;">
+
+        <!-- 統計カード -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-sm-6 col-xl-3">
+                <div class="stat-card p-4">
+                    <p class="stat-label mb-2">総スポット数</p>
+                    <p class="stat-value mb-2" th:text="${spotCount}">0</p>
+                    <hr style="border-color: #e2e8f0; margin: 0.5rem 0;">
+                    <p class="stat-desc mb-0">登録されているスポット</p>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-xl-3">
+                <div class="stat-card p-4">
+                    <p class="stat-label mb-2">総ユーザー数</p>
+                    <p class="stat-value mb-2" th:text="${userCount}">0</p>
+                    <hr style="border-color: #e2e8f0; margin: 0.5rem 0;">
+                    <p class="stat-desc mb-0">登録ユーザー数</p>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-xl-3">
+                <div class="stat-card p-4">
+                    <p class="stat-label mb-2">平均評価</p>
+                    <p class="stat-value mb-2"
+                        th:text="${avgRating != null ? #numbers.formatDecimal(avgRating, 1, 1) : '-'}">-</p>
+                    <hr style="border-color: #e2e8f0; margin: 0.5rem 0;">
+                    <p class="stat-desc mb-0">全スポットの平均評価</p>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-xl-3">
+                <div class="stat-card p-4">
+                    <p class="stat-label mb-2">総レビュー数</p>
+                    <p class="stat-value mb-2" th:text="${reviewCount}">0</p>
+                    <hr style="border-color: #e2e8f0; margin: 0.5rem 0;">
+                    <p class="stat-desc mb-0">投稿されたレビュー</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- メニューカード -->
+        <div class="row g-3 mb-4">
+
+            <!-- スポット新規登録 -->
+            <div class="col-md-6">
+                <a th:href="@{/admin/spot/new}" class="menu-card p-4 h-100">
+                    <div class="d-flex align-items-start gap-3 mb-3">
+                        <div class="menu-icon" style="background-color: rgba(99, 102, 241, 0.2);">
+                            <i class="bi bi-plus-lg" style="color: #818cf8;"></i>
+                        </div>
+                        <div>
+                            <p class="menu-title">スポット新規登録</p>
+                            <p class="menu-subtitle mb-0">新しいスポットを登録する</p>
+                        </div>
+                    </div>
+                    <p class="menu-desc">スポット名、住所、カテゴリーなどの情報を入力して新規スポットを登録できます。</p>
+                </a>
+            </div>
+
+            <!-- スポット一覧 -->
+            <div class="col-md-6">
+                <a th:href="@{/admin/spot/list}" class="menu-card p-4 h-100">
+                    <div class="d-flex align-items-start gap-3 mb-3">
+                        <div class="menu-icon" style="background-color: rgba(59, 130, 246, 0.2);">
+                            <i class="bi bi-list-ul" style="color: #60a5fa;"></i>
+                        </div>
+                        <div>
+                            <p class="menu-title">スポット一覧</p>
+                            <p class="menu-subtitle mb-0">登録されているスポットを管理</p>
+                        </div>
+                    </div>
+                    <p class="menu-desc" th:text="'スポットの検索、詳細確認、編集ができます。現在' + ${spotCount} + '件のスポットが登録されています。'">
+                        スポットの検索、詳細確認、編集ができます。
+                    </p>
+                </a>
+            </div>
+
+            <!-- ユーザー管理 -->
+            <div class="col-md-6">
+                <a th:href="@{/admin/user/list}" class="menu-card p-4 h-100">
+                    <div class="d-flex align-items-start gap-3 mb-3">
+                        <div class="menu-icon" style="background-color: rgba(16, 185, 129, 0.2);">
+                            <i class="bi bi-people" style="color: #34d399;"></i>
+                        </div>
+                        <div>
+                            <p class="menu-title">ユーザー管理</p>
+                            <p class="menu-subtitle mb-0">登録ユーザーを管理</p>
+                        </div>
+                    </div>
+                    <p class="menu-desc" th:text="'ユーザー情報の確認、編集ができます。現在' + ${userCount} + '名のユーザーが登録されています。'">
+                        ユーザー情報の確認、編集ができます。
+                    </p>
+                </a>
+            </div>
+
+            <!-- カテゴリ管理 -->
+            <div class="col-md-6">
+                <a th:href="@{/admin/category/list}" class="menu-card p-4 h-100">
+                    <div class="d-flex align-items-start gap-3 mb-3">
+                        <div class="menu-icon" style="background-color: rgba(245, 158, 11, 0.2);">
+                            <i class="bi bi-tags" style="color: #fbbf24;"></i>
+                        </div>
+                        <div>
+                            <p class="menu-title">カテゴリ管理</p>
+                            <p class="menu-subtitle mb-0">カテゴリ・サブカテゴリを管理</p>
+                        </div>
+                    </div>
+                    <p class="menu-desc">カテゴリおよびサブカテゴリの追加・編集・削除ができます。</p>
+                </a>
+            </div>
+
+        </div>
+
+        <!-- 最近登録されたスポット -->
+        <div class="admin-card p-4">
+
+            <div class="mb-3">
+                <h6 class="fw-bold mb-0" style="color: #1e293b;">最近登録されたスポット</h6>
+                <p class="mb-0 mt-1" style="font-size: 0.78rem; color: #64748b;">新しく追加されたスポット一覧</p>
+            </div>
+
+            <div th:if="${recentSpots == null or #lists.isEmpty(recentSpots)}" class="text-center py-5"
+                style="color: #64748b;">
+                <i class="bi bi-inbox d-block mb-2" style="font-size: 1.75rem;"></i>
+                スポットが登録されていません
+            </div>
+
+            <div th:each="spot : ${recentSpots}" class="recent-row">
+
+                <!-- サムネイル -->
+                <img th:if="${spot.photoUrl != null}" th:src="@{'/uploads/' + ${spot.photoUrl}}" class="recent-thumb"
+                    alt="">
+                <div th:if="${spot.photoUrl == null}" class="recent-thumb-placeholder">
+                    <i class="bi bi-image" style="font-size: 1.1rem;"></i>
+                </div>
+
+                <!-- スポット名・カテゴリー -->
+                <div class="flex-grow-1 min-width-0">
+                    <p class="fw-medium mb-0" style="color: #1e293b; font-size: 0.9rem;" th:text="${spot.spotName}">
+                        スポット名</p>
+                    <p class="mb-0" style="color: #94a3b8; font-size: 0.78rem;">
+                        <span th:text="${spot.categoryName}">カテゴリー</span>
+                        <span th:if="${spot.subCategoryName != null}">
+                            &nbsp;·&nbsp;<span th:text="${spot.subCategoryName}">サブカテゴリー</span>
+                        </span>
+                    </p>
+                </div>
+
+                <!-- 操作ボタン -->
+                <div class="d-flex gap-2 flex-shrink-0">
+                    <a th:href="@{/spot/{id}(id=${spot.id})}" target="_blank" class="btn btn-sm btn-outline-secondary"
+                        style="font-size: 0.78rem;">詳細</a>
+                    <a th:href="@{/admin/spot/edit(id=${spot.id})}" class="btn btn-sm"
+                        style="background-color: #1d4ed8; border-color: #1d4ed8; color: #fff; font-size: 0.78rem;">編集</a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</main>
+
+</html>

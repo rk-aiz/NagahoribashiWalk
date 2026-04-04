@@ -32,6 +32,11 @@
 
 	</delete>
 
+	<!-- レビュー総数カウント -->
+	<select id="count" resultType="long">
+		SELECT COUNT(*) FROM reviews
+	</select>
+
 	<!--【insert】レビュー投稿　 -->
 	<insert id="insert"
 		parameterType="com.example.nagahoribashi_walk.entity.Review">

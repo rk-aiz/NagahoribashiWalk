@@ -7,7 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.nagahoribashi_walk.dto.CategoryDTO;
 import com.example.nagahoribashi_walk.dto.NavCategory;
+import com.example.nagahoribashi_walk.dto.NavSubCategory;
+import com.example.nagahoribashi_walk.dto.SidebarDTO;
 import com.example.nagahoribashi_walk.repository.CategoryMapper;
+import com.example.nagahoribashi_walk.repository.SubCategoryMapper;
 import com.example.nagahoribashi_walk.service.CategoryService;
 
 import lombok.RequiredArgsConstructor;
@@ -18,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryMapper categoryMapper;
-    private final CategoryDTO CATEGORY_OTHER = new CategoryDTO(null, "その他");
+    private final SubCategoryMapper subCategoryMapper;
 
     @Override
     public List<NavCategory> getAllNavCategories() {
@@ -27,6 +30,17 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDTO getById(Long categoryId) {
-        return categoryMapper.findById(categoryId).orElse(CATEGORY_OTHER);
+        return categoryMapper.findById(categoryId).orElseThrow();
+    }
+
+    @Override
+    public SidebarDTO getSidebarDTO(Long categoryId) {
+
+        List<NavSubCategory> subCategories = subCategoryMapper.findByCategoryId(categoryId);
+
+        return new SidebarDTO(
+                categoryMapper.findFlatAllNavCategories(),
+                subCategories,
+                categoryId, null);
     }
 }
