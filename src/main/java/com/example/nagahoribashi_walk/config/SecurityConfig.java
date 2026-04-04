@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .requestMatchers("/admin/login").permitAll()
                 // 上記以外の /admin/** は ADMIN 権限必須
                 // ADMIN 以外のユーザーはここで 403 になる
-                .anyRequest().hasAuthority("ADMIN"))
+                .anyRequest().hasRole("ADMIN"))
 
             // ★ログイン設定
             .formLogin(form -> form
@@ -99,7 +99,7 @@ public class SecurityConfig {
                 .requestMatchers("/uploads/**").permitAll()
                 // マイページ・お気に入り・レビューは USER 権限必須
                 // ADMIN はこれらのページにアクセスできない（403になる）
-                .requestMatchers("/mypage/**", "/favorite/**", "/review/**").hasAuthority("USER")
+                .requestMatchers("/mypage/**", "/favorite/**", "/review/**").hasRole("USER")
                 // 上記以外のURLはログイン済みであればアクセス可能
                 .anyRequest().authenticated())
 

@@ -10,7 +10,7 @@ import com.example.nagahoribashi_walk.dto.NavCategory;
  */
 public interface CategoryService {
 
-    List<NavCategory> findAll();
+    List<NavCategory> getAllNavCategories();
 
     CategoryDTO getById(Long categoryId);
 }

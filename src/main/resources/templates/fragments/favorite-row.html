@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+    <!--
+    お気に入り行 フラグメント
+    パラメータ:
+      fav : FavoriteSummary オブジェクト
+-->
+
+    <!-- CSS（ページ内で1回だけ th:replace で読み込む） -->
+    <th:block th:fragment="styles">
+        <style>
+            .fav-row {
+                border-radius: 0.625rem !important;
+                transition: box-shadow 0.2s, transform 0.2s;
+                text-decoration: none;
+                color: inherit;
+            }
+
+            .fav-row:hover {
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.10) !important;
+                transform: translateY(-1px);
+                color: inherit;
+            }
+
+            .fav-row-img {
+                width: 100px;
+                height: 100px;
+                object-fit: cover;
+                border-radius: 0.5rem 0 0 0.5rem;
+                flex-shrink: 0;
+            }
+
+            .fav-row-delete {
+                opacity: 0.5;
+                transition: opacity 0.15s, color 0.15s;
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0.25rem 0.5rem;
+                line-height: 1;
+            }
+
+            .fav-row-delete:hover {
+                opacity: 1;
+                color: #ef4444 !important;
+            }
+        </style>
+    </th:block>
+
+    <!-- 行本体（外側のラッパーは呼び出し側で用意） -->
+    <div th:fragment="row(fav)"
+        class="card border-0 shadow-sm fav-row d-flex flex-row align-items-stretch overflow-hidden">
+
+        <!-- 左: サムネイル -->
+        <a th:href="@{/spot/{id}(id=${fav.spotId})}" class="d-block flex-shrink-0">
+            <img th:src="@{/uploads/{url}(url=${fav.photoUrl})}" th:alt="${fav.spotName}" class="fav-row-img">
+        </a>
+
+        <!-- 右: スポット情報 -->
+        <div class="d-flex flex-column justify-content-center flex-grow-1 px-3 py-2">
+
+            <!-- スポット名 -->
+            <a th:href="@{/spot/{id}(id=${fav.spotId})}" class="text-decoration-none text-dark fw-bold"
+                style="font-size: 0.95rem; line-height: 1.3;" th:text="${fav.spotName}">スポット名</a>
+
+            <!-- カテゴリ / サブカテゴリ -->
+            <p class="mb-1 mt-1" style="font-size: 0.8rem;">
+                <span th:text="${fav.categoryName} ?: 'その他'" style="color:#4b82f6; font-weight:600;">グルメ</span>
+                <span class="mx-1 text-secondary">/</span>
+                <span th:text="${fav.subCategoryName} ?: 'その他'" class="text-secondary">ラーメン</span>
+            </p>
+
+            <!-- 評価 + キーワード -->
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <!-- 評価 -->
+                <span class="d-flex align-items-center gap-1"
+                    style="font-size: 0.8rem; font-weight: 600; color: #374151;">
+                    <i class="bi bi-star-fill" style="color:#f59e0b; font-size:0.75rem;"></i>
+                    <span
+                        th:text="${fav.averageRating != null ? #numbers.formatDecimal(fav.averageRating, 1, 1) : '-'}">4.5</span>
+                </span>
+                <!-- キーワードバッジ（最大3件） -->
+                <th:block th:if="${fav.keywords != null and !#strings.isEmpty(fav.keywords)}">
+                    <span th:each="kw, stat : ${#strings.arraySplit(fav.keywords, ',')}" th:if="${stat.index < 3}"
+                        class="badge rounded-pill"
+                        style="background:#f1f5f9; color:#475569; font-weight:400; font-size:0.72rem;"
+                        th:text="${'#' + #strings.trim(kw)}">タグ</span>
+                </th:block>
+            </div>
+
+        </div>
+
+        <!-- 右端: お気に入り解除ボタン -->
+        <div class="d-flex align-items-center pe-3">
+            <form th:action="@{/favorite/remove/{spotId}(spotId=${fav.spotId})}" method="post">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="fav-row-delete text-secondary" title="お気に入りを解除">
+                    <i class="bi bi-heart-fill" style="font-size: 1.1rem; color: #f87171;"></i>
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

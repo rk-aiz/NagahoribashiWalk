@@ -1,5 +1,8 @@
 package com.example.nagahoribashi_walk.form;
 
+import java.util.Objects;
+
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -37,4 +40,9 @@ public class UserRegisterForm {
     /** パスワード（確認用） */
     @NotBlank(message = "パスワード（確認）を入力してください")
     private String passwordConfirm;
+
+    @AssertTrue(message = "確認用パスワードが一致しません")
+    public boolean isSamePassword() {
+        return Objects.equals(password, passwordConfirm);
+    }
 }

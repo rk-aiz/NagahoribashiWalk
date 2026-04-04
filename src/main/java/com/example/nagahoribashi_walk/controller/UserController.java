@@ -1,7 +1,5 @@
 package com.example.nagahoribashi_walk.controller;
 
-
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,19 +26,19 @@ public class UserController {
 
     @GetMapping("/mypage")
     public String mypage(
-    		@AuthenticationPrincipal LoginUser loginUser,
-    		@RequestParam(defaultValue = "profile") String tab,
-    		@PageableDefault(size = 12) Pageable pageable,
-    		Model model) {
+            @AuthenticationPrincipal LoginUser loginUser,
+            @RequestParam(name = "tab", defaultValue = "profile") String tab,
+            @PageableDefault(size = 12) Pageable pageable,
+            Model model) {
 
-    	model.addAttribute("profile",
-    			userService.getProfileByUsername(loginUser.getUsername()));
+        model.addAttribute("profile",
+                userService.getProfileByUsername(loginUser.getUsername()));
 
-    	model.addAttribute("favorites",
-    			favoriteService.getPage(loginUser.getId(), pageable));
+        model.addAttribute("favorites",
+                favoriteService.getPage(loginUser.getId(), pageable));
 
-    	model.addAttribute("activeTab", tab);
+        model.addAttribute("activeTab", tab);
 
-    	return "/user/mypage";
+        return "/user/mypage";
     }
 }

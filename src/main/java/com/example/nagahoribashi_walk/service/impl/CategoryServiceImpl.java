@@ -21,8 +21,8 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryDTO CATEGORY_OTHER = new CategoryDTO(null, "その他");
 
     @Override
-    public List<NavCategory> findAll() {
-        return categoryMapper.findAll();
+    public List<NavCategory> getAllNavCategories() {
+        return categoryMapper.findAllNavCategories();
     }
 
     @Override

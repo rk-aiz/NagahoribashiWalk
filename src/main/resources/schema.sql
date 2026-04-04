@@ -28,23 +28,22 @@ CREATE TABLE users (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     enabled BOOLEAN DEFAULT TRUE
 );
-    
-
 
 CREATE TABLE categories(
         id SERIAL PRIMARY KEY,
         name VARCHAR(100) UNIQUE NOT NULL,
-        display_order INTEGER NOT NULL
+        display_order INTEGER NOT NULL,
+        is_default BOOLEAN DEFAULT FALSE
 );
-
 
 CREATE TABLE sub_categories (
     id SERIAL PRIMARY KEY,
-    category_id INTEGER,
+    category_id INTEGER NOT NULL,
     name VARCHAR(100) NOT NULL,
+    is_default BOOLEAN DEFAULT FALSE,
     CONSTRAINT fk_sub_categories_category
         FOREIGN KEY (category_id) REFERENCES categories(id)
-        ON DELETE CASCADE,
+        ON DELETE RESTRICT,
     CONSTRAINT uq_sub_categories_category_name
         UNIQUE (category_id, name)
 );
@@ -52,7 +51,7 @@ CREATE TABLE sub_categories (
 CREATE TABLE spots(
     id SERIAL PRIMARY KEY,
     spot_name VARCHAR(100) NOT NULL,
-    sub_category_id INTEGER,
+    sub_category_id INTEGER NOT NULL,
     website_url VARCHAR(255),
         gmap_url VARCHAR(500),
     address VARCHAR(255),
@@ -66,7 +65,7 @@ CREATE TABLE spots(
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_spots_sub_category
         FOREIGN KEY (sub_category_id) REFERENCES sub_categories(id)
-        ON DELETE SET NULL
+        ON DELETE RESTRICT
 );
 
 CREATE TABLE reviews (

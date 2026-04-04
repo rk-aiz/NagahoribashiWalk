@@ -10,37 +10,39 @@ INSERT INTO users (username, password, email, role, display_name) VALUES
 ('demouser', '$2a$10$Is1NSJa.IIKXfQtd8Esl7esjQssijYS3J4jBEzbxXGyAR8szP6oEW', 'demouser@example.com', 'USER', 'デモユーザー');
 
 -- categories
-INSERT INTO categories (name, display_order) VALUES
-('グルメ',     1),
-('観光スポット', 2),
-('ショッピング', 3),
-('娯楽',       4),
-('カフェ',     5);
+INSERT INTO categories (name, display_order, is_default) VALUES
+('その他', 2147483647, true), -- その他は常に最後になる
+('グルメ', 1, false),
+('観光スポット', 2, false),
+('ショッピング', 3, false),
+('娯楽', 4, false),
+('カフェ', 5, false);
 
 -- sub_categories
 INSERT INTO sub_categories (category_id, name) VALUES
-(1, '居酒屋'),
-(1, '外国料理屋'),
-(4, 'ライブハウス'),
-(3, 'ガチャ'),
-(2, '神社'),
-(4, '劇場'),
-(5, 'カフェ'),
-(1, 'カレー'),
-(1, 'ラーメン'),
-(1, 'たこ焼き'),
-(4, 'サウナ'),
-(4, '猫カフェ'),
-(3, 'ドラッグストア'),
-(3, 'スーパーマーケット'),
-(1, 'イタリアン'),
-(1, 'ハンバーガー'),
-(3, '雑貨屋'),
-(1, '韓国料理'),
-(1, '中華料理'),
-(3, '100円ショップ'),
-(2, '公園'),
-(1, '焼肉');
+(2, '居酒屋'),
+(2, '外国料理屋'),
+(5, 'ライブハウス'),
+(4, 'ガチャ'),
+(3, '神社'),
+(5, '劇場'),
+(6, 'カフェ'),
+(2, 'カレー'),
+(2, 'ラーメン'),
+(2, 'たこ焼き'),
+(5, 'サウナ'),
+(5, '猫カフェ'),
+(4, 'ドラッグストア'),
+(4, 'スーパーマーケット'),
+(2, 'イタリアン'),
+(2, 'ハンバーガー'),
+(4, '雑貨屋'),
+(2, '韓国料理'),
+(2, '中華料理'),
+(4, '100円ショップ'),
+(3, '公園'),
+(2, '焼肉'),
+(1, 'その他');
 
 -- spots
 INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('なんばグランド花月', (SELECT id FROM sub_categories WHERE name = '劇場'), '542-0075大阪府大阪市中央区難波千日前11-6', '一般的 10:00～22:00', '不定休(HP詳細)', '3000円～', '新喜劇と漫才が楽しめる笑いの殿堂', 'https://ngk.yoshimoto.co.jp/', 'https://maps.app.goo.gl/Dcc4azPiUHdewJXf7', 'お笑い,吉本,新喜劇,劇場,観光,定番');

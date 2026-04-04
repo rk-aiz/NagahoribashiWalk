@@ -43,7 +43,7 @@ public class SpotController {
         model.addAttribute("categoryId", "all");
         model.addAttribute("categoryName", "すべて");
         model.addAttribute("spotPages", spotService.getPage(pageable));
-        model.addAttribute("sidebar", new SidebarDTO(categoryService.findAll(), null, null));
+        model.addAttribute("sidebar", new SidebarDTO(categoryService.getAllNavCategories(), null, null));
         return "spot/list";
     }
 
@@ -67,7 +67,7 @@ public class SpotController {
         model.addAttribute("spotPages", spotService.getPageByCategoryId(categoryId, pageable));
         model.addAttribute("categoryId", categoryId);
         model.addAttribute("categoryName", categoryService.getById(categoryId).getName());
-        model.addAttribute("sidebar", new SidebarDTO(categoryService.findAll(), categoryId, null));
+        model.addAttribute("sidebar", new SidebarDTO(categoryService.getAllNavCategories(), categoryId, null));
 
         return "spot/list";
     }
@@ -77,7 +77,7 @@ public class SpotController {
             @PathVariable("subCategoryId") Long subCategoryId,
             @PageableDefault(size = 12) Pageable pageable, Model model) {
 
-        List<NavCategory> navCategories = categoryService.findAll();
+        List<NavCategory> navCategories = categoryService.getAllNavCategories();
         Long parentCategoryId = navCategories.stream()
                 .filter(cat -> cat.getSubCategories().stream()
                         .anyMatch(sub -> sub.getId().equals(subCategoryId)))

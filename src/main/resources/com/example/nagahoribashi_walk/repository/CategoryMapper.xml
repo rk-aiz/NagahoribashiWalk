@@ -14,7 +14,7 @@
     </resultMap>
 
     <!-- カテゴリナビゲーション用にcategoriesテーブルとsub_categoriesテーブルを全件取得 -->
-    <select id="findAll" resultMap="navCategoryResultMap">
+    <select id="findAllNavCategories" resultMap="navCategoryResultMap">
         SELECT 
             c.id AS category_id, 
             c.name AS category_name, 

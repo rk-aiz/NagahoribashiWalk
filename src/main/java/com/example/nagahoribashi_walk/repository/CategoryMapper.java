@@ -16,7 +16,7 @@ import com.example.nagahoribashi_walk.dto.NavCategory;
 @Mapper
 public interface CategoryMapper {
 
-    List<NavCategory> findAll();
+    List<NavCategory> findAllNavCategories();
 
     Optional<CategoryDTO> findById(Long id);
 }
