@@ -7,11 +7,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class PasswordConfig {
-	
-	@Bean
-	public PasswordEncoder passwordEncode() {
-		
-		// エンコーダーの設定
+
+    @Bean
+    public PasswordEncoder passwordEncode() {
+        // エンコーダーの設定
         return new BCryptPasswordEncoder();
-	}
+    }
 }

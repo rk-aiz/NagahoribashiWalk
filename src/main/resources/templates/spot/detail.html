@@ -221,7 +221,7 @@
                         <h5 class="fw-bold mb-3" style="color: #1e293b;">レビューを投稿する</h5>
 
 
-                        <form th:action="@{/spot/{id}/reviews(id=${spotDetail.id})}" method="post">
+                        <form th:action="@{/review/post/{id}(id=${spotDetail.id})}" method="post">
                             <div class="mb-3">
                                 <label class="form-label fw-semibold" style="font-size: 0.875rem;">評価</label>
                                 <select name="rating" class="form-select"

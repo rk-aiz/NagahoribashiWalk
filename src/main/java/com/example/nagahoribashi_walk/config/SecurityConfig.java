@@ -130,9 +130,12 @@ public class SecurityConfig {
                 .deleteCookies("JSESSIONID"))
 
             // ★403処理: ADMINが /mypage/** など一般ユーザー専用ページにアクセスした場合
+            // accessDeniedPage はforward（メソッド引継ぎ）のため、POSTが405になる問題あり
+            // → sendRedirect でリダイレクトさせることでGETに統一する
             .exceptionHandling(ex -> ex
             	.authenticationEntryPoint(customAuthenticationEntryPoint)
-                .accessDeniedPage("/403")
+                .accessDeniedHandler((request, response, ex2) ->
+                    response.sendRedirect("/403"))
                 );
 
         return http.build();

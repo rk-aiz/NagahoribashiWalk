@@ -11,7 +11,7 @@
 	
 	<!-- ユーザープロファイル取得 -->
 	<select id="findProfileByUsername" resultType="com.example.nagahoribashi_walk.dto.UserProfile">
-		SELECT id, username, email, role, display_name
+		SELECT id, username, email, display_name, created_at
 		FROM users
 		WHERE username = #{username} AND deleted_at IS NULL AND enabled = true
 	</select>
