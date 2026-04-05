@@ -50,7 +50,7 @@
                             <select id="subCategoryId" th:field="*{subCategoryId}" class="form-select"
                                 th:classappend="${#fields.hasErrors('subCategoryId')} ? 'is-invalid'">
                                 <option value="">カテゴリーを選択</option>
-                                <th:block th:each="cat : ${navCategories}">
+                                <th:block th:each="cat : ${dropDownCategories}">
                                     <optgroup th:label="${cat.name}">
                                         <option th:each="sub : ${cat.subCategories}" th:value="${sub.id}"
                                             th:text="${cat.name + ' / ' + sub.name}">サブカテゴリ</option>

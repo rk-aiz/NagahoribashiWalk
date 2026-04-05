@@ -29,7 +29,7 @@ INSERT INTO users (username, password, email, role, display_name) VALUES
 -- categories に INSERT するたびに add_default_sub_category トリガーが発火し、
 -- 「未分類」サブカテゴリ（is_default=TRUE, display_order=999）を自動生成する。
 INSERT INTO categories (name, display_order, is_default) VALUES
-('その他', 999, true),    -- フォールバック用デフォルトカテゴリ（削除不可）
+('その他', 99999, true),    -- フォールバック用デフォルトカテゴリ（削除不可）
 ('グルメ', 1, false),
 ('観光スポット', 2, false),
 ('ショッピング', 3, false),

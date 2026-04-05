@@ -25,8 +25,10 @@ public class AdminCategoryRow {
     /** 表示順 */
     private int displayOrder;
 
+    /** trueは未分類カテゴリ・フォールバック先・削除不可 */
     private boolean isDefault;
 
+    /** 属するサブカテゴリのリスト */
     private List<AdminSubCategoryRow> subCategories;
 
     /** Thymeleaf参照用 */

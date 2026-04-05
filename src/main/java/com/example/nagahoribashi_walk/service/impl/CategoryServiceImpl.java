@@ -43,4 +43,9 @@ public class CategoryServiceImpl implements CategoryService {
                 subCategories,
                 categoryId, null);
     }
+
+    @Override
+    public List<AdminCategoryRow> getAllAdminCategoryRows() {
+        return categoryMapper.findAllForAdmin();
+    }
 }

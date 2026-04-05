@@ -2,6 +2,7 @@ package com.example.nagahoribashi_walk.service;
 
 import java.util.List;
 
+import com.example.nagahoribashi_walk.dto.AdminCategoryRow;
 import com.example.nagahoribashi_walk.dto.NavCategory;
 import com.example.nagahoribashi_walk.dto.SidebarDTO;
 
@@ -16,4 +17,6 @@ public interface CategoryService {
     List<NavCategory> getAllNavCategories();
 
     SidebarDTO getSidebarDTO(Long categoryId);
+
+    List<AdminCategoryRow> getAllAdminCategoryRows();
 }

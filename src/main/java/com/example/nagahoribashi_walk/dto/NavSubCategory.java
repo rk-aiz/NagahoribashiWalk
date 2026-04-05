@@ -17,4 +17,7 @@ public class NavSubCategory {
     /** 属するカテゴリのID */
     private Long categoryId;
 
+    /** 表示順序 */
+    private Integer displayOrder;
+
 }

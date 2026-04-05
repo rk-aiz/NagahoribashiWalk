@@ -15,14 +15,18 @@ import lombok.NoArgsConstructor;
 public class AdminSubCategoryRow {
 
     /** 主キー */
-    private Long id;
+    private long id;
 
     /** サブカテゴリ名 */
     private String name;
 
     /** 属するカテゴリのID */
-    private Long categoryId;
+    private long categoryId;
 
+    /** 表示順序 */
+    private int displayOrder;
+
+    /** trueは未分類カテゴリ・フォールバック先・削除不可 */
     private boolean isDefault;
 
     /** Thymeleafから参照用 */

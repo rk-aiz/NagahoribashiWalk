@@ -10,6 +10,22 @@
         <collection property="subCategories" ofType="com.example.nagahoribashi_walk.dto.NavSubCategory">
             <id property="id" column="sub_category_id" />
             <result property="name" column="sub_category_name" />
+            <result property="categoryId" column="category_id" />
+            <result property="displayOrder" column="sub_category_display_order" />
+        </collection>
+    </resultMap>
+
+    <resultMap id="adminCategoryRowResultMap" type="com.example.nagahoribashi_walk.dto.AdminCategoryRow">
+        <id property="id" column="category_id" />
+        <result property="name" column="category_name" />
+        <result property="displayOrder" column="category_display_order" />
+        <result property="isDefault" column="category_is_default" />
+        <collection property="subCategories" ofType="com.example.nagahoribashi_walk.dto.AdminSubCategoryRow">
+            <id property="id" column="sub_category_id" />
+            <result property="name" column="sub_category_name" />
+            <result property="categoryId" column="category_id" />
+            <result property="displayOrder" column="sub_category_display_order" />
+            <result property="isDefault" column="sub_category_is_default" />
         </collection>
     </resultMap>
 
@@ -20,7 +36,8 @@
             c.name AS category_name, 
             c.display_order AS category_display_order,
             sc.id AS sub_category_id, 
-            sc.name AS sub_category_name 
+            sc.name AS sub_category_name,
+            sc.display_order AS sub_category_display_order
         FROM 
             categories c 
         LEFT JOIN
@@ -32,6 +49,27 @@
                 WHERE s.sub_category_id = sc.id
                 AND s.deleted_at IS NULL
             )
+        ORDER BY
+            c.display_order, sc.display_order
+    </select>
+
+    <!-- 管理者機能用にcategoriesテーブルとsub_categoriesテーブルを全件取得 -->
+    <select id="findAllForAdmin" resultMap="adminCategoryRowResultMap">
+        SELECT 
+            c.id AS category_id, 
+            c.name AS category_name, 
+            c.display_order AS category_display_order,
+            c.is_default AS category_is_default,
+            sc.id AS sub_category_id, 
+            sc.name AS sub_category_name,
+            sc.display_order AS sub_category_display_order,
+            sc.is_default AS sub_category_is_default
+        FROM 
+            categories c 
+        LEFT JOIN
+            sub_categories sc
+        ON
+            c.id = sc.category_id
         ORDER BY
             c.display_order, sc.display_order
     </select>

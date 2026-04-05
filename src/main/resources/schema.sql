@@ -30,7 +30,7 @@ RETURNS TRIGGER AS '
 	END;
 ' language 'plpgsql';
 
--- カテゴリ新規追加時に「未分類」サブカテゴリを自動生成する。
+-- カテゴリ新規追加時に「その他」サブカテゴリを自動生成する。
 -- これにより spots.sub_category_id は常に有効なレコードを参照できる
 -- （フォールバック設計: カテゴリを作るだけで受け皿が必ず存在する）。
 -- display_order=99999 で一覧の末尾に固定、is_default=TRUE で削除不可とする。
@@ -38,7 +38,7 @@ CREATE OR REPLACE FUNCTION add_default_sub_category()
 RETURNS TRIGGER AS '
     BEGIN
     INSERT INTO sub_categories (category_id, name, display_order, is_default)
-    VALUES (NEW.id, ''未分類'', 99999, TRUE);
+    VALUES (NEW.id, ''その他'', 99999, TRUE);
     RETURN NEW;
     END;
 ' LANGUAGE 'plpgsql';

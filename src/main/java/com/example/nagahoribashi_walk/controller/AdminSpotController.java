@@ -35,7 +35,8 @@ public class AdminSpotController {
         SpotForm form = new SpotForm();
         form.setNew(true);
         model.addAttribute("form", form);
-        model.addAttribute("navCategories", categoryService.getAllNavCategories()); // ← これだけ
+        model.addAttribute("dropDownCategories",
+                categoryService.getAllAdminCategoryRows());
         return "admin/spot/edit";
     }
 
