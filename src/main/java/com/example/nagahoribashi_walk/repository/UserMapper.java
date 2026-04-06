@@ -57,16 +57,20 @@ public interface UserMapper {
      * ユーザーの存在チェック
      */
     boolean exists(@Param("username") String username);
-    
+
+    /**
+     * メールアドレス存在チェック
+     */
+    boolean existsByEmail(@Param("email") String email);
+
     /**
      * 管理者側ユーザー一覧
      */
     List<AdminUserRow> findAllForAdmin(
-    	    @Param("limit") int limit,
-    	    @Param("offset") long offset,
-    	    @Param("sort") String sort
-    	);
+            @Param("limit") int limit,
+            @Param("offset") long offset,
+            @Param("sort") String sort);
 
     long countAdminUsers();
-    
+
 }

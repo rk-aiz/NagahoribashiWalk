@@ -1,48 +1,72 @@
 
--- users (開発用初期ユーザー)
+-- ============================================================
+-- data.sql  長堀橋さんぽ 初期データ（開発用）
+-- ============================================================
+-- schema.sql 実行後に流す。実行順序は依存関係に従うこと:
+--   users → categories → sub_categories → spots → favorites → reviews
+-- ============================================================
+
+
+-- ユーザー
+-- パスワードはすべて同じ文字列を BCrypt でハッシュしたもの
 INSERT INTO users (username, password, email, role, display_name) VALUES
-('admin', '$2a$10$1V6vPNeCXWU/3eaF8f9yC.LFMXMOELE2badil7dOyXreMpjqHKdXm', 'admin@nagahori.com', 'ADMIN', '管理者'),
-('user1', '$2a$10$1V6vPNeCXWU/3eaF8f9yC.LFMXMOELE2badil7dOyXreMpjqHKdXm', 'user1@nagahori.com', 'USER', 'ユーザー1'),
+
+-- パス : Admin@2026
+('admin', '$2a$10$lERDBGAj7aGIPChXyUEj.OIZHO50N/9BnVn6EO6T5uOauUVkH37Ry', 'admin@nagahori.com', 'ADMIN', '管理者'),
+
+-- パス : User@2026
+('user1', '$2a$10$ah6tn/KV6rc34sdUGh0wF.5UEZbs0UG5ObXiW0c72MfiEhAW3ljFa', 'user1@nagahori.com', 'USER', 'ユーザー1'),
 ('user2', '$2a$10$1V6vPNeCXWU/3eaF8f9yC.LFMXMOELE2badil7dOyXreMpjqHKdXm', 'user2@nagahori.com', 'USER', 'ユーザー2'),
 ('user3', '$2a$10$1V6vPNeCXWU/3eaF8f9yC.LFMXMOELE2badil7dOyXreMpjqHKdXm', 'user3@nagahori.com', 'USER', 'ユーザー3'),
 ('user4', '$2a$10$1V6vPNeCXWU/3eaF8f9yC.LFMXMOELE2badil7dOyXreMpjqHKdXm', 'user4@nagahori.com', 'USER', 'ユーザー4'),
 ('user5', '$2a$10$1V6vPNeCXWU/3eaF8f9yC.LFMXMOELE2badil7dOyXreMpjqHKdXm', 'user5@nagahori.com', 'USER', 'ユーザー5'),
-('demouser', '$2a$10$Is1NSJa.IIKXfQtd8Esl7esjQssijYS3J4jBEzbxXGyAR8szP6oEW', 'demouser@example.com', 'USER', 'デモユーザー');
 
--- categories
-INSERT INTO categories (name, display_order) VALUES
-('グルメ',     1),
-('観光スポット', 2),
-('ショッピング', 3),
-('娯楽',       4),
-('カフェ',     5);
+-- パス : Demo@2026
+('demouser', '$2a$10$CKcgVyyKiMiVPZS88S.EeON2w6FKEVr.1wVQVVa8d6vDi74mGKEmq', 'demouser@example.com', 'USER', 'デモユーザー');
 
--- sub_categories
-INSERT INTO sub_categories (category_id, name) VALUES
-(1, '居酒屋'),
-(1, '外国料理屋'),
-(4, 'ライブハウス'),
-(3, 'ガチャ'),
-(2, '神社'),
-(4, '劇場'),
-(5, 'カフェ'),
-(1, 'カレー'),
-(1, 'ラーメン'),
-(1, 'たこ焼き'),
-(4, 'サウナ'),
-(4, '猫カフェ'),
-(3, 'ドラッグストア'),
-(3, 'スーパーマーケット'),
-(1, 'イタリアン'),
-(1, 'ハンバーガー'),
-(3, '雑貨屋'),
-(1, '韓国料理'),
-(1, '中華料理'),
-(3, '100円ショップ'),
-(2, '公園'),
-(1, '焼肉');
+-- カテゴリ
+-- is_default=TRUE の「その他」はフォールバック先。display_order=999 で常に末尾に表示。
+-- categories に INSERT するたびに add_default_sub_category トリガーが発火し、
+-- 「未分類」サブカテゴリ（is_default=TRUE, display_order=999）を自動生成する。
+INSERT INTO categories (name, display_order, is_default) VALUES
+('その他', 99999, true),    -- フォールバック用デフォルトカテゴリ（削除不可）
+('グルメ', 1, false),
+('観光スポット', 2, false),
+('ショッピング', 3, false),
+('娯楽', 4, false),
+('カフェ', 5, false);
 
--- spots
+-- サブカテゴリ
+-- display_order はカテゴリ内での表示順（1始まりの連番）
+-- is_default=TRUE の「未分類」はカテゴリINSERT時のトリガーが自動挿入するため、ここでは書かない
+-- category_id の対応: 1=その他, 2=グルメ, 3=観光スポット, 4=ショッピング, 5=娯楽, 6=カフェ
+INSERT INTO sub_categories (category_id, name, display_order) VALUES
+(2, '居酒屋',             1),  -- グルメ
+(2, '外国料理屋',         2),  -- グルメ
+(2, 'カレー',             3),  -- グルメ
+(2, 'ラーメン',           4),  -- グルメ
+(2, 'たこ焼き',           5),  -- グルメ
+(2, 'イタリアン',         6),  -- グルメ
+(2, 'ハンバーガー',       7),  -- グルメ
+(2, '韓国料理',           8),  -- グルメ
+(2, '中華料理',           9),  -- グルメ
+(2, '焼肉',              10),  -- グルメ
+(3, '神社',               1),  -- 観光スポット
+(3, '公園',               2),  -- 観光スポット
+(4, 'ガチャ',             1),  -- ショッピング
+(4, 'ドラッグストア',     2),  -- ショッピング
+(4, 'スーパーマーケット', 3),  -- ショッピング
+(4, '雑貨屋',             4),  -- ショッピング
+(4, '100円ショップ',      5),  -- ショッピング
+(5, 'ライブハウス',       1),  -- 娯楽
+(5, '劇場',               2),  -- 娯楽
+(5, 'サウナ',             3),  -- 娯楽
+(5, '猫カフェ',           4),  -- 娯楽
+(6, 'カフェ',             1);  -- カフェ
+
+-- スポット
+-- sub_category_id はサブクエリで名前引きしている。
+-- 同名のサブカテゴリが複数カテゴリに存在する場合は意図しないIDが入る可能性があるため注意。
 INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('なんばグランド花月', (SELECT id FROM sub_categories WHERE name = '劇場'), '542-0075大阪府大阪市中央区難波千日前11-6', '一般的 10:00～22:00', '不定休(HP詳細)', '3000円～', '新喜劇と漫才が楽しめる笑いの殿堂', 'https://ngk.yoshimoto.co.jp/', 'https://maps.app.goo.gl/Dcc4azPiUHdewJXf7', 'お笑い,吉本,新喜劇,劇場,観光,定番');
 INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('よしもと漫才劇場', (SELECT id FROM sub_categories WHERE name = '劇場'), '542-0075大阪府大阪市中央区難波千日前12-7 YES-NAMBAビル5F', '一般的 10:00～22:00', '不定休(HP詳細)', '1300円～', '次世代のお笑いスターを発掘できる', 'https://manzaigekijyo.yoshimoto.co.jp/', 'https://maps.app.goo.gl/x9TGRYoN5K2dA8uh7', 'コント,漫才,若手芸人,お笑い,劇場');
 INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('よしもと道頓堀シアター', (SELECT id FROM sub_categories WHERE name = '劇場'), '542-0071大阪府大阪市中央区道頓堀1-7-21 中座くいだおれビル 6F', '一般的 10:00～22:00', '不定休(HP詳細)', '2000円～', '食べて笑って楽しめる英語対応お笑い劇場', 'https://dotonbori.yoshimoto.co.jp/', 'https://maps.app.goo.gl/AQ4FLfSmRjwYMVNu9', '道頓堀,お笑い,シアター,観光');
@@ -125,7 +149,9 @@ INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_d
 
 
 
--- favorites (開発用初期データ)
+-- お気に入り
+-- user_id: 1=admin, 2=user1, 3=user2, 4=user3, 5=user4, 6=user5, 7=demouser
+-- spot_id はスポットの挿入順（INSERT順の連番）に対応する
 INSERT INTO favorites (user_id, spot_id) VALUES
 
 -- user1 (id=2): グルメ重視
@@ -173,7 +199,8 @@ INSERT INTO favorites (user_id, spot_id) VALUES
 (6, 20),   -- 炭火焼き鳥 鶏尽
 (6, 13);   -- 難波八坂神社
 
--- reviews (開発用初期データ)
+-- レビュー
+-- 1ユーザーが同一スポットに投稿できるのは1件のみ（uq_reviews_user_spot 制約）
 INSERT INTO reviews (user_id, spot_id, rating, comment) VALUES
 -- なんばグランド花月 (spot_id=1)
 (2, 1, 5, '新喜劇は何度観ても笑えます！大阪に来たら絶対に外せないスポット。'),

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.nagahoribashi_walk.form.SpotForm;
+import com.example.nagahoribashi_walk.service.CategoryService;
 import com.example.nagahoribashi_walk.service.SpotService;
 
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class AdminSpotController {
 
     private final SpotService spotService;
+    private final CategoryService categoryService;
 
     /**
      * 管理者用スポット一覧画面
@@ -33,6 +35,8 @@ public class AdminSpotController {
         SpotForm form = new SpotForm();
         form.setNew(true);
         model.addAttribute("form", form);
+        model.addAttribute("dropDownCategories",
+                categoryService.getAllAdminCategoryRows());
         return "admin/spot/edit";
     }
 

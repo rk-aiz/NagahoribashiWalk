@@ -1,2 +1,0 @@
--- テスト用データは各テストクラスで @BeforeEach / @Sql により投入する
--- このファイルは src/main/resources/data.sql の上書き用（テスト時の初期データ投入を抑止）

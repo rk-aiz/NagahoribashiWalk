@@ -7,10 +7,10 @@ import lombok.Data;
  */
 @Data
 public class ReviewForm {
-	
-	// ５段階評価
-	private Integer rating;
-	
-	// レビュー本文
-	private String comment;
+
+    // ５段階評価
+    private Integer rating;
+
+    // レビュー本文
+    private String comment;
 }

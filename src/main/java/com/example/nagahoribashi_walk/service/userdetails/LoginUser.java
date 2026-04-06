@@ -2,86 +2,78 @@ package com.example.nagahoribashi_walk.service.userdetails;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Objects;
 
-import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.example.nagahoribashi_walk.entity.User;
 
-public class LoginUser implements UserDetails, Serializable  {
+public class LoginUser implements UserDetails, Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	// ユーザー情報クラス
-	private final User user;
-	
-	// 権限コレクション
-	private Collection<GrantedAuthority> authorities;
-	
-	// コンストラクタ
-	public LoginUser(
-			User loginUser,
-			Collection<GrantedAuthority> authorities
-			) {
-		this.user = loginUser;
-		this.authorities = authorities;
-	}
+    // ユーザー情報クラス
+    private final User user;
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// 権限のコレクションを返す
-		return authorities;
-	}
+    // 権限コレクション
+    private Collection<GrantedAuthority> authorities;
 
-	@Override
-	public @Nullable String getPassword() {
-		// ハッシュ化済みのパスワードを返す
-		if (this.user == null) return null;
-		
-		return user.getPassword();
-	}
+    // コンストラクタ
+    public LoginUser(
+            User loginUser,
+            Collection<GrantedAuthority> authorities) {
+        this.user = Objects.requireNonNull(loginUser, "loginUser must not be null");
+        this.authorities = authorities;
+    }
 
-	public Long getId() {
-		if (this.user == null) return null;
-		
-		return this.user.getId();
-	}
-	
-	@Override
-	public String getUsername() {
-		if (this.user == null) return null;
-		
-		// ログインで利用するユーザー名を返す
-		return user.getUsername();
-	}
-	
-	@Override
-	public boolean isAccountNonExpired() {
-		if (this.user == null) return false;
-		
-		// ユーザーが期限切れでなければtrueを返す
-		return true;
-	}
-	
-	@Override
-	public boolean isAccountNonLocked() {
-		if (this.user == null) return false;
-		// ユーザーがロックされていなければtrueを返す
-		return true;
-	}
-	
-	@Override
-	public boolean isCredentialsNonExpired() {
-		if (this.user == null) return false;
-		// ユーザーのパスワードが期限切れでなければtrueを返す
-		return true;
-	}
-	
-	@Override
-	public boolean isEnabled() {
-		if (this.user == null) return false;
-		// ユーザーが有効であればtrueを返す
-		return this.user.isEnabled();
-	}
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // 権限のコレクションを返す
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        // ハッシュ化済みのパスワードを返す
+        return user.getPassword();
+    }
+
+    public Long getId() {
+        return user.getId();
+    }
+
+    public String getDisplayName() {
+        return user.getDisplayName();
+    }
+
+    @Override
+    public String getUsername() {
+        // ログインで利用するユーザー名を返す
+        return user.getUsername();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        // ユーザーが期限切れでなければtrueを返す
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        // ユーザーがロックされていなければtrueを返す
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        // ユーザーのパスワードが期限切れでなければtrueを返す
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        // ユーザーが有効であればtrueを返す
+        return user.isEnabled();
+    }
 }

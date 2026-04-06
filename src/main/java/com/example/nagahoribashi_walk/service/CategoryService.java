@@ -2,15 +2,21 @@ package com.example.nagahoribashi_walk.service;
 
 import java.util.List;
 
-import com.example.nagahoribashi_walk.dto.CategoryDTO;
+import com.example.nagahoribashi_walk.dto.AdminCategoryRow;
 import com.example.nagahoribashi_walk.dto.NavCategory;
+import com.example.nagahoribashi_walk.dto.SidebarDTO;
 
 /**
  * カテゴリ関連サービスのインターフェース
  */
 public interface CategoryService {
 
-    List<NavCategory> findAll();
+    /** IDからカテゴリ（閲覧系）を取得 */
+    NavCategory getById(Long categoryId);
 
-    CategoryDTO getById(Long categoryId);
+    List<NavCategory> getAllNavCategories();
+
+    SidebarDTO getSidebarDTO(Long categoryId);
+
+    List<AdminCategoryRow> getAllAdminCategoryRows();
 }

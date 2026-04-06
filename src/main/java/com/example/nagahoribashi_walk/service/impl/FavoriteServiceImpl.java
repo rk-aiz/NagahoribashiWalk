@@ -26,7 +26,7 @@ public class FavoriteServiceImpl implements FavoriteService {
      */
     @Override
     public Page<FavoriteSummary> getPage(Long userId, Pageable pageable) {
-        // スポットの総数を取得する
+        // お気に入りの総数を取得する
         long total = favoriteMapper.countByUserId(userId);
 
         // 対象ページに対応したスポットを取得する
@@ -48,11 +48,11 @@ public class FavoriteServiceImpl implements FavoriteService {
             favoriteMapper.insertFavorite(userId, spotId);
         }
     }
-    
+
     @Override
     public boolean isFavorite(Long userId, Long spotId) {
-    	
-    	return favoriteMapper.existsByUserAndSpot(userId, spotId);
+
+        return favoriteMapper.existsByUserAndSpot(userId, spotId);
     }
 
     /**

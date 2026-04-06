@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .requestMatchers("/admin/login").permitAll()
                 // 上記以外の /admin/** は ADMIN 権限必須
                 // ADMIN 以外のユーザーはここで 403 になる
-                .anyRequest().hasAuthority("ADMIN"))
+                .anyRequest().hasRole("ADMIN"))
 
             // ★ログイン設定
             .formLogin(form -> form
@@ -99,7 +99,7 @@ public class SecurityConfig {
                 .requestMatchers("/uploads/**").permitAll()
                 // マイページ・お気に入り・レビューは USER 権限必須
                 // ADMIN はこれらのページにアクセスできない（403になる）
-                .requestMatchers("/mypage/**", "/favorite/**", "/review/**").hasAuthority("USER")
+                .requestMatchers("/mypage/**", "/favorite/**", "/review/**").hasRole("USER")
                 // 上記以外のURLはログイン済みであればアクセス可能
                 .anyRequest().authenticated())
 
@@ -130,9 +130,12 @@ public class SecurityConfig {
                 .deleteCookies("JSESSIONID"))
 
             // ★403処理: ADMINが /mypage/** など一般ユーザー専用ページにアクセスした場合
+            // accessDeniedPage はforward（メソッド引継ぎ）のため、POSTが405になる問題あり
+            // → sendRedirect でリダイレクトさせることでGETに統一する
             .exceptionHandling(ex -> ex
             	.authenticationEntryPoint(customAuthenticationEntryPoint)
-                .accessDeniedPage("/403")
+                .accessDeniedHandler((request, response, ex2) ->
+                    response.sendRedirect("/403"))
                 );
 
         return http.build();

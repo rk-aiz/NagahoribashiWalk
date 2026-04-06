@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class AboutController {
 
+    /**
+     * "このサイトについて"ページを表示
+     */
     @GetMapping("/about")
     public String showAbout() {
         return "about";

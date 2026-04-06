@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/admin :: layout(
         ${form.isNew ? 'スポット新規登録' : 'スポット編集'},
         ${form.isNew ? 'スポット新規登録' : 'スポット編集'},
-        ~{::main}
+        ~{}, ~{::main}
     )}" xml:lang="ja">
 
 <main th:fragment="content">
@@ -35,7 +35,8 @@
                             スポット名 <span class="text-danger">*</span>
                         </label>
                         <input type="text" id="spotName" th:field="*{spotName}" class="form-control"
-                            th:classappend="${#fields.hasErrors('spotName')} ? 'is-invalid'" placeholder="例：クリスタ長堀">
+                            th:classappend="${#fields.hasErrors('spotName')} ? 'is-invalid'"
+                            placeholder="例：キャルITカレッジ大阪校">
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('spotName')}" th:errors="*{spotName}">
                         </div>
                     </div>
@@ -49,11 +50,10 @@
                             <select id="subCategoryId" th:field="*{subCategoryId}" class="form-select"
                                 th:classappend="${#fields.hasErrors('subCategoryId')} ? 'is-invalid'">
                                 <option value="">カテゴリーを選択</option>
-                                <!--/* navCategories は GlobalModelAdvice が全ページに注入 */-->
-                                <th:block th:each="cat : ${navCategories}">
+                                <th:block th:each="cat : ${dropDownCategories}">
                                     <optgroup th:label="${cat.name}">
                                         <option th:each="sub : ${cat.subCategories}" th:value="${sub.id}"
-                                            th:text="${sub.name}">サブカテゴリ</option>
+                                            th:text="${cat.name + ' / ' + sub.name}">サブカテゴリ</option>
                                     </optgroup>
                                 </th:block>
                             </select>
@@ -73,7 +73,7 @@
                             住所 <span class="text-danger">*</span>
                         </label>
                         <input type="text" id="address" th:field="*{address}" class="form-control"
-                            placeholder="例：大阪府大阪市中央区南船場3-2-28">
+                            placeholder="例：〒542-0082 大阪府大阪市中央区島之内1-4-7 3階">
                     </div>
 
                     <!-- 営業時間 ＋ 定休日 -->
@@ -81,12 +81,12 @@
                         <div class="col-md-6">
                             <label for="businessHours" class="form-label fw-semibold">営業時間</label>
                             <input type="text" id="businessHours" th:field="*{businessHours}" class="form-control"
-                                placeholder="例：10:00-20:00">
+                                placeholder="例：8:30-18:00">
                         </div>
                         <div class="col-md-6">
                             <label for="closedDays" class="form-label fw-semibold">定休日</label>
                             <input type="text" id="closedDays" th:field="*{closedDays}" class="form-control"
-                                placeholder="例：月曜日、祝日">
+                                placeholder="例：土日、祝日">
                         </div>
                     </div>
 
@@ -94,7 +94,7 @@
                     <div class="mb-3">
                         <label for="keywords" class="form-label fw-semibold">キーワード</label>
                         <input type="text" id="keywords" th:field="*{keywords}" class="form-control"
-                            placeholder="例：ショッピング 地下街 雑貨">
+                            placeholder="例：Java, 職業訓練, IT, プログラミング">
                         <div class="form-text">カンマ区切りで複数入力できます。検索に使用されます。</div>
                     </div>
 

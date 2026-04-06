@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.example.nagahoribashi_walk.dto.CategoryDTO;
+import com.example.nagahoribashi_walk.dto.AdminCategoryRow;
 import com.example.nagahoribashi_walk.dto.NavCategory;
 
 /**
@@ -16,7 +16,12 @@ import com.example.nagahoribashi_walk.dto.NavCategory;
 @Mapper
 public interface CategoryMapper {
 
-    List<NavCategory> findAll();
+    Optional<NavCategory> findById(Long id);
 
-    Optional<CategoryDTO> findById(Long id);
+    List<NavCategory> findAllNavCategories();
+
+    List<NavCategory> findFlatAllNavCategories();
+
+    List<AdminCategoryRow> findAllForAdmin();
+
 }
