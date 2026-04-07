@@ -2,12 +2,16 @@ package com.example.nagahoribashi_walk.dto;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author 海津
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class NavCategory {
 
     /** 主キー */

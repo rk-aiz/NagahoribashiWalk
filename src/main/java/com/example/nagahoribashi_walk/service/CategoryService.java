@@ -5,12 +5,23 @@ import java.util.List;
 import com.example.nagahoribashi_walk.dto.AdminCategoryRow;
 import com.example.nagahoribashi_walk.dto.NavCategory;
 import com.example.nagahoribashi_walk.dto.SidebarDTO;
+import com.example.nagahoribashi_walk.entity.Category;
 
 /**
  * カテゴリ関連サービスのインターフェース
  */
 public interface CategoryService {
 
+    List<NavCategory> findAll();
+    
+    
+    //大谷記載
+    //追加
+    void insertCategory(Category category);
+
+    //削除
+    void deleteCategory(Long id);
+    
     /** IDからカテゴリ（閲覧系）を取得 */
     NavCategory getById(Long categoryId);
 
@@ -19,4 +30,5 @@ public interface CategoryService {
     SidebarDTO getSidebarDTO(Long categoryId);
 
     List<AdminCategoryRow> getAllAdminCategoryRows();
+    
 }
