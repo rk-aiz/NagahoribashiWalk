@@ -32,7 +32,7 @@ public interface UserMapper {
      * Userを新規保存する
      */
     void insert(User user);
-
+    
     /**
      * ソフトデリートを行う
      */
