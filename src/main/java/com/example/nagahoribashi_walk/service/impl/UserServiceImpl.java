@@ -66,8 +66,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateProfile(User user) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateProfile'");
+    	// 更新対象のユーザーを取得
+        User existingUser = userMapper.findByUsername(user.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("ユーザーが存在しません"));
+
+        // メールアドレスを変更する場合、他ユーザーと重複していないか確認
+        if (!existingUser.getEmail().equals(user.getEmail())
+                && userMapper.existsByEmail(user.getEmail())) {
+            throw new UserAlreadyExistsException("すでに登録されたメールアドレスです。");
+        }
+
+        // 更新対象に現在の値を反映
+        existingUser.setEmail(user.getEmail());
+        existingUser.setDisplayName(user.getDisplayName());
+
+        // 更新処理を実行
+        userMapper.updateProfile(existingUser);
     }
 
     @Override
