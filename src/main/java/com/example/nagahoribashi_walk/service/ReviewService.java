@@ -27,5 +27,13 @@ public interface ReviewService {
 	 * @param userId ログイン中のユーザーID
 	 */
 	void updateReview(Review review, Long userId);
+	
+	/**
+	 * レビューを削除する
+	 * 
+	 * @param reviewId レビューID
+	 * @param userId ログイン中のユーザーID
+	 */
+	void deleteReview(Long reviewId, Long userId);
 
 }

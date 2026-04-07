@@ -154,5 +154,49 @@ public class ReviewController {
         Review existingReview = reviewService.findById(reviewId);
         return "redirect:/spot/" + existingReview.getSpotId() + "#review-" + reviewId;
     }
+    
+    /**
+     * レビュー削除処理
+     * 
+     * @param reviewId 削除対象のレビューID
+     * @param loginUser ログインユーザー
+     * @param redirectAttributes リダイレクト先へ渡すメッセージ
+     * @return スポット詳細画面へのリダイレクト
+     */
+    @PostMapping("/reviews/{id}/delete")
+    public String deleteReview(
+            @PathVariable("id") Long reviewId,
+            @AuthenticationPrincipal LoginUser loginUser,
+            RedirectAttributes redirectAttributes) {
+
+        // 未ログインの場合は削除させない
+        if (loginUser == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "レビューを削除するにはログインが必要です。");
+            return "redirect:/";
+        }
+
+        // 削除後はレビュー自体が消えるので、先に spotId を取得しておく
+        Review existingReview = reviewService.findById(reviewId);
+
+        if (existingReview == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "対象のレビューが存在しません。");
+            return "redirect:/";
+        }
+
+        try {
+            // 削除処理を実行
+            reviewService.deleteReview(reviewId, loginUser.getId());
+
+            // 成功メッセージを設定
+            redirectAttributes.addFlashAttribute("message", "レビューを削除しました。");
+
+        } catch (IllegalArgumentException e) {
+            // エラーメッセージを設定
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+
+        // 元のスポット詳細画面へ戻す
+        return "redirect:/spot/" + existingReview.getSpotId();
+    }
 
 }
