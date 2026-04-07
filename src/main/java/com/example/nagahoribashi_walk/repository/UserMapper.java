@@ -32,7 +32,7 @@ public interface UserMapper {
      * Userを新規保存する
      */
     void insert(User user);
-
+    
     /**
      * ソフトデリートを行う
      */
@@ -72,5 +72,12 @@ public interface UserMapper {
             @Param("sort") String sort);
 
     long countAdminUsers();
+    
+    /**
+     * 管理者側ユーザー一覧検索用
+     */
+    List<AdminUserRow> searchAdminUsers(String keyword, int limit, long offset, String sort);
+
+    long countSearchAdminUsers(String keyword);
 
 }

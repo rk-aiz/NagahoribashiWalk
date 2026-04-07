@@ -104,6 +104,10 @@ public class SpotServiceImpl implements SpotService {
 	    	map.put("kana", toKatakana(kw));
 	    	keywordMapList.add(map);
 	    }
+	    
+	    
+
+	    
         // 空文字は一覧にフォールバック
         if (keyword == null || keyword.isBlank()) {
             return getPage(pageable);

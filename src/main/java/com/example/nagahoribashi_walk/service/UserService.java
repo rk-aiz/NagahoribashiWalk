@@ -28,14 +28,20 @@ public interface UserService {
      * プロフィールを更新する
      */
     void updateProfile(User user);
+    
+    /**
+     * ユーザー自身が退会する用
+     */
+    void unsubscribe(Long userId);
+    
 
     /**
-     * ユーザーの削除を行う
+     * (管理者用)ユーザーの削除を行う
      */
     void delete(String userName, String loginUsername);
 
     /**
-     * ユーザーの有効・無効を切り替える
+     * (管理者用)ユーザーの有効・無効を切り替える
      */
     void toggleEnabled(Long id);
     
@@ -45,5 +51,5 @@ public interface UserService {
     /**
      * ページネーション付きで管理者側がユーザー一覧を取得する
      */
-    Page<AdminUserRow> getAdminUserPage(Pageable pageable,String sort);
+    Page<AdminUserRow> getAdminUserPage(Pageable pageable,String sort,String keyword);
 }
