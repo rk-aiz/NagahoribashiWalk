@@ -32,6 +32,12 @@ public interface UserMapper {
      * Userを新規保存する
      */
     void insert(User user);
+    
+    /**
+     * Userを削除する
+     */
+    void deleteUser(long id);
+    
 
     /**
      * ソフトデリートを行う

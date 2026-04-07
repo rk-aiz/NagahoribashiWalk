@@ -76,7 +76,11 @@ public class UserServiceImpl implements UserService {
         // ユーザー取得
         userMapper.toggleEnabled(id);
     }
-
+    @Transactional
+    public void unsubscribe(Long userId) {
+        userMapper.softDelete(userId);
+    }
+    
     @Override
     public Page<AdminUserRow> getAdminUserPage(Pageable pageable, String sort) {
 
