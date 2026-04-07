@@ -30,30 +30,33 @@ public class AdminUserController {
 
     @GetMapping("/list")
     public String userList(
+    		@RequestParam(required=false)String keyword,
     		@RequestParam(defaultValue = "desc")String sort,
             @PageableDefault(size = 5) Pageable pageable,
             Model model) {
 
-        Page<AdminUserRow> page = userService.getAdminUserPage(pageable, sort);
+        Page<AdminUserRow> page = userService.getAdminUserPage(pageable, sort,keyword);
         
         model.addAttribute("page", page);
         model.addAttribute("sort", sort);
-
+        model.addAttribute("keyword",keyword);
         return "admin/user/list";
     }
 
     @PostMapping("/toggle")
     public String toggle(@RequestParam Long id,
+    		@RequestParam(required=false)String keyword,
     		@RequestParam int page,
     		@RequestParam String sort) {
     	
         userService.toggleEnabled(id);
-        return "redirect:/admin/user/list?page="+ page+ "&sort=" + sort;
+        return "redirect:/admin/user/list?page="+ page+ "&sort=" + sort+ "&keyword=" + keyword;
     }
 
     @PostMapping("/delete")
     public String delete(
     		@RequestParam("username") String username,
+    		@RequestParam(required=false)String keyword,
     		@RequestParam String sort,
     		@RequestParam int page,
     		@AuthenticationPrincipal LoginUser loginUser
@@ -61,6 +64,6 @@ public class AdminUserController {
 
         userService.delete(username, loginUser.getUsername());
 
-        return "redirect:/admin/user/list?page="+ page+ "&sort=" + sort;
+        return "redirect:/admin/user/list?page="+ page+ "&sort=" + sort+ "&keyword=" + keyword;
     }
 }
