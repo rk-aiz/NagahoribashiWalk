@@ -15,7 +15,7 @@ public interface ReviewMapper {
 	//投稿
 	void insert(Review review);
 
-	// レビューIDで1件取得
+	// レビューIDで1件取得 TODO : Optional<T>を使用
 	Review findById(@Param("id") Long id);
 
 	//編集

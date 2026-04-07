@@ -6,7 +6,9 @@ import jakarta.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.URL;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Spot登録・編集用のForm
@@ -14,11 +16,16 @@ import lombok.Data;
  * @author 海津
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SpotForm {
 
     // 新規登録か編集(更新)を判定する
     private boolean isNew;
 
+    // 主キー、新規登録の場合はNULL
+    private Long id;
+    
     // スポットの正式名称。画面上のタイトルとして使用
     @NotBlank(message = "スポット名を入力してください")
     @Size(max = 255, message = "スポット名は255文字以内で入力してください")
