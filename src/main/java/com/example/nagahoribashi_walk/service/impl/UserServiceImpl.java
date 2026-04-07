@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateProfile(User user) {
-    	// 更新対象のユーザーを取得
+        // 更新対象のユーザーを取得
         User existingUser = userMapper.findByUsername(user.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("ユーザーが存在しません"));
 
@@ -90,28 +90,29 @@ public class UserServiceImpl implements UserService {
         // ユーザー取得
         userMapper.toggleEnabled(id);
     }
+
     @Transactional
     public void unsubscribe(Long userId) {
         userMapper.softDelete(userId);
     }
-    
+
     @Override
-    public Page<AdminUserRow> getAdminUserPage(Pageable pageable, String sort,String keyword) {
+    public Page<AdminUserRow> getAdminUserPage(Pageable pageable, String sort, String keyword) {
 
-        long offset = (int) pageable.getOffset();
+        long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
+        String sortLowerCase = sort.toLowerCase();
 
-        List<AdminUserRow> list = userMapper.findAllForAdmin(pageSize, offset, sort);
+        List<AdminUserRow> list;
+        long total;
 
-        long total = userMapper.countAdminUsers();
-        
         if (keyword == null || keyword.isBlank()) {
             // 通常一覧
-            list = userMapper.findAllForAdmin(pageSize, offset, sort);
+            list = userMapper.findAllForAdmin(pageSize, offset, sortLowerCase);
             total = userMapper.countAdminUsers();
         } else {
             // 検索あり
-            list = userMapper.searchAdminUsers(keyword, pageSize, offset, sort);
+            list = userMapper.searchAdminUsers(keyword, pageSize, offset, sortLowerCase);
             total = userMapper.countSearchAdminUsers(keyword);
         }
 
