@@ -105,5 +105,54 @@ public class ReviewController {
         // 投稿後は詳細画面にリダイレクト
         return "redirect:/spot/" + spotId;
     }
+    
+    /**
+     * レビュー更新処理
+     * 
+     * @param reviewId 編集対象のレビューID
+     * @param reviewForm フォーム入力値
+     * @param loginUser ログインユーザー
+     * @param redirectAttributes リダイレクト先へ渡すメッセージ
+     * @return スポット詳細画面へのリダイレクト
+     */
+    @PostMapping("/reviews/{id}/update")
+    public String updateReview(
+            @PathVariable("id") Long reviewId,
+            ReviewForm reviewForm,
+            @AuthenticationPrincipal LoginUser loginUser,
+            RedirectAttributes redirectAttributes) {
+
+        // 未ログインの場合は更新させない
+        if (loginUser == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "レビューを更新するにはログインが必要です。");
+            return "redirect:/";
+        }
+
+        // 更新対象のレビュー情報を生成
+        Review review = new Review();
+
+        // 更新対象のレビューIDをセット
+        review.setId(reviewId);
+
+        // フォーム入力値をセット
+        review.setRating(reviewForm.getRating());
+        review.setComment(reviewForm.getComment());
+
+        try {
+            // 更新処理を実行
+            reviewService.updateReview(review, loginUser.getId());
+
+            // 更新後のメッセージ
+            redirectAttributes.addFlashAttribute("message", "レビューを更新しました。");
+
+        } catch (IllegalArgumentException e) {
+            // エラーメッセージを設定
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+
+        // 元レビューを取得して、スポット詳細へ戻す
+        Review existingReview = reviewService.findById(reviewId);
+        return "redirect:/spot/" + existingReview.getSpotId() + "#review-" + reviewId;
+    }
 
 }

@@ -47,5 +47,32 @@ public class ReviewServiceImpl implements ReviewService {
     public Review findById(Long reviewId) {
         return reviewMapper.findById(reviewId);
     }
+    
+    /**
+     * レビュー情報を更新する
+     * 
+     * @param review レビュー情報
+     * @param userId ログイン中のユーザーID
+     */
+    @Override
+    public void updateReview(Review review, Long userId) {
+
+        // 更新対象のレビューを取得
+        Review existingReview = reviewMapper.findById(review.getId());
+
+        // 自分のレビュー以外は更新させない
+        if (existingReview == null || !existingReview.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("他のユーザーのレビューは更新できません。");
+        }
+
+        // 更新条件に必要な userId をセット
+        review.setUserId(userId);
+
+        // spotId も update 条件に必要なので元データから引き継ぐ
+        review.setSpotId(existingReview.getSpotId());
+
+        // 更新処理を実行
+        reviewMapper.update(review);
+    }
 
 }
