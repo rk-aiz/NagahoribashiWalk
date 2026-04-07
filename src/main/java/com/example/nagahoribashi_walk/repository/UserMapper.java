@@ -34,12 +34,6 @@ public interface UserMapper {
     void insert(User user);
     
     /**
-     * Userを削除する
-     */
-    void deleteUser(long id);
-    
-
-    /**
      * ソフトデリートを行う
      */
     void softDelete(Long id);
