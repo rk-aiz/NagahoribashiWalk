@@ -324,11 +324,11 @@
 			ON s.id = sp.spot_id AND
 			sp.display_order = 1
 			LEFT JOIN (
-			SELECT spot_id, AVG(rating) AS
-			average_rating
-			FROM reviews
-			GROUP BY spot_id
-		) r ON r.spot_id = s.id
+			    SELECT spot_id, AVG(rating) AS
+			    average_rating
+			    FROM reviews
+			    GROUP BY spot_id
+		    ) r ON r.spot_id = s.id
 		INNER JOIN sub_categories sc ON
 			sc.id = s.sub_category_id
 		INNER JOIN
@@ -343,6 +343,58 @@
 	    <!-- スポット数のカウント -->
     <select id="countForAdmin" resultType="long">
         SELECT count(*) FROM spots
+    </select>
+
+    <!-- 管理者用キーワード検索 -->
+    <select id="findAllForAdminByKeyword"
+        resultType="com.example.nagahoribashi_walk.dto.AdminSpotRow">
+        SELECT
+            s.id,
+            s.spot_name,
+            sp.photo_url,
+            r.average_rating,
+            sc.name AS sub_category_name,
+            c.name AS category_name,
+            s.updated_at
+        FROM spots s
+        LEFT JOIN spot_photos sp ON s.id = sp.spot_id AND sp.display_order = 1
+        LEFT JOIN (
+            SELECT spot_id, AVG(rating) AS average_rating
+            FROM reviews
+            GROUP BY spot_id
+        ) r ON r.spot_id = s.id
+        INNER JOIN sub_categories sc ON sc.id = s.sub_category_id
+        INNER JOIN categories c ON c.id = sc.category_id
+        <where>
+            s.deleted_at IS NULL
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    s.spot_name LIKE CONCAT('%', #{keyword}, '%')
+                    OR c.name    LIKE CONCAT('%', #{keyword}, '%')
+                    OR s.address LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+        </where>
+        ORDER BY s.updated_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 管理者用キーワード検索件数 -->
+    <select id="countForAdminByKeyword" resultType="long">
+        SELECT count(*)
+        FROM spots s
+        INNER JOIN sub_categories sc ON sc.id = s.sub_category_id
+        INNER JOIN categories c ON c.id = sc.category_id
+        <where>
+            s.deleted_at IS NULL
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    s.spot_name LIKE CONCAT('%', #{keyword}, '%')
+                    OR c.name    LIKE CONCAT('%', #{keyword}, '%')
+                    OR s.address LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+        </where>
     </select>
 	
 	<!-- 大谷記載 -->

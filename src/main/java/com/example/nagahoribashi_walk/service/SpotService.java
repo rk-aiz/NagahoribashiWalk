@@ -29,6 +29,8 @@ public interface SpotService {
     
     Page<AdminSpotRow> getPageForAdmin(Pageable pageable);
 
+    Page<AdminSpotRow> searchForAdmin(String keyword, Pageable pageable);
+
     Page<SpotSummary> getPageByCategoryId(Long categoryId, Pageable pageable);
 
     Page<SpotSummary> getPageBySubCategoryId(Long SubcategoryId, Pageable pageable);

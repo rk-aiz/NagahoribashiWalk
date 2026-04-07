@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout/admin :: layout('レビュー管理', 'レビュー管理', ~{::style}, ~{::main})}" xml:lang="ja">
+
+<head>
+    <title>レビュー管理 - 長堀橋さんぽ 管理画面</title>
+    <style>
+        #reviewTable {
+            --bs-table-bg: transparent;
+            --bs-table-color: #1e293b;
+            --bs-table-border-color: #e2e8f0;
+        }
+
+        #reviewTable thead th {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #64748b;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        #reviewTable tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        #reviewTable tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .review-row:hover {
+            background-color: #f8fafc;
+        }
+
+        .comment-cell {
+            max-width: 380px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+
+<main th:fragment="content">
+    <div class="container" style="max-width: 1100px;">
+        <div class="admin-card">
+            <div class="p-4">
+
+                <!-- タイトル -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">
+                        レビュー一覧
+                        <span class="text-muted fw-normal fs-6"
+                            th:text="'（' + ${reviewPages.totalElements} + '件）'">（0件）</span>
+                    </h5>
+                </div>
+
+                <!-- ページネーション（上） -->
+                <div
+                    th:replace="~{fragments/pagination :: pagerSimple(${reviewPages}, '/admin/review/list', ${keyword}, 'my-3')}">
+                </div>
+
+                <!-- テーブル -->
+                <div class="table-responsive">
+                    <table class="table table-borderless align-middle mb-0 admin-table" id="reviewTable">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width: 60px;">ID</th>
+                                <th scope="col" style="width: 160px;">スポット名</th>
+                                <th scope="col" style="width: 100px;">投稿者</th>
+                                <th scope="col" style="width: 70px;">評価</th>
+                                <th scope="col">コメント</th>
+                                <th scope="col" style="width: 150px;">投稿日時</th>
+                                <th scope="col" style="width: 60px;" class="text-center">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="review : ${reviewPages.content}" class="review-row">
+
+                                <!-- ID -->
+                                <td class="text-secondary small" th:text="${review.id}">1</td>
+
+                                <!-- スポット名 -->
+                                <td class="fw-medium" th:text="${review.spotName}">スポット名</td>
+
+                                <!-- 投稿者 -->
+                                <td th:text="${review.userName}">投稿者</td>
+
+                                <!-- 評価 -->
+                                <td>
+                                    <i class="bi bi-star-fill text-warning" style="font-size: 0.8rem;"></i>
+                                    <span class="ms-1 small fw-semibold" th:text="${review.rating}">5</span>
+                                </td>
+
+                                <!-- コメント -->
+                                <td class="comment-cell small" th:text="${review.comment}">コメント内容</td>
+
+                                <!-- 投稿日時 -->
+                                <td class="text-secondary small"
+                                    th:text="${#temporals.format(review.createdAt, 'yyyy/MM/dd HH:mm')}">
+                                    2024/03/11 00:30
+                                </td>
+
+                                <!-- 操作（削除） -->
+                                <td class="text-center">
+                                    <form th:action="@{/admin/review/delete/{id}(id=${review.id})}" method="post"
+                                        onsubmit="return confirm('このレビューを削除しますか？');">
+                                        <button type="submit" class="btn btn-sm btn-link text-danger p-1"
+                                            title="削除">
+                                            <i class="bi bi-trash" style="font-size: 1rem;"></i>
+                                        </button>
+                                    </form>
+                                </td>
+
+                            </tr>
+
+                            <!-- データなし -->
+                            <tr th:if="${reviewPages.totalElements == 0}">
+                                <td colspan="7" class="text-center text-muted py-5">
+                                    <i class="bi bi-inbox d-block mb-2" style="font-size: 1.75rem;"></i>
+                                    レビューが投稿されていません
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ページネーション（下） -->
+                <div
+                    th:replace="~{fragments/pagination :: pagerSimple(${reviewPages}, '/admin/review/list', ${keyword}, 'mt-4')}">
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+</html>

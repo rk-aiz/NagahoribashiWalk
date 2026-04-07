@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.nagahoribashi_walk.entity.Spot;
@@ -32,12 +33,12 @@ public class AdminSpotController {
      */
     @GetMapping("/admin/spot/list")
     public String list(
-    		@PageableDefault(size = 12) Pageable pageable,
-    		Model model) {
+            @RequestParam(name = "keyword", defaultValue = "") String keyword,
+            @PageableDefault(size = 15) Pageable pageable,
+            Model model) {
 
-    	model.addAttribute("spots", 
-    			spotService.getPageForAdmin(pageable));
-    	
+        model.addAttribute("spotPages", spotService.searchForAdmin(keyword, pageable));
+        model.addAttribute("keyword", keyword);
         return "admin/spot/list";
     }
 
@@ -46,11 +47,11 @@ public class AdminSpotController {
      */
     @GetMapping("/admin/spot/new")
     public String showNew(Model model) {
-    	
-    	// 新規登録用にSpotFormを準備
+
+        // 新規登録用にSpotFormを準備
         SpotForm form = new SpotForm();
         form.setNew(true);
-        
+
         model.addAttribute("form", form);
         model.addAttribute("dropDownCategories",
                 categoryService.getAllAdminCategoryRows());
@@ -62,14 +63,14 @@ public class AdminSpotController {
      */
     @GetMapping("/admin/spot/edit/{spotId}")
     public String showEdit(
-    		@PathVariable("spotId") Long spotId,
-    		Model model) {
-    	
-    	// 編集用にSpotFormを準備
-    	SpotForm form = new SpotForm();
-    	Spot spot = spotService.getByIdForAdmin(spotId);
-    	BeanUtils.copyProperties(spot, form);
-        
+            @PathVariable("spotId") Long spotId,
+            Model model) {
+
+        // 編集用にSpotFormを準備
+        SpotForm form = new SpotForm();
+        Spot spot = spotService.getByIdForAdmin(spotId);
+        BeanUtils.copyProperties(spot, form);
+
         model.addAttribute("form", form);
         model.addAttribute("dropDownCategories",
                 categoryService.getAllAdminCategoryRows());
@@ -82,35 +83,34 @@ public class AdminSpotController {
      */
     @PostMapping("/admin/spot/add")
     public String register(
-    		@Validated SpotForm form,
-    		BindingResult bindingResult,
-    		RedirectAttributes redirectAttributes,
-    		Model model
-    		) {
-    	
-    	//バリデーションエラー
-    	if (bindingResult.hasErrors()) {
-    		return "/admin/spot/edit";
-    	}
-    	
-    	// FromをEntityに詰め替え
-    	Spot spot = new Spot();
-    	BeanUtils.copyProperties(form, spot);
-    	
-    	// 新規スポットインサート処理
-    	try { 
-    		spotService.addSpot(spot);
-    		redirectAttributes.addFlashAttribute("message", "新規スポットが登録されました。");
-    	} catch (DataIntegrityViolationException e) {
-    		
-    		// SQL ステートメントの実行が指定されたデータのマッピングに
-    		// 失敗したとき
-    		model.addAttribute("errorMessage", e.getLocalizedMessage());
-    		model.addAttribute("dropDownCategories",
+            @Validated SpotForm form,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes,
+            Model model) {
+
+        // バリデーションエラー
+        if (bindingResult.hasErrors()) {
+            return "/admin/spot/edit";
+        }
+
+        // FromをEntityに詰め替え
+        Spot spot = new Spot();
+        BeanUtils.copyProperties(form, spot);
+
+        // 新規スポットインサート処理
+        try {
+            spotService.addSpot(spot);
+            redirectAttributes.addFlashAttribute("message", "新規スポットが登録されました。");
+        } catch (DataIntegrityViolationException e) {
+
+            // SQL ステートメントの実行が指定されたデータのマッピングに
+            // 失敗したとき
+            model.addAttribute("errorMessage", e.getLocalizedMessage());
+            model.addAttribute("dropDownCategories",
                     categoryService.getAllAdminCategoryRows());
-    		model.addAttribute("form", form);
-    		return "/admin/spot/edit";
-    	}
+            model.addAttribute("form", form);
+            return "/admin/spot/edit";
+        }
 
         return "redirect:/admin/spot/list";
     }
@@ -120,34 +120,34 @@ public class AdminSpotController {
      */
     @PostMapping("/admin/spot/update")
     public String update(
-    		@Validated SpotForm form,
-    		BindingResult bindingResult,
-    		RedirectAttributes redirectAttributes,
-    		Model model) {
+            @Validated SpotForm form,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes,
+            Model model) {
 
-    	//バリデーションエラー
-    	if (bindingResult.hasErrors()) {
-    		return "/admin/spot/edit";
-    	}
-    	
-    	// FromをEntityに詰め替え
-    	Spot spot = new Spot();
-    	BeanUtils.copyProperties(form, spot);
-    	
-    	// スポットアップデート処理
-    	try { 
-    		spotService.updateSpot(spot);
-    		redirectAttributes.addFlashAttribute("message", "スポット情報が更新されました。");
-    	} catch (DataIntegrityViolationException e) {
-    		
-    		// SQL ステートメントの実行が指定されたデータのマッピングに
-    		// 失敗したとき
-    		model.addAttribute("errorMessage", e.getLocalizedMessage());
-    		model.addAttribute("dropDownCategories",
+        // バリデーションエラー
+        if (bindingResult.hasErrors()) {
+            return "/admin/spot/edit";
+        }
+
+        // FromをEntityに詰め替え
+        Spot spot = new Spot();
+        BeanUtils.copyProperties(form, spot);
+
+        // スポットアップデート処理
+        try {
+            spotService.updateSpot(spot);
+            redirectAttributes.addFlashAttribute("message", "スポット情報が更新されました。");
+        } catch (DataIntegrityViolationException e) {
+
+            // SQL ステートメントの実行が指定されたデータのマッピングに
+            // 失敗したとき
+            model.addAttribute("errorMessage", e.getLocalizedMessage());
+            model.addAttribute("dropDownCategories",
                     categoryService.getAllAdminCategoryRows());
-    		model.addAttribute("form", form);
-    		return "/admin/spot/edit";
-    	}
+            model.addAttribute("form", form);
+            return "/admin/spot/edit";
+        }
 
         return "redirect:/admin/spot/list";
     }
