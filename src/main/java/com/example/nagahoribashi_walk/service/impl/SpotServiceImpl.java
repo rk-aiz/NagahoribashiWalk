@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.nagahoribashi_walk.dto.AdminSpotRow;
 import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
 import com.example.nagahoribashi_walk.entity.Spot;
@@ -180,6 +181,22 @@ public class SpotServiceImpl implements SpotService {
         }
 
         return spotDetail;
+    }
+    
+    /**
+     * 【管理者】ページに対応したスポット一覧を返す
+     */
+    @Override
+    public Page<AdminSpotRow> getPageForAdmin(Pageable pageable) {
+
+        // スポットの総数を取得する
+        long total = spotMapper.count();
+
+        // 対象ページに対応したスポットを取得する
+        List<AdminSpotRow> spots = spotMapper.findAllForAdmin(pageable.getOffset(), pageable.getPageSize());
+
+        // Page<T>インスタンスに詰めて返す
+        return new PageImpl<>(spots, pageable, total);
     }
 
     @Override
