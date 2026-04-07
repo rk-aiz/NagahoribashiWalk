@@ -15,12 +15,15 @@ public interface ReviewMapper {
 	//投稿
 	void insert(Review review);
 
+	// レビューIDで1件取得
+	Review findById(@Param("id") Long id);
+
 	//編集
 	int update(Review review);
 
 	//削除
 	void delete(@Param("userId") Long userId, @Param("spotId") Long spotId);
-	
+
 	/**
 	 * 指定したユーザーが指定したスポットにレビュー投稿済みか確認する
 	 *

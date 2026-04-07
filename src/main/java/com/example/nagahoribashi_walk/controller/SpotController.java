@@ -125,15 +125,18 @@ public class SpotController {
     /**
      * スポット詳細画面を表示する
      * 
-     * @param loginUser ログインユーザー情報（未ログイン時はnull）
-     * @param spotId    スポットID
-     * @param model     モデル
+     * @param loginUser    ログインユーザー情報（未ログイン時はnull）
+     * @param spotId       スポットID
+     * @param editReviewId 編集中のレビューID
+     * @param model        モデル
      * @return スポット詳細画面のパス
      */
     @GetMapping("/spot/{spotId}")
     public String detail(
             @AuthenticationPrincipal LoginUser loginUser,
-            @PathVariable("spotId") Long spotId, Model model) {
+            @PathVariable("spotId") Long spotId,
+            @RequestParam(name = "editReviewId", required = false) Long editReviewId,
+            Model model) {
 
         Long loginUserId = null;
 
@@ -148,8 +151,12 @@ public class SpotController {
             model.addAttribute("isFavorite", false);
         }
 
+        // スポット詳細情報を画面へ渡す
         model.addAttribute("spotDetail",
                 spotService.findById(spotId, loginUserId));
+
+        // どのレビューを編集中かを画面へ渡す
+        model.addAttribute("editReviewId", editReviewId);
 
         return "spot/detail";
     }
