@@ -37,6 +37,21 @@
 		SELECT COUNT(*) FROM reviews
 	</select>
 
+	<!-- レビューIDでレビューを1件取得 -->
+	<select id="findById"
+		resultType="com.example.nagahoribashi_walk.entity.Review">
+		SELECT
+		id,
+		user_id,
+		spot_id,
+		rating,
+		comment,
+		created_at,
+		updated_at
+		FROM reviews
+		WHERE id = #{id}
+	</select>
+
 	<!--【insert】レビュー投稿　 -->
 	<insert id="insert"
 		parameterType="com.example.nagahoribashi_walk.entity.Review">

@@ -37,4 +37,15 @@ public class ReviewServiceImpl implements ReviewService {
         reviewMapper.insert(review);
     }
 
+    /**
+     * レビューIDに対応するレビューを1件取得する
+     * 
+     * @param reviewId レビューID
+     * @return レビュー情報
+     */
+    @Override
+    public Review findById(Long reviewId) {
+        return reviewMapper.findById(reviewId);
+    }
+
 }

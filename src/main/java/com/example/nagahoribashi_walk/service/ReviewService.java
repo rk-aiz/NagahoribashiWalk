@@ -11,4 +11,12 @@ public interface ReviewService {
 	 * @param username ログイン中のユーザー名
 	 */
 	void addReview(Review review, Long userId);
+	
+	/**
+	 * レビューIDに対応するレビューを1件取得する
+	 * 
+	 * @param reviewId レビューID
+	 * @return レビュー情報
+	 */
+	Review findById(Long reviewId);
 }

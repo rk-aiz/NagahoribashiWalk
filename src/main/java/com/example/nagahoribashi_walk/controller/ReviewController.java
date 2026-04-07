@@ -2,6 +2,8 @@ package com.example.nagahoribashi_walk.controller;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -23,6 +25,44 @@ import lombok.RequiredArgsConstructor;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    
+    /**
+     * レビュー編集画面を表示する
+     * 
+     * @param reviewId 編集対象のレビューID
+     * @param loginUser ログインユーザー
+     * @param model モデル
+     * @param redirectAttributes リダイレクト先へ渡すメッセージ
+     * @return レビュー編集画面、またはスポット詳細画面へのリダイレクト
+     */
+    @GetMapping("/reviews/{id}/edit")
+    public String editReviewForm(
+            @PathVariable("id") Long reviewId,
+            @AuthenticationPrincipal LoginUser loginUser,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+
+        // 未ログインの場合は編集させない
+        if (loginUser == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "レビューを編集するにはログインが必要です。");
+            return "redirect:/";
+        }
+
+        // 編集対象のレビューを取得
+        Review review = reviewService.findById(reviewId);
+
+        // 自分のレビュー以外は編集させない
+        if (!review.getUserId().equals(loginUser.getId())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "他のユーザーのレビューは編集できません。");
+            return "redirect:/spot/" + review.getSpotId();
+        }
+
+        // 画面表示用にレビュー情報を渡す
+        model.addAttribute("review", review);
+
+        // レビュー編集画面を表示
+        return "review/edit";
+    }
 
     /**
      * レビュー投稿処理
