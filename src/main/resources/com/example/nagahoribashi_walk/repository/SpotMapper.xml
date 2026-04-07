@@ -91,48 +91,48 @@
 		sc.name AS sub_category_name,
 		s.keywords
 		FROM spots s
-	    LEFT JOIN sub_categories sc ON s.sub_category_id = sc.id
-	    LEFT JOIN categories c      ON sc.category_id = c.id
-	    LEFT JOIN spot_photos sp
-	        ON s.id = sp.spot_id AND sp.display_order = 1
-	    LEFT JOIN (
-	        SELECT spot_id, AVG(rating) AS average_rating
-	        FROM reviews
-	        GROUP BY spot_id
-	    ) r ON r.spot_id = s.id
-	    <where>
-        s.deleted_at IS NULL
+		LEFT JOIN sub_categories sc ON s.sub_category_id = sc.id
+		LEFT JOIN categories c ON sc.category_id = c.id
+		LEFT JOIN spot_photos sp
+		ON s.id = sp.spot_id AND sp.display_order = 1
+		LEFT JOIN (
+		SELECT spot_id, AVG(rating) AS average_rating
+		FROM reviews
+		GROUP BY spot_id
+		) r ON r.spot_id = s.id
+		<where>
+			s.deleted_at IS NULL
 
-        <if test="keywordList != null and keywordList.size() > 0">
-            <foreach collection="keywordList" item="k">
-                AND (
-                    s.spot_name LIKE CONCAT('%', #{k.origin}, '%')
-                    OR 
-                    s.keywords LIKE CONCAT('%', #{k.origin}, '%')
-                    OR
-                    s.details LIKE CONCAT('%', #{k.origin}, '%') 
-                    OR
-                    s.spot_name LIKE CONCAT('%', #{k.hira}, '%')
-                    OR 
-                    s.keywords LIKE CONCAT('%', #{k.hira}, '%')
-                    OR
-                    s.details LIKE CONCAT('%', #{k.hira}, '%')
-                    OR  
-                    s.spot_name LIKE CONCAT('%', #{k.kana}, '%')
-                    OR 
-                    s.keywords LIKE CONCAT('%', #{k.kana}, '%')
-                    OR
-                    s.details LIKE CONCAT('%', #{k.kana}, '%')
-                )
-            </foreach>
-        </if>
+			<if test="keywordList != null and keywordList.size() > 0">
+				<foreach collection="keywordList" item="k">
+					AND (
+					s.spot_name LIKE CONCAT('%', #{k.origin}, '%')
+					OR
+					s.keywords LIKE CONCAT('%', #{k.origin}, '%')
+					OR
+					s.details LIKE CONCAT('%', #{k.origin}, '%')
+					OR
+					s.spot_name LIKE CONCAT('%', #{k.hira}, '%')
+					OR
+					s.keywords LIKE CONCAT('%', #{k.hira}, '%')
+					OR
+					s.details LIKE CONCAT('%', #{k.hira}, '%')
+					OR
+					s.spot_name LIKE CONCAT('%', #{k.kana}, '%')
+					OR
+					s.keywords LIKE CONCAT('%', #{k.kana}, '%')
+					OR
+					s.details LIKE CONCAT('%', #{k.kana}, '%')
+					)
+				</foreach>
+			</if>
 
-    </where>
+		</where>
 
-    ORDER BY r.average_rating DESC NULLS LAST
-    LIMIT #{limit} OFFSET #{offset}
-</select>
-	
+		ORDER BY r.average_rating DESC NULLS LAST
+		LIMIT #{limit} OFFSET #{offset}
+	</select>
+
 	<!-- 検索時のスポット数のカウント -->
 	<select id="countByKeywords" resultType="long">
     SELECT count(*) FROM spots s
@@ -188,23 +188,24 @@
 		WHERE (sub_category_id = #{subCategoryId}) AND (deleted_at
 		IS NULL)
 	</select>
-    
-    <!-- トップページおすすめ-->
-    <select id="findRecommendedSpots" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
-        SELECT
-			s.id,
-			s.spot_name, 
-			sp.photo_url,
-			r.average_rating, 
-			sc.name AS sub_category_name,
-			c.name AS category_name,
-			s.keywords
-        FROM spots s
-        LEFT JOIN LATERAL (
-  			SELECT * FROM spot_photos
-            WHERE spot_id = s.id
-            ORDER BY created_at DESC
-            LIMIT 1
+
+	<!-- トップページおすすめ -->
+	<select id="findRecommendedSpots"
+		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
+		SELECT
+		s.id,
+		s.spot_name,
+		sp.photo_url,
+		r.average_rating,
+		sc.name AS sub_category_name,
+		c.name AS category_name,
+		s.keywords
+		FROM spots s
+		LEFT JOIN LATERAL (
+		SELECT * FROM spot_photos
+		WHERE spot_id = s.id
+		ORDER BY created_at DESC
+		LIMIT 1
 		) sp ON true
 		LEFT JOIN (
 		SELECT
@@ -214,43 +215,52 @@
 		GROUP BY spot_id
 		) r
 		ON r.spot_id = s.id
-		LEFT JOIN sub_categories sc ON sc.id
+		LEFT JOIN
+		sub_categories sc ON sc.id
 		=
 		s.sub_category_id
-		LEFT JOIN categories c ON c.id = sc.category_id
+		LEFT JOIN categories c ON
+		c.id = sc.category_id
 		WHERE
 		s.deleted_at IS NULL
-		ORDER BY average_rating DESC NULLS LAST
+		ORDER BY average_rating
+		DESC NULLS LAST
 		LIMIT 3
 	</select>
 
-	<!-- 全スポットの平均評価（小数第1位）-->
+	<!-- 全スポットの平均評価（小数第1位） -->
 	<select id="findAverageRatingAll" resultType="java.lang.Double">
-		SELECT ROUND(AVG(r.rating)::NUMERIC, 1)
+		SELECT
+		ROUND(AVG(r.rating)::NUMERIC, 1)
 		FROM reviews r
-		INNER JOIN spots s ON r.spot_id = s.id
+		INNER JOIN spots s ON
+		r.spot_id = s.id
 		WHERE s.deleted_at IS NULL
 	</select>
 
 	<!-- 最近登録されたスポットをN件取得 -->
-	<select id="findRecent" resultType="com.example.nagahoribashi_walk.dto.AdminSpotRow">
+	<select id="findRecent"
+		resultType="com.example.nagahoribashi_walk.dto.AdminSpotRow">
 		SELECT
-			s.id,
-			s.spot_name,
-			sp.photo_url,
-			r.average_rating,
-			sc.name AS sub_category_name,
-			c.name AS category_name,
-			s.updated_at
+		s.id,
+		s.spot_name,
+		sp.photo_url,
+		r.average_rating,
+		sc.name AS sub_category_name,
+		c.name AS category_name,
+		s.updated_at
 		FROM spots s
-		LEFT JOIN spot_photos sp ON s.id = sp.spot_id AND sp.display_order = 1
+		LEFT JOIN spot_photos sp ON s.id = sp.spot_id AND
+		sp.display_order = 1
 		LEFT JOIN (
-			SELECT spot_id, AVG(rating) AS average_rating
-			FROM reviews
-			GROUP BY spot_id
+		SELECT spot_id, AVG(rating) AS average_rating
+		FROM reviews
+		GROUP BY spot_id
 		) r ON r.spot_id = s.id
-		INNER JOIN sub_categories sc ON sc.id = s.sub_category_id
-		INNER JOIN categories c ON c.id = sc.category_id
+		INNER JOIN sub_categories sc ON
+		sc.id = s.sub_category_id
+		INNER JOIN categories c ON c.id =
+		sc.category_id
 		WHERE s.deleted_at IS NULL
 		ORDER BY s.created_at DESC
 		LIMIT #{limit}
@@ -415,74 +425,70 @@
 	<!-- SpotDetail を findById 1本で取得 -->
 	<select id="findById" resultMap="SpotDetailMap">
 		SELECT
-		<!-- SpotDetail 本体 -->
 		s.id AS spot_id,
 		s.spot_name AS spotName,
 		r.user_id,
-		s.details AS
-		details,
+		s.details AS details,
 		s.business_hours AS businessHours,
-		s.estimated_budget AS
-		estimatedBudget,
+		s.estimated_budget AS estimatedBudget,
 		s.address AS address,
 		s.gmap_url AS gmapUrl,
 		s.website_url AS websiteUrl,
 		s.keywords,
 		c.name AS categoryName,
-		sc.name
-		AS subCategoryName,
+		sc.name AS subCategoryName,
 
-		<!-- レビュー統計 -->
 		stats.avg_rating AS averageRating,
 		stats.review_count AS reviewCount,
 
-		<!-- ReviewDTO 用 -->
 		r.id AS review_id,
 		r.comment AS comment,
 		u.display_name AS reviewerName,
 		r.created_at AS reviewDate,
 		r.rating AS rating,
 
-		<!-- SpotPhotoDTO 用 -->
 		sp.id AS photo_id,
 		sp.photo_url AS photoUrl,
-		sp.display_order AS
-		displayOrder
+		sp.display_order AS displayOrder
 
 		FROM spots s
 
 		LEFT JOIN sub_categories sc
-		ON
-		s.sub_category_id = sc.id
+		ON s.sub_category_id = sc.id
 
 		LEFT JOIN categories c
-		ON sc.category_id =
-		c.id
+		ON sc.category_id = c.id
 
 		LEFT JOIN (
 		SELECT
-		spot_id,
-		AVG(rating) AS avg_rating,
-		COUNT(id) AS
-		review_count
-		FROM reviews
-		GROUP BY spot_id
+		r.spot_id,
+		AVG(r.rating) AS avg_rating,
+		COUNT(r.id) AS review_count
+		FROM reviews r
+		INNER JOIN users u
+		ON r.user_id = u.id
+		WHERE u.deleted_at IS NULL
+		GROUP BY r.spot_id
 		) stats
 		ON s.id = stats.spot_id
 
-		LEFT JOIN reviews r
+		LEFT JOIN (
+		SELECT r.*
+		FROM reviews r
+		INNER JOIN users u
+		ON r.user_id = u.id
+		WHERE u.deleted_at IS NULL
+		) r
 		ON s.id = r.spot_id
 
 		LEFT JOIN users u
-		ON r.user_id =
-		u.id
+		ON r.user_id = u.id
 
 		LEFT JOIN spot_photos sp
 		ON s.id = sp.spot_id
 
 		WHERE s.id = #{id}
-		AND
-		s.deleted_at IS NULL
+		AND s.deleted_at IS NULL
 
 		ORDER BY r.created_at DESC, sp.display_order ASC
 	</select>

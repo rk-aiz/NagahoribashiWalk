@@ -34,6 +34,12 @@ public interface UserMapper {
     void insert(User user);
     
     /**
+     * @author 池田
+     * プロフィールを更新する
+     */
+    void updateProfile(User user);
+    
+    /**
      * ソフトデリートを行う
      */
     void softDelete(Long id);
