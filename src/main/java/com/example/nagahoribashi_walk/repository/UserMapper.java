@@ -33,13 +33,12 @@ public interface UserMapper {
      */
     void insert(User user);
     
-    
     /**
      * @author 池田
      * プロフィールを更新する
      */
     void updateProfile(User user);
-
+    
     /**
      * ソフトデリートを行う
      */
@@ -79,5 +78,12 @@ public interface UserMapper {
             @Param("sort") String sort);
 
     long countAdminUsers();
+    
+    /**
+     * 管理者側ユーザー一覧検索用
+     */
+    List<AdminUserRow> searchAdminUsers(String keyword, int limit, long offset, String sort);
+
+    long countSearchAdminUsers(String keyword);
 
 }

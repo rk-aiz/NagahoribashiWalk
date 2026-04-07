@@ -6,10 +6,9 @@
 	<select id="findByUsername"
 		resultType="com.example.nagahoribashi_walk.entity.User">
 		SELECT id, username, password, email, role, display_name,
-		deleted_at, created_at, updated_at, enabled
+			deleted_at, created_at, updated_at, enabled
 		FROM users
-		WHERE username =
-		#{username} AND deleted_at IS NULL
+		WHERE username = #{username} AND deleted_at IS NULL
 	</select>
 
 	<!-- ユーザープロファイル取得 -->
@@ -17,16 +16,15 @@
 		resultType="com.example.nagahoribashi_walk.dto.UserProfile">
 		SELECT id, username, email, display_name, created_at
 		FROM
-		users
-		WHERE username = #{username} AND deleted_at IS NULL AND enabled =
-		true
+			users
+		WHERE username = #{username} AND deleted_at IS NULL AND enabled = true
 	</select>
 
 	<!-- ページネーション付き取得 -->
 	<select id="findAll"
 		resultType="com.example.nagahoribashi_walk.entity.User">
 		SELECT id, username, password, email, role, display_name, deleted_at,
-		created_at, updated_at, enabled
+			created_at, updated_at, enabled
 		FROM users
 		LIMIT #{limit} OFFSET #{offset}
 	</select>
@@ -34,17 +32,17 @@
 	<!-- ユーザーの新規追加 -->
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO users (
-		username,
-		password,
-		email,
-		role,
-		display_name
+			username,
+			password,
+			email,
+			role,
+			display_name
 		) VALUES (
-		#{username},
-		#{password},
-		#{email},
-		#{role},
-		#{displayName}
+			#{username},
+			#{password},
+			#{email},
+			#{role},
+			#{displayName}
 		)
 	</insert>
 
@@ -115,7 +113,48 @@
 	<update id="toggleEnabled">
 		UPDATE users
 		SET enabled = NOT enabled
-		WHERE id = #{id}
-	</update>
+        WHERE id = #{id}
+    </update>
+    
+    <!-- 管理者用ユーザー検索 -->
+	<select id="searchAdminUsers" resultType="com.example.nagahoribashi_walk.dto.AdminUserRow">
+	    SELECT
+	        id,
+	        username,
+	        display_name AS displayName,
+	        email,
+	        role,
+	        created_at AS createdAt,
+	        updated_at AS updatedAt,
+	        enabled
+	    FROM users
+	    WHERE deleted_at IS NULL
+	      AND (
+	            username LIKE CONCAT('%', #{keyword}, '%')
+	         OR email LIKE CONCAT('%', #{keyword}, '%')
+	         OR display_name LIKE CONCAT('%', #{keyword}, '%')
+	      )
+	    ORDER BY id
+	    <choose>
+	        <when test="sort == 'asc'">
+	            ASC
+	        </when>
+	        <otherwise>
+	            DESC
+	        </otherwise>
+	    </choose>
+	    LIMIT #{limit} OFFSET #{offset}
+	</select>
+
+	<select id="countSearchAdminUsers" resultType="long">
+	    SELECT COUNT(*)
+	    FROM users
+	    WHERE deleted_at IS NULL
+	      AND (
+	            username LIKE CONCAT('%', #{keyword}, '%')
+	         OR email LIKE CONCAT('%', #{keyword}, '%')
+	         OR display_name LIKE CONCAT('%', #{keyword}, '%')
+	      )
+	</select>
 
 </mapper>
