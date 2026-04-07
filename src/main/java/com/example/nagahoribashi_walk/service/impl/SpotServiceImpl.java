@@ -208,4 +208,12 @@ public class SpotServiceImpl implements SpotService {
     public void updateSpot(Spot spot) {
         spotMapper.update(spot);
     }
+    
+    /**
+     * 【管理者】スポットをIDから取得する
+     */
+    @Override
+    public Spot getByIdForAdmin(Long spotId) {
+        return spotMapper.findByIdForAdmin(spotId).orElseThrow();
+    }
 }

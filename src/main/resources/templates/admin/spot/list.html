@@ -124,7 +124,7 @@
                                         <i class="bi bi-eye" style="font-size: 1rem;"></i>
                                     </a>
                                     <!--/* 編集画面へ。コントローラー側で ?id= を受け取るよう実装要 */-->
-                                    <a th:href="@{/admin/spot/edit(id=${spot.id})}"
+                                    <a th:href="@{/admin/spot/edit/{id}(id=${spot.id})}"
                                        class="btn btn-sm btn-link p-1" style="color: #3b82f6;" title="編集">
                                         <i class="bi bi-pencil-square" style="font-size: 1rem;"></i>
                                     </a>

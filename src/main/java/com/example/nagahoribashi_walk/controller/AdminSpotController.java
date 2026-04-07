@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -59,8 +60,19 @@ public class AdminSpotController {
     /**
      * 管理者用スポット更新画面
      */
-    @GetMapping("/admin/spot/edit")
-    public String showEdit() {
+    @GetMapping("/admin/spot/edit/{spotId}")
+    public String showEdit(
+    		@PathVariable("spotId") Long spotId,
+    		Model model) {
+    	
+    	// 編集用にSpotFormを準備
+    	SpotForm form = new SpotForm();
+    	Spot spot = spotService.getByIdForAdmin(spotId);
+    	BeanUtils.copyProperties(spot, form);
+        
+        model.addAttribute("form", form);
+        model.addAttribute("dropDownCategories",
+                categoryService.getAllAdminCategoryRows());
 
         return "admin/spot/edit";
     }
@@ -106,8 +118,36 @@ public class AdminSpotController {
     /**
      * スポット更新
      */
-    @PostMapping("/admin/spot/edit")
-    public String update() {
+    @PostMapping("/admin/spot/update")
+    public String update(
+    		@Validated SpotForm form,
+    		BindingResult bindingResult,
+    		RedirectAttributes redirectAttributes,
+    		Model model) {
+
+    	//バリデーションエラー
+    	if (bindingResult.hasErrors()) {
+    		return "/admin/spot/edit";
+    	}
+    	
+    	// FromをEntityに詰め替え
+    	Spot spot = new Spot();
+    	BeanUtils.copyProperties(form, spot);
+    	
+    	// スポットアップデート処理
+    	try { 
+    		spotService.updateSpot(spot);
+    		redirectAttributes.addFlashAttribute("message", "スポット情報が更新されました。");
+    	} catch (DataIntegrityViolationException e) {
+    		
+    		// SQL ステートメントの実行が指定されたデータのマッピングに
+    		// 失敗したとき
+    		model.addAttribute("errorMessage", e.getLocalizedMessage());
+    		model.addAttribute("dropDownCategories",
+                    categoryService.getAllAdminCategoryRows());
+    		model.addAttribute("form", form);
+    		return "/admin/spot/edit";
+    	}
 
         return "redirect:/admin/spot/list";
     }

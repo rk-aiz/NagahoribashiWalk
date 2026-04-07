@@ -35,4 +35,9 @@ public interface SpotService {
 
     SpotDetail findById(Long id, Long loginUserId);
 
+	/**
+	 * 【管理者】スポットをIDから取得する
+	 */
+	Spot getByIdForAdmin(Long spotId);
+
 }
