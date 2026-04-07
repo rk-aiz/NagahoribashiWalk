@@ -168,7 +168,7 @@
 	
     <!-- スポット数のカウント -->
     <select id="count" resultType="long">
-        SELECT count(*) FROM spots
+        SELECT count(*) FROM spots WHERE deleted_at IS NULL
     </select>
     
     	<!-- 大谷記載箇所 -->
@@ -257,48 +257,85 @@
 	</select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
-		INSERT
-		INTO spots (
-		spot_name,
-		sub_category_id,
-		address,
-		business_hours,
-		closed_days,
-		estimated_budget,
-		details,
-		website_url,
-		gmap_url,
-		keywords
-		)
-		VALUES (
-		#{spotName},
-		#{subCategoryId},
-		#{address},
-		#{businessHours},
-		#{closedDays},
-		#{estimatedBudget},
-		#{details},
-		#{websiteUrl},
-		#{gmapUrl},
-		#{keywords}
+		INSERT INTO spots (
+			spot_name,
+			sub_category_id,
+			address,
+			business_hours,
+			closed_days,
+			estimated_budget,
+			details,
+			website_url,
+			gmap_url,
+			keywords
+		) VALUES (
+			#{spotName},
+			#{subCategoryId},
+			#{address},
+			#{businessHours},
+			#{closedDays},
+			#{estimatedBudget},
+			#{details},
+			#{websiteUrl},
+			#{gmapUrl},
+			#{keywords}
 		);
 	</insert>
 
 	<update id="update">
 		UPDATE spots
-		SET spot_name = #{spotName},
-		sub_category_id = #{subCategoryId},
-		address = #{address},
-		business_hours = #{businessHours},
-		closed_days = #{closedDays},
-		estimated_budget = #{estimatedBudget},
-		details = #{details},
-		website_url = #{websiteUrl},
-		gmap_url = #{gmapUrl},
-		keywords =
-		#{keywords}
+		SET 
+			spot_name = #{spotName},
+			sub_category_id = #{subCategoryId},
+			address = #{address},
+			business_hours = #{businessHours},
+			closed_days = #{closedDays},
+			estimated_budget = #{estimatedBudget},
+			details = #{details},
+			website_url = #{websiteUrl},
+			gmap_url = #{gmapUrl},
+			keywords = #{keywords}
 		WHERE id = #{id}
 	</update>
+	
+		<!-- ページネーション付き取得 -->
+	<select id="findAllForAdmin"
+		resultType="com.example.nagahoribashi_walk.dto.AdminSpotRow">
+		SELECT
+			s.id,
+			s.spot_name,
+			sp.photo_url,
+			r.average_rating,
+			sc.name AS sub_category_name,
+			c.name AS category_name,
+			s.updated_at
+			FROM
+			spots s
+			LEFT JOIN spot_photos sp
+			ON s.id = sp.spot_id AND
+			sp.display_order = 1
+			LEFT JOIN (
+			SELECT spot_id, AVG(rating) AS
+			average_rating
+			FROM reviews
+			GROUP BY spot_id
+		) r ON r.spot_id = s.id
+		INNER JOIN sub_categories sc ON
+			sc.id = s.sub_category_id
+		INNER JOIN
+			categories c ON c.id =
+			sc.category_id
+		WHERE s.deleted_at IS NULL
+		ORDER BY
+			s.updated_at DESC
+		LIMIT #{limit} OFFSET #{offset}
+	</select>
+	
+	    <!-- スポット数のカウント -->
+    <select id="countForAdmin" resultType="long">
+        SELECT count(*) FROM spots
+    </select>
+	
 	<!-- 大谷記載 -->
 	<select id="findByCategoryId"
 		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">

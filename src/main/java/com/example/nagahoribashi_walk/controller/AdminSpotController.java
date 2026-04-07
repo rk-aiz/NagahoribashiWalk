@@ -1,10 +1,18 @@
 package com.example.nagahoribashi_walk.controller;
 
+import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.nagahoribashi_walk.entity.Spot;
 import com.example.nagahoribashi_walk.form.SpotForm;
 import com.example.nagahoribashi_walk.service.CategoryService;
 import com.example.nagahoribashi_walk.service.SpotService;
@@ -22,8 +30,13 @@ public class AdminSpotController {
      * 管理者用スポット一覧画面
      */
     @GetMapping("/admin/spot/list")
-    public String list() {
+    public String list(
+    		@PageableDefault(size = 12) Pageable pageable,
+    		Model model) {
 
+    	model.addAttribute("spots", 
+    			spotService.getPageForAdmin(pageable));
+    	
         return "admin/spot/list";
     }
 
@@ -32,8 +45,11 @@ public class AdminSpotController {
      */
     @GetMapping("/admin/spot/new")
     public String showNew(Model model) {
+    	
+    	// 新規登録用にSpotFormを準備
         SpotForm form = new SpotForm();
         form.setNew(true);
+        
         model.addAttribute("form", form);
         model.addAttribute("dropDownCategories",
                 categoryService.getAllAdminCategoryRows());
@@ -52,8 +68,37 @@ public class AdminSpotController {
     /**
      * スポット新規登録
      */
-    @PostMapping("/admin/spot/new")
-    public String register() {
+    @PostMapping("/admin/spot/add")
+    public String register(
+    		@Validated SpotForm form,
+    		BindingResult bindingResult,
+    		RedirectAttributes redirectAttributes,
+    		Model model
+    		) {
+    	
+    	//バリデーションエラー
+    	if (bindingResult.hasErrors()) {
+    		return "/admin/spot/edit";
+    	}
+    	
+    	// FromをEntityに詰め替え
+    	Spot spot = new Spot();
+    	BeanUtils.copyProperties(form, spot);
+    	
+    	// 新規スポットインサート処理
+    	try { 
+    		spotService.addSpot(spot);
+    		redirectAttributes.addFlashAttribute("message", "新規スポットが登録されました。");
+    	} catch (DataIntegrityViolationException e) {
+    		
+    		// SQL ステートメントの実行が指定されたデータのマッピングに
+    		// 失敗したとき
+    		model.addAttribute("errorMessage", e.getLocalizedMessage());
+    		model.addAttribute("dropDownCategories",
+                    categoryService.getAllAdminCategoryRows());
+    		model.addAttribute("form", form);
+    		return "/admin/spot/edit";
+    	}
 
         return "redirect:/admin/spot/list";
     }

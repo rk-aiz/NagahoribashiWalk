@@ -47,7 +47,8 @@ public interface SpotMapper {
 
     // findImagesBySpotId
 
-    // findAllForAdmin
+    List<AdminSpotRow> findAllForAdmin(
+    		@Param("offset") long offset, @Param("limit") int limit);
 
     void insert(Spot spot);
 

@@ -24,7 +24,7 @@
                     新しい観光スポットの情報を入力してください
                 </p>
 
-                <form th:action="${form.isNew ? '/admin/spot/new' : '/admin/spot/edit'}" th:object="${form}"
+                <form th:action="${form.isNew ? '/admin/spot/add' : '/admin/spot/edit'}" th:object="${form}"
                     method="post" novalidate>
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <input type="hidden" th:field="*{isNew}" />

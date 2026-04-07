@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.example.nagahoribashi_walk.dto.AdminSpotRow;
 import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
 import com.example.nagahoribashi_walk.entity.Spot;
@@ -25,6 +26,8 @@ public interface SpotService {
     void addSpot(Spot spot);
 
     void updateSpot(Spot spot);
+    
+    Page<AdminSpotRow> getPageForAdmin(Pageable pageable);
 
     Page<SpotSummary> getPageByCategoryId(Long categoryId, Pageable pageable);
 
