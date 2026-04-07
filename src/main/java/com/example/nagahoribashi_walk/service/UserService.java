@@ -51,5 +51,5 @@ public interface UserService {
     /**
      * ページネーション付きで管理者側がユーザー一覧を取得する
      */
-    Page<AdminUserRow> getAdminUserPage(Pageable pageable,String sort);
+    Page<AdminUserRow> getAdminUserPage(Pageable pageable,String sort,String keyword);
 }

@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public Page<AdminUserRow> getAdminUserPage(Pageable pageable, String sort) {
+    public Page<AdminUserRow> getAdminUserPage(Pageable pageable, String sort,String keyword) {
 
         long offset = (int) pageable.getOffset();
         int pageSize = pageable.getPageSize();
@@ -90,6 +90,16 @@ public class UserServiceImpl implements UserService {
         List<AdminUserRow> list = userMapper.findAllForAdmin(pageSize, offset, sort);
 
         long total = userMapper.countAdminUsers();
+        
+        if (keyword == null || keyword.isBlank()) {
+            // 通常一覧
+            list = userMapper.findAllForAdmin(pageSize, offset, sort);
+            total = userMapper.countAdminUsers();
+        } else {
+            // 検索あり
+            list = userMapper.searchAdminUsers(keyword, pageSize, offset, sort);
+            total = userMapper.countSearchAdminUsers(keyword);
+        }
 
         return new PageImpl<>(list, pageable, total);
     }
