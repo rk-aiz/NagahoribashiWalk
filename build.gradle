@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '4.0.4'
+	id 'org.springframework.boot' version '4.0.5'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -32,7 +32,6 @@ dependencies {
 	// --- テンプレートエンジン（Thymeleaf） ---
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'      // Thymeleaf本体
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'       // Thymeleaf上でSecurity情報を使う（sec:authorize等）
-	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'            // ヘッダー・フッターなどレイアウトの共通化
 
 	// --- セキュリティ ---
 	implementation 'org.springframework.boot:spring-boot-starter-security'       // 認証・認可（ログイン・アクセス制御）
@@ -54,7 +53,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'     // MockMvc等のWebテストサポート
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:4.0.1' // MyBatisのテストサポート
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'                 // JUnitテストの実行エンジン
-	testRuntimeOnly 'com.h2database:h2'                                          // テスト用インメモリDB（PostgreSQLの代わりに使用）
+
 }
 
 tasks.named('test') {

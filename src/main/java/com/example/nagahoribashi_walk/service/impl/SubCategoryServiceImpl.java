@@ -1,13 +1,12 @@
 package com.example.nagahoribashi_walk.service.impl;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.nagahoribashi_walk.dto.NavSubCategory;
+import com.example.nagahoribashi_walk.dto.SidebarDTO;
 import com.example.nagahoribashi_walk.entity.SubCategory;
+import com.example.nagahoribashi_walk.repository.CategoryMapper;
 import com.example.nagahoribashi_walk.repository.SubCategoryMapper;
 import com.example.nagahoribashi_walk.service.SubCategoryService;
 
@@ -18,14 +17,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SubCategoryServiceImpl implements SubCategoryService {
 
+    private final CategoryMapper categoryMapper;
     private final SubCategoryMapper subCategoryMapper;
 
     @Override
-    public Map<Long, List<SubCategory>> findAllGroupedByCategory() {
-        return subCategoryMapper.findAll().stream()
-                .collect(Collectors.groupingBy(SubCategory::getCategoryId));
+    public NavSubCategory getById(Long subCategoryId) {
+        return subCategoryMapper.findById(subCategoryId)
+                .orElseThrow();
     }
-
+    
 	@Override
 	public void insertSubCategory(SubCategory subCategory) {
 		subCategoryMapper.insertSubCategory(subCategory);
@@ -37,8 +37,15 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 		subCategoryMapper.deleteSubCategory(id);
 		
 	}
-    
-    
-    
-    
+	
+    @Override
+    public SidebarDTO getSidebarDTO(Long subCategoryId) {
+
+        return new SidebarDTO(
+                categoryMapper.findFlatAllNavCategories(),
+                subCategoryMapper.findSiblings(subCategoryId),
+                getById(subCategoryId).getCategoryId(),
+                subCategoryId);
+    }
+
 }

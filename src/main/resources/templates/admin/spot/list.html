@@ -1,15 +1,161 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout/admin :: layout('スポット管理', 'スポット管理', ~{::style}, ~{::main})}" xml:lang="ja">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>長堀橋さんぽ</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <title>スポット管理 - 長堀橋さんぽ 管理画面</title>
+    <style>
+        .badge-gourmet      { background-color: #dbeafe; color: #1d4ed8; }
+        .badge-tourism      { background-color: #ede9fe; color: #6d28d9; }
+        .badge-shopping     { background-color: #ccfbf1; color: #0f766e; }
+        .badge-entertainment{ background-color: #fef3c7; color: #b45309; }
+        .badge-cafe         { background-color: #fce7f3; color: #be185d; }
+        .badge-default      { background-color: #f1f5f9; color: #475569; }
+
+        #spotTable {
+            --bs-table-bg: transparent;
+            --bs-table-color: #1e293b;
+            --bs-table-border-color: #e2e8f0;
+        }
+        #spotTable thead th {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #64748b;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+        #spotTable tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+        }
+        #spotTable tbody tr:last-child {
+            border-bottom: none;
+        }
+        .spot-row:hover {
+            background-color: #f8fafc;
+        }
+    </style>
 </head>
 
-<body>
-</body>
+<main th:fragment="content">
+    <div class="container" style="max-width: 1100px;">
+        <div class="admin-card">
+            <div class="p-4">
+
+                <!-- タイトル + 新規登録ボタン -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0">
+                        スポット一覧
+                        <span class="text-muted fw-normal fs-6"
+                              th:text="'（' + ${spots != null ? #lists.size(spots) : 0} + '件）'">（0件）</span>
+                    </h5>
+                    <a th:href="@{/admin/spot/new}" class="btn btn-sm text-white fw-semibold"
+                       style="background-color: #1d4ed8; border-color: #1d4ed8;">
+                        <i class="bi bi-plus-lg me-1"></i>新規登録
+                    </a>
+                </div>
+
+                <!-- 検索バー -->
+                <div class="mb-4" style="position: relative;">
+                    <i class="bi bi-search"
+                       style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none;"></i>
+                    <input type="text" id="spotSearch" class="form-control"
+                           style="padding-left: 2.25rem; border-color: #e2e8f0; border-radius: 0.5rem;"
+                           placeholder="スポット名、カテゴリー、住所で検索...">
+                </div>
+
+                <!-- テーブル -->
+                <div class="table-responsive">
+                    <table class="table table-borderless align-middle mb-0 admin-table" id="spotTable">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width: 60px;">ID</th>
+                                <th scope="col">スポット名</th>
+                                <th scope="col" style="width: 150px;">カテゴリー</th>
+                                <th scope="col" style="width: 120px;">更新日</th>
+                                <th scope="col" style="width: 100px;">評価</th>
+                                <th scope="col" style="width: 80px;" class="text-end">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="spot : ${spots}" class="spot-row">
+
+                                <!-- ID -->
+                                <td class="text-secondary small" th:text="${spot.id}">1</td>
+
+                                <!-- スポット名 -->
+                                <td class="fw-medium" th:text="${spot.spotName}">スポット名</td>
+
+                                <!-- カテゴリー（バッジ色はカテゴリー名で分岐） -->
+                                <td>
+                                    <span class="badge rounded-pill px-2 py-1 fw-normal"
+                                          th:text="${spot.categoryName}"
+                                          th:classappend="${spot.categoryName == 'グルメ'}         ? 'badge-gourmet'       :
+                                                          (${spot.categoryName == '観光スポット'}  ? 'badge-tourism'       :
+                                                          (${spot.categoryName == 'ショッピング'}   ? 'badge-shopping'      :
+                                                          (${spot.categoryName == '娯楽'}          ? 'badge-entertainment' :
+                                                          (${spot.categoryName == 'カフェ'}         ? 'badge-cafe'          :
+                                                           'badge-default'))))">
+                                        カテゴリー
+                                    </span>
+                                </td>
+
+                                <!-- 更新日 -->
+                                <td class="text-secondary small">
+                                    <span th:if="${spot.updatedAt != null}"
+                                          th:text="${#temporals.format(spot.updatedAt, 'yyyy/M/d')}">2026/4/2</span>
+                                    <span th:if="${spot.updatedAt == null}" class="text-muted">-</span>
+                                </td>
+
+                                <!-- 評価 -->
+                                <td>
+                                    <span th:if="${spot.averageRating != null}">
+                                        <i class="bi bi-star-fill text-warning" style="font-size: 0.8rem;"></i>
+                                        <span class="ms-1 small fw-semibold"
+                                              th:text="${#numbers.formatDecimal(spot.averageRating, 1, 1)}">4.5</span>
+                                    </span>
+                                    <span th:if="${spot.averageRating == null}" class="text-muted small">-</span>
+                                </td>
+
+                                <!-- 操作 -->
+                                <td class="text-end">
+                                    <!--/* スポット詳細（一般ユーザー向け画面）を別タブで確認 */-->
+                                    <a th:href="@{/spot/{id}(id=${spot.id})}" target="_blank"
+                                       class="btn btn-sm btn-link text-secondary p-1" title="詳細を見る">
+                                        <i class="bi bi-eye" style="font-size: 1rem;"></i>
+                                    </a>
+                                    <!--/* 編集画面へ。コントローラー側で ?id= を受け取るよう実装要 */-->
+                                    <a th:href="@{/admin/spot/edit(id=${spot.id})}"
+                                       class="btn btn-sm btn-link p-1" style="color: #3b82f6;" title="編集">
+                                        <i class="bi bi-pencil-square" style="font-size: 1rem;"></i>
+                                    </a>
+                                </td>
+
+                            </tr>
+
+                            <!-- データなし -->
+                            <tr th:if="${spots == null or #lists.isEmpty(spots)}">
+                                <td colspan="6" class="text-center text-muted py-5">
+                                    <i class="bi bi-inbox d-block mb-2" style="font-size: 1.75rem;"></i>
+                                    スポットが登録されていません
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // クライアントサイド絞り込み検索
+        document.getElementById('spotSearch').addEventListener('input', function () {
+            var q = this.value.toLowerCase();
+            document.querySelectorAll('#spotTable tbody .spot-row').forEach(function (row) {
+                row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        });
+    </script>
+</main>
 
 </html>

@@ -1,10 +1,12 @@
 package com.example.nagahoribashi_walk.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.data.repository.query.Param;
 
+import com.example.nagahoribashi_walk.dto.AdminCategoryRow;
 import com.example.nagahoribashi_walk.dto.NavCategory;
 import com.example.nagahoribashi_walk.entity.Category;
 
@@ -24,4 +26,13 @@ public interface CategoryMapper {
 
     //削除
     void deleteCategory(@Param("id") Long id);
+    
+    Optional<NavCategory> findById(Long id);
+
+    List<NavCategory> findAllNavCategories();
+
+    List<NavCategory> findFlatAllNavCategories();
+
+    List<AdminCategoryRow> findAllForAdmin();
+
 }

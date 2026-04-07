@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.nagahoribashi_walk.dto.AdminUserRow;
 import com.example.nagahoribashi_walk.dto.UserProfile;
 import com.example.nagahoribashi_walk.entity.User;
 import com.example.nagahoribashi_walk.exception.UserAlreadyExistsException;
@@ -48,12 +49,10 @@ public class UserServiceImpl implements UserService {
             throw new UserAlreadyExistsException("ユーザー名はすでに存在します。");
         }
 
-        /**
-         * Emailを一意にする
-         * if (userMapper.findByEmail(user.getUsername()).isPresent()) {
-         * throw new UserAlreadyExistsException("すでに登録されたメールアドレスです。");
-         * }
-         */
+        // メールアドレスが既に存在するか確認
+        if (userMapper.existsByEmail(user.getEmail())) {
+            throw new UserAlreadyExistsException("すでに登録されたメールアドレスです。");
+        }
 
         // パスワードをハッシュ化
         user.setPassword(passwordEncoder.encode(rowPassword));
@@ -72,21 +71,47 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    public void toggleEnabled(Long id) {
+
+        // ユーザー取得
+        userMapper.toggleEnabled(id);
     }
 
     @Override
-    public void toggleEnabled(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'toggleEnabled'");
+    public Page<AdminUserRow> getAdminUserPage(Pageable pageable, String sort) {
+
+        long offset = (int) pageable.getOffset();
+        int pageSize = pageable.getPageSize();
+
+        List<AdminUserRow> list = userMapper.findAllForAdmin(pageSize, offset, sort);
+
+        long total = userMapper.countAdminUsers();
+
+        return new PageImpl<>(list, pageable, total);
+    }
+
+    public void delete(String username, String loginUsername) {
+        // ★ 自分削除禁止
+        if (username.equals(loginUsername)) {
+            throw new IllegalStateException("自分自身は削除できません");
+        }
+
+        User user = userMapper.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
+
+        // ★ 論理削除
+        userMapper.softDelete(user.getId());
     }
 
     @Override
     public Page<User> getPage(Pageable pageable) {
+
         long total = userMapper.count();
+
+        // 対象ページに対応したスポットを取得する
         List<User> users = userMapper.findAll(pageable.getOffset(), pageable.getPageSize());
+
+        // Page<T>インスタンスに詰めて返す
         return new PageImpl<>(users, pageable, total);
     }
 }

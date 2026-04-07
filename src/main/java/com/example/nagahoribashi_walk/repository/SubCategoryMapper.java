@@ -1,11 +1,12 @@
 package com.example.nagahoribashi_walk.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
 import org.springframework.data.repository.query.Param;
 
+import com.example.nagahoribashi_walk.dto.NavSubCategory;
 import com.example.nagahoribashi_walk.entity.SubCategory;
 
 /**
@@ -14,9 +15,6 @@ import com.example.nagahoribashi_walk.entity.SubCategory;
  */
 @Mapper
 public interface SubCategoryMapper {
-
-    @Select("SELECT id, category_id, name FROM sub_categories ORDER BY name")
-    List<SubCategory> findAll();
     
     //大谷記載
     //追加
@@ -24,5 +22,11 @@ public interface SubCategoryMapper {
     
     //削除
     void deleteSubCategory(@Param("id") Long id);
+
+    Optional<NavSubCategory> findById(Long id);
+
+    List<NavSubCategory> findSiblings(@Param("subCategoryId") Long subCategoryId);
+
+    List<NavSubCategory> findByCategoryId(@Param("categoryId") Long categoryId);
 
 }

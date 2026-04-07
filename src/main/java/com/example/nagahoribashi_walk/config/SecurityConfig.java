@@ -20,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final CustomLogoutSuccessHandler logoutSuccessHandler;
 
     // =========================================================
@@ -41,7 +43,7 @@ public class SecurityConfig {
                 .requestMatchers("/admin/login").permitAll()
                 // 上記以外の /admin/** は ADMIN 権限必須
                 // ADMIN 以外のユーザーはここで 403 になる
-                .anyRequest().hasAuthority("ADMIN"))
+                .anyRequest().hasRole("ADMIN"))
 
             // ★ログイン設定
             .formLogin(form -> form
@@ -97,14 +99,14 @@ public class SecurityConfig {
                 .requestMatchers("/uploads/**").permitAll()
                 // マイページ・お気に入り・レビューは USER 権限必須
                 // ADMIN はこれらのページにアクセスできない（403になる）
-                .requestMatchers("/mypage/**", "/favorite/**", "/review/**").hasAuthority("USER")
+                .requestMatchers("/mypage/**", "/favorite/**", "/review/**").hasRole("USER")
                 // 上記以外のURLはログイン済みであればアクセス可能
                 .anyRequest().authenticated())
 
             // ★ログイン設定
             .formLogin(form -> form
                 // ログイン画面のURL
-                .loginPage("/login")
+                //.loginPage("/login")
                 // ログインフォームの送信先URL（Spring Securityが処理）
                 .loginProcessingUrl("/authentication")
                 // フォームの name 属性に合わせる（デフォルトも "username" だが明示）
@@ -112,7 +114,7 @@ public class SecurityConfig {
                 // フォームの name 属性に合わせる（デフォルトも "password" だが明示）
                 .passwordParameter("password")
                 // ログイン成功時はトップページへ
-                .defaultSuccessUrl("/")
+                .successHandler(customAuthenticationSuccessHandler) // ← 追加
                 // ログイン失敗時はログイン画面にエラーパラメーター付きで戻る
                 .failureUrl("/login?error"))
 
@@ -128,8 +130,13 @@ public class SecurityConfig {
                 .deleteCookies("JSESSIONID"))
 
             // ★403処理: ADMINが /mypage/** など一般ユーザー専用ページにアクセスした場合
+            // accessDeniedPage はforward（メソッド引継ぎ）のため、POSTが405になる問題あり
+            // → sendRedirect でリダイレクトさせることでGETに統一する
             .exceptionHandling(ex -> ex
-                .accessDeniedPage("/403"));
+            	.authenticationEntryPoint(customAuthenticationEntryPoint)
+                .accessDeniedHandler((request, response, ex2) ->
+                    response.sendRedirect("/403"))
+                );
 
         return http.build();
     }

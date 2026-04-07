@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-    th:fragment="layout(title, content)" xml:lang="ja">
+    th:fragment="layout(title, content, headExtra)" xml:lang="ja">
 
 <head>
     <meta charset="UTF-8" />
@@ -128,6 +128,7 @@
             color: #e2e8f0;
         }
     </style>
+    <th:block th:replace="${headExtra}"></th:block>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -166,13 +167,24 @@
                         </a>
                     </div>
 
-                    <!-- ログイン済み -->
-                    <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-2 ms-2">
+                    <!-- ログイン済み（管理者） -->
+                    <div sec:authorize="hasRole('ADMIN')" class="d-flex align-items-center gap-2 ms-2">
+                        <span class="small text-secondary" th:text="${account?.displayName}">管理者名</span>
+                        <a th:href="@{/admin}" class="btn btn-sm btn-outline-secondary btn-header">
+                            <i class="bi bi-speedometer2 me-1"></i>管理者ダッシュボード
+                        </a>
+                        <form th:action="@{/logout}" method="post" class="m-0">
+                            <button type="submit" class="btn btn-sm btn-outline-secondary btn-header">ログアウト</button>
+                        </form>
+                    </div>
+
+                    <!-- ログイン済み（一般ユーザー） -->
+                    <div sec:authorize="hasRole('USER')" class="d-flex align-items-center gap-2 ms-2">
                         <span class="small text-secondary" th:text="${account?.displayName}">ユーザー名</span>
-                        <a th:href="@{/mypage}" class="btn btn-sm btn-outline-secondary btn-header">
+                        <a th:href="@{/mypage?tab=profile}" class="btn btn-sm btn-outline-secondary btn-header">
                             <i class="bi bi-person me-1"></i>プロフィール
                         </a>
-                        <a th:href="@{/mypage/favorites}" class="btn btn-sm btn-outline-secondary btn-header">
+                        <a th:href="@{/mypage?tab=favorites}" class="btn btn-sm btn-outline-secondary btn-header">
                             <i class="bi bi-heart me-1"></i>お気に入り
                         </a>
                         <form th:action="@{/logout}" method="post" class="m-0">
@@ -270,11 +282,14 @@
                         <li class="mb-1" sec:authorize="isAnonymous()">
                             <a th:href="@{/register}" class="footer-link small">会員登録</a>
                         </li>
-                        <li class="mb-1" sec:authorize="isAuthenticated()">
+                        <li class="mb-1" sec:authorize="hasRole('USER')">
                             <a th:href="@{/mypage}" class="footer-link small">マイページ</a>
                         </li>
-                        <li class="mb-1" sec:authorize="isAuthenticated()">
+                        <li class="mb-1" sec:authorize="hasRole('USER')">
                             <a th:href="@{/mypage/favorites}" class="footer-link small">お気に入り</a>
+                        </li>
+                        <li class="mb-1" sec:authorize="hasRole('ADMIN')">
+                            <a th:href="@{/admin}" class="footer-link small">管理者ダッシュボード</a>
                         </li>
                         <li class="mb-1">
                             <a th:href="@{/spot/category/all}" class="footer-link small">スポット一覧</a>

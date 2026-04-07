@@ -1,23 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.nagahoribashi_walk.repository.SubCategoryMapper">
-
-
-<!-- 大谷記載 -->
-   <select id="findByCategoryId" resultType="com.example.nagahoribashi_walk.entity.SubCategory">
-    SELECT 
-        id, 
-        category_id AS categoryId, 
-        name, 
-        display_order AS displayOrder
-    FROM 
-        sub_categories
-    WHERE 
-        category_id = #{categoryId}
-    ORDER BY 
-        display_order ASC
-   </select>
-   
     
     <!-- 新規追加 -->
     <insert id="insertSubCategory" useGeneratedKeys="true" keyProperty="id">
@@ -30,4 +13,24 @@
         DELETE FROM sub_categories WHERE id = #{id}
     </delete>
 
+    <select id="findById" resultType="com.example.nagahoribashi_walk.dto.NavSubCategory">
+        SELECT id, name, category_id FROM sub_categories
+        WHERE id = #{id}
+    </select>
+
+    <select id="findSiblings" resultType="com.example.nagahoribashi_walk.dto.NavSubCategory">
+        SELECT sc.id, sc.name, sc.category_id
+        FROM categories c
+        RIGHT JOIN sub_categories sc
+        ON c.id = sc.category_id
+        WHERE c.id = (SELECT category_id FROM sub_categories WHERE id = #{subCategoryId})
+        ORDER BY sc.display_order
+    </select>
+
+    <select id="findByCategoryId" resultType="com.example.nagahoribashi_walk.dto.NavSubCategory">
+        SELECT id, name, category_id
+        FROM sub_categories
+        WHERE category_id = #{categoryId}
+        ORDER BY display_order
+    </select>
 </mapper>

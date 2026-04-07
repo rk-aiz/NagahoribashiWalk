@@ -1,7 +1,50 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/default :: layout('検索結果', ~{::main})}"
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/default :: layout('検索結果', ~{::main}, ~{:: headStyles})}"
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>検索結果</title>
+    <th:block th:fragment="headStyles">
+        <th:block th:replace="~{fragments/spot-card :: styles}"></th:block>
+        <style>
+            /* ===== シンプルページネーション ===== */
+            .pager-minimal {
+                gap: 0.3rem;
+            }
 
+            .pager-minimal .page-item .page-link,
+            .pagerSearch-minimal .page-item .page-link {
+                border: none;
+                background: transparent;
+                color: #64748b;
+                font-size: 0.875rem;
+                border-radius: 0.4rem;
+                padding: 0.35rem 0.65rem;
+                line-height: 1.4;
+                box-shadow: none;
+                transition: background-color 0.15s, color 0.15s;
+            }
+
+            .pager-minimal .page-item .page-link:hover,
+            .pagerSearch-minimal .page-item .page-link:hover {
+                background-color: #f1f5f9;
+                color: #334155;
+            }
+
+            .pager-minimal .page-item.active .page-link,
+            .pagerSearch-minimal .page-item.active .page-link {
+                background-color: #dbeafe;
+                color: #1d4ed8;
+                font-weight: 600;
+            }
+
+            .pager-minimal .page-item.disabled .page-link,
+            .pagerSearch-minimal .page-item.disabled .page-link {
+                color: #cbd5e1;
+                pointer-events: none;
+            }
+        </style>
+    </th:block>
+</head>
 <body>
 
     <main class="flex-grow-1" style="background-color: #f8fafc;">
@@ -45,46 +88,6 @@
             <div th:replace="~{fragments/pagination :: pagerSearch(${page}, ${keyword}, 'mt-4')}"></div>
 
         </div>
-
-        <th:block th:replace="~{fragments/spot-card :: styles}"></th:block>
-        <style>
-            /* ===== シンプルページネーション ===== */
-            .pager-minimal {
-                gap: 0.3rem;
-            }
-
-            .pager-minimal .page-item .page-link,
-            .pagerSearch-minimal .page-item .page-link {
-                border: none;
-                background: transparent;
-                color: #64748b;
-                font-size: 0.875rem;
-                border-radius: 0.4rem;
-                padding: 0.35rem 0.65rem;
-                line-height: 1.4;
-                box-shadow: none;
-                transition: background-color 0.15s, color 0.15s;
-            }
-
-            .pager-minimal .page-item .page-link:hover,
-            .pagerSearch-minimal .page-item .page-link:hover {
-                background-color: #f1f5f9;
-                color: #334155;
-            }
-
-            .pager-minimal .page-item.active .page-link,
-            .pagerSearch-minimal .page-item.active .page-link {
-                background-color: #dbeafe;
-                color: #1d4ed8;
-                font-weight: 600;
-            }
-
-            .pager-minimal .page-item.disabled .page-link,
-            .pagerSearch-minimal .page-item.disabled .page-link {
-                color: #cbd5e1;
-                pointer-events: none;
-            }
-        </style>
 
     </main>
 

@@ -39,7 +39,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     username + " => 指定しているユーザーは存在しません");
         }
 
-        Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole()));
+        Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
 
         return new LoginUser(user, authorities);
     }

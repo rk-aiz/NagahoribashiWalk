@@ -14,26 +14,26 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FavoriteController {
 
-    private final FavoriteService favoriteService ;
-    
+    private final FavoriteService favoriteService;
+
     @PostMapping("/favorite/add/{spotId}")
     public String add(
-    		@PathVariable("spotId") Long spotId,
-    		@AuthenticationPrincipal LoginUser loginUser) {
+            @PathVariable("spotId") Long spotId,
+            @AuthenticationPrincipal LoginUser loginUser) {
 
         favoriteService.addFavorite(loginUser.getId(), spotId);
 
         return "redirect:/spot/" + spotId;
     }
-    
-    @PostMapping("/favorite/delete/{spotId}")
-    public String delete(
-    		@PathVariable("spotId") Long spotId,
-    		@AuthenticationPrincipal LoginUser loginUser) {
-    	
+
+    @PostMapping("/favorite/remove/{spotId}")
+    public String remove(
+            @PathVariable("spotId") Long spotId,
+            @AuthenticationPrincipal LoginUser loginUser) {
+
         favoriteService.removeFavorite(loginUser.getId(), spotId);
 
         return "redirect:/spot/" + spotId;
     }
-    
+
 }

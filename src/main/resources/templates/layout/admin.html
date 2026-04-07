@@ -1,374 +1,194 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-    th:fragment="layout(title, content)" xml:lang="ja">
+    th:fragment="layout(title, subtitle, headExtra, content)" xml:lang="ja">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-    <title th:text="${title} + ' - 長堀橋さんぽ'">長堀橋さんぽ</title>
+    <title th:text="${title} + ' - 長堀橋さんぽ 管理画面'">長堀橋さんぽ 管理画面</title>
     <link rel="icon" type="image/svg+xml" th:href="@{/favicon.svg}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        /* サイト全体のコンテナ幅を制限 */
-        .container {
-            max-width: 1140px;
+        body {
+            background-color: #f1f5f9;
+            color: #1e293b;
         }
 
-        /* カテゴリナビ（2段目）— メガパネルの基準点 */
-        .cat-nav {
-            position: relative;
+        .admin-header {
+            background-color: #1e293b;
+            border-bottom: 1px solid #0f172a;
         }
 
-        .cat-item {
-            display: flex;
-            align-items: center;
-            /* position: relative を持たせない → メガパネルは .cat-nav 基準になる */
+        .admin-footer {
+            background-color: #1e293b;
+            border-top: 1px solid #0f172a;
+            color: #e2e8f0;
         }
 
-        /* カテゴリリンク */
-        .cat-nav .nav-link {
-            color: #374151;
-            font-size: 0.9rem;
-            letter-spacing: 0.03em;
-            padding: 0.8rem 1.25rem;
-            border-bottom: 2px solid transparent;
-            transition: color 0.15s, border-color 0.15s;
+        .admin-brand-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.04em;
+            line-height: 1.2;
         }
 
-        .cat-nav .nav-link:hover,
-        .cat-item.cat-open .nav-link {
-            color: #2563eb;
-            border-bottom-color: #2563eb;
-        }
-
-        /* メガパネル — .cat-nav 基準で横幅いっぱいに展開 */
-        .mega-panel {
-            display: none;
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 100%;
-            background: #fff;
-            border-bottom: 1px solid #dee2e6;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-            padding: 1rem 0;
-            z-index: 1050;
-        }
-
-        .cat-item.cat-open .mega-panel {
-            display: block;
-        }
-
-        .mega-item {
-            display: inline-block;
-            width: 16.66%;
-            padding: 0.35rem 0.75rem;
-            color: #374151;
-            text-decoration: none;
-            font-size: 0.875rem;
+        .admin-badge {
+            display: inline-flex;
+            gap: 0.3rem;
+            background-color: #1e3a5f;
+            color: #60a5fa;
+            border: 1px solid #1d4ed8;
             border-radius: 0.375rem;
+            font-size: 0.475rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            padding: 0.15rem 0.55rem;
+            text-transform: uppercase;
+            vertical-align: text-top;
         }
 
-        .mega-item:hover {
-            background: #f3f4f6;
-            color: #2563eb;
+        .subtitle-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: #ffffff;
+            font-size: 0.5rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            padding: 0.15rem 0.55rem;
+            text-transform: uppercase;
         }
 
-        /* ヘッダー第一段ナビリンク */
-        .header-nav-link {
-            color: #374151;
-            font-weight: 500;
-            text-decoration: none;
-            border-bottom: 3px solid transparent;
-            transition: color 0.15s, border-color 0.15s;
+        /* コンテンツエリアのカード共通スタイル */
+        .admin-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
         }
 
-        .header-nav-link:hover {
-            color: #2563eb;
-            border-bottom-color: #2563eb;
+        /* テーブル共通スタイル */
+        .admin-table {
+            --bs-table-bg: transparent;
+            --bs-table-color: #1e293b;
+            --bs-table-border-color: #e2e8f0;
+            --bs-table-hover-bg: #f8fafc;
+            --bs-table-striped-bg: transparent;
         }
 
-        /* ヘッダーボタン — 枠線を薄く */
-        .btn-header {
-            border-color: #d1d5db;
-            color: #273141;
-            font-weight: 500;
-            font-size: 0.85rem;
-            border-radius: 0.5rem;
-            padding: 0.2rem 0.9rem;
+        .admin-table thead th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-size: 0.83rem;
+            font-weight: 600;
+            border-bottom: 1px solid #e2e8f0;
+            border-top: none;
         }
 
-        .btn-header:hover {
-            border-color: #9ca3af;
-            color: #272131;
-            background-color: #f9fafb;
+        .admin-table tbody tr {
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        /* フッターリンク */
-        .footer-link {
-            color: #94a3b8;
-            text-decoration: none;
+        .admin-table tbody tr:last-child {
+            border-bottom: none;
         }
 
-        .footer-link:hover,
-        .footer-link:focus {
-            color: #e2e8f0;
+        /* ページネーション */
+        .admin-pagination .page-link {
+            background-color: #ffffff;
+            border-color: #e2e8f0;
+            color: #475569;
         }
 
-        .footer-sns-link {
-            color: #94a3b8;
-            font-size: 1.25rem;
+        .admin-pagination .page-link:hover {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #1e293b;
         }
 
-        .footer-sns-link:hover,
-        .footer-sns-link:focus {
-            color: #e2e8f0;
+        .admin-pagination .page-item.active .page-link {
+            background-color: #1d4ed8;
+            border-color: #1d4ed8;
+            color: #fff;
+        }
+
+        .admin-pagination .page-item.disabled .page-link {
+            background-color: #f8fafc;
+            border-color: #e2e8f0;
+            color: #6f7b8d;
         }
     </style>
+    <th:block th:replace="${headExtra}"></th:block>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-    <header>
-        <!-- 上段: ロゴ + アカウントエリア -->
-        <nav class="navbar bg-white border-bottom shadow-sm align-items-stretch" aria-label="サイトヘッダー">
-            <div class="container align-items-stretch">
-
-                <div class="d-flex align-self-stretch">
-                    <a class="navbar-brand fw-bold d-flex align-items-center me-4" th:href="@{/}"
-                        style="font-family: 'Nunito', sans-serif; color: #1e293b;">
-                        <i class="bi bi-geo-alt me-1" style="color: #2563eb;"></i>長堀橋さんぽ
-                    </a>
-
-                </div>
-
-                <!-- アカウントエリア -->
-                <div class="d-flex align-items-center gap-2">
-
-                    <!-- 検索フォーム（共通） -->
-                    <form th:action="@{/spot/search}" method="get" class="d-flex align-items-center"
-                        style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:9999px; padding:0.25rem 0.75rem;">
-                        <i class="bi bi-search text-secondary me-2" style="font-size:0.85rem;"></i>
-                        <input type="text" name="q" placeholder="キーワード検索..."
-                            style="border:none; background:transparent; outline:none; font-size:0.85rem; width:160px; color:#374151;"
-                            aria-label="キーワード検索">
-                    </form>
-
-                    <!-- 未ログイン -->
-                    <div sec:authorize="isAnonymous()" class="d-flex gap-2 ms-2">
-                        <a th:href="@{/login}" class="btn btn-sm btn-outline-secondary btn-header">
-                            <i class="bi bi-box-arrow-in-right me-1"></i>ログイン
-                        </a>
-                        <a th:href="@{/register}" class="btn btn-sm btn-outline-secondary btn-header">
-                            <i class="bi bi-person-plus me-1"></i>新規登録
-                        </a>
+    <header class="admin-header py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <!-- ブランド -->
+                <a th:href="@{/admin}" class="text-decoration-none d-flex align-items-center gap-2">
+                    <i class="bi bi-geo-alt-fill" style="font-size: 1.5rem; color: #3b82f6;"></i>
+                    <div>
+                        <div class="admin-brand-title">長堀橋さんぽ</div>
+                        <span class="admin-badge">
+                            <i class="bi bi-shield-lock-fill"></i>
+                            Administration
+                        </span>
                     </div>
-
-                    <!-- ログイン済み -->
-                    <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-2 ms-2">
-                        <span class="small text-secondary" th:text="${account?.displayName}">ユーザー名</span>
-                        <a th:href="@{/mypage}" class="btn btn-sm btn-outline-secondary btn-header">
-                            <i class="bi bi-person me-1"></i>プロフィール
-                        </a>
-                        <a th:href="@{/mypage/favorites}" class="btn btn-sm btn-outline-secondary btn-header">
-                            <i class="bi bi-heart me-1"></i>お気に入り
-                        </a>
-                        <form th:action="@{/logout}" method="post" class="m-0">
-                            <button type="submit" class="btn btn-sm btn-outline-secondary btn-header">ログアウト</button>
-                        </form>
-                    </div>
-
+                </a>
+                <!-- ページタイトル(subtitle) -->
+                <div th:if="${subtitle}" class="subtitle-badge">
+                    <span class="text-white fw-medium" style="font-size: 1rem; opacity: 0.9;"
+                        th:text="${subtitle}">サブタイトル</span>
                 </div>
             </div>
-        </nav>
 
-        <!-- 下段: カテゴリナビ -->
-        <nav class="cat-nav border-bottom" style="background-color: #f8fafc;" aria-label="カテゴリナビゲーション">
-            <div class="container">
-                <ul class="nav justify-content-center" id="categoryNav">
-                    <li class="nav-item cat-item" th:each="cat : ${navCategories}">
-                        <a class="nav-link fw-medium" th:href="@{/spot/category/{id}(id=${cat.id})}"
-                            th:text="${cat.name}">カテゴリ</a>
-
-                        <!-- メガメニューパネル -->
-                        <div class="mega-panel" th:if="${not #lists.isEmpty(cat.subCategories)}">
-                            <div class="container">
-                                <a th:each="sub : ${cat.subCategories}" class="mega-item"
-                                    th:href="@{/spot/subcategory/{id}(id=${sub.id})}" th:text="${sub.name}">サブカテゴリ</a>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
+            <!-- ナビ -->
+            <div class="d-flex align-items-center gap-2">
+                <a th:href="@{/}" target="_blank" class="btn btn-sm btn-outline-light">
+                    <i class="bi bi-box-arrow-up-right me-1"></i>一般サイト
+                </a>
+                <form th:action="@{/logout}" method="post" class="m-0">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn btn-sm btn-primary ms-1" style="font-weight: 600;">
+                        <i class="bi bi-box-arrow-right me-1"></i>ログアウト
+                    </button>
+                </form>
             </div>
-        </nav>
+        </div>
     </header>
 
-    <!--/* フラッシュメッセージ (共通) */-->
+    <!-- フラッシュメッセージ（共通） -->
     <div th:if="${message}" class="container pt-3">
         <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-1"></i>
             <span th:text="${message}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     </div>
     <div th:if="${errorMessage}" class="container pt-3">
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-1"></i>
             <span th:text="${errorMessage}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     </div>
 
-    <div th:replace="${content}" class="flex-grow-1"><!-- ページコンテンツ --></div>
+    <main class="flex-grow-1 py-4">
+        <div th:replace="${content}"><!-- ページコンテンツ --></div>
+    </main>
 
-    <footer class="mt-auto" style="background-color: #1e293b; color: #cbd5e1;">
-        <!-- メインフッター -->
-        <div class="container py-5">
-            <div class="row g-4">
-
-                <!-- ブランド -->
-                <div class="col-12 col-md-4">
-                    <p class="fw-bold text-white mb-2" style="font-family: 'Nunito', sans-serif; font-size: 1.1rem;">
-                        <i class="bi bi-geo-alt me-1" style="color: #60a5fa;"></i>長堀橋さんぽ
-                    </p>
-                    <p class="small" style="color: #94a3b8;">
-                        長堀橋駅周辺の魅力的なスポットを紹介する観光情報サイトです。
-                    </p>
-                </div>
-
-                <!-- カテゴリー -->
-                <div class="col-6 col-md-2">
-                    <p class="fw-semibold text-white mb-3 small text-uppercase" style="letter-spacing: 0.08em;">カテゴリー
-                    </p>
-                    <ul class="list-unstyled mb-0">
-                        <li th:each="cat : ${navCategories}" class="mb-1">
-                            <a th:href="@{/spot/category/{id}(id=${cat.id})}" th:text="${cat.name}"
-                                class="footer-link small">カテゴリ</a>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- ユーザーメニュー -->
-                <div class="col-6 col-md-2">
-                    <p class="fw-semibold text-white mb-3 small text-uppercase" style="letter-spacing: 0.08em;">ユーザーメニュー
-                    </p>
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-1" sec:authorize="isAnonymous()">
-                            <a th:href="@{/login}" class="footer-link small">ログイン</a>
-                        </li>
-                        <li class="mb-1" sec:authorize="isAnonymous()">
-                            <a th:href="@{/register}" class="footer-link small">会員登録</a>
-                        </li>
-                        <li class="mb-1" sec:authorize="isAuthenticated()">
-                            <a th:href="@{/mypage}" class="footer-link small">マイページ</a>
-                        </li>
-                        <li class="mb-1" sec:authorize="isAuthenticated()">
-                            <a th:href="@{/mypage/favorites}" class="footer-link small">お気に入り</a>
-                        </li>
-                        <li class="mb-1">
-                            <a th:href="@{/spot/category/all}" class="footer-link small">スポット一覧</a>
-                        </li>
-                        <li class="mb-1">
-                            <a th:href="@{/about}" class="footer-link small">このサイトについて</a>
-                        </li>
-                        <li class="mb-1">
-                            <a th:href="@{/admin/login}" class="footer-link small">管理者ログイン</a>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- SNS -->
-                <div class="col-6 col-md-2">
-                    <p class="fw-semibold text-white mb-3 small text-uppercase" style="letter-spacing: 0.08em;">SNS</p>
-                    <div class="d-flex gap-3">
-                        <a href="#" aria-label="Facebook" class="footer-sns-link">
-                            <i class="bi bi-facebook"></i>
-                        </a>
-                        <a href="#" aria-label="X (Twitter)" class="footer-sns-link">
-                            <i class="bi bi-twitter-x"></i>
-                        </a>
-                        <a href="#" aria-label="Instagram" class="footer-sns-link">
-                            <i class="bi bi-instagram"></i>
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- ボトムバー -->
-        <div style="border-top: 1px solid #334155;">
-            <div class="container py-3 text-center">
-                <p class="mb-1 small" style="color: #64748b;">
-                    ※当サイトに掲載している画像は、学習目的の範囲内で使用しており、商用利用は行っておりません。
-                </p>
-                <p class="mb-0 small" style="color: #64748b;">
-                    &copy; 2026 CIC 304教室 Cチーム長堀橋さんぽプロジェクト. All rights reserved.
-                </p>
-            </div>
+    <footer class="admin-footer py-3">
+        <div class="container text-center">
+            <p class="mb-0 small">&copy; 2026 CIC 304教室 Cチーム長堀橋さんぽプロジェクト. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- ログアウトトースト -->
-    <div th:if="${logoutSuccess}" class="toast-container position-fixed top-0 start-50 translate-middle-x p-3"
-        style="z-index:1070;">
-        <div id="logoutToast" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive"
-            style="font-size: 0.8rem; min-width: 0;">
-            <div class="d-flex px-2 py-1">
-                <div class="toast-body px-1 py-1">
-                    <i class="bi bi-check-circle me-1"></i>ログアウトしました
-                </div>
-                <button type="button" class="btn-close btn-close-white btn-close-sm me-1 m-auto" data-bs-dismiss="toast"
-                    aria-label="Close"></button>
-            </div>
-        </div>
-    </div>
-
-    <!-- トップへ戻るボタン -->
-    <button id="backToTop" aria-label="ページ上部へ戻る" style="display:none; position:fixed; bottom:1.75rem; right:1.75rem; z-index:1060;
-               width:2.75rem; height:2.75rem; border-radius:50%; border:1px solid #cbd5e1;
-               background-color:#f1f5f9; color:#64748b; font-size:1.1rem;
-               box-shadow:0 2px 6px rgba(0,0,0,0.08); cursor:pointer;
-               transition:background-color 0.15s, color 0.15s;">
-        <i class="bi bi-chevron-up"></i>
-    </button>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        (function () {
-            /* カテゴリメガメニュー */
-            var nav = document.getElementById('categoryNav');
-            if (nav) {
-                var items = nav.querySelectorAll('.cat-item');
-                items.forEach(function (item) {
-                    item.addEventListener('mouseenter', function () {
-                        items.forEach(function (i) { i.classList.remove('cat-open'); });
-                        item.classList.add('cat-open');
-                    });
-                });
-                nav.addEventListener('mouseleave', function () {
-                    items.forEach(function (i) { i.classList.remove('cat-open'); });
-                });
-            }
-
-            /* トップへ戻るボタン */
-            var btn = document.getElementById('backToTop');
-            window.addEventListener('scroll', function () {
-                btn.style.display = window.scrollY > 300 ? 'block' : 'none';
-            });
-            btn.addEventListener('click', function () {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-            btn.addEventListener('mouseover', function () { btn.style.backgroundColor = '#e2e8f0'; });
-            btn.addEventListener('mouseout', function () { btn.style.backgroundColor = '#f1f5f9'; });
-
-            /* ログアウトトースト自動表示 */
-            var logoutToastEl = document.getElementById('logoutToast');
-            if (logoutToastEl) {
-                new bootstrap.Toast(logoutToastEl, { delay: 3000 }).show();
-            }
-        })();
-    </script>
 </body>
 
 </html>

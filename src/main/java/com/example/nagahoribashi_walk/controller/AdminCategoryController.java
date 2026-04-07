@@ -1,17 +1,13 @@
 package com.example.nagahoribashi_walk.controller;
 
-import java.util.List;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.nagahoribashi_walk.dto.NavCategory;
 import com.example.nagahoribashi_walk.entity.Category;
 import com.example.nagahoribashi_walk.entity.SubCategory;
 import com.example.nagahoribashi_walk.service.CategoryService;
@@ -25,22 +21,16 @@ import lombok.RequiredArgsConstructor;
  */
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin/categories")
 public class AdminCategoryController {
 
 	 private final CategoryService categoryService;
 	 private final SubCategoryService subCategoryService;
 
-	    @GetMapping
-	    public String index(Model model) {
-	        List<NavCategory> categories = categoryService.findAll();
-	        model.addAttribute("categories", categories);
-	        
-	        // 新規登録用空オブジェクト
-	        model.addAttribute("categoryForm", new Category(null, null, null));
-	        model.addAttribute("subCategoryForm", new SubCategory());
-	        
-	        return "admin/categories/index";
+
+	    @GetMapping("/admin/category/list")
+	    public String list(Model model) {
+	        //model.addAttribute("categories", List.of(gourmet, tourism, shopping, entertainment, cafe, other));
+	        return "admin/category/list";
 	    }
 
 	    /**
@@ -70,6 +60,7 @@ public class AdminCategoryController {
 	    public String deleteChild(@PathVariable Long id, RedirectAttributes redirectAttributes) {
 	        subCategoryService.deleteSubCategory(id);
 	        redirectAttributes.addFlashAttribute("successMessage", "サブカテゴリーを削除しました。");
-	        return "redirect:/admin/categories";	 
-}
+	        return "redirect:/admin/categories";
+	        
+	    }
 }
