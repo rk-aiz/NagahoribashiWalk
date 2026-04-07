@@ -29,15 +29,15 @@ public class AdminCategoryController {
 
 	    @GetMapping("/admin/category/list")
 	    public String list(Model model) {
-	        //model.addAttribute("categories", List.of(gourmet, tourism, shopping, entertainment, cafe, other));
+	        model.addAttribute("categories", categoryService.getAllAdminCategoryRows());
 	        return "admin/category/list";
 	    }
 
 	    /**
 	     * 親カテゴリーの追加
 	     */
-	    @PostMapping("/parent/create")
-	    public String createParent(@ModelAttribute Category category, RedirectAttributes redirectAttributes) {
+	    @PostMapping("/admin/category/add")
+	    public String addCategory(@ModelAttribute Category category, RedirectAttributes redirectAttributes) {
 	        categoryService.insertCategory(category);
 	        redirectAttributes.addFlashAttribute("successMessage", "カテゴリーを追加しました。");
 	        return "redirect:/admin/categories";
@@ -46,8 +46,8 @@ public class AdminCategoryController {
 	    /**
 	     * 子カテゴリー（サブカテゴリー）の追加
 	     */
-	    @PostMapping("/child/create")
-	    public String createChild(@ModelAttribute SubCategory subCategory, RedirectAttributes redirectAttributes) {
+	    @PostMapping("/admin/subcategory/add")
+	    public String addSubCategory(@ModelAttribute SubCategory subCategory, RedirectAttributes redirectAttributes) {
 	        subCategoryService.insertSubCategory(subCategory);
 	        redirectAttributes.addFlashAttribute("successMessage", "サブカテゴリーを追加しました。");
 	        return "redirect:/admin/categories";
@@ -56,8 +56,8 @@ public class AdminCategoryController {
 	    /**
 	     * サブカテゴリーの個別削除
 	     */
-	    @PostMapping("/child/delete/{id}")
-	    public String deleteChild(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+	    @PostMapping("/admin/subcategory/remove/{id}")
+	    public String removeSubCategory(@PathVariable Long id, RedirectAttributes redirectAttributes) {
 	        subCategoryService.deleteSubCategory(id);
 	        redirectAttributes.addFlashAttribute("successMessage", "サブカテゴリーを削除しました。");
 	        return "redirect:/admin/categories";

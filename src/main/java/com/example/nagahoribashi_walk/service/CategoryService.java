@@ -14,7 +14,6 @@ public interface CategoryService {
 
     List<NavCategory> findAll();
     
-    
     //大谷記載
     //追加
     void insertCategory(Category category);
