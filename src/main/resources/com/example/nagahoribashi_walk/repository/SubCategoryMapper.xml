@@ -5,8 +5,11 @@
     <!-- 新規追加 -->
     <insert id="insertSubCategory" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sub_categories (name, category_id, display_order)
-        VALUES (#{name},#{categoryId, jdbcType=INTEGER},
-        (SELECT COALESCE(MAX(display_order), 0) + 1 FROM sub_categories))
+        VALUES (
+            #{name}, 
+            #{categoryId}, 
+            (SELECT COALESCE(MAX(display_order), 0) + 1 FROM sub_categories)
+        )
     </insert>
 
     <!-- 削除 -->

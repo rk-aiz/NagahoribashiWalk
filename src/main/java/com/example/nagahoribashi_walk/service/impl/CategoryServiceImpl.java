@@ -21,33 +21,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
-	private final CategoryMapper categoryMapper;
+    private final CategoryMapper categoryMapper;
     private final SubCategoryMapper subCategoryMapper;
-    
-	@Override
-	public List<NavCategory> findAll() {
-		return categoryMapper.findAll();
-	}
 
-	//追加
-	@Override
-    public void insertCategory(Category category) {
-    	categoryMapper.insertCategory(category);
+    @Override
+    public List<NavCategory> findAll() {
+        return categoryMapper.findAll();
     }
-	
-	@Override
-	public void updateCategory(Category category) {
-		
-		
-	}
 
-	//削除
-	@Override
+    // 追加
+    @Override
+    public void insertCategory(Category category) {
+        categoryMapper.insertCategory(category);
+    }
+
+    @Override
+    public void updateCategory(Category category) {
+
+    }
+
+    // 削除
+    @Override
     public void deleteCategory(Long id) {
-		categoryMapper.deleteCategory(id);
-	}
-	
-	
+        categoryMapper.deleteCategory(id);
+    }
 
     @Override
     public List<NavCategory> getAllNavCategories() {
@@ -74,11 +71,11 @@ public class CategoryServiceImpl implements CategoryService {
     public List<AdminCategoryRow> getAllAdminCategoryRows() {
         return categoryMapper.findAllForAdmin();
     }
+
     @Override
     public List<AdminCategoryRow> findAllForAdmin() {
-        
+
         return categoryMapper.findAllForAdmin();
     }
-
 
 }
