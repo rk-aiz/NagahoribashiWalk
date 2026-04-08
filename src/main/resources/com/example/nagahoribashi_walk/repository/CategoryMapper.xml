@@ -50,7 +50,7 @@
                 AND s.deleted_at IS NULL
             )
         ORDER BY
-            c.display_order, sc.display_order
+            c.display_order ASC NULLS LAST, sc.display_order ASC NULLS LAST
     </select>
 
     <!-- 管理者機能用にcategoriesテーブルとsub_categoriesテーブルを全件取得 -->
@@ -71,7 +71,7 @@
         ON
             c.id = sc.category_id
         ORDER BY
-            c.display_order, sc.display_order
+            c.display_order ASC NULLS LAST, sc.display_order ASC NULLS LAST
     </select>
 
     <select id="findById" resultType="com.example.nagahoribashi_walk.dto.NavCategory">
@@ -88,7 +88,7 @@
         FROM 
             categories c 
         ORDER BY
-            c.display_order
+            c.display_order ASC NULLS LAST
     </select>
     
     

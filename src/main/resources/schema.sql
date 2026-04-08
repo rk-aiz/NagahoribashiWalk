@@ -33,12 +33,12 @@ RETURNS TRIGGER AS '
 -- カテゴリ新規追加時に「その他」サブカテゴリを自動生成する。
 -- これにより spots.sub_category_id は常に有効なレコードを参照できる
 -- （フォールバック設計: カテゴリを作るだけで受け皿が必ず存在する）。
--- display_order=99999 で一覧の末尾に固定、is_default=TRUE で削除不可とする。
+-- display_order=NULL で一覧の末尾に固定、is_default=TRUE で削除不可とする。
 CREATE OR REPLACE FUNCTION add_default_sub_category()
 RETURNS TRIGGER AS '
     BEGIN
     INSERT INTO sub_categories (category_id, name, display_order, is_default)
-    VALUES (NEW.id, ''その他'', 99999, TRUE);
+    VALUES (NEW.id, ''その他'', NULL, TRUE);
     RETURN NEW;
     END;
 ' LANGUAGE 'plpgsql';
@@ -126,7 +126,7 @@ CREATE TABLE users (
 CREATE TABLE categories(
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(100) UNIQUE NOT NULL,
-	display_order INTEGER NOT NULL,
+	display_order INTEGER,
 	is_default BOOLEAN DEFAULT FALSE  -- TRUE は「未分類」カテゴリ。全体で1件のみ（後述のINDEXで保証）
 );
 
@@ -144,8 +144,8 @@ CREATE TABLE sub_categories (
 	name VARCHAR(100) NOT NULL,
 
 	-- カテゴリ内での表示順（1始まりの連番）
-	-- 「未分類」は add_default_sub_category トリガーが 99999 を自動セットする
-    display_order INTEGER NOT NULL,
+	-- 「その他」は add_default_sub_category トリガーが NULL を自動セットする
+    display_order INTEGER,
 
 	-- TRUE は「未分類」サブカテゴリ。カテゴリINSERT時にトリガーが自動生成する。
 	-- DBレベルでカテゴリごとに1件のみ許可（後述のINDEXで保証）
