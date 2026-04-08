@@ -55,7 +55,7 @@ public class AdminCategoryController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories",
                     categoryService.findAllForAdmin());
-            model.addAttribute("subCategoryForm", new CategoryForm());
+            model.addAttribute("subCategoryForm", new SubCategoryForm());
             return "/admin/category/list";
         }
 
@@ -79,10 +79,9 @@ public class AdminCategoryController {
             Model model) {
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("categories",
-                    categoryService.findAllForAdmin());
-            model.addAttribute("subCategoryForm", new CategoryForm());
-            return "/admin/category/list";
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    bindingResult.getAllErrors().getFirst().getDefaultMessage());
+            return "redirect:/admin/category/list";
         }
 
         // Categoryエンティティを作成
