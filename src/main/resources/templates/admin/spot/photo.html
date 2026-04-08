@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout/admin :: layout('画像管理', ${spot.spotName + ' - 画像管理'}, ~{::style}, ~{::main})}"
+    xml:lang="ja">
+
+<head>
+<title>画像管理 - 長堀橋さんぽ 管理画面</title>
+<style>
+.photo-card {
+    position: relative;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.photo-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+
+.photo-card-footer {
+    padding: 0.5rem 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border-top: 1px solid #e2e8f0;
+}
+
+.drop-zone {
+    border: 2px dashed #cbd5e1;
+    border-radius: 0.75rem;
+    background: #f8fafc;
+    transition: border-color 0.2s, background 0.2s;
+    cursor: pointer;
+}
+
+.drop-zone:hover,
+.drop-zone.dragover {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.drop-zone input[type="file"] {
+    display: none;
+}
+</style>
+</head>
+
+<main th:fragment="content">
+    <div class="container" style="max-width: 960px;">
+
+        <!-- 戻るリンク -->
+        <div class="mb-3">
+            <a th:href="@{/admin/spot/list}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i>スポット一覧に戻る
+            </a>
+        </div>
+
+        <!-- ページタイトル -->
+        <div class="admin-card mb-4">
+            <div class="p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h5 class="fw-bold mb-1">画像管理</h5>
+                        <p class="text-muted small mb-0">
+                            <i class="bi bi-geo-alt me-1"></i>
+                            <span th:text="${spot.spotName}">スポット名</span>
+                            <span class="ms-2 text-secondary" th:text="'（ID: ' + ${spot.id} + '）'"></span>
+                        </p>
+                    </div>
+                    <span class="badge bg-light text-secondary border fw-normal">
+                        <i class="bi bi-images me-1"></i>
+                        <span th:text="${photos.size()} + ' 枚'">0 枚</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- アップロードフォーム -->
+        <div class="admin-card mb-4">
+            <div class="p-4">
+                <h6 class="fw-bold mb-3"><i class="bi bi-upload me-2 text-primary"></i>画像をアップロード</h6>
+
+                <form th:action="@{/admin/spot/{id}/photo/upload(id=${spot.id})}" method="post"
+                    enctype="multipart/form-data">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <!-- ドロップゾーン -->
+                    <div class="drop-zone text-center py-5 mb-3" id="dropZone"
+                        onclick="document.getElementById('fileInput').click()">
+                        <i class="bi bi-cloud-arrow-up text-primary" style="font-size: 2rem;"></i>
+                        <p class="mt-2 mb-1 fw-medium">クリックまたはドラッグ＆ドロップで画像を選択</p>
+                        <p class="text-muted small mb-0">JPG・PNG・WEBP ／ 最大 5MB ／ 複数選択可</p>
+                        <input type="file" id="fileInput" name="photos" accept="image/*" multiple>
+                    </div>
+
+                    <!-- 選択ファイル名表示 -->
+                    <p id="fileNames" class="text-muted small mb-3" style="display:none;"></p>
+
+                    <!-- 表示順 -->
+                    <div class="row g-3 align-items-end mb-3" style="max-width: 360px;">
+                        <div class="col">
+                            <label for="displayOrder" class="form-label fw-semibold small">表示順（先頭番号）</label>
+                            <input type="number" id="displayOrder" name="displayOrder" class="form-control"
+                                min="1" placeholder="例：1" th:value="${photos.size() + 1}">
+                            <div class="form-text">複数枚の場合はここから連番で設定されます</div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-upload me-1"></i>アップロード
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 画像一覧 -->
+        <div class="admin-card">
+            <div class="p-4">
+                <h6 class="fw-bold mb-3"><i class="bi bi-images me-2 text-success"></i>登録済み画像</h6>
+
+                <!-- 画像あり -->
+                <div th:if="${not #lists.isEmpty(photos)}" class="row g-3">
+                    <div th:each="photo : ${photos}" class="col-sm-6 col-md-4">
+                        <div class="photo-card">
+                            <!-- サムネイル -->
+                            <img th:src="${'/uploads/' + photo.photoUrl}" th:alt="'画像 ' + ${photo.id}"
+                                onerror="this.src='/images/no-image.png'">
+
+                            <!-- フッター：表示順 ＋ 削除ボタン -->
+                            <div class="photo-card-footer">
+                                <span class="text-muted small">
+                                    <i class="bi bi-sort-numeric-down me-1"></i>
+                                    表示順：<span th:text="${photo.displayOrder}">1</span>
+                                </span>
+                                <form th:action="@{/admin/spot/photo/delete}" method="post" class="m-0"
+                                    onsubmit="return confirm('この画像を削除します。よろしいですか？');">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <input type="hidden" name="photoId" th:value="${photo.id}" />
+                                    <input type="hidden" name="spotId" th:value="${spot.id}" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 画像なし -->
+                <div th:if="${#lists.isEmpty(photos)}" class="text-center text-muted py-5">
+                    <i class="bi bi-image d-block mb-2" style="font-size: 2rem;"></i>
+                    まだ画像が登録されていません
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<script th:inline="none">
+    // ファイル選択時にファイル名を表示
+    document.getElementById('fileInput').addEventListener('change', function () {
+        var names = Array.from(this.files).map(function (f) { return f.name; });
+        var label = document.getElementById('fileNames');
+        if (names.length > 0) {
+            label.textContent = '選択中：' + names.join('、');
+            label.style.display = 'block';
+        } else {
+            label.style.display = 'none';
+        }
+    });
+
+    // ドラッグ＆ドロップ
+    var zone = document.getElementById('dropZone');
+    zone.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        zone.classList.add('dragover');
+    });
+    zone.addEventListener('dragleave', function () {
+        zone.classList.remove('dragover');
+    });
+    zone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        zone.classList.remove('dragover');
+        document.getElementById('fileInput').files = e.dataTransfer.files;
+        document.getElementById('fileInput').dispatchEvent(new Event('change'));
+    });
+</script>
+
+</html>

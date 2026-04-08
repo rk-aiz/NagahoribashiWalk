@@ -36,7 +36,7 @@ public class GlobalModelAdvice {
     }
 
     /**
-     * ログイン済みの場合、UserDetailsを "account" という名前でModelに追加します。
+     * ログイン済みの場合、LoginUserを "account" という名前でModelに追加します。
      */
     @ModelAttribute("account")
     public LoginUser addAccountToModel(

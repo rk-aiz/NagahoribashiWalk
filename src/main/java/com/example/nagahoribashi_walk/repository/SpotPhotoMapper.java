@@ -18,7 +18,7 @@ public interface SpotPhotoMapper {
 	List<SpotPhoto> findAllBySpotId(@Param("spotId") Long spotId);
 	
 	//画像情報追加
-	void insert(SpotPhoto spotPhoto);
+	void savePhoto(SpotPhoto spotPhoto);
 	
 	//画像情報削除
 	void delete(@Param("id") Long id);

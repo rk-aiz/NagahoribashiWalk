@@ -1,5 +1,8 @@
 package com.example.nagahoribashi_walk.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.example.nagahoribashi_walk.dto.NavSubCategory;
 import com.example.nagahoribashi_walk.dto.SidebarDTO;
 import com.example.nagahoribashi_walk.entity.SubCategory;
@@ -19,4 +22,6 @@ public interface SubCategoryService {
     NavSubCategory getById(Long subCategoryId);
 
     SidebarDTO getSidebarDTO(Long subCategoryId);
+
+	Map<Long, List<SubCategory>> findAllGroupedByCategory();
 }

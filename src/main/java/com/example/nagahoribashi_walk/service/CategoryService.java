@@ -13,14 +13,17 @@ import com.example.nagahoribashi_walk.entity.Category;
 public interface CategoryService {
 
     List<NavCategory> findAll();
-    
-    //大谷記載
-    //追加
+
+    // 大谷記載
+    // 追加
     void insertCategory(Category category);
 
-    //削除
+    // 削除
     void deleteCategory(Long id);
-    
+
+    // 更新
+    void updateCategory(Category category);
+
     /** IDからカテゴリ（閲覧系）を取得 */
     NavCategory getById(Long categoryId);
 
@@ -29,5 +32,7 @@ public interface CategoryService {
     SidebarDTO getSidebarDTO(Long categoryId);
 
     List<AdminCategoryRow> getAllAdminCategoryRows();
-    
+
+    List<AdminCategoryRow> findAllForAdmin();
+
 }
