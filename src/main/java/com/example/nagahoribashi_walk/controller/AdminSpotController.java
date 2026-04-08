@@ -151,7 +151,7 @@ public class AdminSpotController {
 
         return "redirect:/admin/spot/list";
     }
-    
+
     /**
      * スポット削除
      */
@@ -164,14 +164,14 @@ public class AdminSpotController {
             Model model) {
 
         // スポットアップデート処理
-    	spotService.softDelete(spotId);
-    	
-    	// リダイレクトアトリビュートを設定
-    	redirectAttributes.addAttribute("message", "スポット情報を削除しました。");
-    	if (keyword != null) {
-    	    redirectAttributes.addAttribute("keyword", keyword);
-    	}
-    	
+        spotService.softDelete(spotId);
+
+        // リダイレクトアトリビュートを設定
+        redirectAttributes.addFlashAttribute("message", "スポット情報を削除しました。");
+        if (keyword != null) {
+            redirectAttributes.addAttribute("keyword", keyword);
+        }
+
         return "redirect:/admin/spot/list?page=" + page;
     }
 }
