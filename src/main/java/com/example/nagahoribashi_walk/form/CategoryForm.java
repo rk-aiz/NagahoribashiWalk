@@ -12,10 +12,15 @@ public class CategoryForm {
 
     private boolean isNew;
 
+    /** 主キー */
+    private Long id;
+
     /** カテゴリ名 */
     @NotBlank(message = "カテゴリ名を入力してください")
     @Size(max = 100, message = "カテゴリ名は100文字以内で入力してください")
     private String name;
+
+    private Integer displayOrder;
 
     public boolean getIsNew() {
         return this.isNew;
