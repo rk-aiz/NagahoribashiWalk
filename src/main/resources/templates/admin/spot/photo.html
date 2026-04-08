@@ -79,49 +79,8 @@
             </div>
         </div>
 
-        <!-- アップロードフォーム -->
-        <div class="admin-card mb-4">
-            <div class="p-4">
-                <h6 class="fw-bold mb-3"><i class="bi bi-upload me-2 text-primary"></i>画像をアップロード</h6>
-
-                <form th:action="@{/admin/spot/{id}/photo/upload(id=${spot.id})}" method="post"
-                    enctype="multipart/form-data">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-
-                    <!-- ドロップゾーン -->
-                    <div class="drop-zone text-center py-5 mb-3" id="dropZone"
-                        onclick="document.getElementById('fileInput').click()">
-                        <i class="bi bi-cloud-arrow-up text-primary" style="font-size: 2rem;"></i>
-                        <p class="mt-2 mb-1 fw-medium">クリックまたはドラッグ＆ドロップで画像を選択</p>
-                        <p class="text-muted small mb-0">JPG・PNG・WEBP ／ 最大 5MB ／ 複数選択可</p>
-                        <input type="file" id="fileInput" name="files" accept="image/*" multiple>
-                    </div>
-
-                    <!-- 選択ファイル名表示 -->
-                    <p id="fileNames" class="text-muted small mb-2" style="display:none;"></p>
-
-                    <!-- プレビュー -->
-                    <div id="preview" class="flex-wrap gap-2 mb-3" style="display:none;"></div>
-
-                    <!-- 表示順 -->
-                    <div class="row g-3 align-items-end mb-3" style="max-width: 360px;">
-                        <div class="col">
-                            <label for="displayOrder" class="form-label fw-semibold small">表示順（先頭番号）</label>
-                            <input type="number" id="displayOrder" name="displayOrder" class="form-control" min="1"
-                                placeholder="例：1" th:value="${photos.size() + 1}">
-                            <div class="form-text">複数枚の場合はここから連番で設定されます</div>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-upload me-1"></i>アップロード
-                    </button>
-                </form>
-            </div>
-        </div>
-
         <!-- 画像一覧 -->
-        <div class="admin-card">
+        <div class="admin-card mb-4">
             <div class="p-4">
                 <h6 class="fw-bold mb-3"><i class="bi bi-images me-2 text-success"></i>登録済み画像</h6>
 
@@ -158,6 +117,47 @@
                     <i class="bi bi-image d-block mb-2" style="font-size: 2rem;"></i>
                     まだ画像が登録されていません
                 </div>
+            </div>
+        </div>
+
+        <!-- アップロードフォーム -->
+        <div class="admin-card">
+            <div class="p-4">
+                <h6 class="fw-bold mb-3"><i class="bi bi-upload me-2 text-primary"></i>画像をアップロード</h6>
+
+                <form th:action="@{/admin/spot/{id}/photo/upload(id=${spot.id})}" method="post"
+                    enctype="multipart/form-data">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <!-- ドロップゾーン -->
+                    <div class="drop-zone text-center py-5 mb-3" id="dropZone"
+                        onclick="document.getElementById('fileInput').click()">
+                        <i class="bi bi-cloud-arrow-up text-primary" style="font-size: 2rem;"></i>
+                        <p class="mt-2 mb-1 fw-medium">クリックまたはドラッグ＆ドロップで画像を選択</p>
+                        <p class="text-muted small mb-0">JPG・PNG・WEBP ／ 最大 5MB ／ 複数選択可</p>
+                        <input type="file" id="fileInput" name="files" accept="image/*" multiple>
+                    </div>
+
+                    <!-- 選択ファイル名表示 -->
+                    <p id="fileNames" class="text-muted small mb-2" style="display:none;"></p>
+
+                    <!-- プレビュー -->
+                    <div id="preview" class="flex-wrap gap-2 mb-3" style="display:none;"></div>
+
+                    <!-- 表示順 -->
+                    <div class="row g-3 align-items-end mb-3" style="max-width: 360px;">
+                        <div class="col">
+                            <label for="displayOrder" class="form-label fw-semibold small">表示順（先頭番号）</label>
+                            <input type="number" id="displayOrder" name="displayOrder" class="form-control" min="1"
+                                placeholder="例：1" th:value="${photos.size() + 1}">
+                            <div class="form-text">複数枚の場合はここから連番で設定されます</div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-upload me-1"></i>アップロード
+                    </button>
+                </form>
             </div>
         </div>
 
