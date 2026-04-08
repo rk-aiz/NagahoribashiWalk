@@ -84,4 +84,9 @@ public interface SpotMapper {
 
     long countBySubCategoryId(@Param("subCategoryId") Long subCategoryId);
 
+    List<SpotSummary> findTopByRating();
+
+    List<SpotSummary> findTopByFavorite();
+
+    List<SpotSummary> findRandomSpots();
 }

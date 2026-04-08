@@ -180,6 +180,7 @@ INSERT INTO favorites (user_id, spot_id) VALUES
 (4, 22),   -- なんばHatch
 (4, 23),   -- Zepp Namba
 (4, 24),   -- 梅田芸術劇場
+(4, 47),   -- カフェ＆カレー ボタ
 
 -- user4 (id=5): カフェ・食べ歩き好き
 (5,  8),   -- 本宮的茶

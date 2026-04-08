@@ -189,7 +189,8 @@
 	</select>
 
 	<!-- トップページおすすめ -->
-	<select id="findRecommendedSpots"
+	<!-- 平均評価順 -->
+	<select id="findTopByRating"
 		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
 		SELECT
 		s.id,
@@ -203,7 +204,7 @@
 		LEFT JOIN LATERAL (
 		SELECT * FROM spot_photos
 		WHERE spot_id = s.id
-		ORDER BY created_at DESC
+		ORDER BY s.created_at DESC
 		LIMIT 1
 		) sp ON true
 		LEFT JOIN (
@@ -226,7 +227,87 @@
 		DESC NULLS LAST
 		LIMIT 3
 	</select>
+	
+	<!-- お気に入り数順 -->
+	<select id="findTopByFavorite"
+	resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
 
+	SELECT
+	s.id,
+	s.spot_name,
+	sp.photo_url,
+	r.average_rating,
+	sc.name AS sub_category_name,
+	c.name AS category_name,
+	s.keywords,
+	COUNT(f.id) AS favorite_count
+
+	FROM spots s
+
+	LEFT JOIN favorites f ON f.spot_id = s.id
+
+	LEFT JOIN LATERAL (
+		SELECT * FROM spot_photos
+		WHERE spot_id = s.id
+		ORDER BY s.created_at DESC
+		LIMIT 1
+	) sp ON true
+
+	LEFT JOIN (
+		SELECT spot_id, AVG(rating) AS average_rating
+		FROM reviews
+		GROUP BY spot_id
+	) r ON r.spot_id = s.id
+
+	LEFT JOIN sub_categories sc ON sc.id = s.sub_category_id
+	LEFT JOIN categories c ON c.id = sc.category_id
+
+	WHERE s.deleted_at IS NULL
+
+	GROUP BY
+	s.id, s.spot_name, sp.photo_url,
+	r.average_rating, sc.name, c.name, s.keywords
+
+	ORDER BY favorite_count DESC
+	LIMIT 3
+</select>
+
+<!-- 完全ランダム順 -->
+<select id="findRandomSpots"
+	resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
+
+	SELECT
+	s.id,
+	s.spot_name,
+	sp.photo_url,
+	r.average_rating,
+	sc.name AS sub_category_name,
+	c.name AS category_name,
+	s.keywords
+
+	FROM spots s
+
+	LEFT JOIN LATERAL (
+		SELECT * FROM spot_photos
+		WHERE spot_id = s.id
+		ORDER BY s.created_at DESC
+		LIMIT 1
+	) sp ON true
+
+	LEFT JOIN (
+		SELECT spot_id, AVG(rating) AS average_rating
+		FROM reviews
+		GROUP BY spot_id
+	) r ON r.spot_id = s.id
+
+	LEFT JOIN sub_categories sc ON sc.id = s.sub_category_id
+	LEFT JOIN categories c ON c.id = sc.category_id
+
+	WHERE s.deleted_at IS NULL
+
+	ORDER BY RANDOM()
+	LIMIT 3
+</select>
 	<!-- 全スポットの平均評価（小数第1位） -->
 	<select id="findAverageRatingAll" resultType="java.lang.Double">
 		SELECT
