@@ -162,6 +162,12 @@
 									       class="btn btn-sm btn-link p-1" style="color: #3b82f6;" title="編集">
 									        <i class="bi bi-pencil-square" style="font-size: 1rem;"></i>
 									    </a>
+									    
+									    <!-- 画像管理 -->
+								        <a th:href="@{/admin/spot/{id}/images(id=${spot.id})}"
+								           class="btn btn-sm btn-link p-1" style="color: #10b981;" title="画像管理">
+								            <i class="bi bi-images" style="font-size: 1rem;"></i>
+								        </a>
 									
 									    <!-- 削除 -->
 									    <form th:action="@{/admin/spot/delete}" method="POST"
