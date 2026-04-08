@@ -39,6 +39,16 @@ public class AdminSpotPhotoController {
             Model model) {
         
         spotPhotoService.delete(photoId);
+        redirectAttributes.addAttribute("message", "画像を削除しました");
+
+        return "redirect:/admin/spot/" + spotId + "/photo";
+    }
+
+    @PostMapping("/admin/spot/{spotId}/photo/upload")
+    public String upload(
+            @PathVariable("spotId") Long spotId,
+            RedirectAttributes redirectAttributes,
+            Model model) {
 
         return "redirect:/admin/spot/" + spotId + "/photo";
     }
