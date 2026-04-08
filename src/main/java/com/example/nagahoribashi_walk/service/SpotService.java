@@ -39,7 +39,7 @@ public interface SpotService {
     /** 【一般】対象サブカテゴリに属するスポットをページネーションで取得 */
     Page<SpotSummary> getPageBySubCategoryId(Long SubcategoryId, Pageable pageable);
     
-    
+    List<SpotSummary> getRecommendedRandomPattern();
     
     // =============== 管理者用 ===============
     

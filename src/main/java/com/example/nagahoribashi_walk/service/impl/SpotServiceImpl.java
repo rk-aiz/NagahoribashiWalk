@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -126,6 +127,19 @@ public class SpotServiceImpl implements SpotService {
     @Override
     public List<SpotSummary> getRecommendedSpots() {
         return spotMapper.findRecommendedSpots();
+    }
+    
+    public List<SpotSummary> getRecommendedRandomPattern() {
+
+        int rand = ThreadLocalRandom.current().nextInt(3);
+        
+        if (rand == 0) {
+            return spotMapper.findTopByRating();   // 評価順
+        } else if (rand == 1) {
+            return spotMapper.findTopByFavorite(); // お気に入り順
+        } else {
+            return spotMapper.findRandomSpots();   // ランダム
+        }
     }
 
     // 大谷記載

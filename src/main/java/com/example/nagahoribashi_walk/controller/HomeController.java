@@ -24,13 +24,20 @@ public class HomeController {
 	 * SpotService から SpotSummary を3件取得して model に渡す
 	 */
 
+//	@GetMapping("/")
+//	public String showHome(Model model) {
+//		// SpotSummaryを3件取得してmodelにセット
+//		model.addAttribute("spots", spotService.getRecommendedSpots());
+//
+//		// home.htmlを表示
+//		return "home";
+//	}
 	@GetMapping("/")
-	public String showHome(Model model) {
-		// SpotSummaryを3件取得してmodelにセット
-		model.addAttribute("spots", spotService.getRecommendedSpots());
+	public String top(Model model) {
 
-		// home.htmlを表示
-		return "home";
+	    model.addAttribute("spots", spotService.getRecommendedRandomPattern());
+
+	    return "home";
 	}
 
 }
