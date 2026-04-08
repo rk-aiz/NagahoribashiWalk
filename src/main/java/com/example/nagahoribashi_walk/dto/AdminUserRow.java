@@ -4,24 +4,38 @@ import java.time.LocalDateTime;
 
 import lombok.Data;
 
+/**
+ * ユーザー管理画面用DTO
+ *
+ * @author 篠原
+ */
 @Data
 public class AdminUserRow {
 
-	private Long id;//主キー
+    /** 主キー */
+    private Long id;
 
-	private String username;//ユーザー名
+    /** ユーザー名 */
+    private String username;
 
-	private String displayName;//表示名
+    /** 表示名 */
+    private String displayName;
 
-	private String email;//メールアドレス
+    /** メールアドレス */
+    private String email;//
 
-	private String role;//役割
+    /** 役割 */
+    private String role;
 
-	private LocalDateTime createdAt;//作成日時
+    /** 有効フラグ */
+    private Boolean enabled;
 
-	private LocalDateTime updatedAt;//更新日時
+    /** 作成日時 */
+    private LocalDateTime createdAt;
 
-	private Boolean enabled;//有効フラグ
-	
-	private LocalDateTime deletedAt;
+    /** 更新日時 */
+    private LocalDateTime updatedAt;
+
+    /** 削除日時 */
+    private LocalDateTime deletedAt;
 }

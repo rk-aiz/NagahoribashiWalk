@@ -13,7 +13,7 @@ import com.example.nagahoribashi_walk.entity.User;
 /**
  * usersテーブルに対応したMapperのインターフェース
  * 
- * @author 海津
+ * @author 海津, 篠原, 池田
  */
 @Mapper
 public interface UserMapper {
@@ -81,7 +81,7 @@ public interface UserMapper {
     long countAdminUsers(@Param("includeDeleted") boolean includeDeleted);
 
     /**
-     * 管理者側ユーザー一覧検索用
+     * 管理者側ユーザー一覧検索用（ページネーション）
      */
     List<AdminUserRow> searchAdminUsers(
             @Param("keyword") String keyword,
@@ -90,6 +90,9 @@ public interface UserMapper {
             @Param("sort") String sort,
             @Param("includeDeleted") boolean includeDeleted);
 
-    long countSearchAdminUsers(@Param("keyword") String keyword,@Param("includeDeleted") boolean includeDeleted);
+    /**
+     * 管理者側ユーザー一覧検索用（総数取得）
+     */
+    long countSearchAdminUsers(@Param("keyword") String keyword, @Param("includeDeleted") boolean includeDeleted);
 
 }

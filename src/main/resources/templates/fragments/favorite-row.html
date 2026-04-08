@@ -95,8 +95,7 @@
 
         <!-- 右端: お気に入り解除ボタン -->
         <div class="d-flex align-items-center pe-3">
-            <form th:action="@{/favorite/remove/{spotId}(spotId=${fav.spotId})}" method="post">
-                <input type="hidden" name="_method" value="DELETE">
+            <form th:action="@{/mypage/favorite/remove/{spotId}(spotId=${fav.spotId})}" method="post">
                 <button type="submit" class="fav-row-delete text-secondary" title="お気に入りを解除">
                     <i class="bi bi-heart-fill" style="font-size: 1.1rem; color: #f87171;"></i>
                 </button>

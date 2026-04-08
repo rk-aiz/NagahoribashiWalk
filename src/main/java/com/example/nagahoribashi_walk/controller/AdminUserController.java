@@ -19,8 +19,9 @@ import com.example.nagahoribashi_walk.service.userdetails.LoginUser;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 
- * @author 海津
+ * ユーザー管理画面用のコントローラー
+ *
+ * @author 海津、篠原
  */
 @Controller
 @RequestMapping("/admin/user")
@@ -29,6 +30,9 @@ public class AdminUserController {
 
     private final UserService userService;
 
+    /**
+     * 【管理者】ユーザー一覧画面を表示
+     */
     @GetMapping("/list")
     public String userList(
             @RequestParam(name = "keyword", required = false) String keyword,
@@ -37,7 +41,7 @@ public class AdminUserController {
             @RequestParam(name = "includeDeleted", defaultValue = "false") boolean includeDeleted,
             Model model) {
 
-        Page<AdminUserRow> page = userService.getAdminUserPage(pageable, sort, keyword,includeDeleted);
+        Page<AdminUserRow> page = userService.getAdminUserPage(pageable, sort, keyword, includeDeleted);
 
         model.addAttribute("page", page);
         model.addAttribute("sort", sort);
@@ -46,6 +50,9 @@ public class AdminUserController {
         return "admin/user/list";
     }
 
+    /**
+     * 【管理者】ユーザーの有効 / 無効を切り替える
+     */
     @PostMapping("/toggle")
     public String toggle(@RequestParam Long id,
             @RequestParam(name = "keyword", required = false) String keyword,
@@ -56,15 +63,18 @@ public class AdminUserController {
 
         userService.toggleEnabled(id);
 
-        if(keyword != null) {
-        	redirectAttributes.addAttribute("keyword", keyword);
+        if (keyword != null) {
+            redirectAttributes.addAttribute("keyword", keyword);
         }
-        
+
         return "redirect:/admin/user/list?page=" + page
                 + "&sort=" + sort
                 + "&includeDeleted=" + includeDeleted;
     }
 
+    /**
+     * 【管理者】ユーザーを削除(退会処理)する
+     */
     @PostMapping("/delete")
     public String delete(
             @RequestParam("username") String username,
@@ -76,11 +86,12 @@ public class AdminUserController {
             RedirectAttributes redirectAttributes) {
 
         userService.delete(username, loginUser.getUsername());
+        redirectAttributes.addFlashAttribute("message", username + "を削除しました。");
 
-        if(keyword != null) {
-        	redirectAttributes.addAttribute("keyword", keyword);
+        if (keyword != null) {
+            redirectAttributes.addAttribute("keyword", keyword);
         }
-        
+
         return "redirect:/admin/user/list?page=" + page
                 + "&sort=" + sort
                 + "&includeDeleted=" + includeDeleted;
