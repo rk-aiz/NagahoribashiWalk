@@ -11,33 +11,25 @@ import lombok.RequiredArgsConstructor;
 /**
  * ホーム(トップ画面)用のコントローラー
  * 
- * @author 海津
+ * @author 海津, 篠原
  */
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
 
-	private final SpotService spotService;
+    private final SpotService spotService;
 
-	/**
-	 * トップページを表示する
-	 * SpotService から SpotSummary を3件取得して model に渡す
-	 */
+    /**
+     * トップページを表示する
+     * SpotService から SpotSummary を3件取得して model に渡す
+     */
+    @GetMapping("/")
+    public String showHome(Model model) {
+        // SpotSummaryを3件取得してmodelにセット
+        model.addAttribute("spots", spotService.getRecommendedSpots());
 
-//	@GetMapping("/")
-//	public String showHome(Model model) {
-//		// SpotSummaryを3件取得してmodelにセット
-//		model.addAttribute("spots", spotService.getRecommendedSpots());
-//
-//		// home.htmlを表示
-//		return "home";
-//	}
-	@GetMapping("/")
-	public String top(Model model) {
-
-	    model.addAttribute("spots", spotService.getRecommendedRandomPattern());
-
-	    return "home";
-	}
+        // home.htmlを表示
+        return "home";
+    }
 
 }

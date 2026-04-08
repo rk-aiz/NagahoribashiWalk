@@ -126,20 +126,15 @@ public class SpotServiceImpl implements SpotService {
     // トップページおすすめ３件表示用
     @Override
     public List<SpotSummary> getRecommendedSpots() {
-        return spotMapper.findRecommendedSpots();
-    }
-    
-    public List<SpotSummary> getRecommendedRandomPattern() {
 
         int rand = ThreadLocalRandom.current().nextInt(3);
-        
-        if (rand == 0) {
-            return spotMapper.findTopByRating();   // 評価順
-        } else if (rand == 1) {
-            return spotMapper.findTopByFavorite(); // お気に入り順
-        } else {
-            return spotMapper.findRandomSpots();   // ランダム
-        }
+
+        return switch (rand) {
+            case 0 -> spotMapper.findTopByRating(); // 評価順
+            case 1 -> spotMapper.findTopByFavorite(); // お気に入り登録数順
+            case 2 -> spotMapper.findRandomSpots(); // ランダム
+            default -> spotMapper.findTopByRating(); // 評価順
+        };
     }
 
     // 大谷記載
@@ -227,7 +222,7 @@ public class SpotServiceImpl implements SpotService {
     public void updateSpot(Spot spot) {
         spotMapper.update(spot);
     }
-    
+
     @Override
     public void softDelete(Long spotId) {
         spotMapper.softDelete(spotId);
