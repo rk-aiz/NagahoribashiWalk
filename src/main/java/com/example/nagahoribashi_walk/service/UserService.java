@@ -48,4 +48,9 @@ public interface UserService {
      * ページネーション付きで管理者側がユーザー一覧を取得する
      */
     Page<AdminUserRow> getAdminUserPage(Pageable pageable, String sort, String keyword, boolean incluedDeleted);
+
+    /**
+     * Role対象ユーザー数をカウントする
+     */
+    long getUserCountByRole(String role);
 }
