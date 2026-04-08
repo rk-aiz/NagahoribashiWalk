@@ -65,6 +65,67 @@
         </ul>
     </nav>
 
+    <!-- 管理画面など、シンプルな baseUrl + keyword + page 構成用 -->
+    <nav th:fragment="pagerSimple(spotPages, baseUrl, keyword, navClass)" th:if="${spotPages.totalPages > 1}"
+        aria-label="ページネーション" class="d-flex justify-content-center" th:classappend="${navClass}">
+
+        <ul class="pagination pager-minimal mb-0">
+
+            <!-- 前へ -->
+            <li class="page-item" th:classappend="${spotPages.first} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{${baseUrl}(keyword=${#strings.isEmpty(keyword) ? null : keyword}, page=${spotPages.number - 1})}">
+                    <i class="bi bi-chevron-left"></i> 前へ
+                </a>
+            </li>
+
+            <!-- 1ページ目（常に表示） -->
+            <li class="page-item" th:classappend="${spotPages.number == 0} ? 'active'">
+                <a class="page-link"
+                   th:href="@{${baseUrl}(keyword=${#strings.isEmpty(keyword) ? null : keyword}, page=0)}">1</a>
+            </li>
+
+            <!-- 左省略記号 -->
+            <li th:if="${spotPages.totalPages > 5 and spotPages.number > 3}" class="page-item disabled">
+                <span class="page-link pager-ellipsis">…</span>
+            </li>
+
+            <!-- 中間ページ（current ± 2、先頭/末尾を除く） -->
+            <th:block th:if="${spotPages.totalPages >= 3}">
+                <th:block th:each="i : ${#numbers.sequence(1, spotPages.totalPages - 2)}"
+                    th:if="${spotPages.totalPages <= 5 or (i >= spotPages.number - 2 and i <= spotPages.number + 2)}">
+                    <li class="page-item" th:classappend="${i == spotPages.number} ? 'active'">
+                        <a class="page-link"
+                           th:href="@{${baseUrl}(keyword=${#strings.isEmpty(keyword) ? null : keyword}, page=${i})}"
+                           th:text="${i + 1}">2</a>
+                    </li>
+                </th:block>
+            </th:block>
+
+            <!-- 右省略記号 -->
+            <li th:if="${spotPages.totalPages > 5 and spotPages.number < spotPages.totalPages - 4}"
+                class="page-item disabled">
+                <span class="page-link pager-ellipsis">…</span>
+            </li>
+
+            <!-- 最終ページ（常に表示） -->
+            <li class="page-item" th:classappend="${spotPages.number == spotPages.totalPages - 1} ? 'active'">
+                <a class="page-link"
+                   th:href="@{${baseUrl}(keyword=${#strings.isEmpty(keyword) ? null : keyword}, page=${spotPages.totalPages - 1})}"
+                   th:text="${spotPages.totalPages}">N</a>
+            </li>
+
+            <!-- 次へ -->
+            <li class="page-item" th:classappend="${spotPages.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{${baseUrl}(keyword=${#strings.isEmpty(keyword) ? null : keyword}, page=${spotPages.number + 1})}">
+                    次へ <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+
     <!-- 検索ページ用 -->
     <nav th:fragment="pagerSearch(spotPages, keyword, navClass)" th:if="${spotPages.totalPages > 1}"
         aria-label="ページネーション" class="d-flex justify-content-center" th:classappend="${navClass}">

@@ -158,36 +158,38 @@
         <!-- メニューカード -->
         <div class="row g-3 mb-4">
 
-            <!-- スポット新規登録 -->
-            <div class="col-md-6">
-                <a th:href="@{/admin/spot/new}" class="menu-card p-4 h-100">
-                    <div class="d-flex align-items-start gap-3 mb-3">
-                        <div class="menu-icon" style="background-color: rgba(99, 102, 241, 0.2);">
-                            <i class="bi bi-plus-lg" style="color: #818cf8;"></i>
-                        </div>
-                        <div>
-                            <p class="menu-title">スポット新規登録</p>
-                            <p class="menu-subtitle mb-0">新しいスポットを登録する</p>
-                        </div>
-                    </div>
-                    <p class="menu-desc">スポット名、住所、カテゴリーなどの情報を入力して新規スポットを登録できます。</p>
-                </a>
-            </div>
-
-            <!-- スポット一覧 -->
+            <!-- スポット管理 -->
             <div class="col-md-6">
                 <a th:href="@{/admin/spot/list}" class="menu-card p-4 h-100">
                     <div class="d-flex align-items-start gap-3 mb-3">
-                        <div class="menu-icon" style="background-color: rgba(59, 130, 246, 0.2);">
-                            <i class="bi bi-list-ul" style="color: #60a5fa;"></i>
+                        <div class="menu-icon" style="background-color: rgba(99, 102, 241, 0.2);">
+                            <i class="bi bi-map" style="color: #818cf8;"></i>
                         </div>
                         <div>
-                            <p class="menu-title">スポット一覧</p>
+                            <p class="menu-title">スポット管理</p>
                             <p class="menu-subtitle mb-0">登録されているスポットを管理</p>
                         </div>
                     </div>
-                    <p class="menu-desc" th:text="'スポットの検索、詳細確認、編集ができます。現在' + ${spotCount} + '件のスポットが登録されています。'">
-                        スポットの検索、詳細確認、編集ができます。
+                    <p class="menu-desc" th:text="'スポットの一覧確認・新規登録・編集ができます。現在' + ${spotCount} + '件のスポットが登録されています。'">
+                        スポットの一覧確認・新規登録・編集ができます。
+                    </p>
+                </a>
+            </div>
+
+            <!-- レビュー管理 -->
+            <div class="col-md-6">
+                <a th:href="@{/admin/review/list}" class="menu-card p-4 h-100">
+                    <div class="d-flex align-items-start gap-3 mb-3">
+                        <div class="menu-icon" style="background-color: rgba(59, 130, 246, 0.2);">
+                            <i class="bi bi-chat-left-text" style="color: #60a5fa;"></i>
+                        </div>
+                        <div>
+                            <p class="menu-title">レビュー管理</p>
+                            <p class="menu-subtitle mb-0">投稿されたレビューを管理</p>
+                        </div>
+                    </div>
+                    <p class="menu-desc" th:text="'レビューの確認・削除ができます。現在' + ${reviewCount} + '件のレビューが投稿されています。'">
+                        レビューの確認・削除ができます。
                     </p>
                 </a>
             </div>

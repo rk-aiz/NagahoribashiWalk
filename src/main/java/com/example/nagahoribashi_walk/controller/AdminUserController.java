@@ -30,37 +30,42 @@ public class AdminUserController {
 
     @GetMapping("/list")
     public String userList(
-    		@RequestParam(defaultValue = "desc")String sort,
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "sort", defaultValue = "desc") String sort,
             @PageableDefault(size = 5) Pageable pageable,
             Model model) {
 
-        Page<AdminUserRow> page = userService.getAdminUserPage(pageable, sort);
-        
+        Page<AdminUserRow> page = userService.getAdminUserPage(pageable, sort, keyword);
+
         model.addAttribute("page", page);
         model.addAttribute("sort", sort);
-
+        model.addAttribute("keyword", keyword);
         return "admin/user/list";
     }
 
     @PostMapping("/toggle")
     public String toggle(@RequestParam Long id,
-    		@RequestParam int page,
-    		@RequestParam String sort) {
-    	
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam("page") Integer page,
+            @RequestParam("sort") String sort) {
+
+        // ユーザーの有効無効切り替え処理
         userService.toggleEnabled(id);
-        return "redirect:/admin/user/list?page="+ page+ "&sort=" + sort;
+
+        return "redirect:/admin/user/list?page=" + page + "&sort=" + sort + "&keyword=" + keyword;
     }
 
     @PostMapping("/delete")
     public String delete(
-    		@RequestParam("username") String username,
-    		@RequestParam String sort,
-    		@RequestParam int page,
-    		@AuthenticationPrincipal LoginUser loginUser
-    		) {
+            @RequestParam("username") String username,
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam("sort") String sort,
+            @RequestParam("page") Integer page,
+            @AuthenticationPrincipal LoginUser loginUser) {
 
+        // ユーザーの(論理)削除処理
         userService.delete(username, loginUser.getUsername());
 
-        return "redirect:/admin/user/list?page="+ page+ "&sort=" + sort;
+        return "redirect:/admin/user/list?page=" + page + "&sort=" + sort + "&keyword=" + keyword;
     }
 }

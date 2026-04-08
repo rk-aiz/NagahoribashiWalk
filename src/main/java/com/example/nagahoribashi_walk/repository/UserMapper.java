@@ -21,17 +21,23 @@ public interface UserMapper {
     /**
      * ユーザー名から、Userインスタンスを取得する
      */
-    Optional<User> findByUsername(String username);
+    Optional<User> findByUsername(@Param("username") String username);
 
     /**
      * ユーザー名から、UserProfileインスタンスを取得する
      */
-    Optional<UserProfile> findProfileByUsername(String username);
+    Optional<UserProfile> findProfileByUsername(@Param("username") String username);
 
     /**
      * Userを新規保存する
      */
     void insert(User user);
+
+    /**
+     * @author 池田
+     *         プロフィールを更新する
+     */
+    void updateProfile(User user);
 
     /**
      * ソフトデリートを行う
@@ -72,5 +78,16 @@ public interface UserMapper {
             @Param("sort") String sort);
 
     long countAdminUsers();
+
+    /**
+     * 管理者側ユーザー一覧検索用
+     */
+    List<AdminUserRow> searchAdminUsers(
+            @Param("keyword") String keyword,
+            @Param("limit") int limit,
+            @Param("offset") long offset,
+            @Param("sort") String sort);
+
+    long countSearchAdminUsers(@Param("keyword") String keyword);
 
 }

@@ -2,61 +2,122 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper
 	namespace="com.example.nagahoribashi_walk.repository.UserMapper">
-	
-	<select id="findByUsername" resultType="com.example.nagahoribashi_walk.entity.User">
-		SELECT id, username, password, email, role, display_name, deleted_at, created_at, updated_at, enabled
+
+	<select id="findByUsername"
+		resultType="com.example.nagahoribashi_walk.entity.User">
+		SELECT id, username, password, email, role, display_name,
+			deleted_at, created_at, updated_at, enabled
 		FROM users
 		WHERE username = #{username} AND deleted_at IS NULL
 	</select>
-	
+
 	<!-- ユーザープロファイル取得 -->
-	<select id="findProfileByUsername" resultType="com.example.nagahoribashi_walk.dto.UserProfile">
+	<select id="findProfileByUsername"
+		resultType="com.example.nagahoribashi_walk.dto.UserProfile">
 		SELECT id, username, email, display_name, created_at
-		FROM users
+		FROM
+			users
 		WHERE username = #{username} AND deleted_at IS NULL AND enabled = true
 	</select>
-	
-    <!-- ページネーション付き取得 -->
-    <select id="findAll" resultType="com.example.nagahoribashi_walk.entity.User">
-        SELECT id, username, password, email, role, display_name, deleted_at, created_at, updated_at, enabled
+
+	<!-- ページネーション付き取得 -->
+	<select id="findAll"
+		resultType="com.example.nagahoribashi_walk.entity.User">
+		SELECT id, username, password, email, role, display_name, deleted_at,
+			created_at, updated_at, enabled
 		FROM users
-        LIMIT #{limit} OFFSET #{offset}
-    </select>
+		LIMIT #{limit} OFFSET #{offset}
+	</select>
 
-    <!-- ユーザーの新規追加 -->
-    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO users (
-            username, 
-            password, 
-            email, 
-            role,
-            display_name
-        ) VALUES (
-            #{username},
-            #{password},
-            #{email},
-            #{role},
-            #{displayName}
-        )
-    </insert>
+	<!-- ユーザーの新規追加 -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO users (
+			username,
+			password,
+			email,
+			role,
+			display_name
+		) VALUES (
+			#{username},
+			#{password},
+			#{email},
+			#{role},
+			#{displayName}
+		)
+	</insert>
 
-    <!-- ユーザー数のカウント -->
-    <select id="count" resultType="long">
-        SELECT count(*) FROM users
-    </select>
+	<!-- プロフィール更新 -->
+	<update id="updateProfile">
+		UPDATE users
+		SET
+		email = #{email},
+		display_name = #{displayName}
+		WHERE username = #{username}
+		AND deleted_at IS NULL
+	</update>
 
-    <!-- ユーザーの存在チェック (ソフトデリートも対象に含める) -->
-    <select id="exists" resultType="boolean">
-        SELECT EXISTS (SELECT 1 FROM users WHERE username = #{username})
-    </select>
+	<!-- ユーザー数のカウント -->
+	<select id="count" resultType="long">
+		SELECT count(*) FROM users
+	</select>
 
-    <!-- ユーザーの存在チェック -->
-    <select id="existsByEmail" resultType="boolean">
-        SELECT EXISTS (SELECT 1 FROM users WHERE email = #{email})
-    </select>
+	<!-- ユーザーの存在チェック (ソフトデリートも対象に含める) -->
+	<select id="exists" resultType="boolean">
+		SELECT EXISTS (SELECT 1 FROM users WHERE username = #{username})
+	</select>
+
+	<!-- ユーザーの存在チェック -->
+	<select id="existsByEmail" resultType="boolean">
+		SELECT EXISTS (SELECT 1 FROM users WHERE email = #{email})
+	</select>
+
+	<!-- 管理者用ユーザー一覧 -->
+	<select id="findAllForAdmin"
+		resultType="com.example.nagahoribashi_walk.dto.AdminUserRow">
+		SELECT
+		id,
+		username,
+		display_name AS displayName,
+		email,
+		role,
+		created_at AS createdAt,
+		updated_at AS updatedAt,
+		enabled
+		FROM users
+		WHERE deleted_at IS NULL
+		ORDER BY id
+		<choose>
+			<when test="sort == 'asc'">
+				ASC
+			</when>
+			<otherwise>
+				DESC
+			</otherwise>
+		</choose>
+
+		LIMIT #{limit} OFFSET #{offset}
+	</select>
+
+	<select id="countAdminUsers" resultType="long">
+		SELECT COUNT(*) FROM users
+		WHERE deleted_at IS NULL
+	</select>
+
+	<update id="softDelete">
+		UPDATE users
+		SET deleted_at = CURRENT_TIMESTAMP
+		-- SET enabled = false
+		WHERE id = #{id}
+	</update>
+
+	<update id="toggleEnabled">
+		UPDATE users
+		SET enabled = NOT enabled
+        WHERE id = #{id}
+    </update>
     
-    <!-- 管理者用ユーザー一覧 -->
-    <select id="findAllForAdmin" resultType="com.example.nagahoribashi_walk.dto.AdminUserRow">
+    <!-- 管理者用ユーザー検索 -->
+	<select id="searchAdminUsers" resultType="com.example.nagahoribashi_walk.dto.AdminUserRow">
 	    SELECT
 	        id,
 	        username,
@@ -68,8 +129,13 @@
 	        enabled
 	    FROM users
 	    WHERE deleted_at IS NULL
+	      AND (
+	            username LIKE CONCAT('%', #{keyword}, '%')
+	         OR email LIKE CONCAT('%', #{keyword}, '%')
+	         OR display_name LIKE CONCAT('%', #{keyword}, '%')
+	      )
 	    ORDER BY id
-	   <choose>
+	    <choose>
 	        <when test="sort == 'asc'">
 	            ASC
 	        </when>
@@ -77,26 +143,18 @@
 	            DESC
 	        </otherwise>
 	    </choose>
-	    
 	    LIMIT #{limit} OFFSET #{offset}
 	</select>
 
-	<select id="countAdminUsers" resultType="long">
-	    SELECT COUNT(*) FROM users
+	<select id="countSearchAdminUsers" resultType="long">
+	    SELECT COUNT(*)
+	    FROM users
 	    WHERE deleted_at IS NULL
+	      AND (
+	            username LIKE CONCAT('%', #{keyword}, '%')
+	         OR email LIKE CONCAT('%', #{keyword}, '%')
+	         OR display_name LIKE CONCAT('%', #{keyword}, '%')
+	      )
 	</select>
-
-    <update id="softDelete">
-        UPDATE users
-        SET deleted_at = CURRENT_TIMESTAMP
-        -- SET enabled = false
-        WHERE id = #{id}
-    </update>
-    
-    <update id="toggleEnabled">
-		UPDATE users
-		SET enabled = NOT enabled
-        WHERE id = #{id}
-    </update>
 
 </mapper>
