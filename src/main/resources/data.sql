@@ -25,11 +25,11 @@ INSERT INTO users (username, password, email, role, display_name) VALUES
 ('demouser', '$2a$10$CKcgVyyKiMiVPZS88S.EeON2w6FKEVr.1wVQVVa8d6vDi74mGKEmq', 'demouser@example.com', 'USER', 'デモユーザー');
 
 -- カテゴリ
--- is_default=TRUE の「その他」はフォールバック先。display_order=999 で常に末尾に表示。
+-- is_default=TRUE の「その他」はフォールバック先。display_order=NULL で常に末尾に表示。
 -- categories に INSERT するたびに add_default_sub_category トリガーが発火し、
--- 「未分類」サブカテゴリ（is_default=TRUE, display_order=999）を自動生成する。
+-- 「未分類」サブカテゴリ（is_default=TRUE, display_order=NULL）を自動生成する。
 INSERT INTO categories (name, display_order, is_default) VALUES
-('その他', 99999, true),    -- フォールバック用デフォルトカテゴリ（削除不可）
+('その他', NULL, true),    -- フォールバック用デフォルトカテゴリ（削除不可）
 ('グルメ', 1, false),
 ('観光スポット', 2, false),
 ('ショッピング', 3, false),

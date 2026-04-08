@@ -213,6 +213,11 @@ public class SpotServiceImpl implements SpotService {
     public void updateSpot(Spot spot) {
         spotMapper.update(spot);
     }
+    
+    @Override
+    public void softDelete(Long spotId) {
+        spotMapper.softDelete(spotId);
+    }
 
     /**
      * 【管理者】スポットをIDから取得する
