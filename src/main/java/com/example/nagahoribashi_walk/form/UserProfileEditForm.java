@@ -11,6 +11,7 @@ import lombok.Data;
  */
 @Data
 public class UserProfileEditForm {
+
 	 /** 表示名 */
     @NotBlank(message = "表示名を入力してください")
     @Size(max = 50, message = "表示名は50文字以内で入力してください")

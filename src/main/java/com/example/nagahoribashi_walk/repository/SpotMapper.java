@@ -50,6 +50,13 @@ public interface SpotMapper {
     List<AdminSpotRow> findAllForAdmin(
     		@Param("offset") long offset, @Param("limit") int limit);
 
+    List<AdminSpotRow> findAllForAdminByKeyword(
+            @Param("keyword") String keyword,
+            @Param("offset") long offset,
+            @Param("limit") int limit);
+
+    long countForAdminByKeyword(@Param("keyword") String keyword);
+
     void insert(Spot spot);
 
     void update(Spot spot);

@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
+import java.lang.ProcessBuilder.Redirect;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
@@ -14,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.nagahoribashi_walk.entity.User;
 import com.example.nagahoribashi_walk.form.UserProfileEditForm;
@@ -52,12 +55,12 @@ public class UserController {
 
         return "/user/mypage";
     }
-    
+
     /**
      * プロフィール更新処理
      * 
      * @param loginUser ログインユーザー
-     * @param form プロフィール編集フォーム
+     * @param form      プロフィール編集フォーム
      * @return マイページへリダイレクト
      */
     @PostMapping("/mypage/profile/update")
@@ -81,24 +84,36 @@ public class UserController {
         // 更新後はマイページへ戻す
         return "redirect:/mypage";
     }
-    
-    //ユーザー退会用
+
+    // ユーザー退会画面
+    @GetMapping("/unsubscribe")
+    // Authentication(誰をログアウトするか)
+    // Request(セッション情報を消す)
+    // Response(Cookieを消す)
+    public String confirmUnsubscribe() {
+        return "/user/unsubscribe";
+    }
+
+    // ユーザー退会用
     @PostMapping("/unsubscribe")
-    //Authentication(誰をログアウトするか)
-    //Request(セッション情報を消す)
-    //Response(Cookieを消す)
-    public String unsubscribe(HttpServletRequest request,
-                              HttpServletResponse response,
-                              Authentication authentication) {
+    public String unsubscribe(
+            @AuthenticationPrincipal LoginUser loginUser,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes) {
 
-        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        // 退会処理
+        userService.unsubscribe(loginUser.getId());
 
-        Long userId = loginUser.getId();
-
-        userService.unsubscribe(userId);
-
+        // ログアウト処理
         new SecurityContextLogoutHandler().logout(request, response, authentication);
 
-        return "redirect:/";
+        return "redirect:/unsubscribe/complete";
+    }
+
+    @GetMapping("/unsubscribe/complete")
+    public String unsubscribeComplete() {
+        return "/user/unsubscribe-complete";
     }
 }

@@ -66,7 +66,7 @@ public class SpotServiceImpl implements SpotService {
         }
         return sb.toString();
     }
-    
+
     /**
      * ひらがな → カタカナ変換
      */
@@ -84,51 +84,43 @@ public class SpotServiceImpl implements SpotService {
         }
         return sb.toString();
     }
-    
+
     /**
      * ページとキーワードに対応したスポット一覧を返す
      */
     @Override
     public Page<SpotSummary> searchByKeywords(String keyword, Pageable pageable) {
-	
-	    // 🔸 スペースで分割
-	    String[] splitKeywords = keyword.trim().replace('　', ' ').split("\\s+");
-	
-	    List<Map<String, String>> keywordMapList = new ArrayList<>();
-	    
-	    for (String kw : splitKeywords) {
-	    	
-	    	Map<String, String> map = new HashMap<>();
-	    	map.put("origin", kw);
-	    	map.put("hira", toHiragana(kw));
-	    	map.put("kana", toKatakana(kw));
-	    	keywordMapList.add(map);
-	    }
-	    
-	    
 
-	    
+        // 🔸 スペースで分割
+        String[] splitKeywords = keyword.trim().replace('　', ' ').split("\\s+");
+
+        List<Map<String, String>> keywordMapList = new ArrayList<>();
+
+        for (String kw : splitKeywords) {
+
+            Map<String, String> map = new HashMap<>();
+            map.put("origin", kw);
+            map.put("hira", toHiragana(kw));
+            map.put("kana", toKatakana(kw));
+            keywordMapList.add(map);
+        }
+
         // 空文字は一覧にフォールバック
         if (keyword == null || keyword.isBlank()) {
             return getPage(pageable);
         }
-	    // 🔸 件数取得
-	    long total = spotMapper.countByKeywords(
-	            keywordMapList
-	    );
+        // 🔸 件数取得
+        long total = spotMapper.countByKeywords(
+                keywordMapList);
 
-	    // 🔸 データ取得
-	    List<SpotSummary> spots =
-	            spotMapper.searchByKeywords(
-	            		keywordMapList,
-	                    pageable.getOffset(),
-	                    pageable.getPageSize()
-	            );
+        // 🔸 データ取得
+        List<SpotSummary> spots = spotMapper.searchByKeywords(
+                keywordMapList,
+                pageable.getOffset(),
+                pageable.getPageSize());
 
-	    return new PageImpl<>(spots, pageable, total);
-	}
-
-
+        return new PageImpl<>(spots, pageable, total);
+    }
 
     // トップページおすすめ３件表示用
     @Override
@@ -169,7 +161,7 @@ public class SpotServiceImpl implements SpotService {
 
         if (loginUserId != null) {
             spotDetail.getReviews().stream().forEach(review -> {
-                if (review.getUserId() != null && review.getUserId().equals(loginUserId)){
+                if (review.getUserId() != null && review.getUserId().equals(loginUserId)) {
                     review.setMyReview(true);
                 }
             });
@@ -182,7 +174,7 @@ public class SpotServiceImpl implements SpotService {
 
         return spotDetail;
     }
-    
+
     /**
      * 【管理者】ページに対応したスポット一覧を返す
      */
@@ -199,6 +191,19 @@ public class SpotServiceImpl implements SpotService {
         return new PageImpl<>(spots, pageable, total);
     }
 
+    /**
+     * 【管理者】キーワードでスポットを絞り込んだページを返す
+     */
+    @Override
+    public Page<AdminSpotRow> searchForAdmin(String keyword, Pageable pageable) {
+        long total = spotMapper.countForAdminByKeyword(keyword);
+
+        List<AdminSpotRow> spots = spotMapper.findAllForAdminByKeyword(
+                keyword, pageable.getOffset(), pageable.getPageSize());
+
+        return new PageImpl<>(spots, pageable, total);
+    }
+
     @Override
     public void addSpot(Spot spot) {
         spotMapper.insert(spot);
@@ -208,7 +213,7 @@ public class SpotServiceImpl implements SpotService {
     public void updateSpot(Spot spot) {
         spotMapper.update(spot);
     }
-    
+
     /**
      * 【管理者】スポットをIDから取得する
      */
