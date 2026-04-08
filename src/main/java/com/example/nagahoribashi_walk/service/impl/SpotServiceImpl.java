@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * スポット関連サービスの実装クラス
  * 
- * @author 海津
+ * @author 海津, 池田, 篠原
  */
 @Service
 @Transactional
@@ -213,7 +213,7 @@ public class SpotServiceImpl implements SpotService {
     public void updateSpot(Spot spot) {
         spotMapper.update(spot);
     }
-    
+
     @Override
     public void softDelete(Long spotId) {
         spotMapper.softDelete(spotId);

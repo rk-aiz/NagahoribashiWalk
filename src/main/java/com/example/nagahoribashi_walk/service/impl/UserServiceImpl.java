@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * ユーザー関連サービスの実装クラス
  * 
- * @author 海津
+ * @author 海津, 篠原
  */
 @Service
 @Transactional
@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<AdminUserRow> getAdminUserPage(Pageable pageable, String sort, String keyword) {
+    public Page<AdminUserRow> getAdminUserPage(Pageable pageable, String sort, String keyword, boolean includeDeleted) {
 
         long offset = pageable.getOffset();
         int pageSize = pageable.getPageSize();
@@ -108,17 +108,20 @@ public class UserServiceImpl implements UserService {
 
         if (keyword == null || keyword.isBlank()) {
             // 通常一覧
-            list = userMapper.findAllForAdmin(pageSize, offset, sortLowerCase);
-            total = userMapper.countAdminUsers();
+            list = userMapper.findAllForAdmin(pageSize, offset, sortLowerCase, includeDeleted);
+            total = userMapper.countAdminUsers(includeDeleted);
         } else {
             // 検索あり
-            list = userMapper.searchAdminUsers(keyword, pageSize, offset, sortLowerCase);
-            total = userMapper.countSearchAdminUsers(keyword);
+            list = userMapper.searchAdminUsers(keyword, pageSize, offset, sortLowerCase, includeDeleted);
+            total = userMapper.countSearchAdminUsers(keyword, includeDeleted);
         }
 
         return new PageImpl<>(list, pageable, total);
     }
 
+    /**
+     * ユーザーを
+     */
     public void delete(String username, String loginUsername) {
         // ★ 自分削除禁止
         if (username.equals(loginUsername)) {
@@ -130,17 +133,5 @@ public class UserServiceImpl implements UserService {
 
         // ★ 論理削除
         userMapper.softDelete(user.getId());
-    }
-
-    @Override
-    public Page<User> getPage(Pageable pageable) {
-
-        long total = userMapper.count();
-
-        // 対象ページに対応したスポットを取得する
-        List<User> users = userMapper.findAll(pageable.getOffset(), pageable.getPageSize());
-
-        // Page<T>インスタンスに詰めて返す
-        return new PageImpl<>(users, pageable, total);
     }
 }

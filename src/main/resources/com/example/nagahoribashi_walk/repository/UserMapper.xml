@@ -82,9 +82,14 @@
 		role,
 		created_at AS createdAt,
 		updated_at AS updatedAt,
+		deleted_at AS deletedAt,
 		enabled
 		FROM users
-		WHERE deleted_at IS NULL
+		<where>
+		<if test="includeDeleted == false">
+		deleted_at IS NULL
+		</if>
+		</where>
 		ORDER BY id
 		<choose>
 			<when test="sort == 'asc'">
@@ -100,7 +105,11 @@
 
 	<select id="countAdminUsers" resultType="long">
 		SELECT COUNT(*) FROM users
-		WHERE deleted_at IS NULL
+    <where>
+        <if test="includeDeleted == false">
+            deleted_at IS NULL
+        </if>
+    </where>
 	</select>
 
 	<update id="softDelete">
@@ -126,14 +135,26 @@
 	        role,
 	        created_at AS createdAt,
 	        updated_at AS updatedAt,
+	        deleted_at AS deletedAt,
 	        enabled
 	    FROM users
-	    WHERE deleted_at IS NULL
-	      AND (
-	            username LIKE CONCAT('%', #{keyword}, '%')
-	         OR email LIKE CONCAT('%', #{keyword}, '%')
-	         OR display_name LIKE CONCAT('%', #{keyword}, '%')
-	      )
+	    
+	 <where>
+	    <!-- 退会制御 -->
+        <if test="includeDeleted == false">
+            deleted_at IS NULL
+        </if>
+
+        <!-- 検索条件 -->
+        <if test="keyword != null and keyword != ''">
+            AND (
+                username LIKE CONCAT('%', #{keyword}, '%')
+             OR email LIKE CONCAT('%', #{keyword}, '%')
+             OR display_name LIKE CONCAT('%', #{keyword}, '%')
+            )
+        </if>
+    </where>
+    
 	    ORDER BY id
 	    <choose>
 	        <when test="sort == 'asc'">
@@ -149,12 +170,21 @@
 	<select id="countSearchAdminUsers" resultType="long">
 	    SELECT COUNT(*)
 	    FROM users
-	    WHERE deleted_at IS NULL
-	      AND (
-	            username LIKE CONCAT('%', #{keyword}, '%')
-	         OR email LIKE CONCAT('%', #{keyword}, '%')
-	         OR display_name LIKE CONCAT('%', #{keyword}, '%')
-	      )
+	    <where>
+	    <!-- 退会制御 -->
+        <if test="includeDeleted == false">
+            deleted_at IS NULL
+        </if>
+
+        <!-- 検索条件 -->
+        <if test="keyword != null and keyword != ''">
+            AND (
+                username LIKE CONCAT('%', #{keyword}, '%')
+             OR email LIKE CONCAT('%', #{keyword}, '%')
+             OR display_name LIKE CONCAT('%', #{keyword}, '%')
+            )
+        </if>
+    </where>
 	</select>
 
 </mapper>

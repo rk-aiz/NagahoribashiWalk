@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.nagahoribashi_walk.dto.AdminUserRow;
 import com.example.nagahoribashi_walk.service.UserService;
@@ -18,8 +19,9 @@ import com.example.nagahoribashi_walk.service.userdetails.LoginUser;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 
- * @author 海津
+ * ユーザー管理画面用のコントローラー
+ *
+ * @author 海津、篠原
  */
 @Controller
 @RequestMapping("/admin/user")
@@ -28,44 +30,70 @@ public class AdminUserController {
 
     private final UserService userService;
 
+    /**
+     * 【管理者】ユーザー一覧画面を表示
+     */
     @GetMapping("/list")
     public String userList(
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam(name = "sort", defaultValue = "desc") String sort,
             @PageableDefault(size = 5) Pageable pageable,
+            @RequestParam(name = "includeDeleted", defaultValue = "false") boolean includeDeleted,
             Model model) {
 
-        Page<AdminUserRow> page = userService.getAdminUserPage(pageable, sort, keyword);
+        Page<AdminUserRow> page = userService.getAdminUserPage(pageable, sort, keyword, includeDeleted);
 
         model.addAttribute("page", page);
         model.addAttribute("sort", sort);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("includeDeleted", includeDeleted);
         return "admin/user/list";
     }
 
+    /**
+     * 【管理者】ユーザーの有効 / 無効を切り替える
+     */
     @PostMapping("/toggle")
     public String toggle(@RequestParam Long id,
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam("page") Integer page,
-            @RequestParam("sort") String sort) {
+            @RequestParam("sort") String sort,
+            @RequestParam(name = "includeDeleted", defaultValue = "false") boolean includeDeleted,
+            RedirectAttributes redirectAttributes) {
 
-        // ユーザーの有効無効切り替え処理
         userService.toggleEnabled(id);
 
-        return "redirect:/admin/user/list?page=" + page + "&sort=" + sort + "&keyword=" + keyword;
+        if (keyword != null) {
+            redirectAttributes.addAttribute("keyword", keyword);
+        }
+
+        return "redirect:/admin/user/list?page=" + page
+                + "&sort=" + sort
+                + "&includeDeleted=" + includeDeleted;
     }
 
+    /**
+     * 【管理者】ユーザーを削除(退会処理)する
+     */
     @PostMapping("/delete")
     public String delete(
             @RequestParam("username") String username,
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam("sort") String sort,
             @RequestParam("page") Integer page,
-            @AuthenticationPrincipal LoginUser loginUser) {
+            @RequestParam(name = "includeDeleted", defaultValue = "false") boolean includeDeleted,
+            @AuthenticationPrincipal LoginUser loginUser,
+            RedirectAttributes redirectAttributes) {
 
-        // ユーザーの(論理)削除処理
         userService.delete(username, loginUser.getUsername());
+        redirectAttributes.addFlashAttribute("message", username + "を削除しました。");
 
-        return "redirect:/admin/user/list?page=" + page + "&sort=" + sort + "&keyword=" + keyword;
+        if (keyword != null) {
+            redirectAttributes.addAttribute("keyword", keyword);
+        }
+
+        return "redirect:/admin/user/list?page=" + page
+                + "&sort=" + sort
+                + "&includeDeleted=" + includeDeleted;
     }
 }
