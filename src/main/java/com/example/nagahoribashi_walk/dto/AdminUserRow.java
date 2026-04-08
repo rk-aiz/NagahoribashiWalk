@@ -22,4 +22,6 @@ public class AdminUserRow {
 	private LocalDateTime updatedAt;//更新日時
 
 	private Boolean enabled;//有効フラグ
+	
+	private LocalDateTime deletedAt;
 }

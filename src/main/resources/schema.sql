@@ -119,7 +119,8 @@ CREATE TABLE users (
 	deleted_at TIMESTAMP,                     -- NULL = 有効。論理削除は日時をセット
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	enabled BOOLEAN DEFAULT TRUE              -- 管理者による一時的な無効化フラグ（論理削除とは別）
+	enabled BOOLEAN DEFAULT TRUE,              -- 管理者による一時的な無効化フラグ（論理削除とは別）
+    unsubscribed BOOLEAN DEFAULT FALSE
 );
 
 -- カテゴリ（グルメ／観光スポット／ショッピング／娯楽／カフェ＋未分類）

@@ -75,9 +75,10 @@ public interface UserMapper {
     List<AdminUserRow> findAllForAdmin(
             @Param("limit") int limit,
             @Param("offset") long offset,
-            @Param("sort") String sort);
+            @Param("sort") String sort,
+            @Param("includeDeleted") boolean includeDeleted);
 
-    long countAdminUsers();
+    long countAdminUsers(@Param("includeDeleted") boolean includeDeleted);
 
     /**
      * 管理者側ユーザー一覧検索用
@@ -86,8 +87,9 @@ public interface UserMapper {
             @Param("keyword") String keyword,
             @Param("limit") int limit,
             @Param("offset") long offset,
-            @Param("sort") String sort);
+            @Param("sort") String sort,
+            @Param("includeDeleted") boolean includeDeleted);
 
-    long countSearchAdminUsers(@Param("keyword") String keyword);
+    long countSearchAdminUsers(@Param("keyword") String keyword,@Param("includeDeleted") boolean includeDeleted);
 
 }

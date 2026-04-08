@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.nagahoribashi_walk.dto.AdminUserRow;
 import com.example.nagahoribashi_walk.service.UserService;
@@ -33,13 +34,15 @@ public class AdminUserController {
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam(name = "sort", defaultValue = "desc") String sort,
             @PageableDefault(size = 5) Pageable pageable,
+            @RequestParam(name = "includeDeleted", defaultValue = "false") boolean includeDeleted,
             Model model) {
 
-        Page<AdminUserRow> page = userService.getAdminUserPage(pageable, sort, keyword);
+        Page<AdminUserRow> page = userService.getAdminUserPage(pageable, sort, keyword,includeDeleted);
 
         model.addAttribute("page", page);
         model.addAttribute("sort", sort);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("includeDeleted", includeDeleted);
         return "admin/user/list";
     }
 
@@ -47,12 +50,19 @@ public class AdminUserController {
     public String toggle(@RequestParam Long id,
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam("page") Integer page,
-            @RequestParam("sort") String sort) {
+            @RequestParam("sort") String sort,
+            @RequestParam(name = "includeDeleted", defaultValue = "false") boolean includeDeleted,
+            RedirectAttributes redirectAttributes) {
 
-        // ユーザーの有効無効切り替え処理
         userService.toggleEnabled(id);
 
-        return "redirect:/admin/user/list?page=" + page + "&sort=" + sort + "&keyword=" + keyword;
+        if(keyword != null) {
+        	redirectAttributes.addAttribute("keyword", keyword);
+        }
+        
+        return "redirect:/admin/user/list?page=" + page
+                + "&sort=" + sort
+                + "&includeDeleted=" + includeDeleted;
     }
 
     @PostMapping("/delete")
@@ -61,11 +71,18 @@ public class AdminUserController {
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam("sort") String sort,
             @RequestParam("page") Integer page,
-            @AuthenticationPrincipal LoginUser loginUser) {
+            @RequestParam(name = "includeDeleted", defaultValue = "false") boolean includeDeleted,
+            @AuthenticationPrincipal LoginUser loginUser,
+            RedirectAttributes redirectAttributes) {
 
-        // ユーザーの(論理)削除処理
         userService.delete(username, loginUser.getUsername());
 
-        return "redirect:/admin/user/list?page=" + page + "&sort=" + sort + "&keyword=" + keyword;
+        if(keyword != null) {
+        	redirectAttributes.addAttribute("keyword", keyword);
+        }
+        
+        return "redirect:/admin/user/list?page=" + page
+                + "&sort=" + sort
+                + "&includeDeleted=" + includeDeleted;
     }
 }
