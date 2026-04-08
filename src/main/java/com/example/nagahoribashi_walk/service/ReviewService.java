@@ -3,11 +3,10 @@ package com.example.nagahoribashi_walk.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.example.nagahoribashi_walk.dto.AdminReviewRow;
 import com.example.nagahoribashi_walk.entity.Review;
 
 public interface ReviewService {
-
-	Page<AdminReviewRow> getAdminReviewPage(Pageable pageable, String keyword);
 
 	/**
 	 * レビュー情報を登録する
@@ -40,5 +39,11 @@ public interface ReviewService {
 	 * @param userId ログイン中のユーザーID
 	 */
 	void deleteReview(Long reviewId, Long userId);
+
+    /** 【管理者】レビューを削除する */
+    void deleteForAdmin(Long reviewId);
+
+	/** 【管理者】レビュー一覧をページネーションで取得 */
+	Page<AdminReviewRow> getAdminReviewPage(Pageable pageable, String keyword);
 
 }

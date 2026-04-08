@@ -29,4 +29,6 @@ public class AdminReviewRow {
 
     /** 投稿日時 */
     private LocalDateTime createdAt;
+
+    private boolean isEnabled;
 }
