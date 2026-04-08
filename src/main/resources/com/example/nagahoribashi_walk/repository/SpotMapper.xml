@@ -307,6 +307,13 @@
 		WHERE id = #{id}
 	</update>
 	
+	<!-- スポット情報をソフトデリート -->
+	<update id="softDelete">
+		UPDATE spots
+		SET deleted_at = CURRENT_TIMESTAMP
+		WHERE id = #{spotId}
+	</update>
+	
 		<!-- ページネーション付き取得 -->
 	<select id="findAllForAdmin"
 		resultType="com.example.nagahoribashi_walk.dto.AdminSpotRow">
@@ -375,7 +382,7 @@
                 )
             </if>
         </where>
-        ORDER BY s.updated_at DESC
+        ORDER BY s.id ASC
         LIMIT #{limit} OFFSET #{offset}
     </select>
 

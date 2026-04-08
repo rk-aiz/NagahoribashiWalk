@@ -1,187 +1,203 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-    th:replace="~{layout/admin :: layout('スポット管理', 'スポット管理', ~{::style}, ~{::main})}" xml:lang="ja">
+	th:replace="~{layout/admin :: layout('スポット管理', 'スポット管理', ~{::style}, ~{::main})}"
+	xml:lang="ja">
 
 <head>
-    <title>スポット管理 - 長堀橋さんぽ 管理画面</title>
-    <style>
-        .badge-gourmet {
-            background-color: #dbeafe;
-            color: #1d4ed8;
-        }
+<title>スポット管理 - 長堀橋さんぽ 管理画面</title>
+<style>
+.badge-gourmet {
+	background-color: #dbeafe;
+	color: #1d4ed8;
+}
 
-        .badge-tourism {
-            background-color: #ede9fe;
-            color: #6d28d9;
-        }
+.badge-tourism {
+	background-color: #ede9fe;
+	color: #6d28d9;
+}
 
-        .badge-shopping {
-            background-color: #ccfbf1;
-            color: #0f766e;
-        }
+.badge-shopping {
+	background-color: #ccfbf1;
+	color: #0f766e;
+}
 
-        .badge-entertainment {
-            background-color: #fef3c7;
-            color: #b45309;
-        }
+.badge-entertainment {
+	background-color: #fef3c7;
+	color: #b45309;
+}
 
-        .badge-cafe {
-            background-color: #fce7f3;
-            color: #be185d;
-        }
+.badge-cafe {
+	background-color: #fce7f3;
+	color: #be185d;
+}
 
-        .badge-default {
-            background-color: #f1f5f9;
-            color: #475569;
-        }
+.badge-default {
+	background-color: #f1f5f9;
+	color: #475569;
+}
 
-        #spotTable {
-            --bs-table-bg: transparent;
-            --bs-table-color: #1e293b;
-            --bs-table-border-color: #e2e8f0;
-        }
+#spotTable {
+	--bs-table-bg: transparent;
+	--bs-table-color: #1e293b;
+	--bs-table-border-color: #e2e8f0;
+}
 
-        #spotTable thead th {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #64748b;
-            border-bottom: 1px solid #e2e8f0;
-            background: #f8fafc;
-        }
+#spotTable thead th {
+	font-weight: 600;
+	font-size: 0.85rem;
+	color: #64748b;
+	border-bottom: 1px solid #e2e8f0;
+	background: #f8fafc;
+}
 
-        #spotTable tbody tr {
-            border-bottom: 1px solid #e2e8f0;
-        }
+#spotTable tbody tr {
+	border-bottom: 1px solid #e2e8f0;
+}
 
-        #spotTable tbody tr:last-child {
-            border-bottom: none;
-        }
+#spotTable tbody tr:last-child {
+	border-bottom: none;
+}
 
-        .spot-row:hover {
-            background-color: #f8fafc;
-        }
-    </style>
+.spot-row:hover {
+	background-color: #f8fafc;
+}
+</style>
 </head>
 
 <main th:fragment="content">
-    <div class="container" style="max-width: 1100px;">
-        <div class="admin-card">
-            <div class="p-4">
+	<div class="container" style="max-width: 1100px;">
+		<div class="admin-card">
+			<div class="p-4">
 
-                <!-- タイトル + 新規登録ボタン -->
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold mb-0">
-                        スポット一覧
-                        <span class="text-muted fw-normal fs-6"
-                            th:text="'（' + ${spotPages.totalElements} + '件）'">（0件）</span>
-                    </h5>
-                    <a th:href="@{/admin/spot/new}" class="btn btn-sm text-white fw-semibold"
-                        style="background-color: #1d4ed8; border-color: #1d4ed8;">
-                        <i class="bi bi-plus-lg me-1"></i>新規登録
-                    </a>
-                </div>
+				<!-- タイトル + 新規登録ボタン -->
+				<div class="d-flex justify-content-between align-items-center mb-3">
+					<h5 class="fw-bold mb-0">
+						スポット一覧 <span class="text-muted fw-normal fs-6"
+							th:text="'（' + ${spotPages.totalElements} + '件）'">（0件）</span>
+					</h5>
+					<a th:href="@{/admin/spot/new}"
+						class="btn btn-sm text-white fw-semibold"
+						style="background-color: #1d4ed8; border-color: #1d4ed8;"> <i
+						class="bi bi-plus-lg me-1"></i>新規登録
+					</a>
+				</div>
 
-                <!-- 検索バー -->
-                <form th:action="@{/admin/spot/list}" method="get" class="mb-4" style="position: relative;">
-                    <i class="bi bi-search"
-                        style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none;"></i>
-                    <input type="text" name="keyword" th:value="${keyword}" class="form-control"
-                        style="padding-left: 2.25rem; border-color: #e2e8f0; border-radius: 0.5rem;"
-                        placeholder="スポット名、カテゴリー、住所で検索...">
-                </form>
+				<!-- 検索バー -->
+				<form th:action="@{/admin/spot/list}" method="get" class="mb-4"
+					style="position: relative;">
+					<i class="bi bi-search"
+						style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none;"></i>
+					<input type="text" name="keyword" th:value="${keyword}"
+						class="form-control"
+						style="padding-left: 2.25rem; border-color: #e2e8f0; border-radius: 0.5rem;"
+						placeholder="スポット名、カテゴリー、住所で検索...">
+				</form>
 
-                <!-- ページネーション -->
-                <div
-                    th:replace="~{fragments/pagination :: pagerSimple(${spotPages}, '/admin/spot/list', ${keyword}, 'my-3')}">
-                </div>
+				<!-- ページネーション -->
+				<div
+					th:replace="~{fragments/pagination :: pagerSimple(${spotPages}, '/admin/spot/list', ${keyword}, 'my-3')}">
+				</div>
 
-                <!-- テーブル -->
-                <div class="table-responsive">
-                    <table class="table table-borderless align-middle mb-0 admin-table" id="spotTable">
-                        <thead>
-                            <tr>
-                                <th scope="col" style="width: 60px;">ID</th>
-                                <th scope="col">スポット名</th>
-                                <th scope="col" style="width: 150px;">カテゴリー</th>
-                                <th scope="col" style="width: 120px;">更新日</th>
-                                <th scope="col" style="width: 100px;">評価</th>
-                                <th scope="col" style="width: 80px;" class="text-end">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="spot : ${spotPages.content}" class="spot-row">
+				<!-- テーブル -->
+				<div class="table-responsive">
+					<table class="table table-borderless align-middle mb-0 admin-table"
+						id="spotTable">
+						<thead>
+							<tr>
+								<th scope="col" style="width: 60px;">ID</th>
+								<th scope="col">スポット名</th>
+								<th scope="col" style="width: 150px;">カテゴリー</th>
+								<th scope="col" style="width: 120px;">更新日</th>
+								<th scope="col" style="width: 100px;">評価</th>
+								<th scope="col" style="width: 80px;" class="text-end">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="spot : ${spotPages.content}" class="spot-row">
 
-                                <!-- ID -->
-                                <td class="text-secondary small" th:text="${spot.id}">1</td>
+								<!-- ID -->
+								<td class="text-secondary small" th:text="${spot.id}">1</td>
 
-                                <!-- スポット名 -->
-                                <td class="fw-medium" th:text="${spot.spotName}">スポット名</td>
+								<!-- スポット名 -->
+								<td class="fw-medium" th:text="${spot.spotName}">スポット名</td>
 
-                                <!-- カテゴリー（バッジ色はカテゴリー名で分岐） -->
-                                <td>
-                                    <span class="badge rounded-pill px-2 py-1 fw-normal" th:text="${spot.categoryName}"
-                                        th:classappend="${spot.categoryName == 'グルメ'}         ? 'badge-gourmet'       :
+								<!-- カテゴリー（バッジ色はカテゴリー名で分岐） -->
+								<td><span class="badge rounded-pill px-2 py-1 fw-normal"
+									th:text="${spot.categoryName}"
+									th:classappend="${spot.categoryName == 'グルメ'}         ? 'badge-gourmet'       :
                                                           (${spot.categoryName == '観光スポット'}  ? 'badge-tourism'       :
                                                           (${spot.categoryName == 'ショッピング'}   ? 'badge-shopping'      :
                                                           (${spot.categoryName == '娯楽'}          ? 'badge-entertainment' :
                                                           (${spot.categoryName == 'カフェ'}         ? 'badge-cafe'          :
                                                            'badge-default'))))">
-                                        カテゴリー
-                                    </span>
-                                </td>
+										カテゴリー </span></td>
 
-                                <!-- 更新日 -->
-                                <td class="text-secondary small">
-                                    <span th:if="${spot.updatedAt != null}"
-                                        th:text="${#temporals.format(spot.updatedAt, 'yyyy/M/d')}">2026/4/2</span>
-                                    <span th:if="${spot.updatedAt == null}" class="text-muted">-</span>
-                                </td>
+								<!-- 更新日 -->
+								<td class="text-secondary small"><span
+									th:if="${spot.updatedAt != null}"
+									th:text="${#temporals.format(spot.updatedAt, 'yyyy/M/d')}">2026/4/2</span>
+									<span th:if="${spot.updatedAt == null}" class="text-muted">-</span>
+								</td>
 
-                                <!-- 評価 -->
-                                <td>
-                                    <span th:if="${spot.averageRating != null}">
-                                        <i class="bi bi-star-fill text-warning" style="font-size: 0.8rem;"></i>
-                                        <span class="ms-1 small fw-semibold"
-                                            th:text="${#numbers.formatDecimal(spot.averageRating, 1, 1)}">4.5</span>
-                                    </span>
-                                    <span th:if="${spot.averageRating == null}" class="text-muted small">-</span>
-                                </td>
+								<!-- 評価 -->
+								<td><span th:if="${spot.averageRating != null}"> <i
+										class="bi bi-star-fill text-warning"
+										style="font-size: 0.8rem;"></i> <span
+										class="ms-1 small fw-semibold"
+										th:text="${#numbers.formatDecimal(spot.averageRating, 1, 1)}">4.5</span>
+								</span> <span th:if="${spot.averageRating == null}"
+									class="text-muted small">-</span></td>
 
-                                <!-- 操作 -->
-                                <td class="text-end">
-                                    <!--/* スポット詳細（一般ユーザー向け画面）を別タブで確認 */-->
-                                    <a th:href="@{/spot/{id}(id=${spot.id})}" target="_blank"
-                                        class="btn btn-sm btn-link text-secondary p-1" title="詳細を見る">
-                                        <i class="bi bi-eye" style="font-size: 1rem;"></i>
-                                    </a>
-                                    <!--/* 編集画面へ。コントローラー側で ?id= を受け取るよう実装要 */-->
-                                    <a th:href="@{/admin/spot/edit/{id}(id=${spot.id})}" class="btn btn-sm btn-link p-1"
-                                        style="color: #3b82f6;" title="編集">
-                                        <i class="bi bi-pencil-square" style="font-size: 1rem;"></i>
-                                    </a>
-                                </td>
+								<!-- 操作 -->
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center d-flex align-items-center gap-1">
+									    <!-- 詳細 -->
+									    <a th:href="@{/spot/{id}(id=${spot.id})}" target="_blank"
+									       class="btn btn-sm btn-link text-secondary p-1" title="詳細を見る">
+									        <i class="bi bi-eye" style="font-size: 1rem;"></i>
+									    </a>
+									
+									    <!-- 編集 -->
+									    <a th:href="@{/admin/spot/edit/{id}(id=${spot.id})}"
+									       class="btn btn-sm btn-link p-1" style="color: #3b82f6;" title="編集">
+									        <i class="bi bi-pencil-square" style="font-size: 1rem;"></i>
+									    </a>
+									
+									    <!-- 削除 -->
+									    <form th:action="@{/admin/spot/delete}" method="POST"
+									          class="d-inline m-0 p-0"
+									          onsubmit="return confirm('スポット情報を削除します\n本当によろしいですか？');">
+									        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+									        <input type="hidden" th:name="spotId" th:value="${spot.id}" />
+									        <input type="hidden" name="page" th:value="${spotPages.number}">
+											<input type="hidden" name="keyword" th:value="${keyword}">
+									        <button type="submit" class="btn btn-sm btn-outline-danger px-1 py-0" title="削除">
+									            <i class="bi bi-trash" style="font-size: 1rem;"></i>
+									        </button>
+									    </form>
+								    </div>
+								</td>
 
-                            </tr>
+							</tr>
 
-                            <!-- データなし -->
-                            <tr th:if="${spotPages.totalElements == 0}">
-                                <td colspan="6" class="text-center text-muted py-5">
-                                    <i class="bi bi-inbox d-block mb-2" style="font-size: 1.75rem;"></i>
-                                    スポットが登録されていません
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+							<!-- データなし -->
+							<tr th:if="${spotPages.totalElements == 0}">
+								<td colspan="6" class="text-center text-muted py-5"><i
+									class="bi bi-inbox d-block mb-2" style="font-size: 1.75rem;"></i>
+									スポットが登録されていません</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 
-                <!-- ページネーション -->
-                <div
-                    th:replace="~{fragments/pagination :: pagerSimple(${spotPages}, '/admin/spot/list', ${keyword}, 'mt-4')}">
-                </div>
+				<!-- ページネーション -->
+				<div
+					th:replace="~{fragments/pagination :: pagerSimple(${spotPages}, '/admin/spot/list', ${keyword}, 'mt-4')}">
+				</div>
 
-            </div>
-        </div>
-    </div>
+			</div>
+		</div>
+	</div>
 </main>
 
 </html>

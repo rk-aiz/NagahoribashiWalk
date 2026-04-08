@@ -63,7 +63,7 @@ public interface SpotMapper {
 
     Optional<Spot> findByIdForAdmin(@Param("spotId") Long spotId);
     
-    // softDelete
+    void softDelete(@Param("spotId") Long spotId);
 
     // insertImage
 
