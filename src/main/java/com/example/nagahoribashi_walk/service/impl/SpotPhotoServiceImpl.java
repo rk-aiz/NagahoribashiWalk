@@ -22,6 +22,10 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
 	@Override
 	public List<SpotPhoto> getAllBySpotId(Long spotId) {
 		return spotPhotoMapper.findAllBySpotId(spotId);
-		
+	}
+
+	@Override
+	public void delete(Long id) {
+		spotPhotoMapper.delete(id);
 	}
 }

@@ -14,5 +14,27 @@
 		WHERE spot_id = #{spotId}
 	</select>
 	
+	<!-- 画像情報を削除 -->
+	<insert id="insert">
+		INSERT INTO spot_photos
+		(
+			spot_id,
+			display_order,
+			photo_url
+		) VALUES (
+			#{spotId},
+			(
+				SELECT MAX(COALESCE(display_order, 0)) FROM spot_photos
+				WHERE spot_id = #{spotId}
+			) + 1,
+			#{photoUrl}
+		)
+	</insert>
+
+	<!-- 画像情報を削除 -->
+	<delete id="delete">
+		DELETE FROM spot_photos
+		WHERE id = #{id}
+	</delete>
 
 </mapper>
