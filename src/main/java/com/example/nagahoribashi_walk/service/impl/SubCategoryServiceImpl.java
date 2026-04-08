@@ -1,5 +1,8 @@
 package com.example.nagahoribashi_walk.service.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,5 +50,11 @@ public class SubCategoryServiceImpl implements SubCategoryService {
                 getById(subCategoryId).getCategoryId(),
                 subCategoryId);
     }
+
+	@Override
+	public Map<Long, List<SubCategory>> findAllGroupedByCategory() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
 
 }

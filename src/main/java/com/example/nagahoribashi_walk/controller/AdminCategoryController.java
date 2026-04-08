@@ -29,7 +29,7 @@ public class AdminCategoryController {
 
 	    @GetMapping("/admin/category/list")
 	    public String list(Model model) {
-	        model.addAttribute("categories", categoryService.getAllAdminCategoryRows());
+	        model.addAttribute("categoryForm", new Category());
 	        return "admin/category/list";
 	    }
 
@@ -37,7 +37,7 @@ public class AdminCategoryController {
 	     * 親カテゴリーの追加
 	     */
 	    @PostMapping("/admin/category/add")
-	    public String addCategory(@ModelAttribute Category category, RedirectAttributes redirectAttributes) {
+	    public String addCategory(@ModelAttribute("categoryForm") Category category, RedirectAttributes redirectAttributes) {
 	        categoryService.insertCategory(category);
 	        redirectAttributes.addFlashAttribute("successMessage", "カテゴリーを追加しました。");
 	        return "redirect:/admin/categories";
