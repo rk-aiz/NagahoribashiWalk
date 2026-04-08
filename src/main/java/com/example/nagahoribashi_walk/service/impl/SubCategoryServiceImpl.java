@@ -31,6 +31,9 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     
 	@Override
 	public void insertSubCategory(SubCategory subCategory) {
+		if (subCategory.getCategoryId() == null || subCategory.getCategoryId() == 0) {
+	        subCategory.setCategoryId(null); 
+	    }
 		subCategoryMapper.insertSubCategory(subCategory);
 		
 	}

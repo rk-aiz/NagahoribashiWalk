@@ -56,7 +56,7 @@
             </div>
             <button type="button" class="btn btn-sm text-white fw-semibold"
                     style="background-color: #7c3aed;"
-                    onclick="document.getElementById('newCategoryForm').classList.toggle('d-none')">
+                    onclick="toggleCategoryForm()">
                 <i class="bi bi-plus-lg me-1"></i>カテゴリを追加
             </button>
         </div>
@@ -70,7 +70,7 @@
                        placeholder="カテゴリ名（例：スポーツ）" style="max-width: 280px;" required>
                 <button type="submit" class="btn btn-sm text-white" style="background-color: #7c3aed;">追加</button>
                 <button type="button" class="btn btn-sm btn-outline-secondary"
-                        onclick="document.getElementById('newCategoryForm').classList.add('d-none')">
+                        onclick="toggleCategoryForm()">
                     キャンセル
                 </button>
             </form>
@@ -115,10 +115,10 @@
                         <div class="vr mx-1" style="height: 1.2rem; opacity: 0.3;"></div>
 
                         <!-- カテゴリ名編集 -->
-                        <button type="button" class="btn btn-sm btn-outline-secondary order-btn" title="名前を編集"
-                                th:onclick="|toggleEdit('cat-edit-' + ${cat.id})|">
-                            <i class="bi bi-pencil"></i>
-                        </button>
+						<button type="button" class="btn btn-sm btn-outline-secondary order-btn" title="名前を編集"
+						th:onclick="|toggleEdit('cat-edit-' + ${cat.id})|">
+						<i class="bi bi-pencil"></i>
+						</button>
 
                         <!-- カテゴリ削除 -->
                         <form action="#" method="post" class="m-0"
@@ -250,11 +250,14 @@
 
     </div>
 
-    <script>
-        function toggleEdit(id) {
-            document.getElementById(id).classList.toggle('d-none');
-        }
-    </script>
+	<script>
+	    function toggleCategoryForm() {
+	        const form = document.getElementById('newCategoryForm');
+	        if (form) {
+	            form.classList.toggle('d-none');
+	        }
+	    }
+	</script>
 
 </main>
 

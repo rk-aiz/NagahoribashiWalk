@@ -34,12 +34,20 @@ public class CategoryServiceImpl implements CategoryService {
     public void insertCategory(Category category) {
     	categoryMapper.insertCategory(category);
     }
+	
+	@Override
+	public void updateCategory(Category category) {
+		
+		
+	}
 
 	//削除
 	@Override
     public void deleteCategory(Long id) {
 		categoryMapper.deleteCategory(id);
 	}
+	
+	
 
     @Override
     public List<NavCategory> getAllNavCategories() {
@@ -66,4 +74,11 @@ public class CategoryServiceImpl implements CategoryService {
     public List<AdminCategoryRow> getAllAdminCategoryRows() {
         return categoryMapper.findAllForAdmin();
     }
+    @Override
+    public List<AdminCategoryRow> findAllForAdmin() {
+        
+        return categoryMapper.findAllForAdmin();
+    }
+
+
 }

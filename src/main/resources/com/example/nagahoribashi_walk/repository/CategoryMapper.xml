@@ -96,7 +96,7 @@
     <!-- 新規追加 -->
     <insert id="insertCategory" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO categories (name, display_order)
-        VALUES (#{name}, #{displayOrder})
+        VALUES (#{name}, (SELECT COALESCE(MAX(display_order), 0) + 1 FROM categories))
     </insert>
 
 
