@@ -1,53 +1,52 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-    th:replace="~{layout/admin :: layout('画像管理', ${spot.spotName + ' - 画像管理'}, ~{::style}, ~{::main})}"
-    xml:lang="ja">
+    th:replace="~{layout/admin :: layout('画像管理', ${spot.spotName + ' - 画像管理'}, ~{::style}, ~{::main})}" xml:lang="ja">
 
 <head>
-<title>画像管理 - 長堀橋さんぽ 管理画面</title>
-<style>
-.photo-card {
-    position: relative;
-    border-radius: 0.5rem;
-    overflow: hidden;
-    border: 1px solid #e2e8f0;
-    background: #f8fafc;
-}
+    <title>画像管理 - 長堀橋さんぽ 管理画面</title>
+    <style>
+        .photo-card {
+            position: relative;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
 
-.photo-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    display: block;
-}
+        .photo-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+        }
 
-.photo-card-footer {
-    padding: 0.5rem 0.75rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #fff;
-    border-top: 1px solid #e2e8f0;
-}
+        .photo-card-footer {
+            padding: 0.5rem 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            border-top: 1px solid #e2e8f0;
+        }
 
-.drop-zone {
-    border: 2px dashed #cbd5e1;
-    border-radius: 0.75rem;
-    background: #f8fafc;
-    transition: border-color 0.2s, background 0.2s;
-    cursor: pointer;
-}
+        .drop-zone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 0.75rem;
+            background: #f8fafc;
+            transition: border-color 0.2s, background 0.2s;
+            cursor: pointer;
+        }
 
-.drop-zone:hover,
-.drop-zone.dragover {
-    border-color: #3b82f6;
-    background: #eff6ff;
-}
+        .drop-zone:hover,
+        .drop-zone.dragover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
 
-.drop-zone input[type="file"] {
-    display: none;
-}
-</style>
+        .drop-zone input[type="file"] {
+            display: none;
+        }
+    </style>
 </head>
 
 <main th:fragment="content">
@@ -95,18 +94,21 @@
                         <i class="bi bi-cloud-arrow-up text-primary" style="font-size: 2rem;"></i>
                         <p class="mt-2 mb-1 fw-medium">クリックまたはドラッグ＆ドロップで画像を選択</p>
                         <p class="text-muted small mb-0">JPG・PNG・WEBP ／ 最大 5MB ／ 複数選択可</p>
-                        <input type="file" id="fileInput" name="photos" accept="image/*" multiple>
+                        <input type="file" id="fileInput" name="files" accept="image/*" multiple>
                     </div>
 
                     <!-- 選択ファイル名表示 -->
-                    <p id="fileNames" class="text-muted small mb-3" style="display:none;"></p>
+                    <p id="fileNames" class="text-muted small mb-2" style="display:none;"></p>
+
+                    <!-- プレビュー -->
+                    <div id="preview" class="flex-wrap gap-2 mb-3" style="display:none;"></div>
 
                     <!-- 表示順 -->
                     <div class="row g-3 align-items-end mb-3" style="max-width: 360px;">
                         <div class="col">
                             <label for="displayOrder" class="form-label fw-semibold small">表示順（先頭番号）</label>
-                            <input type="number" id="displayOrder" name="displayOrder" class="form-control"
-                                min="1" placeholder="例：1" th:value="${photos.size() + 1}">
+                            <input type="number" id="displayOrder" name="displayOrder" class="form-control" min="1"
+                                placeholder="例：1" th:value="${photos.size() + 1}">
                             <div class="form-text">複数枚の場合はここから連番で設定されます</div>
                         </div>
                     </div>
@@ -160,36 +162,8 @@
         </div>
 
     </div>
+
+    <script th:src="@{/js/admin-photo-upload.js}"></script>
 </main>
-
-<script th:inline="none">
-    // ファイル選択時にファイル名を表示
-    document.getElementById('fileInput').addEventListener('change', function () {
-        var names = Array.from(this.files).map(function (f) { return f.name; });
-        var label = document.getElementById('fileNames');
-        if (names.length > 0) {
-            label.textContent = '選択中：' + names.join('、');
-            label.style.display = 'block';
-        } else {
-            label.style.display = 'none';
-        }
-    });
-
-    // ドラッグ＆ドロップ
-    var zone = document.getElementById('dropZone');
-    zone.addEventListener('dragover', function (e) {
-        e.preventDefault();
-        zone.classList.add('dragover');
-    });
-    zone.addEventListener('dragleave', function () {
-        zone.classList.remove('dragover');
-    });
-    zone.addEventListener('drop', function (e) {
-        e.preventDefault();
-        zone.classList.remove('dragover');
-        document.getElementById('fileInput').files = e.dataTransfer.files;
-        document.getElementById('fileInput').dispatchEvent(new Event('change'));
-    });
-</script>
 
 </html>

@@ -25,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
-    private final UserService userService;
 
     /**
      * スポット詳細ページからお気に入り登録
