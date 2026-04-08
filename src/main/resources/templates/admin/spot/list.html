@@ -169,6 +169,8 @@
 									          onsubmit="return confirm('スポット情報を削除します\n本当によろしいですか？');">
 									        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 									        <input type="hidden" th:name="spotId" th:value="${spot.id}" />
+									        <input type="hidden" name="page" th:value="${spotPages.number}">
+											<input type="hidden" name="keyword" th:value="${keyword}">
 									        <button type="submit" class="btn btn-sm btn-outline-danger px-1 py-0" title="削除">
 									            <i class="bi bi-trash" style="font-size: 1rem;"></i>
 									        </button>

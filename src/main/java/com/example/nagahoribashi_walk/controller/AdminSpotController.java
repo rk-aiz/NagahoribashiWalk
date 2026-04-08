@@ -158,14 +158,20 @@ public class AdminSpotController {
     @PostMapping("/admin/spot/delete")
     public String update(
             @RequestParam("spotId") Long spotId,
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam("page") Integer page,
             RedirectAttributes redirectAttributes,
             Model model) {
 
         // スポットアップデート処理
     	spotService.softDelete(spotId);
     	
+    	// リダイレクトアトリビュートを設定
     	redirectAttributes.addAttribute("message", "スポット情報を削除しました。");
-
-        return "redirect:/admin/spot/list";
+    	if (keyword != null) {
+    	    redirectAttributes.addAttribute("keyword", keyword);
+    	}
+    	
+        return "redirect:/admin/spot/list?page=" + page;
     }
 }
