@@ -151,4 +151,21 @@ public class AdminSpotController {
 
         return "redirect:/admin/spot/list";
     }
+    
+    /**
+     * スポット削除
+     */
+    @PostMapping("/admin/spot/delete")
+    public String update(
+            @RequestParam("spotId") Long spotId,
+            RedirectAttributes redirectAttributes,
+            Model model) {
+
+        // スポットアップデート処理
+    	spotService.softDelete(spotId);
+    	
+    	redirectAttributes.addAttribute("message", "スポット情報を削除しました。");
+
+        return "redirect:/admin/spot/list";
+    }
 }
