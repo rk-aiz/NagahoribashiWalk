@@ -1,8 +1,14 @@
 package com.example.nagahoribashi_walk.service.impl;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.nagahoribashi_walk.dto.AdminReviewRow;
 import com.example.nagahoribashi_walk.entity.Review;
 import com.example.nagahoribashi_walk.exception.ReviewAlreadyExistsException;
 import com.example.nagahoribashi_walk.repository.ReviewMapper;
@@ -50,7 +56,7 @@ public class ReviewServiceImpl implements ReviewService {
      */
     @Override
     public Review findById(Long reviewId) {
-        return reviewMapper.findById(reviewId);
+        return reviewMapper.findById(reviewId).orElseThrow();
     }
 
     /**
@@ -63,10 +69,10 @@ public class ReviewServiceImpl implements ReviewService {
     public void updateReview(Review review, Long userId) {
 
         // 更新対象のレビューを取得
-        Review existingReview = reviewMapper.findById(review.getId());
+        Review existingReview = reviewMapper.findById(review.getId()).orElseThrow();
 
         // 自分のレビュー以外は更新させない
-        if (existingReview == null || !existingReview.getUserId().equals(userId)) {
+        if (!existingReview.getUserId().equals(userId)) {
             throw new IllegalArgumentException("他のユーザーのレビューは更新できません。");
         }
 
@@ -90,14 +96,36 @@ public class ReviewServiceImpl implements ReviewService {
     public void deleteReview(Long reviewId, Long userId) {
 
         // 削除対象のレビューを取得
-        Review existingReview = reviewMapper.findById(reviewId);
+        Review existingReview = reviewMapper.findById(reviewId).orElseThrow();
 
         // 自分のレビュー以外は削除させない
-        if (existingReview == null || !existingReview.getUserId().equals(userId)) {
+        if (!existingReview.getUserId().equals(userId)) {
             throw new IllegalArgumentException("他のユーザーのレビューは削除できません。");
         }
 
         // userId と spotId を条件に削除を実行
         reviewMapper.delete(userId, existingReview.getSpotId());
+    }
+
+    /**  */
+    @Override
+    public Page<AdminReviewRow> getAdminReviewPage(Pageable pageable, String keyword) {
+
+        long total = reviewMapper.countForAdminByKeyword(keyword);
+        List<AdminReviewRow> reviews = reviewMapper.findAllForAdminByKeyword(
+                keyword, pageable.getOffset(), pageable.getPageSize());
+
+        return new PageImpl<>(reviews, pageable, total);
+    }
+
+    /** 【管理者】レビューを削除する */
+    @Override
+    public void deleteForAdmin(Long reviewId) {
+
+        // 削除対象のレビューを取得
+        Review existingReview = reviewMapper.findById(reviewId).orElseThrow();
+
+        // userId と spotId を条件に削除を実行
+        reviewMapper.delete(existingReview.getUserId(), existingReview.getSpotId());
     }
 }

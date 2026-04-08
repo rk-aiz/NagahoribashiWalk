@@ -1,8 +1,12 @@
 package com.example.nagahoribashi_walk.repository;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.example.nagahoribashi_walk.dto.AdminReviewRow;
 import com.example.nagahoribashi_walk.entity.Review;
 
 /**
@@ -15,8 +19,8 @@ public interface ReviewMapper {
 	//投稿
 	void insert(Review review);
 
-	// レビューIDで1件取得 TODO : Optional<T>を使用
-	Review findById(@Param("id") Long id);
+	// レビューIDで1件取得
+	Optional<Review> findById(@Param("id") Long id);
 
 	//編集
 	int update(Review review);
@@ -35,5 +39,14 @@ public interface ReviewMapper {
 
 	/** レビューの総数を取得する */
 	long count();
+
+	/** キーワードに対応したレビューをページネーション用に取得 */
+    List<AdminReviewRow> findAllForAdminByKeyword(
+            @Param("keyword") String keyword,
+            @Param("offset") long offset,
+            @Param("limit") int limit);
+
+	/** キーワードに対応したレビューの総数を取得 */
+	long countForAdminByKeyword(@Param("keyword") String keyword);
 
 }

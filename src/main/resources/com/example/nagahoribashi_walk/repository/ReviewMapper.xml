@@ -13,7 +13,6 @@
 		)
 	</select>
 
-
 	<!-- 【UPDATE】レビュー編集 -->
 	<update id="update"
 		parameterType="com.example.nagahoribashi_walk.entity.Review">
@@ -53,11 +52,52 @@
 	</select>
 
 	<!--【insert】レビュー投稿　 -->
-	<insert id="insert"
-		parameterType="com.example.nagahoribashi_walk.entity.Review">
+	<insert id="insert" parameterType="com.example.nagahoribashi_walk.entity.Review">
 		INSERT INTO reviews (user_id, spot_id, rating,
 		comment)values(#{userId},
 		#{spotId}, #{rating}, #{comment})
 	</insert>
+
+	<select id="findAllForAdminByKeyword" resultType="com.example.nagahoribashi_walk.dto.AdminReviewRow">
+		SELECT
+			r.id, 
+			s.spot_name,
+			u.username,
+			r.rating,
+			r.comment,
+			r.created_at
+		FROM
+			reviews r
+		LEFT JOIN spots s
+		ON r.spot_id = s.id
+		LEFT JOIN users u
+		ON r.user_id = u.id
+		<if test="keyword != null and keyword != ''">
+			WHERE
+				r.comment LIKE CONCAT('%', #{keyword}, '%') OR
+				s.name LIKE CONCAT('%', #{keyword}, '%') OR
+				u.username LIKE CONCAT('%', #{keyword}, '%') OR
+				u.display_name LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		ORDER BY r.id
+	    LIMIT #{limit} OFFSET #{offset}
+	</select>
+
+	<select id="countForAdminByKeyword" resultType="long">
+	    SELECT COUNT(*)
+		FROM
+			reviews r
+		LEFT JOIN spots s
+		ON r.spot_id = s.id
+		LEFT JOIN users u
+		ON r.user_id = u.id
+		<if test="keyword != null and keyword != ''">
+			WHERE
+				r.comment LIKE CONCAT('%', #{keyword}, '%') OR
+				s.name LIKE CONCAT('%', #{keyword}, '%') OR
+				u.username LIKE CONCAT('%', #{keyword}, '%') OR
+				u.display_name LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+	</select>
 
 </mapper>
