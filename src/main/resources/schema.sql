@@ -25,9 +25,27 @@ DROP TABLE IF EXISTS categories;
 CREATE OR REPLACE FUNCTION update_timestamp()
 RETURNS TRIGGER AS '
 	BEGIN
-	NEW.updated_at = CURRENT_TIMESTAMP;
-	RETURN NEW;
-	END;
+    IF TG_TABLE_NAME = ''spots'' THEN
+        IF NEW.spot_name IS NOT DISTINCT FROM OLD.spot_name
+           AND NEW.sub_category_id IS NOT DISTINCT FROM OLD.sub_category_id
+           AND NEW.website_url IS NOT DISTINCT FROM OLD.website_url
+           AND NEW.gmap_url IS NOT DISTINCT FROM OLD.gmap_url
+           AND NEW.address IS NOT DISTINCT FROM OLD.address
+           AND NEW.business_hours IS NOT DISTINCT FROM OLD.business_hours
+           AND NEW.closed_days IS NOT DISTINCT FROM OLD.closed_days
+           AND NEW.estimated_budget IS NOT DISTINCT FROM OLD.estimated_budget
+           AND NEW.keywords IS NOT DISTINCT FROM OLD.keywords
+           AND NEW.details IS NOT DISTINCT FROM OLD.details
+           AND NEW.deleted_at IS NOT DISTINCT FROM OLD.deleted_at
+           AND NEW.pv_count IS DISTINCT FROM OLD.pv_count
+        THEN
+           RETURN NEW;
+        END IF;
+    END IF;
+
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
 ' language 'plpgsql';
 
 -- カテゴリ新規追加時に「その他」サブカテゴリを自動生成する。
@@ -254,7 +272,6 @@ EXECUTE FUNCTION update_timestamp();
 CREATE TRIGGER update_spots_updated_at
 BEFORE UPDATE ON spots
 FOR EACH ROW
-EXECUTE FUNCTION update_timestamp();
 
 CREATE TRIGGER update_reviews_updated_at
 BEFORE UPDATE ON reviews
