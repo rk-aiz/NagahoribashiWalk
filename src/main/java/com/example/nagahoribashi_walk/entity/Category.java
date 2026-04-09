@@ -1,18 +1,26 @@
 package com.example.nagahoribashi_walk.entity;
 
-//大谷作成
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author 大谷
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class Category {
-	private Long id;
-	private String name;
-	private Integer displayOrder;
 
+    /** 主キー */
+    private Long id;
+
+    /** カテゴリ名 */
+    private String name;
+
+    /** 表示順 */
+    private Integer displayOrder;
+
+    /** 「その他」扱いのカテゴリフラグ */
+    private boolean isDefault;
 }

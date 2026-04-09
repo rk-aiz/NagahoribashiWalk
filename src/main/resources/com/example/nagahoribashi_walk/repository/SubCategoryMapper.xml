@@ -2,21 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.nagahoribashi_walk.repository.SubCategoryMapper">
     
-    <!-- 新規追加 -->
-    <insert id="insertSubCategory" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO sub_categories (name, category_id, display_order)
-        VALUES (
-            #{name}, 
-            #{categoryId}, 
-            (SELECT COALESCE(MAX(display_order), 0) + 1 FROM sub_categories)
-        )
-    </insert>
-
-    <!-- 削除 -->
-    <delete id="deleteSubCategory">
-        DELETE FROM sub_categories WHERE id = #{id}
-    </delete>
-
     <select id="findById" resultType="com.example.nagahoribashi_walk.dto.NavSubCategory">
         SELECT id, name, category_id FROM sub_categories
         WHERE id = #{id}
@@ -37,4 +22,95 @@
         WHERE category_id = #{categoryId}
         ORDER BY display_order ASC NULLS LAST
     </select>
+
+    <!-- IDからサブカテゴリ(Entity)を取得する -->
+    <select id="findEntityById" resultType="com.example.nagahoribashi_walk.entity.SubCategory">
+        SELECT id, name, display_order, category_id, is_default FROM sub_categories WHERE id = #{id}
+    </select>
+
+    <!-- サブカテゴリIDから、同カテゴリ内表示昇順でlimit数だけ取得する -->
+    <select id="findFromById" resultType="com.example.nagahoribashi_walk.entity.SubCategory">
+        SELECT id, name, display_order, category_id, is_default FROM sub_categories
+        WHERE
+            category_id = (SELECT category_id FROM sub_categories WHERE id = #{id})
+            AND
+            display_order >= (SELECT display_order FROM sub_categories WHERE id = #{id})
+            AND
+            is_default = false
+        ORDER BY display_order ASC
+        LIMIT #{limit}
+    </select>
+
+    <!-- サブカテゴリIDから、同カテゴリ内表示降順でlimit数だけ取得する -->
+    <select id="findUpToById" resultType="com.example.nagahoribashi_walk.entity.SubCategory">
+        <![CDATA[
+            SELECT id, name, display_order, category_id, is_default FROM sub_categories
+            WHERE
+                category_id = (SELECT category_id FROM sub_categories WHERE id = #{id})
+                AND 
+                display_order <= (SELECT display_order FROM sub_categories WHERE id = #{id})
+                AND
+                is_default = false
+            ORDER BY display_order DESC
+            LIMIT #{limit}
+        ]]>
+    </select>
+
+    <!-- カテゴリIDに対応するサブカテゴリ一覧を取得する -->
+    <select id="findEntitiesByCategoryId" resultType="com.example.nagahoribashi_walk.entity.SubCategory">
+        SELECT id, name, display_order, category_id, is_default FROM sub_categories 
+        WHERE category_id = #{categoryId} ORDER BY display_order ASC NULLS LAST
+    </select>
+    
+    <!-- カテゴリIDに対応する「その他」サブカテゴリを取得する -->
+    <select id="findDefaultByCategoryId" resultType="com.example.nagahoribashi_walk.entity.SubCategory">
+        SELECT id, name, display_order, category_id, is_default FROM sub_categories 
+        WHERE is_default = true AND category_id = #{categoryId}
+    </select>
+
+    <update id="update">
+        UPDATE sub_categories 
+        SET name = #{name}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateDisplayOrder">
+        UPDATE sub_categories 
+        SET display_order = #{displayOrder}
+        WHERE id = #{id} AND is_default = false
+    </update>
+
+    <update id="updateIsDefault">
+        UPDATE sub_categories 
+        SET is_default = #{isDefault}
+        WHERE id = #{id}
+    </update>
+
+    <update id="bulkUpdateDisplayOrder">
+    	UPDATE sub_categories
+		SET display_order = 
+			<foreach collection="subCategories" item="item" open="CASE" close="END">
+				WHEN id = #{item.id} THEN #{item.displayOrder}
+			</foreach>
+		WHERE id IN
+		<foreach collection="subCategories" item="item" open="(" separator="," close=")">
+			#{item.id}
+		</foreach>
+    </update>
+
+    <!-- 新規追加 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sub_categories (name, category_id, display_order)
+        VALUES (
+            #{name}, 
+            #{categoryId}, 
+            (SELECT COALESCE(MAX(display_order), 0) + 1 FROM sub_categories)
+        )
+    </insert>
+    
+    <!-- 削除 -->
+    <delete id="delete">
+        DELETE FROM sub_categories WHERE id = #{id}
+    </delete>
+
 </mapper>
