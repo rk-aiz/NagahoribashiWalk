@@ -138,7 +138,8 @@ CREATE TABLE users (
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	enabled BOOLEAN DEFAULT TRUE,              -- 管理者による一時的な無効化フラグ（論理削除とは別）
-    unsubscribed BOOLEAN DEFAULT FALSE
+    unsubscribed BOOLEAN DEFAULT FALSE,
+	point NUMERIC NOT NULL DEFAULT 0
 );
 
 -- カテゴリ（グルメ／観光スポット／ショッピング／娯楽／カフェ＋未分類）
@@ -149,7 +150,7 @@ CREATE TABLE categories(
 	is_default BOOLEAN DEFAULT FALSE  -- TRUE は「未分類」カテゴリ。全体で1件のみ（後述のINDEXで保証）
 );
 
--- 「未分類」カテゴリは全体でただ1件だけ存在できる
+-- 「その他」カテゴリは全体でただ1件だけ存在できる
 CREATE UNIQUE INDEX uq_categories_default
 ON categories (is_default) WHERE is_default = TRUE;
 
@@ -170,7 +171,7 @@ CREATE TABLE sub_categories (
 	-- DBレベルでカテゴリごとに1件のみ許可（後述のINDEXで保証）
 	is_default BOOLEAN DEFAULT FALSE,
 
-	-- サブカテゴリ削除時は DB トリガーが spots を「未分類」へ自動フォールバックする
+	-- サブカテゴリ削除時は DB トリガーが spots を「その他」へ自動フォールバックする
 	CONSTRAINT fk_sub_categories_category
 		FOREIGN KEY (category_id) REFERENCES categories(id)
 		ON DELETE RESTRICT,
@@ -180,7 +181,7 @@ CREATE TABLE sub_categories (
 		UNIQUE (category_id, name)
 );
 
--- カテゴリごとに「未分類」サブカテゴリは1件のみ
+-- カテゴリごとに「その他」サブカテゴリは1件のみ
 CREATE UNIQUE INDEX uq_sub_categories_default
 ON sub_categories (category_id, is_default) WHERE is_default = TRUE;
 
@@ -252,10 +253,7 @@ CREATE TABLE spot_photos (
 	display_order INTEGER NOT NULL,      -- スポット内での表示順
 	CONSTRAINT fk_spot_photos_spot
 		FOREIGN KEY (spot_id) REFERENCES spots(id)
-		ON DELETE CASCADE,
-	-- 同一スポット内で表示順の重複を禁止
-	CONSTRAINT uq_spot_photos_spot_order
-		UNIQUE (spot_id, display_order)
+		ON DELETE CASCADE
 );
 
 
