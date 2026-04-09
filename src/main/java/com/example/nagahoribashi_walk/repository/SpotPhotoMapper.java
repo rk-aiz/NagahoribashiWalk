@@ -1,6 +1,7 @@
 package com.example.nagahoribashi_walk.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -8,8 +9,9 @@ import org.apache.ibatis.annotations.Param;
 import com.example.nagahoribashi_walk.entity.SpotPhoto;
 
 /**
- * reviewsテーブルに対応したMapperのインターフェース
+ * spot_photosテーブルに対応したMapperのインターフェース
  * 
+ * @author 海津
  */
 @Mapper
 public interface SpotPhotoMapper {
@@ -17,12 +19,15 @@ public interface SpotPhotoMapper {
 	/** スポットIDから、紐づいた画像情報を全件取得 */
 	List<SpotPhoto> findAllBySpotId(@Param("spotId") Long spotId);
 	
+	/** 指定されたスポットに紐づいた、指定されたdisplay_orderの画像情報を取得 */
+	Optional<SpotPhoto> findBySpotIdAndDisplayOrder(@Param("spotId") Long spotId,
+			@Param("displayOrder") Integer displayOrder);
 
-
-	//指定されたスポットに紐づいた、指定されたdisplay_order以上の画像情報を全件取得
+	/** 指定されたスポットに紐づいた、指定されたdisplay_order「以上」の画像情報を全件取得 */
 	List<SpotPhoto> findBySpotIdAndDisplayOrderGreaterThanEqual(@Param("spotId") Long spotId,
 			@Param("displayOrder") Integer displayOrder);
 
+	/** display_orderを一括更新 */
 	void bulkUpdateDisplayOrder(@Param("spotPhotos") List<SpotPhoto> spotPhotos);
 
 	//画像情報追加

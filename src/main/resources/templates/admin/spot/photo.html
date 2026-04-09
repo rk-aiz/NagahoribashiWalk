@@ -79,8 +79,76 @@
             </div>
         </div>
 
+        <!-- 画像一覧 -->
+         <div class="admin-card mb-4">
+            <div class="p-4">
+                <h6 class="fw-bold mb-3"><i class="bi bi-images me-2 text-success"></i>登録済み画像</h6>
+
+                <!-- 画像あり -->
+                <div th:if="${not #lists.isEmpty(photos)}" class="row g-3">
+                    <div th:each="photo, iterStat : ${photos}" class="col-sm-6 col-md-4">
+                        <div class="photo-card">
+                            <!-- サムネイル -->
+                            <img th:src="${'/uploads/' + photo.photoUrl}" th:alt="'画像 ' + ${photo.id}"
+                                onerror="this.src='/images/no-image.png'">
+
+                            <!-- フッター：並び替え ＋ 表示順 ＋ 削除ボタン -->
+                            <div class="photo-card-footer">
+                                <!-- 前後入れ替えボタン -->
+                                <th:block th:if="${iterStat.size > 1}">
+                                    <div class="d-flex gap-1">
+                                        <th:block th:unless="${iterStat.first}">
+                                            <form th:action="@{/admin/spot/{id}/photo/reorder(id=${spot.id})}" method="post" class="m-0">
+                                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                                <input type="hidden" name="displayOrder1" th:value="${photo.displayOrder}" />
+                                                <input type="hidden" name="displayOrder2" th:value="${photos[iterStat.index - 1].displayOrder}" />
+                                                <button type="submit" class="btn btn-sm btn-outline-secondary py-0 px-2"
+                                                    th:disabled="${iterStat.first}">
+                                                    <i class="bi bi-chevron-left"></i>
+                                                </button>
+                                            </form>
+                                        </th:block>
+                                        <th:block th:unless="${iterStat.last}">
+                                            <form th:action="@{/admin/spot/{id}/photo/reorder(id=${spot.id})}" method="post" class="m-0">
+                                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                                <input type="hidden" name="displayOrder1" th:value="${photo.displayOrder}" />
+                                                <input type="hidden" name="displayOrder2" th:value="${photos[iterStat.index + 1].displayOrder}" />
+                                                <button type="submit" class="btn btn-sm btn-outline-secondary py-0 px-2"
+                                                    th:disabled="${iterStat.last}">
+                                                    <i class="bi bi-chevron-right"></i>
+                                                </button>
+                                            </form>
+                                        </th:block>
+                                    </div>
+                                </th:block>
+                                <span class="text-muted small">
+                                    <i class="bi bi-sort-numeric-down me-1"></i>
+                                    表示順：<span th:text="${photo.displayOrder}">1</span>
+                                </span>
+                                <form th:action="@{/admin/spot/photo/delete}" method="post" class="m-0"
+                                    onsubmit="return confirm('この画像を削除します。よろしいですか？');">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <input type="hidden" name="photoId" th:value="${photo.id}" />
+                                    <input type="hidden" name="spotId" th:value="${spot.id}" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 画像なし -->
+                <div th:if="${#lists.isEmpty(photos)}" class="text-center text-muted py-5">
+                    <i class="bi bi-image d-block mb-2" style="font-size: 2rem;"></i>
+                    まだ画像が登録されていません
+                </div>
+            </div>
+        </div>
+
         <!-- アップロードフォーム -->
-        <div class="admin-card mb-4">
+        <div class="admin-card">
             <div class="p-4">
                 <h6 class="fw-bold mb-3"><i class="bi bi-upload me-2 text-primary"></i>画像をアップロード</h6>
 
@@ -119,48 +187,6 @@
                 </form>
             </div>
         </div>
-
-        <!-- 画像一覧 -->
-        <div class="admin-card">
-            <div class="p-4">
-                <h6 class="fw-bold mb-3"><i class="bi bi-images me-2 text-success"></i>登録済み画像</h6>
-
-                <!-- 画像あり -->
-                <div th:if="${not #lists.isEmpty(photos)}" class="row g-3">
-                    <div th:each="photo : ${photos}" class="col-sm-6 col-md-4">
-                        <div class="photo-card">
-                            <!-- サムネイル -->
-                            <img th:src="${'/uploads/' + photo.photoUrl}" th:alt="'画像 ' + ${photo.id}"
-                                onerror="this.src='/images/no-image.png'">
-
-                            <!-- フッター：表示順 ＋ 削除ボタン -->
-                            <div class="photo-card-footer">
-                                <span class="text-muted small">
-                                    <i class="bi bi-sort-numeric-down me-1"></i>
-                                    表示順：<span th:text="${photo.displayOrder}">1</span>
-                                </span>
-                                <form th:action="@{/admin/spot/photo/delete}" method="post" class="m-0"
-                                    onsubmit="return confirm('この画像を削除します。よろしいですか？');">
-                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                                    <input type="hidden" name="photoId" th:value="${photo.id}" />
-                                    <input type="hidden" name="spotId" th:value="${spot.id}" />
-                                    <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 画像なし -->
-                <div th:if="${#lists.isEmpty(photos)}" class="text-center text-muted py-5">
-                    <i class="bi bi-image d-block mb-2" style="font-size: 2rem;"></i>
-                    まだ画像が登録されていません
-                </div>
-            </div>
-        </div>
-
     </div>
 
     <script th:src="@{/js/admin-photo-upload.js}"></script>

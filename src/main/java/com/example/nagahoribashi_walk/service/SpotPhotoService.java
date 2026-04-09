@@ -14,6 +14,8 @@ public interface SpotPhotoService {
 
 	SaveImagesResult saveImages(List<MultipartFile> files, Long spotId, Integer firstDisplayOrder);
 
-	void delete(Long id);
+	void delete(Long id, Long spotId);
+
+    void reorder(Long spotId, Integer displayOrder1, Integer displayOrder2);
 
 }

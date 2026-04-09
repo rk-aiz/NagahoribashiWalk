@@ -15,7 +15,7 @@
 		ORDER BY display_order
 	</select>
 	
-	<!-- 画像情報を削除 -->
+	<!-- 画像情報を末尾に追加 -->
 	<insert id="insertLast" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO spot_photos
 		(
@@ -38,9 +38,26 @@
 		WHERE id = #{id}
 	</delete>
 
+	<!-- 指定されたスポットに紐づいた、指定されたdisplay_orderの画像情報を取得 -->
+	<select id="findBySpotIdAndDisplayOrder" resultType="com.example.nagahoribashi_walk.entity.SpotPhoto">
+		SELECT 
+			id,
+			spot_id,
+			display_order,
+			photo_url
+		FROM spot_photos
+		WHERE spot_id = #{spotId}
+		AND display_order = #{displayOrder}
+		LIMIT 1
+	</select>
+
 	<!-- 指定されたスポットに紐づいた、指定されたdisplay_order以上の画像情報を全件取得 -->
 	<select id="findBySpotIdAndDisplayOrderGreaterThanEqual" resultType="com.example.nagahoribashi_walk.entity.SpotPhoto">
-		SELECT *
+		SELECT 
+			id,
+			spot_id,
+			display_order,
+			photo_url
 		FROM spot_photos
 		WHERE spot_id = #{spotId}
 		AND display_order >= #{displayOrder}

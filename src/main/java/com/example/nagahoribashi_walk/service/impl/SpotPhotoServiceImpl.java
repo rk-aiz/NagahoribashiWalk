@@ -39,6 +39,15 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
 		return spotPhotoMapper.findAllBySpotId(spotId);
 	}
 
+    @Override
+    public void reorder(Long spotId, Integer displayOrder1, Integer displayOrder2) {
+        SpotPhoto spotPhoto1 = spotPhotoMapper.findBySpotIdAndDisplayOrder(spotId, displayOrder1).orElseThrow();
+        SpotPhoto spotPhoto2 = spotPhotoMapper.findBySpotIdAndDisplayOrder(spotId, displayOrder2).orElseThrow();
+        spotPhoto1.setDisplayOrder(displayOrder2);
+        spotPhoto2.setDisplayOrder(displayOrder1);
+        spotPhotoMapper.bulkUpdateDisplayOrder(List.of(spotPhoto1, spotPhoto2));
+    }
+
 	/** 【管理者】画像ファイル一覧を保存する */
 	@Override
     public SaveImagesResult saveImages(List<MultipartFile> files, Long spotId, Integer firstDisplayOrder) {
@@ -73,10 +82,11 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
         }
 
         // 2: 既存レコードのリオーダー
+        int offset = savedFilenames.size();
         List<SpotPhoto> existingPhotos = spotPhotoMapper.findBySpotIdAndDisplayOrderGreaterThanEqual(spotId, firstDisplayOrder);
         if (!existingPhotos.isEmpty()) {
             for (SpotPhoto sp : existingPhotos) {
-                sp.setDisplayOrder(sp.getDisplayOrder() + 1);
+                sp.setDisplayOrder(sp.getDisplayOrder() + offset);
             }
             spotPhotoMapper.bulkUpdateDisplayOrder(existingPhotos);
         }
@@ -94,8 +104,25 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
         return new SaveImagesResult(savedFilenames, errors);
     }
 
+    /**
+     * 画像を削除する TODO : ローカルストレージからファイル自体を削除する
+     */
 	@Override
-	public void delete(Long id) {
+	public void delete(Long id, Long spotId) {
 		spotPhotoMapper.delete(id);
+
+        // display_orderを更新する
+        List<SpotPhoto> photos = spotPhotoMapper.findAllBySpotId(spotId);
+        boolean requireUpdate = false;
+        if (!photos.isEmpty()) {
+            for (int i = 0; i < photos.size(); i++) {
+                SpotPhoto sp = photos.get(i);
+                if (!sp.getDisplayOrder().equals(i + 1)) {
+                    sp.setDisplayOrder(i + 1);
+                    requireUpdate = true;
+                }
+            }
+        }
+        if (requireUpdate) spotPhotoMapper.bulkUpdateDisplayOrder(photos);
 	}
 }
