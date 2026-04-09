@@ -25,9 +25,27 @@ DROP TABLE IF EXISTS categories;
 CREATE OR REPLACE FUNCTION update_timestamp()
 RETURNS TRIGGER AS '
 	BEGIN
-	NEW.updated_at = CURRENT_TIMESTAMP;
-	RETURN NEW;
-	END;
+    IF TG_TABLE_NAME = ''spots'' THEN
+        IF NEW.spot_name IS NOT DISTINCT FROM OLD.spot_name
+           AND NEW.sub_category_id IS NOT DISTINCT FROM OLD.sub_category_id
+           AND NEW.website_url IS NOT DISTINCT FROM OLD.website_url
+           AND NEW.gmap_url IS NOT DISTINCT FROM OLD.gmap_url
+           AND NEW.address IS NOT DISTINCT FROM OLD.address
+           AND NEW.business_hours IS NOT DISTINCT FROM OLD.business_hours
+           AND NEW.closed_days IS NOT DISTINCT FROM OLD.closed_days
+           AND NEW.estimated_budget IS NOT DISTINCT FROM OLD.estimated_budget
+           AND NEW.keywords IS NOT DISTINCT FROM OLD.keywords
+           AND NEW.details IS NOT DISTINCT FROM OLD.details
+           AND NEW.deleted_at IS NOT DISTINCT FROM OLD.deleted_at
+           AND NEW.pv_count IS DISTINCT FROM OLD.pv_count
+        THEN
+           RETURN NEW;
+        END IF;
+    END IF;
+
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
 ' language 'plpgsql';
 
 -- カテゴリ新規追加時に「その他」サブカテゴリを自動生成する。
@@ -182,6 +200,7 @@ CREATE TABLE spots(
 	deleted_at TIMESTAMP,        -- NULL = 公開中。論理削除は日時をセット
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	pv_count INTEGER NOT NULL DEFAULT 0,
 	-- サブカテゴリ削除時は DB トリガーが spots を「未分類」へ自動フォールバックする
 	CONSTRAINT fk_spots_sub_category
 		FOREIGN KEY (sub_category_id) REFERENCES sub_categories(id)
