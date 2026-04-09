@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.nagahoribashi_walk.entity.Category;
@@ -81,10 +82,10 @@ public class AdminCategoryController {
         //System.out.println("★受信データ: id=" + form.getId() + ", name=" + form.getName());
         
         if (bindingResult.hasErrors()) {
-            //redirectAttributes.addFlashAttribute("errorMessage",
-            //        bindingResult.getAllErrors().getFirst().getDefaultMessage());
-        	bindingResult.getAllErrors().forEach(err -> System.out.println("★バリデーションエラー: " + err.getDefaultMessage()));
-            redirectAttributes.addFlashAttribute("errorMessage", "入力内容に不備があります");
+           redirectAttributes.addFlashAttribute("errorMessage",
+                    bindingResult.getAllErrors().getFirst().getDefaultMessage());
+        //	bindingResult.getAllErrors().forEach(err -> System.out.println("★バリデーションエラー: " + err.getDefaultMessage()));
+          //  redirectAttributes.addFlashAttribute("errorMessage", "入力内容に不備があります");
             return "redirect:/admin/category/list";
         }
 
@@ -108,6 +109,19 @@ public class AdminCategoryController {
     public String deleteCategory(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         categoryService.deleteCategory(id);
         redirectAttributes.addFlashAttribute("successMessage", "カテゴリーを削除しました。");
+        return "redirect:/admin/category/list";
+    }
+    
+    @PostMapping("/admin/category/reorder")
+    public String reorderCategory(@RequestParam("id") Long id, @RequestParam("direction") String direction) {
+        categoryService.reorderCategory(id, direction);
+        return "redirect:/admin/category/list";
+    }
+    
+    @PostMapping("/admin/subcategory/reorder")
+    public String reorderSubCategory(@RequestParam("id") Long id, @RequestParam("direction") String direction) {
+        // Serviceを呼び出して並び順を更新
+        subCategoryService.reorderSubCategory(id, direction);
         return "redirect:/admin/category/list";
     }
 

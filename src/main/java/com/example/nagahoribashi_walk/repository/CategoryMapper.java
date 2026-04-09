@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.data.repository.query.Param;
 
 import com.example.nagahoribashi_walk.dto.AdminCategoryRow;
@@ -36,5 +37,8 @@ public interface CategoryMapper {
     List<AdminCategoryRow> findAllForAdmin();
 
 	void updateCategory(Category category);
+
+	@Update("UPDATE categories SET display_order = #{displayOrder} WHERE id = #{id}")
+	void updateDisplayOrder(@Param("id") Long id, @Param("displayOrder") Integer displayOrder);
 
 }

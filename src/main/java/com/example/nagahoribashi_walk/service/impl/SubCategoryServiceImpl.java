@@ -66,4 +66,26 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 		subCategoryMapper.updateSubCategory(subCategory);
 	}
 
+	@Override
+	public void reorderSubCategory(Long id, String direction) {
+	    SubCategory current = subCategoryMapper.findByIdEntity(id);
+	    
+	    List<SubCategory> siblings = subCategoryMapper.findByCategoryIdEntity(current.getCategoryId());
+	    	    
+	    for (int i = 0; i < siblings.size(); i++) {
+	        subCategoryMapper.updateDisplayOrder(siblings.get(i).getId(), i + 1);
+	    }
+	    	    
+	    for (int i = 0; i < siblings.size(); i++) {
+	        if (siblings.get(i).getId().equals(id)) {
+	            int targetIdx = "up".equals(direction) ? i - 1 : i + 1;
+	            if (targetIdx >= 0 && targetIdx < siblings.size()) {
+	                subCategoryMapper.updateDisplayOrder(siblings.get(i).getId(), targetIdx + 1);
+	                subCategoryMapper.updateDisplayOrder(siblings.get(targetIdx).getId(), i + 1);
+	            }
+	            break;
+	        }
+	    }
+	}
+
 }

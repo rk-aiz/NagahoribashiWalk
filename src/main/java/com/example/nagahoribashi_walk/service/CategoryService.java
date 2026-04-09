@@ -34,5 +34,7 @@ public interface CategoryService {
     List<AdminCategoryRow> getAllAdminCategoryRows();
 
     List<AdminCategoryRow> findAllForAdmin();
+    
+    void reorderCategory(Long id, String direction);
 
 }

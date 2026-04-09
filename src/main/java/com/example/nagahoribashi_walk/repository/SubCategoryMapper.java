@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.data.repository.query.Param;
 
@@ -42,6 +43,15 @@ public interface SubCategoryMapper {
     void deleteDefaultSubCategoryByCategoryId(@Param("id") Long id);
 
 	void updateSubCategory(SubCategory subCategory);
+
+	@Select("SELECT id, name, category_id as categoryId, display_order as displayOrder FROM sub_categories WHERE id = #{id}")
+    SubCategory findByIdEntity(Long id);
+
+    @Select("SELECT id, name, category_id as categoryId, display_order as displayOrder FROM sub_categories WHERE category_id = #{categoryId} ORDER BY display_order ASC")
+    List<SubCategory> findByCategoryIdEntity(Long categoryId);
+
+    @Update("UPDATE sub_categories SET display_order = #{displayOrder} WHERE id = #{id}")
+    void updateDisplayOrder(@Param("id") Long id, @Param("displayOrder") Integer displayOrder);
 
 
 }

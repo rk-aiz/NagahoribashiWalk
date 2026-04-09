@@ -26,4 +26,6 @@ public interface SubCategoryService {
 	Map<Long, List<SubCategory>> findAllGroupedByCategory();
 
 	void updateSubCategory(SubCategory subCategory);
+
+	void reorderSubCategory(Long id, String direction);
 }
