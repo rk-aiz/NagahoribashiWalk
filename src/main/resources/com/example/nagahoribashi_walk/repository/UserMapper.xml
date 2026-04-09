@@ -126,7 +126,7 @@
     </update>
     
     <!-- 管理者用ユーザー検索 -->
-	<select id="searchAdminUsers" resultType="com.example.nagahoribashi_walk.dto.AdminUserRow">
+	<select id="searchForAdminByKeyword" resultType="com.example.nagahoribashi_walk.dto.AdminUserRow">
 	    SELECT
 	        id,
 	        username,
@@ -167,24 +167,35 @@
 	    LIMIT #{limit} OFFSET #{offset}
 	</select>
 
-	<select id="countSearchAdminUsers" resultType="long">
+	<select id="countForAdminByKeyword" resultType="long">
 	    SELECT COUNT(*)
 	    FROM users
 	    <where>
-	    <!-- 退会制御 -->
-        <if test="includeDeleted == false">
-            deleted_at IS NULL
-        </if>
+    	    <!-- 退会制御 -->
+            <if test="includeDeleted == false">
+                deleted_at IS NULL
+            </if>
 
-        <!-- 検索条件 -->
-        <if test="keyword != null and keyword != ''">
-            AND (
-                username LIKE CONCAT('%', #{keyword}, '%')
-             OR email LIKE CONCAT('%', #{keyword}, '%')
-             OR display_name LIKE CONCAT('%', #{keyword}, '%')
-            )
-        </if>
-    </where>
+            <!-- 検索条件 -->
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    username LIKE CONCAT('%', #{keyword}, '%')
+                 OR email LIKE CONCAT('%', #{keyword}, '%')
+                 OR display_name LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+        </where>
 	</select>
+
+    <select id="countByRole" resultType="long">
+        SELECT COUNT(*)
+	    FROM users
+        <where>
+    	    deleted_at IS NULL
+            <if test="role != null and role != ''">
+                AND role = #{role}
+            </if>
+        </where>
+    </select>
 
 </mapper>

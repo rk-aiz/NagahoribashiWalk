@@ -83,7 +83,7 @@ public interface UserMapper {
     /**
      * 管理者側ユーザー一覧検索用（ページネーション）
      */
-    List<AdminUserRow> searchAdminUsers(
+    List<AdminUserRow> searchForAdminByKeyword(
             @Param("keyword") String keyword,
             @Param("limit") int limit,
             @Param("offset") long offset,
@@ -93,6 +93,11 @@ public interface UserMapper {
     /**
      * 管理者側ユーザー一覧検索用（総数取得）
      */
-    long countSearchAdminUsers(@Param("keyword") String keyword, @Param("includeDeleted") boolean includeDeleted);
+    long countForAdminByKeyword(@Param("keyword") String keyword, @Param("includeDeleted") boolean includeDeleted);
+
+    /**
+     * 対象Roleのユーザー数を取得
+     */
+    long countByRole(@Param("role") String role);
 
 }

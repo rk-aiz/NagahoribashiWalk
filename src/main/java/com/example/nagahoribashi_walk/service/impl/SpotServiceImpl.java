@@ -93,7 +93,10 @@ public class SpotServiceImpl implements SpotService {
     public Page<SpotSummary> searchByKeywords(String keyword, Pageable pageable) {
 
         // 🔸 スペースで分割
-        String[] splitKeywords = keyword.trim().replace('　', ' ').split("\\s+");
+        String[] splitKeywords = keyword
+                // 全角スペースを半角スペースに置き換え
+                .replace('\u3000', ' ')
+                .trim().split("\\s+");
 
         List<Map<String, String>> keywordMapList = new ArrayList<>();
 
@@ -165,6 +168,8 @@ public class SpotServiceImpl implements SpotService {
      */
     @Override
     public SpotDetail findById(Long id, Long loginUserId) {
+    	spotMapper.incrementPvCount(id);
+    	
         SpotDetail spotDetail = spotMapper.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("指定したスポットが存在しません。id=" + id));
 
@@ -234,5 +239,20 @@ public class SpotServiceImpl implements SpotService {
     @Override
     public Spot getByIdForAdmin(Long spotId) {
         return spotMapper.findByIdForAdmin(spotId).orElseThrow();
+    }
+
+    @Override
+    public long getSpotCount() {
+        return spotMapper.count();
+    }
+
+    @Override
+    public Double getAverageRatingAll() {
+        return spotMapper.findAverageRatingAll();
+    }
+
+    @Override
+    public List<AdminSpotRow> findRecent(int i) {
+        return spotMapper.findRecent(i);
     }
 }

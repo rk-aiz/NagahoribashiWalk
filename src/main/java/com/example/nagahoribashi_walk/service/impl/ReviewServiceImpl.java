@@ -2,6 +2,7 @@ package com.example.nagahoribashi_walk.service.impl;
 
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -127,5 +128,10 @@ public class ReviewServiceImpl implements ReviewService {
 
         // userId と spotId を条件に削除を実行
         reviewMapper.delete(existingReview.getUserId(), existingReview.getSpotId());
+    }
+
+    @Override
+    public long getReviewCount() {
+        return reviewMapper.count();
     }
 }

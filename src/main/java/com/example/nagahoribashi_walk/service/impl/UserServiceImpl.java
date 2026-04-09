@@ -112,15 +112,15 @@ public class UserServiceImpl implements UserService {
             total = userMapper.countAdminUsers(includeDeleted);
         } else {
             // 検索あり
-            list = userMapper.searchAdminUsers(keyword, pageSize, offset, sortLowerCase, includeDeleted);
-            total = userMapper.countSearchAdminUsers(keyword, includeDeleted);
+            list = userMapper.searchForAdminByKeyword(keyword, pageSize, offset, sortLowerCase, includeDeleted);
+            total = userMapper.countForAdminByKeyword(keyword, includeDeleted);
         }
 
         return new PageImpl<>(list, pageable, total);
     }
 
     /**
-     * ユーザーを
+     * ユーザーを論理削除する
      */
     public void delete(String username, String loginUsername) {
         // ★ 自分削除禁止
@@ -133,5 +133,13 @@ public class UserServiceImpl implements UserService {
 
         // ★ 論理削除
         userMapper.softDelete(user.getId());
+    }
+
+    /**
+     * Role対象ユーザー数をカウントする
+     */
+    @Override
+    public long getUserCountByRole(String role) {
+        return userMapper.countByRole(role);
     }
 }
