@@ -209,11 +209,11 @@ public class SpotServiceImpl implements SpotService {
      * 【管理者】キーワードでスポットを絞り込んだページを返す
      */
     @Override
-    public Page<AdminSpotRow> searchForAdmin(String keyword, Pageable pageable) {
+    public Page<AdminSpotRow> searchForAdmin(String keyword, String sort, Pageable pageable) {
         long total = spotMapper.countForAdminByKeyword(keyword);
 
         List<AdminSpotRow> spots = spotMapper.findAllForAdminByKeyword(
-                keyword, pageable.getOffset(), pageable.getPageSize());
+                keyword, sort, pageable.getOffset(), pageable.getPageSize());
 
         return new PageImpl<>(spots, pageable, total);
     }
