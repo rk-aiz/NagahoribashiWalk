@@ -99,6 +99,11 @@
         VALUES (#{name}, (SELECT COALESCE(MAX(display_order), 0) + 1 FROM categories))
     </insert>
 
+    <update id="updateCategory">
+      UPDATE categories 
+      SET name = #{name} 
+      WHERE id = #{id}
+    </update>
 
     <!-- 削除 -->
     <delete id="deleteCategory">

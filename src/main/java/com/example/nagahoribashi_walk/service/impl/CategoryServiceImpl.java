@@ -37,12 +37,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void updateCategory(Category category) {
-
+    	categoryMapper.updateCategory(category);
     }
 
     // 削除
     @Override
     public void deleteCategory(Long id) {
+    	subCategoryMapper.disableDefaultFlagByCategoryId(id);
+    	subCategoryMapper.deleteDefaultSubCategoryByCategoryId(id);
         categoryMapper.deleteCategory(id);
     }
 

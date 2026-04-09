@@ -35,4 +35,6 @@ public interface CategoryMapper {
 
     List<AdminCategoryRow> findAllForAdmin();
 
+	void updateCategory(Category category);
+
 }

@@ -60,4 +60,10 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 		return null;
 	}
 
+	@Override
+	public void updateSubCategory(SubCategory subCategory) {
+		
+		subCategoryMapper.updateSubCategory(subCategory);
+	}
+
 }

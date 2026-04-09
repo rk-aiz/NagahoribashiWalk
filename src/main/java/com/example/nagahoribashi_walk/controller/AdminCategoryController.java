@@ -77,9 +77,14 @@ public class AdminCategoryController {
             RedirectAttributes redirectAttributes,
             Model model) {
 
+    	    // 入力値が届いているか確認
+        //System.out.println("★受信データ: id=" + form.getId() + ", name=" + form.getName());
+        
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    bindingResult.getAllErrors().getFirst().getDefaultMessage());
+            //redirectAttributes.addFlashAttribute("errorMessage",
+            //        bindingResult.getAllErrors().getFirst().getDefaultMessage());
+        	bindingResult.getAllErrors().forEach(err -> System.out.println("★バリデーションエラー: " + err.getDefaultMessage()));
+            redirectAttributes.addFlashAttribute("errorMessage", "入力内容に不備があります");
             return "redirect:/admin/category/list";
         }
 
@@ -87,10 +92,22 @@ public class AdminCategoryController {
         Category category = new Category();
         BeanUtils.copyProperties(form, category);
 
+        // 更新実行直前のログ
+        //System.out.println("★更新実行: " + category.getName());
+        
         // カテゴリ更新処理
         categoryService.updateCategory(category);
 
         redirectAttributes.addFlashAttribute("message", "カテゴリー名を更新しました。");
+        return "redirect:/admin/category/list";
+    }
+    
+    // 親カテゴリーの削除
+   
+    @PostMapping("/admin/category/remove/{id}") // パスをエラーログに合わせて修正
+    public String deleteCategory(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        categoryService.deleteCategory(id);
+        redirectAttributes.addFlashAttribute("successMessage", "カテゴリーを削除しました。");
         return "redirect:/admin/category/list";
     }
 
@@ -122,6 +139,27 @@ public class AdminCategoryController {
         return "redirect:/admin/category/list";
     }
 
+    /**
+     * サブカテゴリー名の更新
+     */
+    @PostMapping("/admin/subcategory/update")
+    public String updateSubCategory(@Validated CategoryForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "サブカテゴリー名の入力に不備があります。");
+            return "redirect:/admin/category/list";
+        }
+
+        // SubCategoryエンティティ（または共通の仕組み）に詰め替えて更新
+        SubCategory subCategory = new SubCategory();
+        subCategory.setId(form.getId());
+        subCategory.setName(form.getName());
+
+        subCategoryService.updateSubCategory(subCategory);
+        
+        redirectAttributes.addFlashAttribute("successMessage", "サブカテゴリー名を更新しました。");
+        return "redirect:/admin/category/list";
+    }
     /**
      * サブカテゴリーの個別削除
      */

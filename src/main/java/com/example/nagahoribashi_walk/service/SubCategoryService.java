@@ -24,4 +24,6 @@ public interface SubCategoryService {
     SidebarDTO getSidebarDTO(Long subCategoryId);
 
 	Map<Long, List<SubCategory>> findAllGroupedByCategory();
+
+	void updateSubCategory(SubCategory subCategory);
 }
