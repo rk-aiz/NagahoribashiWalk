@@ -3,11 +3,8 @@ package com.example.nagahoribashi_walk.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-import org.springframework.data.repository.query.Param;
+import org.apache.ibatis.annotations.Param;
 
 import com.example.nagahoribashi_walk.dto.NavSubCategory;
 import com.example.nagahoribashi_walk.entity.SubCategory;
@@ -15,43 +12,47 @@ import com.example.nagahoribashi_walk.entity.SubCategory;
 /**
  * sub_categoriesテーブルに対応したMapperのインターフェース
  * 
+ * @author 大谷
  */
 @Mapper
 public interface SubCategoryMapper {
     
-    //大谷記載
-    //追加
-    void insertSubCategory(SubCategory subCategory);
-    
-    //削除
-    void deleteSubCategory(@Param("id") Long id);
-
+    /** IDからサブカテゴリ(DTO)を取得する */
     Optional<NavSubCategory> findById(Long id);
 
+    /** サブカテゴリIDから兄弟サブカテゴリ(DTO)を取得する */
     List<NavSubCategory> findSiblings(@Param("subCategoryId") Long subCategoryId);
 
+    /** カテゴリIDからサブカテゴリ(DTO)を取得する */
     List<NavSubCategory> findByCategoryId(@Param("categoryId") Long categoryId);
 
+    /** IDからサブカテゴリ(Entity)を取得する */
+    Optional<SubCategory> findEntityById(Long id);
+
+    /** カテゴリIDに対応するサブカテゴリ一覧を取得する */
+    List<SubCategory> findEntityByCategoryId(Long categoryId);
     
-    @Update("UPDATE sub_categories SET is_default = false WHERE category_id = #{id}")
-    void disableDefaultFlagByCategoryId(@Param("id") Long id);
-    
-    @Delete("DELETE FROM sub_categories WHERE category_id = #{id}")
-    void deleteSubCategoriesByCategoryId(@Param("id") Long id);
+    /** カテゴリIDと表示順でサブカテゴリを取得する */
+    Optional<SubCategory> findEntityByCategoryIdAndDisplayOrder(
+            @Param("categoryId") Long categoryId,
+            @Param("displayOrder") Integer displayOrder);
 
-    @Delete("DELETE FROM sub_categories WHERE category_id = #{id} AND is_default = true")
-    void deleteDefaultSubCategoryByCategoryId(@Param("id") Long id);
+    /** カテゴリIDに対応する「その他」サブカテゴリを取得する */
+    Optional<SubCategory> findDefaultByCategoryId(Long categoryId);
 
-	void updateSubCategory(SubCategory subCategory);
+    /** 追加 */
+    void insert(SubCategory subCategory);
 
-	@Select("SELECT id, name, category_id as categoryId, display_order as displayOrder FROM sub_categories WHERE id = #{id}")
-    SubCategory findByIdEntity(Long id);
+    /** 更新(名前のみ) */
+	void update(SubCategory subCategory);
 
-    @Select("SELECT id, name, category_id as categoryId, display_order as displayOrder FROM sub_categories WHERE category_id = #{categoryId} ORDER BY display_order ASC")
-    List<SubCategory> findByCategoryIdEntity(Long categoryId);
-
-    @Update("UPDATE sub_categories SET display_order = #{displayOrder} WHERE id = #{id}")
+    /** 表示順を更新 */
     void updateDisplayOrder(@Param("id") Long id, @Param("displayOrder") Integer displayOrder);
 
+    /** デフォルトフラグを更新 */
+    void updateIsDefault(@Param("id") Long id, @Param("isDefault") Boolean isDefault);
+
+    /** 削除 */
+    void delete(@Param("id") Long id);
 
 }

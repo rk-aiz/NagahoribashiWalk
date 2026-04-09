@@ -91,24 +91,38 @@
             c.display_order ASC NULLS LAST
     </select>
     
-    
     <!-- 大谷記載 -->
     <!-- 新規追加 -->
-    <insert id="insertCategory" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO categories (name, display_order)
         VALUES (#{name}, (SELECT COALESCE(MAX(display_order), 0) + 1 FROM categories))
     </insert>
 
-    <update id="updateCategory">
+    <update id="update">
       UPDATE categories 
       SET name = #{name} 
       WHERE id = #{id}
     </update>
 
     <!-- 削除 -->
-    <delete id="deleteCategory">
+    <delete id="delete">
         DELETE FROM categories WHERE id = #{id}
     </delete>
    
+    <select id="findEntityById" resultType="com.example.nagahoribashi_walk.entity.Category">
+        SELECT id, name, display_order, is_default FROM categories
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByDisplayOrder" resultType="com.example.nagahoribashi_walk.entity.Category">
+        SELECT id, name, display_order, is_default FROM categories
+        WHERE display_order = #{displayOrder}
+    </select>
+
+    <update id="updateDisplayOrder">
+        UPDATE categories 
+        SET display_order = #{displayOrder}
+        WHERE id = #{id}
+    </update>
 
 </mapper>

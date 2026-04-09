@@ -10,6 +10,7 @@ import com.example.nagahoribashi_walk.dto.NavCategory;
 import com.example.nagahoribashi_walk.dto.NavSubCategory;
 import com.example.nagahoribashi_walk.dto.SidebarDTO;
 import com.example.nagahoribashi_walk.entity.Category;
+import com.example.nagahoribashi_walk.entity.SubCategory;
 import com.example.nagahoribashi_walk.repository.CategoryMapper;
 import com.example.nagahoribashi_walk.repository.SubCategoryMapper;
 import com.example.nagahoribashi_walk.service.CategoryService;
@@ -33,20 +34,24 @@ public class CategoryServiceImpl implements CategoryService {
     // 追加
     @Override
     public void insertCategory(Category category) {
-        categoryMapper.insertCategory(category);
+        categoryMapper.insert(category);
     }
 
     @Override
     public void updateCategory(Category category) {
-    	categoryMapper.updateCategory(category);
+    	categoryMapper.update(category);
     }
 
     // 削除
     @Override
     public void deleteCategory(Long id) {
-    	subCategoryMapper.disableDefaultFlagByCategoryId(id);
-    	subCategoryMapper.deleteSubCategoriesByCategoryId(id);
-        categoryMapper.deleteCategory(id);
+
+        // 「その他」サブカテゴリを削除
+    	SubCategory defaultSubCategory = subCategoryMapper.findDefaultByCategoryId(id).orElseThrow();
+    	subCategoryMapper.updateIsDefault(defaultSubCategory.getId(), false);
+        subCategoryMapper.delete(defaultSubCategory.getId());
+        
+        categoryMapper.delete(id);
     }
 
     @Override
@@ -83,29 +88,18 @@ public class CategoryServiceImpl implements CategoryService {
     
     @Override
     public void reorderCategory(Long id, String direction) {
-    List<AdminCategoryRow> list = categoryMapper.findAllForAdmin(); 
-    
-    for (int i = 0; i < list.size(); i++) {
-        categoryMapper.updateDisplayOrder(list.get(i).getId(), i + 1);
-    }
-    
-    for (int i = 0; i < list.size(); i++) {
-        if (list.get(i).getId() == id) {
-            int targetIdx = "up".equals(direction) ? i - 1 : i + 1;
-            
-            if (targetIdx >= 0 && targetIdx < list.size()) {
-                AdminCategoryRow current = list.get(i);
-                AdminCategoryRow target = list.get(targetIdx);
-                
-                // AdminCategoryRow なら getIsDefault() が使えるはずです
-                if (target.getIsDefault()) break; 
+		Category category1 = categoryMapper.findEntityById(id).orElseThrow();
+		Category category2 = switch(direction) {
+			case "up" -> categoryMapper.findByDisplayOrder(
+						category1.getDisplayOrder() - 1).orElseThrow();
+			default -> categoryMapper.findByDisplayOrder(
+						category1.getDisplayOrder() + 1).orElseThrow();
+		};
 
-                categoryMapper.updateDisplayOrder(current.getId(), targetIdx + 1);
-                categoryMapper.updateDisplayOrder(target.getId(), i + 1);
-            }
-            break;
-        }
+        // TODO : category2がnullの場合のフォールバック処理
+
+		categoryMapper.updateDisplayOrder(category1.getId(), category2.getDisplayOrder());
+		categoryMapper.updateDisplayOrder(category2.getId(), category1.getDisplayOrder());
     }
-}
 
 }

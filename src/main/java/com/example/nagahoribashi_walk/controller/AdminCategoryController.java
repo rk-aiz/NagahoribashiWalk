@@ -53,10 +53,10 @@ public class AdminCategoryController {
             Model model) {
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("categories",
-                    categoryService.findAllForAdmin());
-            model.addAttribute("subCategoryForm", new SubCategoryForm());
-            return "/admin/category/list";
+           redirectAttributes.addFlashAttribute("errorMessage",
+                    bindingResult.getAllErrors().getFirst().getDefaultMessage());
+        
+            return "redirect:/admin/category/list";
         }
 
         // Categoryエンティティを作成
@@ -97,22 +97,28 @@ public class AdminCategoryController {
     }
     
     // 親カテゴリーの削除
-   
-    @PostMapping("/admin/category/remove/{id}") // パスをエラーログに合わせて修正
+    @PostMapping("/admin/category/remove/{id}")
     public String deleteCategory(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         categoryService.deleteCategory(id);
-        redirectAttributes.addFlashAttribute("successMessage", "カテゴリーを削除しました。");
+        redirectAttributes.addFlashAttribute("message", "カテゴリーを削除しました。\n サブカテゴリーは「その他」へ移動されました。");
         return "redirect:/admin/category/list";
     }
     
+    /** カテゴリの順序を入れ替える処理 */
     @PostMapping("/admin/category/reorder")
-    public String reorderCategory(@RequestParam("id") Long id, @RequestParam("direction") String direction) {
+    public String reorderCategory(
+            @RequestParam("id") Long id, 
+            @RequestParam("direction") String direction) {
+        // Serviceを呼び出して並び順を更新
         categoryService.reorderCategory(id, direction);
         return "redirect:/admin/category/list";
     }
     
+    /** サブカテゴリの順序を入れ替える処理 */
     @PostMapping("/admin/subcategory/reorder")
-    public String reorderSubCategory(@RequestParam("id") Long id, @RequestParam("direction") String direction) {
+    public String reorderSubCategory(
+            @RequestParam("id") Long id,
+            @RequestParam("direction") String direction) {
         // Serviceを呼び出して並び順を更新
         subCategoryService.reorderSubCategory(id, direction);
         return "redirect:/admin/category/list";
@@ -129,10 +135,10 @@ public class AdminCategoryController {
             Model model) {
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("categories",
-                    categoryService.findAllForAdmin());
-            model.addAttribute("categoryForm", new CategoryForm());
-            return "/admin/category/list";
+           redirectAttributes.addFlashAttribute("errorMessage",
+                    bindingResult.getAllErrors().getFirst().getDefaultMessage());
+        
+            return "redirect:/admin/category/list";
         }
 
         // SubCategoryエンティティを作成
@@ -150,14 +156,17 @@ public class AdminCategoryController {
      * サブカテゴリー名の更新
      */
     @PostMapping("/admin/subcategory/update")
-    public String updateSubCategory(@Validated CategoryForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String updateSubCategory(
+            @Validated CategoryForm form, 
+            BindingResult bindingResult, 
+            RedirectAttributes redirectAttributes) {
         
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage", "サブカテゴリー名の入力に不備があります。");
             return "redirect:/admin/category/list";
         }
 
-        // SubCategoryエンティティ（または共通の仕組み）に詰め替えて更新
+        // SubCategoryエンティティに詰め替えて更新
         SubCategory subCategory = new SubCategory();
         subCategory.setId(form.getId());
         subCategory.setName(form.getName());
@@ -167,6 +176,7 @@ public class AdminCategoryController {
         redirectAttributes.addFlashAttribute("successMessage", "サブカテゴリー名を更新しました。");
         return "redirect:/admin/category/list";
     }
+
     /**
      * サブカテゴリーの個別削除
      */

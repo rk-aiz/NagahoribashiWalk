@@ -4,8 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Update;
-import org.springframework.data.repository.query.Param;
+import org.apache.ibatis.annotations.Param;
 
 import com.example.nagahoribashi_walk.dto.AdminCategoryRow;
 import com.example.nagahoribashi_walk.dto.NavCategory;
@@ -14,19 +13,12 @@ import com.example.nagahoribashi_walk.entity.Category;
 /**
  * categoriesテーブルに対応したMapperのインターフェース
  * 
- * @author 海津
+ * @author 海津, 大谷
  */
 @Mapper
 public interface CategoryMapper {
 
     List<NavCategory> findAll();
-    
-    //大谷記載
-    //追加
-    void insertCategory(Category category);
-
-    //削除
-    void deleteCategory(@Param("id") Long id);
     
     Optional<NavCategory> findById(Long id);
 
@@ -36,9 +28,18 @@ public interface CategoryMapper {
 
     List<AdminCategoryRow> findAllForAdmin();
 
-	void updateCategory(Category category);
+    //追加
+    void insert(Category category);
 
-	@Update("UPDATE categories SET display_order = #{displayOrder} WHERE id = #{id}")
+    //削除
+    void delete(@Param("id") Long id);
+
+	void update(Category category);
+
+    Optional<Category> findEntityById(@Param("id") Long id);
+
+    Optional<Category> findByDisplayOrder(@Param("displayOrder") Integer displayOrder);
+
 	void updateDisplayOrder(@Param("id") Long id, @Param("displayOrder") Integer displayOrder);
 
 }

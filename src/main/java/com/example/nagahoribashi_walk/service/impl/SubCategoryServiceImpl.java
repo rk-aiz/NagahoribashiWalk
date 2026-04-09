@@ -1,8 +1,5 @@
 package com.example.nagahoribashi_walk.service.impl;
 
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,13 +31,13 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 		if (subCategory.getCategoryId() == null || subCategory.getCategoryId() == 0) {
 	        subCategory.setCategoryId(null); 
 	    }
-		subCategoryMapper.insertSubCategory(subCategory);
+		subCategoryMapper.insert(subCategory);
 		
 	}
 
 	@Override
 	public void deleteSubCategory(Long id) {
-		subCategoryMapper.deleteSubCategory(id);
+		subCategoryMapper.delete(id);
 		
 	}
 	
@@ -55,37 +52,28 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
 	@Override
-	public Map<Long, List<SubCategory>> findAllGroupedByCategory() {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
-	}
-
-	@Override
 	public void updateSubCategory(SubCategory subCategory) {
 		
-		subCategoryMapper.updateSubCategory(subCategory);
+		subCategoryMapper.update(subCategory);
 	}
 
 	@Override
 	public void reorderSubCategory(Long id, String direction) {
-	    SubCategory current = subCategoryMapper.findByIdEntity(id);
-	    
-	    List<SubCategory> siblings = subCategoryMapper.findByCategoryIdEntity(current.getCategoryId());
-	    	    
-	    for (int i = 0; i < siblings.size(); i++) {
-	        subCategoryMapper.updateDisplayOrder(siblings.get(i).getId(), i + 1);
-	    }
-	    	    
-	    for (int i = 0; i < siblings.size(); i++) {
-	        if (siblings.get(i).getId().equals(id)) {
-	            int targetIdx = "up".equals(direction) ? i - 1 : i + 1;
-	            if (targetIdx >= 0 && targetIdx < siblings.size()) {
-	                subCategoryMapper.updateDisplayOrder(siblings.get(i).getId(), targetIdx + 1);
-	                subCategoryMapper.updateDisplayOrder(siblings.get(targetIdx).getId(), i + 1);
-	            }
-	            break;
-	        }
-	    }
+
+		SubCategory subCategory1 = subCategoryMapper.findEntityById(id).orElseThrow();
+		SubCategory subCategory2 = switch(direction) {
+			case "up" -> subCategoryMapper.findEntityByCategoryIdAndDisplayOrder(
+						subCategory1.getCategoryId(), 
+						subCategory1.getDisplayOrder() - 1).orElseThrow();
+			default -> subCategoryMapper.findEntityByCategoryIdAndDisplayOrder(
+						subCategory1.getCategoryId(), 
+						subCategory1.getDisplayOrder() + 1).orElseThrow();
+		};
+
+		// TODO : subCategory2がnullの場合のフォールバック処理
+
+		subCategoryMapper.updateDisplayOrder(subCategory1.getId(), subCategory2.getDisplayOrder());
+		subCategoryMapper.updateDisplayOrder(subCategory2.getId(), subCategory1.getDisplayOrder());
 	}
 
 }
