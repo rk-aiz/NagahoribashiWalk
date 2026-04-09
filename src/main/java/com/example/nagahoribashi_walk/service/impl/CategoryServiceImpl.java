@@ -10,7 +10,7 @@ import com.example.nagahoribashi_walk.dto.NavCategory;
 import com.example.nagahoribashi_walk.dto.NavSubCategory;
 import com.example.nagahoribashi_walk.dto.SidebarDTO;
 import com.example.nagahoribashi_walk.entity.Category;
-import com.example.nagahoribashi_walk.entity.SubCategory;
+import com.example.nagahoribashi_walk.entity.SpotPhoto;
 import com.example.nagahoribashi_walk.repository.CategoryMapper;
 import com.example.nagahoribashi_walk.repository.SubCategoryMapper;
 import com.example.nagahoribashi_walk.service.CategoryService;
@@ -24,34 +24,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryMapper categoryMapper;
     private final SubCategoryMapper subCategoryMapper;
-	private List<NavCategory> list;
 
     @Override
     public List<NavCategory> findAll() {
         return categoryMapper.findAll();
-    }
-
-    // 追加
-    @Override
-    public void insertCategory(Category category) {
-        categoryMapper.insert(category);
-    }
-
-    @Override
-    public void updateCategory(Category category) {
-    	categoryMapper.update(category);
-    }
-
-    // 削除
-    @Override
-    public void deleteCategory(Long id) {
-
-        // 「その他」サブカテゴリを削除
-    	SubCategory defaultSubCategory = subCategoryMapper.findDefaultByCategoryId(id).orElseThrow();
-    	subCategoryMapper.updateIsDefault(defaultSubCategory.getId(), false);
-        subCategoryMapper.delete(defaultSubCategory.getId());
-        
-        categoryMapper.delete(id);
     }
 
     @Override
@@ -82,24 +58,61 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<AdminCategoryRow> findAllForAdmin() {
-
         return categoryMapper.findAllForAdmin();
     }
-    
+
     @Override
     public void reorderCategory(Long id, String direction) {
-		Category category1 = categoryMapper.findEntityById(id).orElseThrow();
-		Category category2 = switch(direction) {
-			case "up" -> categoryMapper.findByDisplayOrder(
-						category1.getDisplayOrder() - 1).orElseThrow();
-			default -> categoryMapper.findByDisplayOrder(
-						category1.getDisplayOrder() + 1).orElseThrow();
-		};
+        List<Category> categoriesForReplace = switch (direction) {
+            case "up" -> categoryMapper.findUpToById(id, 2);
+            default -> categoryMapper.findFromById(id, 2);
+        };
 
-        // TODO : category2がnullの場合のフォールバック処理
+        if (categoriesForReplace.size() == 2) {
+            Category category1 = categoriesForReplace.getFirst();
+            Category category2 = categoriesForReplace.getLast();
+            categoryMapper.updateDisplayOrder(category1.getId(), category2.getDisplayOrder());
+            categoryMapper.updateDisplayOrder(category2.getId(), category1.getDisplayOrder());
+        }
+    }
 
-		categoryMapper.updateDisplayOrder(category1.getId(), category2.getDisplayOrder());
-		categoryMapper.updateDisplayOrder(category2.getId(), category1.getDisplayOrder());
+    // 追加
+    @Override
+    public void insertCategory(Category category) {
+        categoryMapper.insert(category);
+    }
+
+    @Override
+    public void updateCategory(Category category) {
+        categoryMapper.update(category);
+    }
+
+    // 削除
+    @Override
+    public void deleteCategory(Long id) {
+        // spots の移動・デフォルトサブカテゴリの削除・非デフォルトサブカテゴリの移動は
+        // fallback_on_category_delete DB トリガーが一括処理する
+        categoryMapper.delete(id);
+
+        normalizeDisplayOrder();
+    }
+
+    private void normalizeDisplayOrder() {
+        List<Category> categories = categoryMapper.findAllEntities();
+        boolean requireUpdate = false;
+        if (!categories.isEmpty()) {
+            for (int i = 0; i < categories.size(); i++) {
+                Category c = categories.get(i);
+                if (!c.getDisplayOrder().equals(i + 1)) {
+                    c.setDisplayOrder(i + 1);
+                    requireUpdate = true;
+                }
+            }
+        }
+
+        if (requireUpdate) {
+            categoryMapper.bulkUpdateDisplayOrder(categories);
+        }
     }
 
 }

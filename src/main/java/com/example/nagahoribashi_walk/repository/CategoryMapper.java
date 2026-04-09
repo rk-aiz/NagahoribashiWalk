@@ -19,7 +19,7 @@ import com.example.nagahoribashi_walk.entity.Category;
 public interface CategoryMapper {
 
     List<NavCategory> findAll();
-    
+
     Optional<NavCategory> findById(Long id);
 
     List<NavCategory> findAllNavCategories();
@@ -28,18 +28,22 @@ public interface CategoryMapper {
 
     List<AdminCategoryRow> findAllForAdmin();
 
-    //追加
+    List<Category> findAllEntities();
+
+    List<Category> findFromById(@Param("id") Long id, @Param("limit") Integer limit);
+
+    List<Category> findUpToById(@Param("id") Long id, @Param("limit") Integer limit);
+
+    /** 追加 */
     void insert(Category category);
 
-    //削除
+    void update(Category category);
+
+    void updateDisplayOrder(@Param("id") Long id, @Param("displayOrder") Integer displayOrder);
+
+    void bulkUpdateDisplayOrder(@Param("categories") List<Category> categories);
+
+    /** 削除 */
     void delete(@Param("id") Long id);
-
-	void update(Category category);
-
-    Optional<Category> findEntityById(@Param("id") Long id);
-
-    Optional<Category> findByDisplayOrder(@Param("displayOrder") Integer displayOrder);
-
-	void updateDisplayOrder(@Param("id") Long id, @Param("displayOrder") Integer displayOrder);
 
 }

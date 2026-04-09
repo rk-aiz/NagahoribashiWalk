@@ -1,5 +1,7 @@
 package com.example.nagahoribashi_walk.service.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,22 +27,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         return subCategoryMapper.findById(subCategoryId)
                 .orElseThrow();
     }
-    
-	@Override
-	public void insertSubCategory(SubCategory subCategory) {
-		if (subCategory.getCategoryId() == null || subCategory.getCategoryId() == 0) {
-	        subCategory.setCategoryId(null); 
-	    }
-		subCategoryMapper.insert(subCategory);
-		
-	}
 
-	@Override
-	public void deleteSubCategory(Long id) {
-		subCategoryMapper.delete(id);
-		
-	}
-	
     @Override
     public SidebarDTO getSidebarDTO(Long subCategoryId) {
 
@@ -51,29 +38,60 @@ public class SubCategoryServiceImpl implements SubCategoryService {
                 subCategoryId);
     }
 
-	@Override
-	public void updateSubCategory(SubCategory subCategory) {
-		
-		subCategoryMapper.update(subCategory);
-	}
+    @Override
+    public void reorderSubCategory(Long id, String direction) {
+        List<SubCategory> subCategoriesForReplace = switch (direction) {
+            case "up" -> subCategoryMapper.findUpToById(id, 2);
+            default -> subCategoryMapper.findFromById(id, 2);
+        };
 
-	@Override
-	public void reorderSubCategory(Long id, String direction) {
+        if (subCategoriesForReplace.size() == 2) {
+            SubCategory subCategory1 = subCategoriesForReplace.getFirst();
+            SubCategory subCategory2 = subCategoriesForReplace.getLast();
+            subCategoryMapper.updateDisplayOrder(subCategory1.getId(), subCategory2.getDisplayOrder());
+            subCategoryMapper.updateDisplayOrder(subCategory2.getId(), subCategory1.getDisplayOrder());
+        }
+    }
 
-		SubCategory subCategory1 = subCategoryMapper.findEntityById(id).orElseThrow();
-		SubCategory subCategory2 = switch(direction) {
-			case "up" -> subCategoryMapper.findEntityByCategoryIdAndDisplayOrder(
-						subCategory1.getCategoryId(), 
-						subCategory1.getDisplayOrder() - 1).orElseThrow();
-			default -> subCategoryMapper.findEntityByCategoryIdAndDisplayOrder(
-						subCategory1.getCategoryId(), 
-						subCategory1.getDisplayOrder() + 1).orElseThrow();
-		};
+    @Override
+    public void insertSubCategory(SubCategory subCategory) {
+        if (subCategory.getCategoryId() == null || subCategory.getCategoryId() == 0) {
+            subCategory.setCategoryId(null);
+        }
+        subCategoryMapper.insert(subCategory);
+    }
 
-		// TODO : subCategory2がnullの場合のフォールバック処理
+    @Override
+    public void updateSubCategory(SubCategory subCategory) {
+        subCategoryMapper.update(subCategory);
+    }
 
-		subCategoryMapper.updateDisplayOrder(subCategory1.getId(), subCategory2.getDisplayOrder());
-		subCategoryMapper.updateDisplayOrder(subCategory2.getId(), subCategory1.getDisplayOrder());
-	}
+    @Override
+    public void deleteSubCategory(Long id) {
 
+        subCategoryMapper.findEntityById(id).ifPresent(sc -> {
+            subCategoryMapper.delete(id);
+            normalizeDisplayOrderByCategoryId(sc.getCategoryId());
+        });
+    }
+
+    private void normalizeDisplayOrderByCategoryId(Long categoryId) {
+        List<SubCategory> subCategories = subCategoryMapper.findEntitiesByCategoryId(categoryId)
+                .stream().filter(sc -> !sc.isDefault()).toList();
+
+        boolean requireUpdate = false;
+        if (!subCategories.isEmpty()) {
+            for (int i = 0; i < subCategories.size(); i++) {
+                SubCategory sc = subCategories.get(i);
+                if (!sc.getDisplayOrder().equals(i + 1)) {
+                    sc.setDisplayOrder(i + 1);
+                    requireUpdate = true;
+                }
+            }
+        }
+
+        if (requireUpdate) {
+            subCategoryMapper.bulkUpdateDisplayOrder(subCategories);
+        }
+    }
 }

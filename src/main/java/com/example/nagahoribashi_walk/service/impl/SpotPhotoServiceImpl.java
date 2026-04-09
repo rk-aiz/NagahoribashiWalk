@@ -28,16 +28,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SpotPhotoServiceImpl implements SpotPhotoService {
 
-	@Value("${app.upload.dir}")
+    @Value("${app.upload.dir}")
     private String uploadDir;
 
-	private final SpotPhotoMapper spotPhotoMapper;
-	
-	/** 【管理者】スポットIDに対応する画像一覧を取得する */
-	@Override
-	public List<SpotPhoto> getAllBySpotId(Long spotId) {
-		return spotPhotoMapper.findAllBySpotId(spotId);
-	}
+    private final SpotPhotoMapper spotPhotoMapper;
+
+    /** 【管理者】スポットIDに対応する画像一覧を取得する */
+    @Override
+    public List<SpotPhoto> getAllBySpotId(Long spotId) {
+        return spotPhotoMapper.findAllBySpotId(spotId);
+    }
 
     @Override
     public void reorder(Long spotId, Integer displayOrder1, Integer displayOrder2) {
@@ -48,8 +48,8 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
         spotPhotoMapper.bulkUpdateDisplayOrder(List.of(spotPhoto1, spotPhoto2));
     }
 
-	/** 【管理者】画像ファイル一覧を保存する */
-	@Override
+    /** 【管理者】画像ファイル一覧を保存する */
+    @Override
     public SaveImagesResult saveImages(List<MultipartFile> files, Long spotId, Integer firstDisplayOrder) {
         List<String> savedFilenames = new ArrayList<>();
         List<String> errors = new ArrayList<>();
@@ -83,7 +83,8 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
 
         // 2: 既存レコードのリオーダー
         int offset = savedFilenames.size();
-        List<SpotPhoto> existingPhotos = spotPhotoMapper.findBySpotIdAndDisplayOrderGreaterThanEqual(spotId, firstDisplayOrder);
+        List<SpotPhoto> existingPhotos = spotPhotoMapper.findBySpotIdAndDisplayOrderGreaterThanEqual(spotId,
+                firstDisplayOrder);
         if (!existingPhotos.isEmpty()) {
             for (SpotPhoto sp : existingPhotos) {
                 sp.setDisplayOrder(sp.getDisplayOrder() + offset);
@@ -94,22 +95,22 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
         // 3: 新規レコードのInsert
         int displayOrder = firstDisplayOrder;
         for (String filename : savedFilenames) {
-                spotPhotoMapper.insert(SpotPhoto.builder()
-                        .spotId(spotId)
-                        .displayOrder(displayOrder++)
-                        .photoUrl(Paths.get("images", filename).toString())
-                        .build());
+            spotPhotoMapper.insert(SpotPhoto.builder()
+                    .spotId(spotId)
+                    .displayOrder(displayOrder++)
+                    .photoUrl(Paths.get("images", filename).toString())
+                    .build());
         }
 
         return new SaveImagesResult(savedFilenames, errors);
     }
 
     /**
-     * 画像を削除する TODO : ローカルストレージからファイル自体を削除する
+     * 画像を削除する TODO : ローカルストレージからファイル自体を削除する → バッチ処理でもいい
      */
-	@Override
-	public void delete(Long id, Long spotId) {
-		spotPhotoMapper.delete(id);
+    @Override
+    public void delete(Long id, Long spotId) {
+        spotPhotoMapper.delete(id);
 
         // display_orderを更新する
         List<SpotPhoto> photos = spotPhotoMapper.findAllBySpotId(spotId);
@@ -123,6 +124,8 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
                 }
             }
         }
-        if (requireUpdate) spotPhotoMapper.bulkUpdateDisplayOrder(photos);
-	}
+        if (requireUpdate) {
+            spotPhotoMapper.bulkUpdateDisplayOrder(photos);
+        }
+    }
 }
