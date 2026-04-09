@@ -32,6 +32,9 @@ public class AdminCategoryController {
     private final CategoryService categoryService;
     private final SubCategoryService subCategoryService;
 
+    /**
+     * 管理者用カテゴリ一覧画面
+     */
     @GetMapping("/admin/category/list")
     public String list(Model model) {
 
@@ -53,9 +56,9 @@ public class AdminCategoryController {
             Model model) {
 
         if (bindingResult.hasErrors()) {
-           redirectAttributes.addFlashAttribute("errorMessage",
+            redirectAttributes.addFlashAttribute("errorMessage",
                     bindingResult.getAllErrors().getFirst().getDefaultMessage());
-        
+
             return "redirect:/admin/category/list";
         }
 
@@ -70,50 +73,50 @@ public class AdminCategoryController {
         return "redirect:/admin/category/list";
     }
 
-    // 親カテゴリー名の更新
+    /** 親カテゴリー名の更新 */
     @PostMapping("/admin/category/update")
     public String updateCategory(
             @Validated CategoryForm form,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
             Model model) {
-        
+
         if (bindingResult.hasErrors()) {
-           redirectAttributes.addFlashAttribute("errorMessage",
+            redirectAttributes.addFlashAttribute("errorMessage",
                     bindingResult.getAllErrors().getFirst().getDefaultMessage());
-        
+
             return "redirect:/admin/category/list";
         }
 
         // Categoryエンティティを作成
         Category category = new Category();
         BeanUtils.copyProperties(form, category);
-        
+
         // カテゴリ更新処理
         categoryService.updateCategory(category);
 
         redirectAttributes.addFlashAttribute("message", "カテゴリー名を更新しました。");
         return "redirect:/admin/category/list";
     }
-    
-    // 親カテゴリーの削除
+
+    /** 親カテゴリーの削除 */
     @PostMapping("/admin/category/remove/{id}")
     public String deleteCategory(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         categoryService.deleteCategory(id);
         redirectAttributes.addFlashAttribute("message", "カテゴリーを削除しました。\n サブカテゴリーは「その他」へ移動されました。");
         return "redirect:/admin/category/list";
     }
-    
+
     /** カテゴリの順序を入れ替える処理 */
     @PostMapping("/admin/category/reorder")
     public String reorderCategory(
-            @RequestParam("id") Long id, 
+            @RequestParam("id") Long id,
             @RequestParam("direction") String direction) {
         // Serviceを呼び出して並び順を更新
         categoryService.reorderCategory(id, direction);
         return "redirect:/admin/category/list";
     }
-    
+
     /** サブカテゴリの順序を入れ替える処理 */
     @PostMapping("/admin/subcategory/reorder")
     public String reorderSubCategory(
@@ -135,9 +138,9 @@ public class AdminCategoryController {
             Model model) {
 
         if (bindingResult.hasErrors()) {
-           redirectAttributes.addFlashAttribute("errorMessage",
+            redirectAttributes.addFlashAttribute("errorMessage",
                     bindingResult.getAllErrors().getFirst().getDefaultMessage());
-        
+
             return "redirect:/admin/category/list";
         }
 
@@ -157,12 +160,13 @@ public class AdminCategoryController {
      */
     @PostMapping("/admin/subcategory/update")
     public String updateSubCategory(
-            @Validated CategoryForm form, 
-            BindingResult bindingResult, 
+            @Validated CategoryForm form,
+            BindingResult bindingResult,
             RedirectAttributes redirectAttributes) {
-        
+
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errorMessage", "サブカテゴリー名の入力に不備があります。");
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    bindingResult.getAllErrors().getFirst().getDefaultMessage());
             return "redirect:/admin/category/list";
         }
 
@@ -172,8 +176,8 @@ public class AdminCategoryController {
         subCategory.setName(form.getName());
 
         subCategoryService.updateSubCategory(subCategory);
-        
-        redirectAttributes.addFlashAttribute("successMessage", "サブカテゴリー名を更新しました。");
+
+        redirectAttributes.addFlashAttribute("message", "サブカテゴリー名を更新しました。");
         return "redirect:/admin/category/list";
     }
 
