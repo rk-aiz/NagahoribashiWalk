@@ -101,7 +101,11 @@
 				        th:classappend="${sort == 'id_asc'} ? 'btn-primary' : 'btn-outline-secondary'">
 				        ID順
 				    </a>
-
+					<a th:href="@{/admin/spot/list(keyword=${keyword}, sort='rating_desc')}"
+					    class="btn btn-sm"
+					    th:classappend="${sort == 'rating_desc'} ? 'btn-primary' : 'btn-outline-secondary'">
+					    評価順
+					</a>
 				    <a th:href="@{/admin/spot/list(keyword=${keyword}, sort='pv_desc')}"
 				        class="btn btn-sm"
 				        th:classappend="${sort == 'pv_desc'} ? 'btn-primary' : 'btn-outline-secondary'">

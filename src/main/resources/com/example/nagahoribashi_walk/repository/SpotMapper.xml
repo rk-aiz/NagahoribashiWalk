@@ -538,6 +538,9 @@
 			<when test="sort == 'pv_desc'">
 				s.pv_count DESC, s.id ASC
 			</when>
+			<when test="sort == 'rating_desc'">
+				r.average_rating DESC NULLS LAST, s.id ASC
+			</when>
 			<otherwise>
 				s.id ASC
 			</otherwise>
