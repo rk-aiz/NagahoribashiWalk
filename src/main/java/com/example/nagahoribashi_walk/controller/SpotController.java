@@ -157,7 +157,8 @@ public class SpotController {
 
         // どのレビューを編集中かを画面へ渡す
         model.addAttribute("editReviewId", editReviewId);
-
+        
+        
         return "spot/detail";
     }
 }
