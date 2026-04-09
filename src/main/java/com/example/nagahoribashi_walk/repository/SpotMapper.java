@@ -55,6 +55,7 @@ public interface SpotMapper {
 
     List<AdminSpotRow> findAllForAdminByKeyword(
             @Param("keyword") String keyword,
+            @Param("sort") String sort,
             @Param("offset") long offset,
             @Param("limit") int limit);
 
