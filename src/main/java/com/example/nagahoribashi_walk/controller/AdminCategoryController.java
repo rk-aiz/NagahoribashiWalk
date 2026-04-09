@@ -77,24 +77,17 @@ public class AdminCategoryController {
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
             Model model) {
-
-    	    // 入力値が届いているか確認
-        //System.out.println("★受信データ: id=" + form.getId() + ", name=" + form.getName());
         
         if (bindingResult.hasErrors()) {
            redirectAttributes.addFlashAttribute("errorMessage",
                     bindingResult.getAllErrors().getFirst().getDefaultMessage());
-        //	bindingResult.getAllErrors().forEach(err -> System.out.println("★バリデーションエラー: " + err.getDefaultMessage()));
-          //  redirectAttributes.addFlashAttribute("errorMessage", "入力内容に不備があります");
+        
             return "redirect:/admin/category/list";
         }
 
         // Categoryエンティティを作成
         Category category = new Category();
         BeanUtils.copyProperties(form, category);
-
-        // 更新実行直前のログ
-        //System.out.println("★更新実行: " + category.getName());
         
         // カテゴリ更新処理
         categoryService.updateCategory(category);
