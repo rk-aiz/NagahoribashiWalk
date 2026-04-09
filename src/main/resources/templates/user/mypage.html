@@ -88,6 +88,10 @@
                                 <p class="fw-bold mb-0" th:text="${profile.displayName}">山田 太郎</p>
                             </div>
                             <div class="col-6">
+                                <p class="text-secondary mb-1" style="font-size: 0.8rem;">保有ポイント</p>
+                                <p class="fw-bold mb-0" th:text="${profile.point + 'ポイント'}">99,999ポイント</p>
+                            </div>
+                            <div class="col-6">
                                 <p class="text-secondary mb-1" style="font-size: 0.8rem;">ユーザー名</p>
                                 <p class="fw-bold mb-0" th:text="${profile.username}">yamada_taro</p>
                             </div>

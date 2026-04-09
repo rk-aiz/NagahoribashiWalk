@@ -1,6 +1,7 @@
 package com.example.nagahoribashi_walk.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import lombok.Data;
@@ -41,4 +42,7 @@ public class User implements Serializable {
 	
 	// ユーザーが利用可能状態かどうかを表すフラグ
 	private boolean enabled;
+
+	// ポイント
+	private BigDecimal point;
 }
