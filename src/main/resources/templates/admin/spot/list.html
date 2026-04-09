@@ -108,6 +108,7 @@
 								<th scope="col">スポット名</th>
 								<th scope="col" style="width: 150px;">カテゴリー</th>
 								<th scope="col" style="width: 120px;">更新日</th>
+								<th scope="col" style="width: 90px;">閲覧数</th>
 								<th scope="col" style="width: 100px;">評価</th>
 								<th scope="col" style="width: 80px;" class="text-end">操作</th>
 							</tr>
@@ -138,6 +139,9 @@
 									th:text="${#temporals.format(spot.updatedAt, 'yyyy/M/d')}">2026/4/2</span>
 									<span th:if="${spot.updatedAt == null}" class="text-muted">-</span>
 								</td>
+								
+								<!-- 閲覧数 -->
+								<td class="text-secondary small" th:text="${spot.pvCount}">0</td>
 
 								<!-- 評価 -->
 								<td><span th:if="${spot.averageRating != null}"> <i
@@ -188,7 +192,7 @@
 
 							<!-- データなし -->
 							<tr th:if="${spotPages.totalElements == 0}">
-								<td colspan="6" class="text-center text-muted py-5"><i
+								<td colspan="7" class="text-center text-muted py-5"><i
 									class="bi bi-inbox d-block mb-2" style="font-size: 1.75rem;"></i>
 									スポットが登録されていません</td>
 							</tr>

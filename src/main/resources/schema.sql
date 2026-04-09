@@ -182,6 +182,7 @@ CREATE TABLE spots(
 	deleted_at TIMESTAMP,        -- NULL = 公開中。論理削除は日時をセット
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	pv_count INTEGER NOT NULL DEFAULT 0,
 	-- サブカテゴリ削除時は DB トリガーが spots を「未分類」へ自動フォールバックする
 	CONSTRAINT fk_spots_sub_category
 		FOREIGN KEY (sub_category_id) REFERENCES sub_categories(id)

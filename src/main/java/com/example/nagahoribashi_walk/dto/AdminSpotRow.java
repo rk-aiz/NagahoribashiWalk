@@ -18,6 +18,6 @@ public class AdminSpotRow {
     private String categoryName;
     private String subCategoryName;
     private Double averageRating;
+    private Integer pvCount;
     private LocalDateTime updatedAt;
-
 }

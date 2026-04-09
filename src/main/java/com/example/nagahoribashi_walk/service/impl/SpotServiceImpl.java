@@ -168,6 +168,8 @@ public class SpotServiceImpl implements SpotService {
      */
     @Override
     public SpotDetail findById(Long id, Long loginUserId) {
+    	spotMapper.incrementPvCount(id);
+    	
         SpotDetail spotDetail = spotMapper.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("指定したスポットが存在しません。id=" + id));
 
