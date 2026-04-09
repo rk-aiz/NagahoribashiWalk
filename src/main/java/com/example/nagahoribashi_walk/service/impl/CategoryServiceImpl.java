@@ -83,31 +83,29 @@ public class CategoryServiceImpl implements CategoryService {
     
     @Override
     public void reorderCategory(Long id, String direction) {
-        // 現在の並び順で全カテゴリーを取得
-        List<AdminCategoryRow> categories = categoryMapper.findAllForAdmin();
-        
-        
-		for (int i = 0; i < list.size(); i++) {
-            categoryMapper.updateDisplayOrder(list.get(i).getId(), i + 1);
+    List<AdminCategoryRow> list = categoryMapper.findAllForAdmin(); 
+    
+    for (int i = 0; i < list.size(); i++) {
+        categoryMapper.updateDisplayOrder(list.get(i).getId(), i + 1);
+    }
+    
+    for (int i = 0; i < list.size(); i++) {
+        if (list.get(i).getId() == id) {
+            int targetIdx = "up".equals(direction) ? i - 1 : i + 1;
             
-		}
-		
-		for (int i = 0; i < list.size(); i++) {
-	        if (list.get(i).getId() == id) {
-	            int targetIdx = "up".equals(direction) ? i - 1 : i + 1;
-	            
-	            if (targetIdx >= 0 && targetIdx < list.size()) {
-	                // 自分と相手のIDを特定
-	                Long currentId = list.get(i).getId();
-	                Long targetId = list.get(targetIdx).getId();
-	                
-	                // 番号を交換（i+1 と targetIdx+1）
-	                categoryMapper.updateDisplayOrder(currentId, targetIdx + 1);
-	                categoryMapper.updateDisplayOrder(targetId, i + 1);
-	            }
-	            break;
-	        }
-	    }
-	}
+            if (targetIdx >= 0 && targetIdx < list.size()) {
+                AdminCategoryRow current = list.get(i);
+                AdminCategoryRow target = list.get(targetIdx);
+                
+                // AdminCategoryRow なら getIsDefault() が使えるはずです
+                if (target.getIsDefault()) break; 
+
+                categoryMapper.updateDisplayOrder(current.getId(), targetIdx + 1);
+                categoryMapper.updateDisplayOrder(target.getId(), i + 1);
+            }
+            break;
+        }
+    }
+}
 
 }
