@@ -27,6 +27,9 @@ public interface SpotMapper {
 
     // findById
     Optional<SpotDetail> findById(@Param("id") Long id);
+    
+    //PV数を1加算
+    void incrementPvCount(@Param("id")Long id);
 
     // findByCategoryId
     List<SpotSummary> findByCategoryId(
@@ -52,6 +55,7 @@ public interface SpotMapper {
 
     List<AdminSpotRow> findAllForAdminByKeyword(
             @Param("keyword") String keyword,
+            @Param("sort") String sort,
             @Param("offset") long offset,
             @Param("limit") int limit);
 

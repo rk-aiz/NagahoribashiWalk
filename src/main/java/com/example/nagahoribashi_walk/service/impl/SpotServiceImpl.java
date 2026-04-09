@@ -168,6 +168,8 @@ public class SpotServiceImpl implements SpotService {
      */
     @Override
     public SpotDetail findById(Long id, Long loginUserId) {
+    	spotMapper.incrementPvCount(id);
+    	
         SpotDetail spotDetail = spotMapper.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("指定したスポットが存在しません。id=" + id));
 
@@ -207,11 +209,11 @@ public class SpotServiceImpl implements SpotService {
      * 【管理者】キーワードでスポットを絞り込んだページを返す
      */
     @Override
-    public Page<AdminSpotRow> searchForAdmin(String keyword, Pageable pageable) {
+    public Page<AdminSpotRow> searchForAdmin(String keyword, String sort, Pageable pageable) {
         long total = spotMapper.countForAdminByKeyword(keyword);
 
         List<AdminSpotRow> spots = spotMapper.findAllForAdminByKeyword(
-                keyword, pageable.getOffset(), pageable.getPageSize());
+                keyword, sort, pageable.getOffset(), pageable.getPageSize());
 
         return new PageImpl<>(spots, pageable, total);
     }

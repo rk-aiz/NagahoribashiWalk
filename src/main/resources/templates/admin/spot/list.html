@@ -91,11 +91,31 @@
 						class="form-control"
 						style="padding-left: 2.25rem; border-color: #e2e8f0; border-radius: 0.5rem;"
 						placeholder="スポット名、カテゴリー、住所で検索...">
+					<input type="hidden" name="sort" th:value="${sort}">
 				</form>
+				
+				<!-- ソートボタン -->
+				<div class="d-flex justify-content-end gap-2 mb-3">
+				    <a th:href="@{/admin/spot/list(keyword=${keyword}, sort='id_asc')}"
+				        class="btn btn-sm"
+				        th:classappend="${sort == 'id_asc'} ? 'btn-primary' : 'btn-outline-secondary'">
+				        ID順
+				    </a>
+					<a th:href="@{/admin/spot/list(keyword=${keyword}, sort='rating_desc')}"
+					    class="btn btn-sm"
+					    th:classappend="${sort == 'rating_desc'} ? 'btn-primary' : 'btn-outline-secondary'">
+					    評価順
+					</a>
+				    <a th:href="@{/admin/spot/list(keyword=${keyword}, sort='pv_desc')}"
+				        class="btn btn-sm"
+				        th:classappend="${sort == 'pv_desc'} ? 'btn-primary' : 'btn-outline-secondary'">
+				        閲覧数順
+				    </a>
+				</div>
 
 				<!-- ページネーション -->
 				<div
-					th:replace="~{fragments/pagination :: pagerSimple(${spotPages}, '/admin/spot/list', ${keyword}, 'my-3')}">
+				    th:replace="~{fragments/pagination :: pagerSimple(${spotPages}, '/admin/spot/list', ${keyword}, ${sort}, 'my-3')}">
 				</div>
 
 				<!-- テーブル -->
@@ -108,6 +128,7 @@
 								<th scope="col">スポット名</th>
 								<th scope="col" style="width: 150px;">カテゴリー</th>
 								<th scope="col" style="width: 120px;">更新日</th>
+								<th scope="col" style="width: 90px;">閲覧数</th>
 								<th scope="col" style="width: 100px;">評価</th>
 								<th scope="col" style="width: 80px;" class="text-end">操作</th>
 							</tr>
@@ -138,6 +159,9 @@
 									th:text="${#temporals.format(spot.updatedAt, 'yyyy/M/d')}">2026/4/2</span>
 									<span th:if="${spot.updatedAt == null}" class="text-muted">-</span>
 								</td>
+								
+								<!-- 閲覧数 -->
+								<td class="text-secondary small" th:text="${spot.pvCount}">0</td>
 
 								<!-- 評価 -->
 								<td><span th:if="${spot.averageRating != null}"> <i
@@ -188,7 +212,7 @@
 
 							<!-- データなし -->
 							<tr th:if="${spotPages.totalElements == 0}">
-								<td colspan="6" class="text-center text-muted py-5"><i
+								<td colspan="7" class="text-center text-muted py-5"><i
 									class="bi bi-inbox d-block mb-2" style="font-size: 1.75rem;"></i>
 									スポットが登録されていません</td>
 							</tr>
@@ -198,7 +222,7 @@
 
 				<!-- ページネーション -->
 				<div
-					th:replace="~{fragments/pagination :: pagerSimple(${spotPages}, '/admin/spot/list', ${keyword}, 'mt-4')}">
+				    th:replace="~{fragments/pagination :: pagerSimple(${spotPages}, '/admin/spot/list', ${keyword}, ${sort}, 'mt-4')}">
 				</div>
 
 			</div>

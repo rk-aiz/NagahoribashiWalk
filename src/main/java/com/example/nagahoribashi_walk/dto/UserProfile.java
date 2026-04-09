@@ -1,5 +1,6 @@
 package com.example.nagahoribashi_walk.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import lombok.Data;
@@ -12,6 +13,9 @@ public class UserProfile {
 
 	/** メールアドレス */
 	private String email;
+
+	// ポイント
+	private BigDecimal point;
 	
 	/** 表示名 */
 	private String displayName;

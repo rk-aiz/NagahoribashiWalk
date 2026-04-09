@@ -1,5 +1,6 @@
 package com.example.nagahoribashi_walk.entity;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -8,6 +9,7 @@ import lombok.Data;
  * @author 海津
  */
 @Data
+@Builder
 public class SpotPhoto {
 	
 	// 主キー

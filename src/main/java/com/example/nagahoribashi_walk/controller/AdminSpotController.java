@@ -34,11 +34,13 @@ public class AdminSpotController {
     @GetMapping("/admin/spot/list")
     public String list(
             @RequestParam(name = "keyword", defaultValue = "") String keyword,
+            @RequestParam(name = "sort", defaultValue = "id_asc") String sort,
             @PageableDefault(size = 15) Pageable pageable,
             Model model) {
 
-        model.addAttribute("spotPages", spotService.searchForAdmin(keyword, pageable));
+        model.addAttribute("spotPages", spotService.searchForAdmin(keyword, sort, pageable));
         model.addAttribute("keyword", keyword);
+        model.addAttribute("sort", sort);
         return "admin/spot/list";
     }
 
