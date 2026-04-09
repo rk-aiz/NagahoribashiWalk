@@ -272,6 +272,7 @@ EXECUTE FUNCTION update_timestamp();
 CREATE TRIGGER update_spots_updated_at
 BEFORE UPDATE ON spots
 FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 CREATE TRIGGER update_reviews_updated_at
 BEFORE UPDATE ON reviews
