@@ -92,7 +92,11 @@ public class SpotServiceImpl implements SpotService {
     @Override
     public Page<SpotSummary> searchByKeywords(String keyword, Pageable pageable) {
 
-        // 🔸 スペースで分割
+        // 空文字は一覧にフォールバック
+        if (keyword == null || keyword.isBlank()) {
+            return getPage(pageable);
+        }
+        // スペースで分割
         String[] splitKeywords = keyword
                 // 全角スペースを半角スペースに置き換え
                 .replace('\u3000', ' ')
@@ -101,7 +105,6 @@ public class SpotServiceImpl implements SpotService {
         List<Map<String, String>> keywordMapList = new ArrayList<>();
 
         for (String kw : splitKeywords) {
-
             Map<String, String> map = new HashMap<>();
             map.put("origin", kw);
             map.put("hira", toHiragana(kw));
@@ -109,45 +112,42 @@ public class SpotServiceImpl implements SpotService {
             keywordMapList.add(map);
         }
 
-        // 空文字は一覧にフォールバック
-        if (keyword == null || keyword.isBlank()) {
-            return getPage(pageable);
-        }
-        // 🔸 件数取得
+        // 件数取得
         long total = spotMapper.countByKeywords(
                 keywordMapList);
 
-        // 🔸 データ取得
-        List<SpotSummary> spots = spotMapper.searchByKeywords(
-                keywordMapList,
-                pageable.getOffset(),
-                pageable.getPageSize());
-        
-        //totalが0の時ふぉ
-        if (total == 0) {
-
-            // 🔸 スペース除去して1ワードにする
-            String looseKeyword = keyword.replaceAll("\\s+", "");
-
-            List<Map<String, String>> fallbackList = new ArrayList<>();
-
-            Map<String, String> map = new HashMap<>();
-            map.put("origin", looseKeyword);
-            map.put("hira", toHiragana(looseKeyword));
-            map.put("kana", toKatakana(looseKeyword));
-            fallbackList.add(map);
-
-            long fallbackTotal = spotMapper.countByKeywords(fallbackList);
-
-            List<SpotSummary> fallbackSpots = spotMapper.searchByKeywords(
-                    fallbackList,
+        // ヒットしている場合、この条件で取得
+        if (total > 0) {            
+            // データ取得
+            List<SpotSummary> spots = spotMapper.searchByKeywords(
+                    keywordMapList,
                     pageable.getOffset(),
                     pageable.getPageSize());
-
-            return new PageImpl<>(fallbackSpots, pageable, fallbackTotal);
+                    
+            return new PageImpl<>(spots, pageable, total);
         }
 
-        return new PageImpl<>(spots, pageable, total);
+        //totalが0の時、OR検索で検索する
+        // スペース除去して1ワードにする
+        String looseKeyword = keyword.replaceAll("\\s+", "");
+
+        List<Map<String, String>> fallbackList = new ArrayList<>();
+
+        Map<String, String> map = new HashMap<>();
+        map.put("origin", looseKeyword);
+        map.put("hira", toHiragana(looseKeyword));
+        map.put("kana", toKatakana(looseKeyword));
+        fallbackList.add(map);
+
+        long fallbackTotal = spotMapper.countByKeywords(fallbackList);
+
+        List<SpotSummary> fallbackSpots = spotMapper.searchByKeywords(
+                fallbackList,
+                pageable.getOffset(),
+                pageable.getPageSize());
+
+        return new PageImpl<>(fallbackSpots, pageable, fallbackTotal);
+
     }
 
     // トップページおすすめ３件表示用

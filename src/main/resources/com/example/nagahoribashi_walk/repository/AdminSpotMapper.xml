@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.example.nagahoribashi_walk.repository.AdminSpotMapper">
+
+	<!-- スポット数のカウント -->
+	<select id="count" resultType="long">
+		SELECT count(*) FROM spots WHERE
+		deleted_at IS NULL
+	</select>
+	
+	<!-- 全スポットの平均評価（小数第1位） -->
+	<select id="findAverageRatingAll" resultType="java.lang.Double">
+		SELECT
+		ROUND(AVG(r.rating)::NUMERIC, 1)
+		FROM reviews r
+		INNER JOIN spots s ON
+		r.spot_id = s.id
+		WHERE s.deleted_at IS NULL
+	</select>
+
+	<!-- 最近登録されたスポットをN件取得 -->
+	<select id="findRecent"
+		resultType="com.example.nagahoribashi_walk.dto.AdminSpotRow">
+		SELECT
+			s.id,
+			s.spot_name,
+			sp.photo_url,
+			r.average_rating,
+			sc.name AS sub_category_name,
+			c.name AS category_name,
+			s.updated_at
+		FROM spots s
+		LEFT JOIN LATERAL (
+			SELECT photo_url FROM spot_photos
+			WHERE spot_id = s.id
+			ORDER BY display_order ASC
+			LIMIT 1
+		) sp ON true
+		LEFT JOIN (
+			SELECT spot_id, AVG(rating) AS average_rating
+			FROM reviews
+			GROUP BY spot_id
+		) r ON r.spot_id = s.id
+		INNER JOIN sub_categories sc
+		ON sc.id = s.sub_category_id
+		INNER JOIN categories c
+		ON c.id = sc.category_id
+		WHERE s.deleted_at IS NULL -- 論理削除対応
+		ORDER BY s.created_at DESC
+		LIMIT #{limit}
+	</select>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT
+		INTO spots (
+			spot_name,
+			sub_category_id,
+			address,
+			business_hours,
+			closed_days,
+			estimated_budget,
+			details,
+			website_url,
+			gmap_url,
+			keywords
+		) VALUES (
+			#{spotName},
+			#{subCategoryId},
+			#{address},
+			#{businessHours},
+			#{closedDays},
+			#{estimatedBudget},
+			#{details},
+			#{websiteUrl},
+			#{gmapUrl},
+			#{keywords}
+		);
+	</insert>
+
+	<update id="update">
+		UPDATE spots
+		SET
+			spot_name = #{spotName},
+			sub_category_id = #{subCategoryId},
+			address = #{address},
+			business_hours = #{businessHours},
+			closed_days = #{closedDays},
+			estimated_budget = #{estimatedBudget},
+			details = #{details},
+			website_url = #{websiteUrl},
+			gmap_url = #{gmapUrl},
+			keywords = #{keywords}
+		WHERE id = #{id}
+	</update>
+
+	<!-- スポット情報をソフトデリート -->
+	<update id="softDelete">
+		UPDATE spots
+		SET deleted_at = CURRENT_TIMESTAMP
+		WHERE id = #{spotId}
+	</update>
+
+	<!-- 【管理者画面】ページネーション付き取得 -->
+	<select id="findAllForAdmin" resultType="com.example.nagahoribashi_walk.dto.AdminSpotRow">
+		SELECT
+			s.id,
+			s.spot_name,
+			sp.photo_url,
+			r.average_rating,
+			sc.name AS sub_category_name,
+			c.name AS category_name,
+			s.pv_count AS
+			pvCount,
+			s.updated_at
+		FROM spots s
+		LEFT JOIN LATERAL (
+			SELECT photo_url FROM spot_photos
+			WHERE spot_id = s.id
+			ORDER BY display_order ASC
+			LIMIT 1
+		) sp ON true
+		LEFT JOIN (
+			SELECT spot_id,
+			AVG(rating) AS average_rating
+			FROM reviews
+			GROUP BY spot_id
+		) r ON r.spot_id = s.id
+		INNER JOIN sub_categories sc ON sc.id = s.sub_category_id
+		INNER JOIN categories c ON c.id = sc.category_id
+		WHERE s.deleted_at IS NULL
+		ORDER BY s.updated_at DESC
+		LIMIT #{limit} OFFSET
+		#{offset}
+	</select>
+
+	<!-- スポット数のカウント -->
+	<select id="countForAdmin" resultType="long">
+		SELECT count(*) FROM spots
+	</select>
+
+	<!-- 管理者用キーワード検索 -->
+	<select id="findAllForAdminByKeyword"
+		resultType="com.example.nagahoribashi_walk.dto.AdminSpotRow">
+		SELECT
+		s.id,
+		s.spot_name,
+		sp.photo_url,
+		r.average_rating,
+		sc.name AS sub_category_name,
+		c.name AS category_name,
+		s.pv_count AS pvCount,
+		s.updated_at
+		FROM spots s
+		LEFT JOIN LATERAL (
+			SELECT photo_url FROM spot_photos
+			WHERE spot_id = s.id
+			ORDER BY display_order ASC
+			LIMIT 1
+		) sp ON true
+		LEFT JOIN (
+		SELECT spot_id, AVG(rating) AS average_rating
+		FROM reviews
+		GROUP BY spot_id
+		) r
+		ON r.spot_id = s.id
+		INNER JOIN sub_categories sc
+		ON sc.id = s.sub_category_id
+		INNER JOIN categories c
+		ON c.id = sc.category_id
+		<where>
+			s.deleted_at IS NULL
+			<if test="keyword != null and keyword != ''">
+				AND (
+				s.spot_name LIKE CONCAT('%', #{keyword}, '%')
+				OR c.name LIKE CONCAT('%', #{keyword}, '%')
+				OR s.address LIKE CONCAT('%', #{keyword}, '%')
+				)
+			</if>
+		</where>
+		ORDER BY
+		<choose>
+			<when test="sort == 'pv_desc'">
+				s.pv_count DESC, s.id ASC
+			</when>
+			<when test="sort == 'rating_desc'">
+				r.average_rating DESC NULLS LAST, s.id ASC
+			</when>
+			<otherwise>
+				s.id ASC
+			</otherwise>
+		</choose>
+		LIMIT #{limit} OFFSET #{offset}
+	</select>
+
+	<!-- 管理者用キーワード検索件数 -->
+	<select id="countForAdminByKeyword" resultType="long">
+		SELECT count(*)
+		FROM spots s
+		INNER JOIN sub_categories sc ON sc.id =
+		s.sub_category_id
+		INNER JOIN categories c ON c.id = sc.category_id
+		<where>
+			s.deleted_at IS NULL
+			<if test="keyword != null and keyword != ''">
+				AND (
+				s.spot_name LIKE CONCAT('%', #{keyword}, '%')
+				OR
+				c.name LIKE CONCAT('%', #{keyword}, '%')
+				OR s.address LIKE
+				CONCAT('%', #{keyword}, '%')
+				)
+			</if>
+		</where>
+	</select>
+
+	<!-- 大谷記載 -->
+	<select id="findByCategoryId"
+		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
+		SELECT
+			s.id,
+			s.spot_name,
+			sp.photo_url,
+			r.average_rating,
+			sc.name AS sub_category_name,
+			c.name AS category_name,
+			s.keywords
+		FROM spots s
+		LEFT JOIN LATERAL (
+			SELECT photo_url FROM spot_photos
+			WHERE spot_id = s.id
+			ORDER BY display_order ASC
+			LIMIT 1
+		) sp ON true
+		LEFT JOIN (
+			SELECT
+				spot_id, AVG(rating) AS average_rating
+			FROM reviews
+			GROUP BY spot_id
+		) r
+		ON r.spot_id = s.id
+		LEFT JOIN sub_categories sc ON sc.id = s.sub_category_id
+		LEFT JOIN categories c ON c.id = sc.category_id
+		WHERE
+			sc.category_id = #{categoryId}
+			AND
+			s.deleted_at IS NULL -- 論理削除対応
+		ORDER BY s.updated_at DESC
+		LIMIT #{limit} OFFSET #{offset}
+	</select>
+
+	<select id="findBySubCategoryId"
+		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
+		SELECT
+			s.id,
+			s.spot_name,
+			sp.photo_url,
+			r.average_rating,
+			sc.name AS sub_category_name,
+			c.name AS category_name,
+			s.keywords
+		FROM spots s
+		LEFT JOIN LATERAL (
+			SELECT photo_url FROM spot_photos
+			WHERE spot_id = s.id
+			ORDER BY display_order ASC
+			LIMIT 1
+		) sp ON true
+		LEFT JOIN (
+			SELECT
+				spot_id, AVG(rating) AS average_rating
+			FROM reviews
+			GROUP BY spot_id
+		) r
+		ON r.spot_id = s.id
+		LEFT JOIN sub_categories sc 
+		ON sc.id = s.sub_category_id
+		LEFT JOIN categories c
+		ON c.id = sc.category_id
+		WHERE
+			s.sub_category_id = #{subCategoryId}
+			AND
+			s.deleted_at IS NULL -- 論理削除対応
+		ORDER BY s.updated_at DESC
+		LIMIT #{limit} OFFSET #{offset}
+	</select>
+
+	<!-- SpotDetail を findById 1本で取得 -->
+	<select id="findById" resultMap="SpotDetailMap">
+		SELECT
+			s.id AS spot_id,
+			s.spot_name AS spotName,
+			r.user_id,
+			s.details AS details,
+			s.business_hours AS businessHours,
+			s.estimated_budget AS
+			estimatedBudget,
+			s.address AS address,
+			s.gmap_url AS gmapUrl,
+			s.website_url AS websiteUrl,
+			s.keywords,
+			c.name AS categoryName,
+			sc.name AS subCategoryName,
+
+			stats.avg_rating AS averageRating,
+			stats.review_count AS reviewCount,
+
+			r.id AS review_id,
+			r.comment AS
+			comment,
+			u.display_name AS reviewerName,
+			r.created_at AS reviewDate,
+			r.rating AS rating,
+
+			sp.id AS photo_id,
+			sp.photo_url AS photoUrl,
+			sp.display_order AS displayOrder
+
+		FROM spots s
+
+		LEFT JOIN sub_categories
+		sc
+		ON s.sub_category_id = sc.id
+
+		LEFT JOIN categories c
+		ON sc.category_id
+		= c.id
+
+		LEFT JOIN (
+			SELECT
+				r.spot_id,
+				AVG(r.rating) AS avg_rating,
+				COUNT(r.id) AS review_count
+			FROM reviews r
+			INNER JOIN users u
+			ON
+				r.user_id = u.id
+			WHERE u.deleted_at IS NULL
+			GROUP BY r.spot_id
+		) stats
+		ON
+			s.id = stats.spot_id
+
+		LEFT JOIN (
+			SELECT r.*
+			FROM reviews r
+			INNER JOIN
+				users u
+			ON r.user_id = u.id
+			WHERE u.deleted_at IS NULL
+		) r
+		ON s.id = r.spot_id
+
+		LEFT JOIN users u
+		ON r.user_id = u.id
+
+		LEFT JOIN spot_photos sp
+		ON s.id = sp.spot_id
+
+		WHERE s.id = #{id}
+		AND s.deleted_at IS NULL -- 論理削除対応
+
+		ORDER BY r.created_at DESC, sp.display_order ASC
+	</select>
+
+	<!-- Spotエンティティを IDで取得 -->
+	<select id="findByIdForAdmin"
+		resultType="com.example.nagahoribashi_walk.entity.Spot">
+		SELECT
+			s.id,
+			s.spot_name AS spotName,
+			s.sub_category_id,
+			s.website_url,
+			s.gmap_url,
+			s.address,
+			s.business_hours,
+			s.closed_days,
+			s.estimated_budget,
+			s.keywords,
+			s.details,
+			s.created_at,
+			s.updated_at
+		FROM
+			spots s
+		WHERE id = #{spotId}
+	</select>
+
+	<select id="existsBySpotId" resultType="boolean">
+		SELECT EXISTS (SELECT 1 FROM spots WHERE id = #{spotId} AND deleted_at IS NULL)
+	</select>
+</mapper>

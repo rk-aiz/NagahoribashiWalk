@@ -34,6 +34,8 @@ public interface CategoryMapper {
 
     List<Category> findUpToById(@Param("id") Long id, @Param("limit") Integer limit);
 
+    boolean existsByCategoryName(@Param("name") String name);
+
     /** 追加 */
     void insert(Category category);
 
