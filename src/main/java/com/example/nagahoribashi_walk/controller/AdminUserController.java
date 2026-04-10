@@ -37,7 +37,7 @@ public class AdminUserController {
     public String userList(
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam(name = "sort", defaultValue = "desc") String sort,
-            @PageableDefault(size = 5) Pageable pageable,
+            @PageableDefault(size = 10) Pageable pageable,
             @RequestParam(name = "includeDeleted", defaultValue = "false") boolean includeDeleted,
             Model model) {
 

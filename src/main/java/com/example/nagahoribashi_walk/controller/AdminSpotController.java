@@ -73,7 +73,7 @@ public class AdminSpotController {
         Spot spot = spotService.getByIdForAdmin(spotId);
         BeanUtils.copyProperties(spot, form);
 
-        model.addAttribute("form", form);
+        model.addAttribute("spotForm", form);
         model.addAttribute("dropDownCategories",
                 categoryService.getAllAdminCategoryRows());
 
@@ -151,7 +151,7 @@ public class AdminSpotController {
             return "/admin/spot/edit";
         }
 
-        return "redirect:/admin/spot/list";
+        return "redirect:/admin/spot/edit/" + spot.getId();
     }
 
     /**

@@ -114,8 +114,10 @@
 
 	<update id="softDelete">
 		UPDATE users
-		SET deleted_at = CURRENT_TIMESTAMP
-		-- SET enabled = false
+		SET
+			deleted_at = CURRENT_TIMESTAMP,
+			username = '#del_'  || CURRENT_TIMESTAMP::timestamp(0) || '#' || username,
+			email = '#del_'  || CURRENT_TIMESTAMP::timestamp(0) || '#' || email
 		WHERE id = #{id}
 	</update>
 
