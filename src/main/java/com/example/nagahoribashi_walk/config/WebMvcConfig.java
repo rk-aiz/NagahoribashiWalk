@@ -10,7 +10,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.example.nagahoribashi_walk.util.StringUtils;
+import com.example.nagahoribashi_walk.util.MyStringUtils;
 
 /**
  * //全てのコントローラーに対して共通処理を行う
@@ -29,7 +29,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         // "/uploads/**" をapplication.propertiesのapp.upload.dirにマッピング
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + StringUtils.ensureTrailingSlash(uploadDir));
+                .addResourceLocations("file:" + MyStringUtils.ensureTrailingSlash(uploadDir));
     }
 
     // リゾルバリストに必要なリゾルバを追加
