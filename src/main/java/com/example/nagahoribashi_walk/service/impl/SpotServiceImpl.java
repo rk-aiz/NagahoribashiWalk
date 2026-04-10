@@ -1,6 +1,7 @@
 package com.example.nagahoribashi_walk.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -196,6 +197,20 @@ public class SpotServiceImpl implements SpotService {
     	
         SpotDetail spotDetail = spotMapper.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("指定したスポットが存在しません。id=" + id));
+        
+        //関連スポット
+        if (spotDetail.getKeywords() != null && !spotDetail.getKeywords().isBlank()) {
+
+            List<String> keywords = Arrays.stream(spotDetail.getKeywords().split(","))
+                    .map(String::trim)
+                    .filter(k -> !k.isEmpty())
+                    .toList();
+
+            List<SpotSummary> relatedSpots = spotMapper.findRelatedSpots(id, keywords);
+
+            spotDetail.setRelatedSpots(relatedSpots);
+        }
+
 
         if (loginUserId != null) {
             spotDetail.getReviews().stream().forEach(review -> {

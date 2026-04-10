@@ -54,6 +54,11 @@ public interface SpotMapper {
             @Param("sort") String sort,
             @Param("offset") long offset,
             @Param("limit") int limit);
+    //関連スポット用
+    List<SpotSummary> findRelatedSpots(
+    	    @Param("spotId") Long spotId,
+    	    @Param("keywords") List<String> keywords
+    	);
 
     long countForAdminByKeyword(@Param("keyword") String keyword);
 
