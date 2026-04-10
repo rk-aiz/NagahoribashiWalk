@@ -2,7 +2,6 @@ package com.example.nagahoribashi_walk.service.impl;
 
 import java.util.List;
 
-import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +12,7 @@ import com.example.nagahoribashi_walk.dto.AdminReviewRow;
 import com.example.nagahoribashi_walk.entity.Review;
 import com.example.nagahoribashi_walk.exception.ReviewAlreadyExistsException;
 import com.example.nagahoribashi_walk.repository.ReviewMapper;
+import com.example.nagahoribashi_walk.repository.SpotMapper;
 import com.example.nagahoribashi_walk.service.ReviewService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewMapper reviewMapper;
+    private final SpotMapper spotMapper;
 
     /**
      * レビューを投稿する
@@ -37,15 +38,20 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void addReview(Review review, Long userId) {
 
-        // 同じスポットに対して同じユーザーが既に投稿している場合は投稿不可
+        // 1. スポットが存在するか確認
+        if (!spotMapper.existsBySpotId(review.getSpotId())) {
+            throw new IllegalArgumentException("対象のスポットが存在しません。");
+        }
+
+        // 2. 同じスポットに対して同じユーザーが既に投稿している場合は投稿不可
         if (reviewMapper.existsByUserIdAndSpotId(userId, review.getSpotId())) {
             throw new ReviewAlreadyExistsException("このスポットには既にレビューを投稿しています。");
         }
 
-        // 投稿者のユーザーIDをセット
+        // 3. 投稿者のユーザーIDをセット
         review.setUserId(userId);
 
-        // 保存処理を実行
+        // 4. 保存処理を実行
         reviewMapper.insert(review);
     }
 
@@ -71,6 +77,11 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 更新対象のレビューを取得
         Review existingReview = reviewMapper.findById(review.getId()).orElseThrow();
+
+        // 1. スポットが存在するか確認
+        if (!spotMapper.existsBySpotId(existingReview.getSpotId())) {
+            throw new IllegalArgumentException("対象のスポットが存在しません。");
+        }
 
         // 自分のレビュー以外は更新させない
         if (!existingReview.getUserId().equals(userId)) {

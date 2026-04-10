@@ -10,7 +10,6 @@ import com.example.nagahoribashi_walk.dto.NavCategory;
 import com.example.nagahoribashi_walk.dto.NavSubCategory;
 import com.example.nagahoribashi_walk.dto.SidebarDTO;
 import com.example.nagahoribashi_walk.entity.Category;
-import com.example.nagahoribashi_walk.entity.SpotPhoto;
 import com.example.nagahoribashi_walk.repository.CategoryMapper;
 import com.example.nagahoribashi_walk.repository.SubCategoryMapper;
 import com.example.nagahoribashi_walk.service.CategoryService;
