@@ -54,7 +54,7 @@ public class AdminSpotController {
         SpotForm form = new SpotForm();
         form.setNew(true);
 
-        model.addAttribute("form", form);
+        model.addAttribute("spotForm", form);
         model.addAttribute("dropDownCategories",
                 categoryService.getAllAdminCategoryRows());
         return "admin/spot/edit";
@@ -110,11 +110,11 @@ public class AdminSpotController {
             model.addAttribute("errorMessage", e.getLocalizedMessage());
             model.addAttribute("dropDownCategories",
                     categoryService.getAllAdminCategoryRows());
-            model.addAttribute("form", form);
+            model.addAttribute("spotForm", form);
             return "/admin/spot/edit";
         }
 
-        return "redirect:/admin/spot/list";
+        return "redirect:/spot/" + spot.getId();
     }
 
     /**

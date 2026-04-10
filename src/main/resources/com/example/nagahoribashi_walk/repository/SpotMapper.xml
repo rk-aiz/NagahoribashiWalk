@@ -347,6 +347,7 @@
 		ORDER BY RANDOM()
 		LIMIT 3
 	</select>
+	
 	<!-- 全スポットの平均評価（小数第1位） -->
 	<select id="findAverageRatingAll" resultType="java.lang.Double">
 		SELECT
@@ -361,76 +362,74 @@
 	<select id="findRecent"
 		resultType="com.example.nagahoribashi_walk.dto.AdminSpotRow">
 		SELECT
-		s.id,
-		s.spot_name,
-		sp.photo_url,
-		r.average_rating,
-		sc.name AS sub_category_name,
-		c.name AS category_name,
-		s.updated_at
-		FROM
-		spots s
-		LEFT JOIN spot_photos sp ON s.id = sp.spot_id AND
-		sp.display_order = 1
+			s.id,
+			s.spot_name,
+			sp.photo_url,
+			r.average_rating,
+			sc.name AS sub_category_name,
+			c.name AS category_name,
+			s.updated_at
+		FROM spots s
+		LEFT JOIN LATERAL (
+			SELECT photo_url FROM spot_photos
+			WHERE spot_id = s.id
+			ORDER BY display_order ASC
+			LIMIT 1
+		) sp ON true
 		LEFT JOIN (
-		SELECT spot_id, AVG(rating) AS
-		average_rating
-		FROM reviews
-		GROUP BY spot_id
+			SELECT spot_id, AVG(rating) AS average_rating
+			FROM reviews
+			GROUP BY spot_id
 		) r ON r.spot_id = s.id
-		INNER JOIN sub_categories sc ON
-		sc.id = s.sub_category_id
-		INNER JOIN
-		categories c ON c.id =
-		sc.category_id
-		WHERE s.deleted_at IS NULL
-		ORDER BY
-		s.created_at DESC
+		INNER JOIN sub_categories sc
+		ON sc.id = s.sub_category_id
+		INNER JOIN categories c
+		ON c.id = sc.category_id
+		WHERE s.deleted_at IS NULL -- 論理削除対応
+		ORDER BY s.created_at DESC
 		LIMIT #{limit}
 	</select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
 		INSERT
 		INTO spots (
-		spot_name,
-		sub_category_id,
-		address,
-		business_hours,
-		closed_days,
-		estimated_budget,
-		details,
-		website_url,
-		gmap_url,
-		keywords
-		)
-		VALUES (
-		#{spotName},
-		#{subCategoryId},
-		#{address},
-		#{businessHours},
-		#{closedDays},
-		#{estimatedBudget},
-		#{details},
-		#{websiteUrl},
-		#{gmapUrl},
-		#{keywords}
+			spot_name,
+			sub_category_id,
+			address,
+			business_hours,
+			closed_days,
+			estimated_budget,
+			details,
+			website_url,
+			gmap_url,
+			keywords
+		) VALUES (
+			#{spotName},
+			#{subCategoryId},
+			#{address},
+			#{businessHours},
+			#{closedDays},
+			#{estimatedBudget},
+			#{details},
+			#{websiteUrl},
+			#{gmapUrl},
+			#{keywords}
 		);
 	</insert>
 
 	<update id="update">
 		UPDATE spots
 		SET
-		spot_name = #{spotName},
-		sub_category_id = #{subCategoryId},
-		address = #{address},
-		business_hours = #{businessHours},
-		closed_days = #{closedDays},
-		estimated_budget = #{estimatedBudget},
-		details = #{details},
-		website_url = #{websiteUrl},
-		gmap_url = #{gmapUrl},
-		keywords =
-		#{keywords}
+			spot_name = #{spotName},
+			sub_category_id = #{subCategoryId},
+			address = #{address},
+			business_hours = #{businessHours},
+			closed_days = #{closedDays},
+			estimated_budget = #{estimatedBudget},
+			details = #{details},
+			website_url = #{websiteUrl},
+			gmap_url = #{gmapUrl},
+			keywords = #{keywords}
 		WHERE id = #{id}
 	</update>
 
@@ -438,38 +437,37 @@
 	<update id="softDelete">
 		UPDATE spots
 		SET deleted_at = CURRENT_TIMESTAMP
-		WHERE
-		id = #{spotId}
+		WHERE id = #{spotId}
 	</update>
 
 	<!-- 特定のスポットの詳細が閲覧された際に、PV数を1加算する -->
 	<update id="incrementPvCount">
 		UPDATE spots
 		SET pv_count = pv_count + 1
-		WHERE id =
-		#{id}
+		WHERE id = #{id}
 		AND deleted_at IS NULL
 	</update>
 
-	<!-- ページネーション付き取得 -->
+	<!-- 【管理者画面】ページネーション付き取得 -->
 	<select id="findAllForAdmin"
 		resultType="com.example.nagahoribashi_walk.dto.AdminSpotRow">
 		SELECT
-		s.id,
-		s.spot_name,
-		sp.photo_url,
-		r.average_rating,
-		sc.name AS sub_category_name,
-		c.name AS category_name,
-		s.pv_count AS
-		pvCount,
-		s.updated_at
-		FROM
-		spots s
-		LEFT JOIN spot_photos sp
-		ON s.id =
-		sp.spot_id AND
-		sp.display_order = 1
+			s.id,
+			s.spot_name,
+			sp.photo_url,
+			r.average_rating,
+			sc.name AS sub_category_name,
+			c.name AS category_name,
+			s.pv_count AS
+			pvCount,
+			s.updated_at
+		FROM spots s
+		LEFT JOIN LATERAL (
+			SELECT photo_url FROM spot_photos
+			WHERE spot_id = s.id
+			ORDER BY display_order ASC
+			LIMIT 1
+		) sp ON true
 		LEFT JOIN (
 		SELECT spot_id,
 		AVG(rating) AS
@@ -510,9 +508,12 @@
 		s.pv_count AS pvCount,
 		s.updated_at
 		FROM spots s
-		LEFT JOIN spot_photos sp
-		ON s.id = sp.spot_id
-		AND sp.display_order = 1
+		LEFT JOIN LATERAL (
+			SELECT photo_url FROM spot_photos
+			WHERE spot_id = s.id
+			ORDER BY display_order ASC
+			LIMIT 1
+		) sp ON true
 		LEFT JOIN (
 		SELECT spot_id, AVG(rating) AS average_rating
 		FROM reviews
@@ -573,15 +574,14 @@
 	<select id="findByCategoryId"
 		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
 		SELECT
-		s.id,
-		s.spot_name,
-		sp.photo_url,
-		r.average_rating,
-		sc.name AS sub_category_name,
-		c.name AS category_name,
-		s.keywords
-		FROM
-		spots s
+			s.id,
+			s.spot_name,
+			sp.photo_url,
+			r.average_rating,
+			sc.name AS sub_category_name,
+			c.name AS category_name,
+			s.keywords
+		FROM spots s
 		LEFT JOIN LATERAL (
 			SELECT photo_url FROM spot_photos
 			WHERE spot_id = s.id
@@ -589,35 +589,33 @@
 			LIMIT 1
 		) sp ON true
 		LEFT JOIN (
-		SELECT
-		spot_id, AVG(rating) AS average_rating
-		FROM reviews
-		GROUP BY spot_id
+			SELECT
+				spot_id, AVG(rating) AS average_rating
+			FROM reviews
+			GROUP BY spot_id
 		) r
 		ON r.spot_id = s.id
-		LEFT JOIN sub_categories sc ON sc.id
-		=
-		s.sub_category_id
+		LEFT JOIN sub_categories sc ON sc.id = s.sub_category_id
 		LEFT JOIN categories c ON c.id = sc.category_id
 		WHERE
-		(sc.category_id = #{categoryId}) AND (s.deleted_at IS NULL)
-		ORDER BY
-		s.updated_at DESC
+			sc.category_id = #{categoryId}
+			AND
+			s.deleted_at IS NULL -- 論理削除対応
+		ORDER BY s.updated_at DESC
 		LIMIT #{limit} OFFSET #{offset}
 	</select>
 
 	<select id="findBySubCategoryId"
 		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
 		SELECT
-		s.id,
-		s.spot_name,
-		sp.photo_url,
-		r.average_rating,
-		sc.name AS sub_category_name,
-		c.name AS category_name,
-		s.keywords
-		FROM
-		spots s
+			s.id,
+			s.spot_name,
+			sp.photo_url,
+			r.average_rating,
+			sc.name AS sub_category_name,
+			c.name AS category_name,
+			s.keywords
+		FROM spots s
 		LEFT JOIN LATERAL (
 			SELECT photo_url FROM spot_photos
 			WHERE spot_id = s.id
@@ -625,21 +623,21 @@
 			LIMIT 1
 		) sp ON true
 		LEFT JOIN (
-		SELECT
-		spot_id, AVG(rating) AS average_rating
-		FROM reviews
-		GROUP BY spot_id
+			SELECT
+				spot_id, AVG(rating) AS average_rating
+			FROM reviews
+			GROUP BY spot_id
 		) r
 		ON r.spot_id = s.id
-		LEFT JOIN sub_categories sc ON sc.id
-		=
-		s.sub_category_id
-		LEFT JOIN categories c ON c.id = sc.category_id
+		LEFT JOIN sub_categories sc 
+		ON sc.id = s.sub_category_id
+		LEFT JOIN categories c
+		ON c.id = sc.category_id
 		WHERE
-		(s.sub_category_id = #{subCategoryId}) AND (s.deleted_at IS
-		NULL)
-		ORDER
-		BY s.updated_at DESC
+			s.sub_category_id = #{subCategoryId}
+			AND
+			s.deleted_at IS NULL -- 論理削除対応
+		ORDER BY s.updated_at DESC
 		LIMIT #{limit} OFFSET #{offset}
 	</select>
 
@@ -716,7 +714,7 @@
 		ON s.id = sp.spot_id
 
 		WHERE s.id = #{id}
-		AND s.deleted_at IS NULL
+		AND s.deleted_at IS NULL -- 論理削除対応
 
 		ORDER BY r.created_at DESC, sp.display_order ASC
 	</select>
@@ -741,5 +739,9 @@
 		FROM
 			spots s
 		WHERE id = #{spotId}
+	</select>
+
+	<select id="existsBySpotId" resultType="boolean">
+		SELECT EXISTS (SELECT 1 FROM spots WHERE id = #{spotId} AND deleted_at IS NULL)
 	</select>
 </mapper>

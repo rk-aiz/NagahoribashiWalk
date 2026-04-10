@@ -43,11 +43,14 @@
         LEFT JOIN
             sub_categories sc
         ON
-            c.id = sc.category_id AND
-            EXISTS (
-                SELECT 1 FROM spots s
-                WHERE s.sub_category_id = sc.id
-                AND s.deleted_at IS NULL
+            c.id = sc.category_id AND (
+                sc.is_default = false
+                OR
+                EXISTS ( -- 「その他は、登録されたスポットが存在する場合のみ表示」
+                    SELECT 1 FROM spots s
+                    WHERE s.sub_category_id = sc.id
+                    AND s.deleted_at IS NULL
+                )
             )
         ORDER BY
             c.display_order ASC NULLS LAST, sc.display_order ASC NULLS LAST

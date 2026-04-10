@@ -337,7 +337,7 @@
 													編集
 												</a>
 
-												<form th:action="@{/reviews/{id}/delete(id=${review.id})}" method="post"
+												<form th:action="@{/review/{id}/delete(id=${review.id})}" method="post"
 													onsubmit="return confirm('このレビューを削除しますか？');">
 													<button type="submit" class="btn btn-sm btn-outline-danger">
 														削除
@@ -382,7 +382,7 @@
 
 						<!-- 編集中のレビューだけフォーム表示 -->
 						<th:block th:if="${editReviewId != null and editReviewId == review.id}">
-							<form th:action="@{/reviews/{id}/update(id=${review.id})}" method="post">
+							<form th:action="@{/review/{id}/update(id=${review.id})}" method="post">
 
 								<input type="hidden" name="spotId" th:value="${spotDetail.id}">
 

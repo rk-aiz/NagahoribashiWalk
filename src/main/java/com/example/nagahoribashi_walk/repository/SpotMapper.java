@@ -31,13 +31,11 @@ public interface SpotMapper {
     //PV数を1加算
     void incrementPvCount(@Param("id")Long id);
 
-    // findByCategoryId
     List<SpotSummary> findByCategoryId(
             @Param("categoryId") Long categoryId,
             @Param("offset") long offset,
             @Param("limit") int limit);
 
-    // findBySubCategoryId
     List<SpotSummary> findBySubCategoryId(
             @Param("subCategoryId") Long subCategoryId,
             @Param("offset") long offset,
@@ -47,8 +45,6 @@ public interface SpotMapper {
             @Param("keywordList") List<Map<String, String>> keywordList,
             @Param("offset") long offset,
             @Param("limit") int limit);
-
-    // findImagesBySpotId
 
     List<AdminSpotRow> findAllForAdmin(
     		@Param("offset") long offset, @Param("limit") int limit);
@@ -60,6 +56,8 @@ public interface SpotMapper {
             @Param("limit") int limit);
 
     long countForAdminByKeyword(@Param("keyword") String keyword);
+
+    boolean existsBySpotId(@Param("spotId") Long spotId);
 
     void insert(Spot spot);
 

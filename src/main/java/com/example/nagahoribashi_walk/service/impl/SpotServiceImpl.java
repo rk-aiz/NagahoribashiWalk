@@ -242,6 +242,7 @@ public class SpotServiceImpl implements SpotService {
         return new PageImpl<>(spots, pageable, total);
     }
 
+    /** 新規スポットを追加する TODO : gmapUrlの検証処理を追加する(frameで使用するため) */
     @Override
     public void addSpot(Spot spot) {
         spotMapper.insert(spot);

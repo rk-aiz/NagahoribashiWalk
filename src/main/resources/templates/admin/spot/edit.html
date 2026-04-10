@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/admin :: layout(
-        ${form.isNew ? 'スポット新規登録' : 'スポット編集'},
-        ${form.isNew ? 'スポット新規登録' : 'スポット編集'},
+        ${spotForm.isNew ? 'スポット新規登録' : 'スポット編集'},
+        ${spotForm.isNew ? 'スポット新規登録' : 'スポット編集'},
         ~{}, ~{::main}
     )}" xml:lang="ja">
 
@@ -19,12 +19,12 @@
         <div class="card shadow-sm border-0">
             <div class="card-body p-4">
 
-                <h5 class="fw-bold mb-1" th:text="${form.isNew ? '新規スポット登録' : 'スポット編集'}">新規スポット登録</h5>
-                <p class="text-muted small mb-4" th:text="${form.isNew ? '新しい観光スポットの情報を入力してください' : 'スポット情報を編集してください'}">
+                <h5 class="fw-bold mb-1" th:text="${spotForm.isNew ? '新規スポット登録' : 'スポット編集'}">新規スポット登録</h5>
+                <p class="text-muted small mb-4" th:text="${spotForm.isNew ? '新しい観光スポットの情報を入力してください' : 'スポット情報を編集してください'}">
                     新しい観光スポットの情報を入力してください
                 </p>
 
-                <form th:action="${form.isNew ? '/admin/spot/add' : '/admin/spot/update'}" th:object="${form}"
+                <form th:action="${spotForm.isNew ? '/admin/spot/add' : '/admin/spot/update'}" th:object="${spotForm}"
                     method="post" novalidate>
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <input type="hidden" th:field="*{isNew}" />
@@ -132,7 +132,7 @@
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn text-white px-4" style="background-color: #7c3aed;">
                             <i class="bi bi-floppy me-1"></i>
-                            <span th:text="${form.isNew ? '登録する' : '更新する'}">登録する</span>
+                            <span th:text="${spotForm.isNew ? '登録する' : '更新する'}">登録する</span>
                         </button>
                         <a th:href="@{/admin/spot/list}" class="btn btn-outline-secondary">
                             キャンセル

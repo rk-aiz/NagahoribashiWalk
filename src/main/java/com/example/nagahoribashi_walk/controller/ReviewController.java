@@ -1,8 +1,11 @@
 package com.example.nagahoribashi_walk.controller;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,50 +30,12 @@ public class ReviewController {
     private final ReviewService reviewService;
     
     /**
-     * レビュー編集画面を表示する
-     * 
-     * @param reviewId 編集対象のレビューID
-     * @param loginUser ログインユーザー
-     * @param model モデル
-     * @param redirectAttributes リダイレクト先へ渡すメッセージ
-     * @return レビュー編集画面、またはスポット詳細画面へのリダイレクト
-     */
-    @GetMapping("/reviews/{id}/edit")
-    public String editReviewForm(
-            @PathVariable("id") Long reviewId,
-            @AuthenticationPrincipal LoginUser loginUser,
-            Model model,
-            RedirectAttributes redirectAttributes) {
-
-        // 未ログインの場合は編集させない
-        if (loginUser == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "レビューを編集するにはログインが必要です。");
-            return "redirect:/";
-        }
-
-        // 編集対象のレビューを取得
-        Review review = reviewService.findById(reviewId);
-
-        // 自分のレビュー以外は編集させない
-        if (!review.getUserId().equals(loginUser.getId())) {
-            redirectAttributes.addFlashAttribute("errorMessage", "他のユーザーのレビューは編集できません。");
-            return "redirect:/spot/" + review.getSpotId();
-        }
-
-        // 画面表示用にレビュー情報を渡す
-        model.addAttribute("review", review);
-
-        // レビュー編集画面を表示
-        return "review/edit";
-    }
-
-    /**
      * レビュー投稿処理
      */
-
     @PostMapping("/review/post/{spotId}")
     public String addReview(
-            ReviewForm reviewForm,
+            @Validated ReviewForm reviewForm,
+            BindingResult bindingResult,
             @PathVariable("spotId") Long spotId,
             @AuthenticationPrincipal LoginUser loginUser,
             RedirectAttributes redirectAttributes) {
@@ -81,15 +46,16 @@ public class ReviewController {
             return "redirect:/spot/" + spotId;
         }
 
+        if (bindingResult.hasErrors()) {
+            return "spot/" + spotId;
+        }
+
         // レビュー情報を生成する
         Review review = new Review();
+        BeanUtils.copyProperties(reviewForm, review);
 
         // スポットidをセット
         review.setSpotId(spotId);
-
-        // フォームの入力値をセット
-        review.setRating(reviewForm.getRating());
-        review.setComment(reviewForm.getComment());
 
         try {
             // Service呼び出し
@@ -108,17 +74,12 @@ public class ReviewController {
     
     /**
      * レビュー更新処理
-     * 
-     * @param reviewId 編集対象のレビューID
-     * @param reviewForm フォーム入力値
-     * @param loginUser ログインユーザー
-     * @param redirectAttributes リダイレクト先へ渡すメッセージ
-     * @return スポット詳細画面へのリダイレクト
      */
-    @PostMapping("/reviews/{id}/update")
+    @PostMapping("/review/{id}/update")
     public String updateReview(
             @PathVariable("id") Long reviewId,
-            ReviewForm reviewForm,
+            @Validated ReviewForm reviewForm,
+            BindingResult bindingResult,
             @AuthenticationPrincipal LoginUser loginUser,
             RedirectAttributes redirectAttributes) {
 
@@ -157,13 +118,8 @@ public class ReviewController {
     
     /**
      * レビュー削除処理
-     * 
-     * @param reviewId 削除対象のレビューID
-     * @param loginUser ログインユーザー
-     * @param redirectAttributes リダイレクト先へ渡すメッセージ
-     * @return スポット詳細画面へのリダイレクト
      */
-    @PostMapping("/reviews/{id}/delete")
+    @PostMapping("/review/{id}/delete")
     public String deleteReview(
             @PathVariable("id") Long reviewId,
             @AuthenticationPrincipal LoginUser loginUser,
