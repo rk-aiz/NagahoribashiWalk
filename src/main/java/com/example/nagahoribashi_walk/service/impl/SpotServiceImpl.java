@@ -122,6 +122,30 @@ public class SpotServiceImpl implements SpotService {
                 keywordMapList,
                 pageable.getOffset(),
                 pageable.getPageSize());
+        
+        //totalが0の時ふぉ
+        if (total == 0) {
+
+            // 🔸 スペース除去して1ワードにする
+            String looseKeyword = keyword.replaceAll("\\s+", "");
+
+            List<Map<String, String>> fallbackList = new ArrayList<>();
+
+            Map<String, String> map = new HashMap<>();
+            map.put("origin", looseKeyword);
+            map.put("hira", toHiragana(looseKeyword));
+            map.put("kana", toKatakana(looseKeyword));
+            fallbackList.add(map);
+
+            long fallbackTotal = spotMapper.countByKeywords(fallbackList);
+
+            List<SpotSummary> fallbackSpots = spotMapper.searchByKeywords(
+                    fallbackList,
+                    pageable.getOffset(),
+                    pageable.getPageSize());
+
+            return new PageImpl<>(fallbackSpots, pageable, fallbackTotal);
+        }
 
         return new PageImpl<>(spots, pageable, total);
     }
