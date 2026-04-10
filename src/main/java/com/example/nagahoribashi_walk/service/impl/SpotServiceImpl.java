@@ -198,20 +198,6 @@ public class SpotServiceImpl implements SpotService {
         SpotDetail spotDetail = spotMapper.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("指定したスポットが存在しません。id=" + id));
         
-        //関連スポット
-        if (spotDetail.getKeywords() != null && !spotDetail.getKeywords().isBlank()) {
-
-            List<String> keywords = Arrays.stream(spotDetail.getKeywords().split(","))
-                    .map(String::trim)
-                    .filter(k -> !k.isEmpty())
-                    .toList();
-
-            List<SpotSummary> relatedSpots = spotMapper.findRelatedSpots(id, keywords);
-
-            spotDetail.setRelatedSpots(relatedSpots);
-        }
-
-
         if (loginUserId != null) {
             spotDetail.getReviews().stream().forEach(review -> {
                 if (review.getUserId() != null && review.getUserId().equals(loginUserId)) {
@@ -219,6 +205,9 @@ public class SpotServiceImpl implements SpotService {
                 }
             });
         }
+        
+        // 関連スポット追加
+        findRelatedSpots(spotDetail);
 
         if (spotDetail.getAverageRating() != null) {
             double rounded = Math.round(spotDetail.getAverageRating() * 10.0) / 10.0;
@@ -294,5 +283,21 @@ public class SpotServiceImpl implements SpotService {
     @Override
     public List<AdminSpotRow> findRecent(int i) {
         return spotMapper.findRecent(i);
+    }
+    
+    private void findRelatedSpots(SpotDetail spotDetail) {
+        //関連スポット
+        if (spotDetail.getKeywords() != null && !spotDetail.getKeywords().isBlank()) {
+
+            List<String> keywords = Arrays.stream(spotDetail.getKeywords().split(","))
+                    .map(String::trim)
+                    .filter(k -> !k.isEmpty())
+                    .toList();
+
+            List<SpotSummary> relatedSpots = spotMapper.findRelatedSpots(spotDetail.getId(), keywords);
+
+            spotDetail.setRelatedSpots(relatedSpots);
+        }
+
     }
 }
