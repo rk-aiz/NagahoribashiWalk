@@ -1,88 +1,13 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org"
-	th:replace="~{layout/default :: layout(${spotDetail.spotName}, ~{::main}, ~{::style})}"
+	th:replace="~{layout/default :: layout(${spotDetail.spotName}, ~{::main}, ~{:: headStyles})}"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
 	<title>スポット詳細</title>
-	<style>
-		.detail-card {
-			background: #ffffff;
-			border-radius: 1rem;
-			box-shadow: 0 0.5rem 1.5rem rgba(15, 23, 42, 0.08);
-			border: 1px solid #e2e8f0;
-		}
-
-		.section-card {
-			background: #ffffff;
-			border-radius: 1rem;
-			border: 1px solid #e2e8f0;
-			box-shadow: 0 0.25rem 1rem rgba(15, 23, 42, 0.05);
-		}
-
-		.info-label {
-			font-size: 0.85rem;
-			font-weight: 700;
-			color: #475569;
-			margin-bottom: 0.35rem;
-		}
-
-		.info-value {
-			font-size: 0.95rem;
-			color: #1e293b;
-			margin-bottom: 0;
-			word-break: break-word;
-		}
-
-		.section-title {
-			font-size: 1.15rem;
-			font-weight: 700;
-			color: #1e293b;
-			margin-bottom: 1rem;
-		}
-
-		.subtle-box {
-			background: #f8fafc;
-			border: 1px solid #e2e8f0;
-			border-radius: 0.75rem;
-		}
-
-		.photo-frame {
-			background: #f8fafc;
-			border: 1px solid #e2e8f0;
-			border-radius: 0.75rem;
-			padding: 0.5rem;
-			height: 100%;
-		}
-
-		.photo-frame img {
-			width: 100%;
-			height: 220px;
-			object-fit: cover;
-			border-radius: 0.5rem;
-		}
-
-		.review-card {
-			background: #f8fafc;
-			border: 1px solid #e2e8f0;
-			border-radius: 0.9rem;
-		}
-
-		.link-button {
-			text-decoration: none;
-		}
-
-		.favorite-form {
-			display: inline-block;
-		}
-
-		.empty-box {
-			background: #f8fafc;
-			border: 1px dashed #cbd5e1;
-			border-radius: 0.9rem;
-			color: #64748b;
-		}
-	</style>
+	<th:block th:fragment="headStyles">
+		<link rel="stylesheet" th:href="@{/css/spot-detail.css}">
+	</th:block>
 </head>
 
 <body class="d-flex flex-column min-vh-100" style="background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);">
@@ -288,9 +213,12 @@
 											</span>
 										</p>
 									</div>
-									<div class="rating-badge">
-										<i class="bi bi-star-fill"></i>
-										<span th:text="${review.rating}">5</span>
+									<div class="star-display">
+										<i th:class="${review.rating >= 1 ? 'bi bi-star-fill' : 'bi bi-star'}"></i>
+										<i th:class="${review.rating >= 2 ? 'bi bi-star-fill' : 'bi bi-star'}"></i>
+										<i th:class="${review.rating >= 3 ? 'bi bi-star-fill' : 'bi bi-star'}"></i>
+										<i th:class="${review.rating >= 4 ? 'bi bi-star-fill' : 'bi bi-star'}"></i>
+										<i th:class="${review.rating >= 5 ? 'bi bi-star-fill' : 'bi bi-star'}"></i>
 									</div>
 								</div>
 
@@ -331,27 +259,28 @@
 
 						<!-- 編集中のレビューだけフォーム表示 -->
 						<th:block th:if="${editReviewId != null and editReviewId == review.id}">
-							<form th:action="@{/review/{id}/update(id=${review.id})}" method="post">
+							<form th:action="@{/review/{id}/update(id=${review.id})} + '#review-' + ${review.id}" method="post" th:object="${reviewForm}">
 
 								<input type="hidden" name="spotId" th:value="${spotDetail.id}">
 
 								<div class="mb-3">
 									<label class="form-label fw-semibold" style="font-size: 0.875rem;">評価</label>
-									<select name="rating" class="form-select"
-										style="border-color: #e5e7eb; background: #f9fafb;">
-										<option value="5" th:selected="${review.rating == 5}">★★★★★</option>
-										<option value="4" th:selected="${review.rating == 4}">★★★★☆</option>
-										<option value="3" th:selected="${review.rating == 3}">★★★☆☆</option>
-										<option value="2" th:selected="${review.rating == 2}">★★☆☆☆</option>
-										<option value="1" th:selected="${review.rating == 1}">★☆☆☆☆</option>
-									</select>
+									<div class="star-rating">
+										<input type="radio" th:field="*{rating}" id="edit-s5" value="5" th:checked="${review.rating == 5}"><label for="edit-s5">★</label>
+										<input type="radio" th:field="*{rating}" id="edit-s4" value="4" th:checked="${review.rating == 4}"><label for="edit-s4">★</label>
+										<input type="radio" th:field="*{rating}" id="edit-s3" value="3" th:checked="${review.rating == 3}"><label for="edit-s3">★</label>
+										<input type="radio" th:field="*{rating}" id="edit-s2" value="2" th:checked="${review.rating == 2}"><label for="edit-s2">★</label>
+										<input type="radio" th:field="*{rating}" id="edit-s1" value="1" th:checked="${review.rating == 1}"><label for="edit-s1">★</label>
+									</div>
+									<div class="invalid-feedback d-block" th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}"></div>
 								</div>
 
 								<div class="mb-3">
 									<label class="form-label fw-semibold" style="font-size: 0.875rem;">コメント</label>
-									<textarea name="comment" class="form-control" rows="4"
+									<textarea th:field="*{comment}" class="form-control" rows="4"
 										style="border-color: #e5e7eb; background: #f9fafb;"
-										th:text="${review.comment}"></textarea>
+										th:text="${review.comment}" th:classappend="${#fields.hasErrors('comment')} ? 'is-invalid'"></textarea>
+									<div class="invalid-feedback d-block" th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}"></div>
 								</div>
 
 								<div class="d-flex gap-2">
@@ -389,28 +318,29 @@
 						th:if="${spotDetail.reviews == null or #lists.isEmpty(spotDetail.reviews.?[isMyReview])}">
 						<h5 class="fw-bold mb-3" style="color: #1e293b;">レビューを投稿する</h5>
 						<div class="subtle-box p-4">
-							<form th:action="@{/review/post/{id}(id=${spotDetail.id})}" method="post">
+							<form th:action="@{/review/post/{id}(id=${spotDetail.id})}" method="post" th:object="${reviewForm}">
 								<!-- 評価 -->
 								<div class="mb-3">
 									<label class="form-label fw-semibold" style="font-size: 0.875rem;">評価</label>
-									<select name="rating" class="form-select"
-										style="border-color: #e5e7eb; background: #f9fafb;">
-										<option value="5">★★★★★</option>
-										<option value="4">★★★★☆</option>
-										<option value="3">★★★☆☆</option>
-										<option value="2">★★☆☆☆</option>
-										<option value="1">★☆☆☆☆</option>
-									</select>
+									<div class="star-rating star-rating-post">
+										<input type="radio" th:field="*{rating}" id="post-s5" value="5"><label for="post-s5">★</label>
+										<input type="radio" th:field="*{rating}" id="post-s4" value="4"><label for="post-s4">★</label>
+										<input type="radio" th:field="*{rating}" id="post-s3" value="3"><label for="post-s3">★</label>
+										<input type="radio" th:field="*{rating}" id="post-s2" value="2"><label for="post-s2">★</label>
+										<input type="radio" th:field="*{rating}" id="post-s1" value="1"><label for="post-s1">★</label>
+									</div>
+									<div class="invalid-feedback d-block" th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}"></div>
 								</div>
 
 								<!-- コメント -->
 								<div class="mb-3">
 									<label class="form-label fw-semibold" style="font-size: 0.875rem;">コメント</label>
-									<textarea name="comment" class="form-control" rows="4"
+									<textarea th:field="*{comment}" class="form-control" rows="4"
 										style="border-color: #e5e7eb; background: #f9fafb;"
-										placeholder="レビューを入力してください"></textarea>
+										placeholder="レビューを入力してください"
+										th:classappend="${#fields.hasErrors('comment')} ? 'is-invalid'"></textarea>
+									<div class="invalid-feedback" th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}"></div>
 								</div>
-
 								<button class="btn btn-primary fw-semibold px-4" type="submit">
 									<i class="bi bi-send me-1"></i>投稿する
 								</button>

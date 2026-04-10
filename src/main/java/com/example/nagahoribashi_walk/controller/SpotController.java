@@ -1,5 +1,8 @@
 package com.example.nagahoribashi_walk.controller;
 
+import java.util.Optional;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -10,7 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.nagahoribashi_walk.dto.ReviewDTO;
+import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
+import com.example.nagahoribashi_walk.form.ReviewForm;
 import com.example.nagahoribashi_walk.service.CategoryService;
 import com.example.nagahoribashi_walk.service.FavoriteService;
 import com.example.nagahoribashi_walk.service.SpotService;
@@ -151,13 +157,21 @@ public class SpotController {
             model.addAttribute("isFavorite", false);
         }
 
+        SpotDetail spotDetail = spotService.findById(spotId, loginUserId);
         // スポット詳細情報を画面へ渡す
-        model.addAttribute("spotDetail",
-                spotService.findById(spotId, loginUserId));
+        model.addAttribute("spotDetail", spotDetail);
 
         // どのレビューを編集中かを画面へ渡す
         model.addAttribute("editReviewId", editReviewId);
         
+        ReviewForm reviewForm = new ReviewForm();
+        spotDetail.getReviews().stream()
+                .filter(r -> r.isMyReview())
+                .findFirst()
+                .ifPresent(r -> {
+                    BeanUtils.copyProperties(r, reviewForm);
+                });
+        model.addAttribute("reviewForm", reviewForm);
         
         return "spot/detail";
     }

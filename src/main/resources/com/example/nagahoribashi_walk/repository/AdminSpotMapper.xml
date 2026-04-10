@@ -3,13 +3,13 @@
 <mapper
 	namespace="com.example.nagahoribashi_walk.repository.AdminSpotMapper">
 
-	<!-- スポット数のカウント -->
+	<!--【管理者】スポット数のカウント -->
 	<select id="count" resultType="long">
 		SELECT count(*) FROM spots WHERE
 		deleted_at IS NULL
 	</select>
 	
-	<!-- 全スポットの平均評価（小数第1位） -->
+	<!--【管理者】全スポットの平均評価（小数第1位） -->
 	<select id="findAverageRatingAll" resultType="java.lang.Double">
 		SELECT
 		ROUND(AVG(r.rating)::NUMERIC, 1)
@@ -19,7 +19,7 @@
 		WHERE s.deleted_at IS NULL
 	</select>
 
-	<!-- 最近登録されたスポットをN件取得 -->
+	<!--【管理者】最近登録されたスポットをN件取得 -->
 	<select id="findRecent"
 		resultType="com.example.nagahoribashi_walk.dto.AdminSpotRow">
 		SELECT
@@ -29,6 +29,7 @@
 			r.average_rating,
 			sc.name AS sub_category_name,
 			c.name AS category_name,
+			s.pv_count,
 			s.updated_at
 		FROM spots s
 		LEFT JOIN LATERAL (
@@ -51,6 +52,7 @@
 		LIMIT #{limit}
 	</select>
 
+	<!-- 【管理者】スポット情報を登録 -->
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
 		INSERT
 		INTO spots (
@@ -78,6 +80,7 @@
 		);
 	</insert>
 
+	<!-- 【管理者】スポット情報を更新 -->
 	<update id="update">
 		UPDATE spots
 		SET
@@ -94,14 +97,14 @@
 		WHERE id = #{id}
 	</update>
 
-	<!-- スポット情報をソフトデリート -->
+	<!-- 【管理者】スポット情報をソフトデリート -->
 	<update id="softDelete">
 		UPDATE spots
 		SET deleted_at = CURRENT_TIMESTAMP
 		WHERE id = #{spotId}
 	</update>
 
-	<!-- 【管理者画面】ページネーション付き取得 -->
+	<!-- 【管理者】ページネーション付き取得 -->
 	<select id="findAllForAdmin" resultType="com.example.nagahoribashi_walk.dto.AdminSpotRow">
 		SELECT
 			s.id,
@@ -110,8 +113,7 @@
 			r.average_rating,
 			sc.name AS sub_category_name,
 			c.name AS category_name,
-			s.pv_count AS
-			pvCount,
+			s.pv_count,
 			s.updated_at
 		FROM spots s
 		LEFT JOIN LATERAL (
@@ -128,15 +130,10 @@
 		) r ON r.spot_id = s.id
 		INNER JOIN sub_categories sc ON sc.id = s.sub_category_id
 		INNER JOIN categories c ON c.id = sc.category_id
-		WHERE s.deleted_at IS NULL
+		WHERE s.deleted_at IS NULL -- 論理削除対応
 		ORDER BY s.updated_at DESC
 		LIMIT #{limit} OFFSET
 		#{offset}
-	</select>
-
-	<!-- スポット数のカウント -->
-	<select id="countForAdmin" resultType="long">
-		SELECT count(*) FROM spots
 	</select>
 
 	<!-- 管理者用キーワード検索 -->
@@ -149,7 +146,7 @@
 		r.average_rating,
 		sc.name AS sub_category_name,
 		c.name AS category_name,
-		s.pv_count AS pvCount,
+		s.pv_count,
 		s.updated_at
 		FROM spots s
 		LEFT JOIN LATERAL (
@@ -169,7 +166,7 @@
 		INNER JOIN categories c
 		ON c.id = sc.category_id
 		<where>
-			s.deleted_at IS NULL
+			s.deleted_at IS NULL -- 論理削除対応
 			<if test="keyword != null and keyword != ''">
 				AND (
 				s.spot_name LIKE CONCAT('%', #{keyword}, '%')
@@ -201,7 +198,7 @@
 		s.sub_category_id
 		INNER JOIN categories c ON c.id = sc.category_id
 		<where>
-			s.deleted_at IS NULL
+			s.deleted_at IS NULL -- 論理削除対応
 			<if test="keyword != null and keyword != ''">
 				AND (
 				s.spot_name LIKE CONCAT('%', #{keyword}, '%')
@@ -212,155 +209,6 @@
 				)
 			</if>
 		</where>
-	</select>
-
-	<!-- 大谷記載 -->
-	<select id="findByCategoryId"
-		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
-		SELECT
-			s.id,
-			s.spot_name,
-			sp.photo_url,
-			r.average_rating,
-			sc.name AS sub_category_name,
-			c.name AS category_name,
-			s.keywords
-		FROM spots s
-		LEFT JOIN LATERAL (
-			SELECT photo_url FROM spot_photos
-			WHERE spot_id = s.id
-			ORDER BY display_order ASC
-			LIMIT 1
-		) sp ON true
-		LEFT JOIN (
-			SELECT
-				spot_id, AVG(rating) AS average_rating
-			FROM reviews
-			GROUP BY spot_id
-		) r
-		ON r.spot_id = s.id
-		LEFT JOIN sub_categories sc ON sc.id = s.sub_category_id
-		LEFT JOIN categories c ON c.id = sc.category_id
-		WHERE
-			sc.category_id = #{categoryId}
-			AND
-			s.deleted_at IS NULL -- 論理削除対応
-		ORDER BY s.updated_at DESC
-		LIMIT #{limit} OFFSET #{offset}
-	</select>
-
-	<select id="findBySubCategoryId"
-		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
-		SELECT
-			s.id,
-			s.spot_name,
-			sp.photo_url,
-			r.average_rating,
-			sc.name AS sub_category_name,
-			c.name AS category_name,
-			s.keywords
-		FROM spots s
-		LEFT JOIN LATERAL (
-			SELECT photo_url FROM spot_photos
-			WHERE spot_id = s.id
-			ORDER BY display_order ASC
-			LIMIT 1
-		) sp ON true
-		LEFT JOIN (
-			SELECT
-				spot_id, AVG(rating) AS average_rating
-			FROM reviews
-			GROUP BY spot_id
-		) r
-		ON r.spot_id = s.id
-		LEFT JOIN sub_categories sc 
-		ON sc.id = s.sub_category_id
-		LEFT JOIN categories c
-		ON c.id = sc.category_id
-		WHERE
-			s.sub_category_id = #{subCategoryId}
-			AND
-			s.deleted_at IS NULL -- 論理削除対応
-		ORDER BY s.updated_at DESC
-		LIMIT #{limit} OFFSET #{offset}
-	</select>
-
-	<!-- SpotDetail を findById 1本で取得 -->
-	<select id="findById" resultMap="SpotDetailMap">
-		SELECT
-			s.id AS spot_id,
-			s.spot_name AS spotName,
-			r.user_id,
-			s.details AS details,
-			s.business_hours AS businessHours,
-			s.estimated_budget AS
-			estimatedBudget,
-			s.address AS address,
-			s.gmap_url AS gmapUrl,
-			s.website_url AS websiteUrl,
-			s.keywords,
-			c.name AS categoryName,
-			sc.name AS subCategoryName,
-
-			stats.avg_rating AS averageRating,
-			stats.review_count AS reviewCount,
-
-			r.id AS review_id,
-			r.comment AS
-			comment,
-			u.display_name AS reviewerName,
-			r.created_at AS reviewDate,
-			r.rating AS rating,
-
-			sp.id AS photo_id,
-			sp.photo_url AS photoUrl,
-			sp.display_order AS displayOrder
-
-		FROM spots s
-
-		LEFT JOIN sub_categories
-		sc
-		ON s.sub_category_id = sc.id
-
-		LEFT JOIN categories c
-		ON sc.category_id
-		= c.id
-
-		LEFT JOIN (
-			SELECT
-				r.spot_id,
-				AVG(r.rating) AS avg_rating,
-				COUNT(r.id) AS review_count
-			FROM reviews r
-			INNER JOIN users u
-			ON
-				r.user_id = u.id
-			WHERE u.deleted_at IS NULL
-			GROUP BY r.spot_id
-		) stats
-		ON
-			s.id = stats.spot_id
-
-		LEFT JOIN (
-			SELECT r.*
-			FROM reviews r
-			INNER JOIN
-				users u
-			ON r.user_id = u.id
-			WHERE u.deleted_at IS NULL
-		) r
-		ON s.id = r.spot_id
-
-		LEFT JOIN users u
-		ON r.user_id = u.id
-
-		LEFT JOIN spot_photos sp
-		ON s.id = sp.spot_id
-
-		WHERE s.id = #{id}
-		AND s.deleted_at IS NULL -- 論理削除対応
-
-		ORDER BY r.created_at DESC, sp.display_order ASC
 	</select>
 
 	<!-- Spotエンティティを IDで取得 -->
@@ -383,9 +231,5 @@
 		FROM
 			spots s
 		WHERE id = #{spotId}
-	</select>
-
-	<select id="existsBySpotId" resultType="boolean">
-		SELECT EXISTS (SELECT 1 FROM spots WHERE id = #{spotId} AND deleted_at IS NULL)
 	</select>
 </mapper>
