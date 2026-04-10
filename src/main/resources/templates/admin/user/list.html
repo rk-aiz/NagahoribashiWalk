@@ -62,9 +62,9 @@
 						<thead>
 							<tr>
 								<th scope="col" style="width: 60px;">ID</th>
-								<th scope="col">ユーザー名</th>
-								<th scope="col">表示名</th>
-								<th scope="col">メール</th>
+								<th scope="col" style="min-width: 120px;">ユーザー名</th>
+								<th scope="col" style="min-width: 120px;">表示名</th>
+								<th scope="col" style="min-width: 180px;">メール</th>
 								<th scope="col" style="width: 90px;">権限</th>
 								<th scope="col" style="width: 110px;">作成日</th>
 								<th scope="col" style="width: 80px;">状態</th>
@@ -76,9 +76,9 @@
 								th:classappend="${!user.enabled} ? 'table-secondary'">
 
 								<td class="small" style="color: #94a3b8;" th:text="${user.id}"></td>
-								<td class="fw-medium" th:text="${user.username}"></td>
-								<td th:text="${user.displayName}"></td>
-								<td style="color: #64748b; font-size: 0.875rem;"
+								<td class="fw-medium" style="word-break: break-all;" th:text="${user.username}"></td>
+								<td style="word-break: break-all;" th:text="${user.displayName}"></td>
+								<td style="color: #64748b; font-size: 0.875rem; word-break: break-all;"
 									th:text="${user.email}"></td>
 
 								<!-- 権限バッジ -->

@@ -35,6 +35,7 @@ public class UserRegisterForm {
     /** メールアドレス */
     @NotBlank(message = "メールアドレスを入力してください")
     @Email(message = "正しいメールアドレスの形式で入力してください")
+    @Size(max = 200, message = "メールアドレスは200文字以内まで対応しています")
     private String email;
 
     /** パスワード */

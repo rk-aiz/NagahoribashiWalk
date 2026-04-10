@@ -140,7 +140,10 @@
 								<td class="text-secondary small" th:text="${spot.id}">1</td>
 
 								<!-- スポット名 -->
-								<td class="fw-medium" th:text="${spot.spotName}">スポット名</td>
+								<td class="fw-medium">
+									<a th:href="@{/spot/{id}(id=${spot.id})}" target="_blank"
+									   class="text-decoration-none text-dark" th:text="${spot.spotName}">スポット名</a>
+								</td>
 
 								<!-- カテゴリー（バッジ色はカテゴリー名で分岐） -->
 								<td><span class="badge rounded-pill px-2 py-1 fw-normal"
