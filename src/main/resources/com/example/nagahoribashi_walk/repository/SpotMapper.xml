@@ -583,11 +583,10 @@
 		FROM
 		spots s
 		LEFT JOIN LATERAL (
-		SELECT * FROM spot_photos
-		WHERE spot_id =
-		s.id
-		ORDER BY created_at DESC
-		LIMIT 1
+			SELECT photo_url FROM spot_photos
+			WHERE spot_id = s.id
+			ORDER BY display_order ASC
+			LIMIT 1
 		) sp ON true
 		LEFT JOIN (
 		SELECT
@@ -620,11 +619,10 @@
 		FROM
 		spots s
 		LEFT JOIN LATERAL (
-		SELECT * FROM spot_photos
-		WHERE spot_id =
-		s.id
-		ORDER BY created_at DESC
-		LIMIT 1
+			SELECT photo_url FROM spot_photos
+			WHERE spot_id = s.id
+			ORDER BY display_order ASC
+			LIMIT 1
 		) sp ON true
 		LEFT JOIN (
 		SELECT
@@ -648,34 +646,33 @@
 	<!-- SpotDetail を findById 1本で取得 -->
 	<select id="findById" resultMap="SpotDetailMap">
 		SELECT
-		s.id AS spot_id,
-		s.spot_name AS spotName,
-		r.user_id,
-		s.details AS details,
-		s.business_hours AS businessHours,
-		s.estimated_budget AS
-		estimatedBudget,
-		s.address AS address,
-		s.gmap_url AS gmapUrl,
-		s.website_url AS websiteUrl,
-		s.keywords,
-		c.name AS categoryName,
-		sc.name
-		AS subCategoryName,
+			s.id AS spot_id,
+			s.spot_name AS spotName,
+			r.user_id,
+			s.details AS details,
+			s.business_hours AS businessHours,
+			s.estimated_budget AS
+			estimatedBudget,
+			s.address AS address,
+			s.gmap_url AS gmapUrl,
+			s.website_url AS websiteUrl,
+			s.keywords,
+			c.name AS categoryName,
+			sc.name AS subCategoryName,
 
-		stats.avg_rating AS averageRating,
-		stats.review_count AS reviewCount,
+			stats.avg_rating AS averageRating,
+			stats.review_count AS reviewCount,
 
-		r.id AS review_id,
-		r.comment AS
-		comment,
-		u.display_name AS reviewerName,
-		r.created_at AS reviewDate,
-		r.rating AS rating,
+			r.id AS review_id,
+			r.comment AS
+			comment,
+			u.display_name AS reviewerName,
+			r.created_at AS reviewDate,
+			r.rating AS rating,
 
-		sp.id AS photo_id,
-		sp.photo_url AS photoUrl,
-		sp.display_order AS displayOrder
+			sp.id AS photo_id,
+			sp.photo_url AS photoUrl,
+			sp.display_order AS displayOrder
 
 		FROM spots s
 
@@ -688,30 +685,29 @@
 		= c.id
 
 		LEFT JOIN (
-		SELECT
-		r.spot_id,
-		AVG(r.rating) AS avg_rating,
-		COUNT(r.id) AS review_count
-		FROM reviews r
-		INNER JOIN users u
-		ON
-		r.user_id = u.id
-		WHERE u.deleted_at IS NULL
-		GROUP BY r.spot_id
+			SELECT
+				r.spot_id,
+				AVG(r.rating) AS avg_rating,
+				COUNT(r.id) AS review_count
+			FROM reviews r
+			INNER JOIN users u
+			ON
+				r.user_id = u.id
+			WHERE u.deleted_at IS NULL
+			GROUP BY r.spot_id
 		) stats
 		ON
-		s.id = stats.spot_id
+			s.id = stats.spot_id
 
 		LEFT JOIN (
-		SELECT r.*
-		FROM reviews r
-		INNER JOIN
-		users u
-		ON r.user_id = u.id
-		WHERE u.deleted_at IS NULL
+			SELECT r.*
+			FROM reviews r
+			INNER JOIN
+				users u
+			ON r.user_id = u.id
+			WHERE u.deleted_at IS NULL
 		) r
-		ON s.id =
-		r.spot_id
+		ON s.id = r.spot_id
 
 		LEFT JOIN users u
 		ON r.user_id = u.id
@@ -722,29 +718,28 @@
 		WHERE s.id = #{id}
 		AND s.deleted_at IS NULL
 
-		ORDER BY
-		r.created_at DESC, sp.display_order ASC
+		ORDER BY r.created_at DESC, sp.display_order ASC
 	</select>
 
 	<!-- Spotエンティティを IDで取得 -->
 	<select id="findByIdForAdmin"
 		resultType="com.example.nagahoribashi_walk.entity.Spot">
 		SELECT
-		s.id,
-		s.spot_name AS spotName,
-		s.sub_category_id,
-		s.website_url,
-		s.gmap_url,
-		s.address,
-		s.business_hours,
-		s.closed_days,
-		s.estimated_budget,
-		s.keywords,
-		s.details,
-		s.created_at,
-		s.updated_at
+			s.id,
+			s.spot_name AS spotName,
+			s.sub_category_id,
+			s.website_url,
+			s.gmap_url,
+			s.address,
+			s.business_hours,
+			s.closed_days,
+			s.estimated_budget,
+			s.keywords,
+			s.details,
+			s.created_at,
+			s.updated_at
 		FROM
-		spots s
+			spots s
 		WHERE id = #{spotId}
 	</select>
 </mapper>
