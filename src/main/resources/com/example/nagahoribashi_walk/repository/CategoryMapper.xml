@@ -90,20 +90,68 @@
         ORDER BY
             c.display_order ASC NULLS LAST
     </select>
-    
-    
+
+    <select id="findFromById" resultType="com.example.nagahoribashi_walk.entity.Category">
+        SELECT id, name, display_order, is_default FROM categories
+        WHERE
+            display_order >= (SELECT display_order FROM categories WHERE id = #{id})
+            AND
+            is_default = false
+        ORDER BY display_order ASC
+        LIMIT #{limit}
+    </select>
+
+    <select id="findUpToById" resultType="com.example.nagahoribashi_walk.entity.Category">
+        <![CDATA[
+            SELECT id, name, display_order, is_default FROM categories
+            WHERE
+                display_order <= (SELECT display_order FROM categories WHERE id = #{id})
+                AND
+                is_default = false
+            ORDER BY display_order DESC
+            LIMIT #{limit}
+        ]]>
+    </select>
+
+    <select id="findAllEntities" resultType="com.example.nagahoribashi_walk.entity.Category">
+        SELECT id, name, display_order, is_default FROM categories
+        WHERE is_default = false
+        ORDER BY display_order ASC NULLS LAST
+    </select>
+
     <!-- 大谷記載 -->
     <!-- 新規追加 -->
-    <insert id="insertCategory" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO categories (name, display_order)
         VALUES (#{name}, (SELECT COALESCE(MAX(display_order), 0) + 1 FROM categories))
     </insert>
 
+    <update id="update">
+      UPDATE categories 
+      SET name = #{name} 
+      WHERE id = #{id}
+    </update>
+
+    <update id="updateDisplayOrder">
+        UPDATE categories 
+        SET display_order = #{displayOrder}
+        WHERE id = #{id} AND is_default = false
+    </update>
+
+    <update id="bulkUpdateDisplayOrder">
+    	UPDATE categories
+		SET display_order = 
+			<foreach collection="categories" item="item" open="CASE" close="END">
+				WHEN id = #{item.id} THEN #{item.displayOrder}
+			</foreach>
+		WHERE id IN
+		<foreach collection="categories" item="item" open="(" separator="," close=")">
+			#{item.id}
+		</foreach>
+    </update>
 
     <!-- 削除 -->
-    <delete id="deleteCategory">
+    <delete id="delete">
         DELETE FROM categories WHERE id = #{id}
     </delete>
-   
-
 </mapper>

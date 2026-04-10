@@ -35,4 +35,9 @@ public class AdminCategoryRow {
     public boolean getIsDefault() {
         return this.isDefault;
     }
+
+	public boolean isDefault() {
+		// TODO 自動生成されたメソッド・スタブ
+		return false;
+	}
 }

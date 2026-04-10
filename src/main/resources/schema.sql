@@ -78,13 +78,35 @@ RETURNS TRIGGER AS '
 CREATE OR REPLACE FUNCTION fallback_on_category_delete()
 RETURNS TRIGGER AS '
 DECLARE
-    v_default_category_id INTEGER;
+    v_default_category_id         INTEGER;
+    v_default_sub_category_id     INTEGER;
+    v_old_default_sub_category_id INTEGER;
 BEGIN
+    -- デフォルトカテゴリ（未分類）のIDを取得
     SELECT id INTO v_default_category_id
     FROM categories
     WHERE is_default = TRUE;
 
-    -- 名前が衝突するものはサフィックスを付与
+    -- 「未分類/その他」サブカテゴリのIDを取得
+    SELECT id INTO v_default_sub_category_id
+    FROM sub_categories
+    WHERE category_id = v_default_category_id AND is_default = TRUE;
+
+    -- 削除されるカテゴリの「その他」（is_default=TRUE）サブカテゴリのIDを取得
+    SELECT id INTO v_old_default_sub_category_id
+    FROM sub_categories
+    WHERE category_id = OLD.id AND is_default = TRUE;
+
+    -- 削除カテゴリの「その他」に属する spots を「未分類/その他」へ移動
+    UPDATE spots
+    SET sub_category_id = v_default_sub_category_id
+    WHERE sub_category_id = v_old_default_sub_category_id;
+
+    -- prevent_default_sub_category_delete トリガーをくぐるため is_default を FALSE にしてから削除
+    UPDATE sub_categories SET is_default = FALSE WHERE id = v_old_default_sub_category_id;
+    DELETE FROM sub_categories WHERE id = v_old_default_sub_category_id;
+
+    -- 残りの非デフォルトサブカテゴリで名前が衝突するものはサフィックスを付与
     UPDATE sub_categories
     SET name = name || ''(OLD_'' || OLD.name || '')''
     WHERE category_id = OLD.id
@@ -93,13 +115,13 @@ BEGIN
         WHERE category_id = v_default_category_id
     );
 
-    -- 全件をデフォルトカテゴリに移動
+    -- 残りの非デフォルトサブカテゴリをデフォルトカテゴリへ移動
     UPDATE sub_categories
     SET category_id = v_default_category_id
     WHERE category_id = OLD.id;
 
     RETURN OLD;
-    END;
+END;
 ' LANGUAGE 'plpgsql';
 
 
