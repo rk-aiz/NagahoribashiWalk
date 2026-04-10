@@ -20,6 +20,7 @@ import com.example.nagahoribashi_walk.dto.SaveImagesResult;
 import com.example.nagahoribashi_walk.entity.SpotPhoto;
 import com.example.nagahoribashi_walk.repository.SpotPhotoMapper;
 import com.example.nagahoribashi_walk.service.SpotPhotoService;
+import com.example.nagahoribashi_walk.util.MyStringUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +31,8 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
 
     @Value("${app.upload.dir}")
     private String uploadDir;
+
+    private String imagePrefix = "images";
 
     private final SpotPhotoMapper spotPhotoMapper;
 
@@ -55,7 +58,7 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
         List<String> errors = new ArrayList<>();
 
         // 保存先ディレクトリを作成（存在しない場合）
-        Path uploadPath = Paths.get(uploadDir, "images");
+        Path uploadPath = Paths.get(MyStringUtils.joinPath(uploadDir, imagePrefix));
         try {
             Files.createDirectories(uploadPath);
         } catch (IOException e) {
@@ -98,7 +101,7 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
             spotPhotoMapper.insert(SpotPhoto.builder()
                     .spotId(spotId)
                     .displayOrder(displayOrder++)
-                    .photoUrl(Paths.get("images", filename).toString())
+                    .photoUrl(MyStringUtils.joinPath(imagePrefix, filename))
                     .build());
         }
 
