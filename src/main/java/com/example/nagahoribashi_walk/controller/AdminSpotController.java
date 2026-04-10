@@ -16,8 +16,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.nagahoribashi_walk.entity.Spot;
 import com.example.nagahoribashi_walk.form.SpotForm;
+import com.example.nagahoribashi_walk.service.AdminSpotService;
 import com.example.nagahoribashi_walk.service.CategoryService;
-import com.example.nagahoribashi_walk.service.SpotService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminSpotController {
 
-    private final SpotService spotService;
+    private final AdminSpotService adminSpotService;
     private final CategoryService categoryService;
 
     /**
@@ -38,7 +38,7 @@ public class AdminSpotController {
             @PageableDefault(size = 15) Pageable pageable,
             Model model) {
 
-        model.addAttribute("spotPages", spotService.searchForAdmin(keyword, sort, pageable));
+        model.addAttribute("spotPages", adminSpotService.searchForAdmin(keyword, sort, pageable));
         model.addAttribute("keyword", keyword);
         model.addAttribute("sort", sort);
         return "admin/spot/list";
@@ -70,7 +70,7 @@ public class AdminSpotController {
 
         // 編集用にSpotFormを準備
         SpotForm form = new SpotForm();
-        Spot spot = spotService.getByIdForAdmin(spotId);
+        Spot spot = adminSpotService.getByIdForAdmin(spotId);
         BeanUtils.copyProperties(spot, form);
 
         model.addAttribute("spotForm", form);
@@ -101,7 +101,7 @@ public class AdminSpotController {
 
         // 新規スポットインサート処理
         try {
-            spotService.addSpot(spot);
+            adminSpotService.addSpot(spot);
             redirectAttributes.addFlashAttribute("message", "新規スポットが登録されました。");
         } catch (DataIntegrityViolationException e) {
 
@@ -138,7 +138,7 @@ public class AdminSpotController {
 
         // スポットアップデート処理
         try {
-            spotService.updateSpot(spot);
+            adminSpotService.updateSpot(spot);
             redirectAttributes.addFlashAttribute("message", "スポット情報が更新されました。");
         } catch (DataIntegrityViolationException e) {
 
@@ -166,7 +166,7 @@ public class AdminSpotController {
             Model model) {
 
         // スポットアップデート処理
-        spotService.softDelete(spotId);
+        adminSpotService.softDelete(spotId);
 
         // リダイレクトアトリビュートを設定
         redirectAttributes.addFlashAttribute("message", "スポット情報を削除しました。");

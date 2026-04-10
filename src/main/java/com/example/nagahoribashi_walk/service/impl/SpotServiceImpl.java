@@ -12,10 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.nagahoribashi_walk.dto.AdminSpotRow;
 import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
-import com.example.nagahoribashi_walk.entity.Spot;
 import com.example.nagahoribashi_walk.repository.SpotMapper;
 import com.example.nagahoribashi_walk.service.SpotService;
 
@@ -211,73 +209,5 @@ public class SpotServiceImpl implements SpotService {
         }
 
         return spotDetail;
-    }
-
-    /**
-     * 【管理者】ページに対応したスポット一覧を返す
-     */
-    @Override
-    public Page<AdminSpotRow> getPageForAdmin(Pageable pageable) {
-
-        // スポットの総数を取得する
-        long total = spotMapper.count();
-
-        // 対象ページに対応したスポットを取得する
-        List<AdminSpotRow> spots = spotMapper.findAllForAdmin(pageable.getOffset(), pageable.getPageSize());
-
-        // Page<T>インスタンスに詰めて返す
-        return new PageImpl<>(spots, pageable, total);
-    }
-
-    /**
-     * 【管理者】キーワードでスポットを絞り込んだページを返す
-     */
-    @Override
-    public Page<AdminSpotRow> searchForAdmin(String keyword, String sort, Pageable pageable) {
-        long total = spotMapper.countForAdminByKeyword(keyword);
-
-        List<AdminSpotRow> spots = spotMapper.findAllForAdminByKeyword(
-                keyword, sort, pageable.getOffset(), pageable.getPageSize());
-
-        return new PageImpl<>(spots, pageable, total);
-    }
-
-    /** 新規スポットを追加する TODO : gmapUrlの検証処理を追加する(frameで使用するため) */
-    @Override
-    public void addSpot(Spot spot) {
-        spotMapper.insert(spot);
-    }
-
-    @Override
-    public void updateSpot(Spot spot) {
-        spotMapper.update(spot);
-    }
-
-    @Override
-    public void softDelete(Long spotId) {
-        spotMapper.softDelete(spotId);
-    }
-
-    /**
-     * 【管理者】スポットをIDから取得する
-     */
-    @Override
-    public Spot getByIdForAdmin(Long spotId) {
-        return spotMapper.findByIdForAdmin(spotId).orElseThrow();
-    }
-
-    @Override
-    public long getSpotCount() {
-        return spotMapper.count();
-    }
-
-    @Override
-    public Double getAverageRatingAll() {
-        return spotMapper.findAverageRatingAll();
-    }
-
-    @Override
-    public List<AdminSpotRow> findRecent(int i) {
-        return spotMapper.findRecent(i);
     }
 }
