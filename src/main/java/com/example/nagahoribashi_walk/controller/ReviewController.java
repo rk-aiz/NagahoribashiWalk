@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -14,7 +13,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.nagahoribashi_walk.entity.Review;
 import com.example.nagahoribashi_walk.exception.ReviewAlreadyExistsException;
 import com.example.nagahoribashi_walk.form.ReviewForm;
+import com.example.nagahoribashi_walk.service.FavoriteService;
 import com.example.nagahoribashi_walk.service.ReviewService;
+import com.example.nagahoribashi_walk.service.SpotService;
 import com.example.nagahoribashi_walk.service.userdetails.LoginUser;
 
 import lombok.RequiredArgsConstructor;
@@ -28,17 +29,20 @@ import lombok.RequiredArgsConstructor;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final SpotService spotService;
+    private final FavoriteService favoriteService;
     
     /**
      * レビュー投稿処理
      */
     @PostMapping("/review/post/{spotId}")
     public String addReview(
-            @Validated ReviewForm reviewForm,
+            @Validated ReviewForm form,
             BindingResult bindingResult,
             @PathVariable("spotId") Long spotId,
             @AuthenticationPrincipal LoginUser loginUser,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes,
+            Model model) {
 
         // 未ログインの場合は投稿させない
         if (loginUser == null) {
@@ -47,12 +51,18 @@ public class ReviewController {
         }
 
         if (bindingResult.hasErrors()) {
-            return "spot/" + spotId;
+            model.addAttribute("errorMessage", 
+                    bindingResult.getAllErrors().getFirst().getDefaultMessage());
+            model.addAttribute("isFavorite",
+                    favoriteService.isFavorite(loginUser.getId(), spotId));
+            model.addAttribute("spotDetail",
+                spotService.findById(spotId, loginUser.getId()));
+            return "/spot/detail";
         }
 
         // レビュー情報を生成する
         Review review = new Review();
-        BeanUtils.copyProperties(reviewForm, review);
+        BeanUtils.copyProperties(form, review);
 
         // スポットidをセット
         review.setSpotId(spotId);
@@ -78,15 +88,29 @@ public class ReviewController {
     @PostMapping("/review/{id}/update")
     public String updateReview(
             @PathVariable("id") Long reviewId,
-            @Validated ReviewForm reviewForm,
+            @Validated ReviewForm form,
             BindingResult bindingResult,
             @AuthenticationPrincipal LoginUser loginUser,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes,
+            Model model) {
 
         // 未ログインの場合は更新させない
         if (loginUser == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "レビューを更新するにはログインが必要です。");
             return "redirect:/";
+        }
+
+        // バリデーションエラー
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errorMessage", 
+                    bindingResult.getAllErrors().getFirst().getDefaultMessage());
+            Long spotId = reviewService.findById(reviewId).getSpotId();
+            model.addAttribute("isFavorite",
+                    favoriteService.isFavorite(loginUser.getId(), spotId));
+            model.addAttribute("spotDetail",
+                spotService.findById(spotId, loginUser.getId()));
+            model.addAttribute("editReviewId", reviewId);
+            return "/spot/detail";
         }
 
         // 更新対象のレビュー情報を生成
@@ -96,8 +120,8 @@ public class ReviewController {
         review.setId(reviewId);
 
         // フォーム入力値をセット
-        review.setRating(reviewForm.getRating());
-        review.setComment(reviewForm.getComment());
+        review.setRating(form.getRating());
+        review.setComment(form.getComment());
 
         try {
             // 更新処理を実行

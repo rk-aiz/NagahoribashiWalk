@@ -2,6 +2,7 @@ package com.example.nagahoribashi_walk.service.impl;
 
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,14 +76,20 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    // 追加
+    /** 新規カテゴリの登録 */ 
     @Override
     public void insertCategory(Category category) {
+        if (categoryMapper.existsByCategoryName(category.getName())) {
+            throw new DataIntegrityViolationException("カテゴリ名が既に存在します。");
+        }
         categoryMapper.insert(category);
     }
 
     @Override
     public void updateCategory(Category category) {
+        if (categoryMapper.existsByCategoryName(category.getName())) {
+            throw new DataIntegrityViolationException("カテゴリ名が既に存在します。");
+        }
         categoryMapper.update(category);
     }
 

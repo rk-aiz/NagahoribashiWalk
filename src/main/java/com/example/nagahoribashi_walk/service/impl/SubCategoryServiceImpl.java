@@ -2,6 +2,7 @@ package com.example.nagahoribashi_walk.service.impl;
 
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,11 +59,20 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         if (subCategory.getCategoryId() == null || subCategory.getCategoryId() == 0) {
             subCategory.setCategoryId(null);
         }
+        if (subCategoryMapper.existsBySubCategoryNameAndCategoryId(
+                subCategory.getName(), subCategory.getCategoryId())) {
+            throw new DataIntegrityViolationException("サブカテゴリー名が既に存在します。");
+        }
         subCategoryMapper.insert(subCategory);
     }
 
     @Override
     public void updateSubCategory(SubCategory subCategory) {
+
+        if (subCategoryMapper.existsBySubCategoryNameAndCategoryId(
+                subCategory.getName(), subCategory.getCategoryId())) {
+            throw new DataIntegrityViolationException("サブカテゴリー名が既に存在します。");
+        }
         subCategoryMapper.update(subCategory);
     }
 

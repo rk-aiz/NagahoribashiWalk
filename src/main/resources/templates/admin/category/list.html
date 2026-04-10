@@ -221,6 +221,7 @@
                         class="d-flex gap-2 align-items-center">
                         <input type="hidden" name="isNew" value="false">
                         <input type="hidden" name="id" th:value="${sub.id}">
+                        <input type="hidden" name="categoryId" th:value="${cat.id}">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <input type="text" name="name" class="form-control form-control-sm" th:value="${sub.name}"
                             style="max-width: 220px;" required>

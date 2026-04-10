@@ -46,39 +46,10 @@ public interface SpotMapper {
             @Param("offset") long offset,
             @Param("limit") int limit);
 
-    List<AdminSpotRow> findAllForAdmin(
-    		@Param("offset") long offset, @Param("limit") int limit);
-
-    List<AdminSpotRow> findAllForAdminByKeyword(
-            @Param("keyword") String keyword,
-            @Param("sort") String sort,
-            @Param("offset") long offset,
-            @Param("limit") int limit);
-
-    long countForAdminByKeyword(@Param("keyword") String keyword);
-
     boolean existsBySpotId(@Param("spotId") Long spotId);
-
-    void insert(Spot spot);
-
-    void update(Spot spot);
-
-    Optional<Spot> findByIdForAdmin(@Param("spotId") Long spotId);
-    
-    void softDelete(@Param("spotId") Long spotId);
-
-    // insertImage
-
-    // deleteImage
 
     /** スポット数をカウントする */
     long count();
-
-    /** 全スポットの平均評価を取得する（小数第1位） */
-    Double findAverageRatingAll();
-
-    /** 最近登録されたスポットをN件取得する */
-    List<AdminSpotRow> findRecent(@Param("limit") int limit);
 
     long countByKeywords(@Param("keywordList") List<Map<String, String>> keywordList);
 

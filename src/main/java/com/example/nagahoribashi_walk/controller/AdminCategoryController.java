@@ -1,6 +1,7 @@
 package com.example.nagahoribashi_walk.controller;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -67,9 +68,13 @@ public class AdminCategoryController {
         BeanUtils.copyProperties(form, category);
 
         // カテゴリ登録処理理
-        categoryService.insertCategory(category);
+        try {
+            categoryService.insertCategory(category);
+            redirectAttributes.addFlashAttribute("message", "カテゴリーを追加しました。");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getLocalizedMessage());
+        }
 
-        redirectAttributes.addFlashAttribute("message", "カテゴリーを追加しました。");
         return "redirect:/admin/category/list";
     }
 
@@ -93,9 +98,13 @@ public class AdminCategoryController {
         BeanUtils.copyProperties(form, category);
 
         // カテゴリ更新処理
-        categoryService.updateCategory(category);
-
-        redirectAttributes.addFlashAttribute("message", "カテゴリー名を更新しました。");
+        try {
+            categoryService.updateCategory(category);
+            redirectAttributes.addFlashAttribute("message", "カテゴリー名を更新しました。");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getLocalizedMessage());
+        }
+        
         return "redirect:/admin/category/list";
     }
 
@@ -148,10 +157,13 @@ public class AdminCategoryController {
         SubCategory subCategory = new SubCategory();
         BeanUtils.copyProperties(form, subCategory);
 
-        // サブカテゴリ登録処理理
-        subCategoryService.insertSubCategory(subCategory);
-
-        redirectAttributes.addFlashAttribute("message", "サブカテゴリーを追加しました。");
+        // サブカテゴリ登録処理
+        try {
+            subCategoryService.insertSubCategory(subCategory);
+            redirectAttributes.addFlashAttribute("message", "サブカテゴリーを追加しました。");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getLocalizedMessage());
+        }
         return "redirect:/admin/category/list";
     }
 
@@ -160,7 +172,7 @@ public class AdminCategoryController {
      */
     @PostMapping("/admin/subcategory/update")
     public String updateSubCategory(
-            @Validated CategoryForm form,
+            @Validated SubCategoryForm form,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes) {
 
@@ -172,12 +184,16 @@ public class AdminCategoryController {
 
         // SubCategoryエンティティに詰め替えて更新
         SubCategory subCategory = new SubCategory();
-        subCategory.setId(form.getId());
-        subCategory.setName(form.getName());
+        BeanUtils.copyProperties(form, subCategory);
+        
+        // サブカテゴリ更新処理
+        try {
+            subCategoryService.updateSubCategory(subCategory);
+            redirectAttributes.addFlashAttribute("message", "サブカテゴリー名を更新しました。");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getLocalizedMessage());
+        }
 
-        subCategoryService.updateSubCategory(subCategory);
-
-        redirectAttributes.addFlashAttribute("message", "サブカテゴリー名を更新しました。");
         return "redirect:/admin/category/list";
     }
 

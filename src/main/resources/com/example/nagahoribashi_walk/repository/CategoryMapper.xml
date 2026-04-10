@@ -122,6 +122,10 @@
         ORDER BY display_order ASC NULLS LAST
     </select>
 
+    <select id="existsByCategoryName" resultType="boolean">
+        SELECT EXISTS (SELECT 1 FROM categories WHERE name = #{name})
+    </select>
+
     <!-- 大谷記載 -->
     <!-- 新規追加 -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
