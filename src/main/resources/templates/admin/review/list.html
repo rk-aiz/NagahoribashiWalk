@@ -56,7 +56,7 @@
 
                 <!-- ページネーション（上） -->
                 <div
-                    th:replace="~{fragments/pagination :: pagerSimple(${reviewPages}, '/admin/review/list', ${keyword}, 'my-3')}">
+                    th:replace="~{fragments/pagination :: pagerSimple(${reviewPages}, '/admin/review/list', ${keyword}, '', 'my-3')}">
                 </div>
 
                 <!-- テーブル -->
@@ -130,7 +130,7 @@
 
                 <!-- ページネーション（下） -->
                 <div
-                    th:replace="~{fragments/pagination :: pagerSimple(${reviewPages}, '/admin/review/list', ${keyword}, 'mt-4')}">
+                    th:replace="~{fragments/pagination :: pagerSimple(${reviewPages}, '/admin/review/list', ${keyword}, '', 'mt-4')}">
                 </div>
 
             </div>
