@@ -135,7 +135,7 @@ public class SpotServiceImpl implements SpotService {
     @Override
     public Page<SpotSummary> searchByKeywords(String keywords, Pageable pageable) {
 
-        // 1. 空文字検索は一覧画面にフォールバック
+        // 1. 空文字検索は全取得にフォールバック
         if (keywords == null || keywords.isBlank()) {
             return getPage(pageable);
         }
