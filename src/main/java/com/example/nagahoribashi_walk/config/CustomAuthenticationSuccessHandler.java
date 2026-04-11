@@ -17,16 +17,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-	/**
-	 * ログイン成功時に、ログインページへ飛んだ元のURLへリダイレクトする。
-	 */
+    /**
+     * ログイン成功時に、ログインページへ飛んだ元のURL(ページ)へリダイレクトする。
+     * 例: スポット詳細ページ -> レビュー投稿したい -> ログイン -> 自動で再びスポット詳細ページ
+     */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
-                                        HttpServletResponse response,
-                                        Authentication authentication) throws IOException {
+            HttpServletResponse response,
+            Authentication authentication) throws IOException {
 
         String returnUrl = request.getParameter("returnUrl");
-        
+
         if (returnUrl != null && !returnUrl.isEmpty()) {
             response.sendRedirect(returnUrl);
         } else {

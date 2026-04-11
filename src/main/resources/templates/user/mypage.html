@@ -84,16 +84,16 @@
                     <th:block th:if="${!editMode}">
                         <div class="row g-4 mb-4">
                             <div class="col-6">
-                                <p class="text-secondary mb-1" style="font-size: 0.8rem;">表示名</p>
-                                <p class="fw-bold mb-0" th:text="${profile.displayName}">山田 太郎</p>
+                                <p class="text-secondary mb-1" style="font-size: 0.8rem;">ユーザー名</p>
+                                <p class="fw-bold mb-0" th:text="${profile.username}">yamada_taro</p>
                             </div>
                             <div class="col-6">
                                 <p class="text-secondary mb-1" style="font-size: 0.8rem;">保有ポイント</p>
                                 <p class="fw-bold mb-0" th:text="${profile.point + 'ポイント'}">99,999ポイント</p>
                             </div>
                             <div class="col-6">
-                                <p class="text-secondary mb-1" style="font-size: 0.8rem;">ユーザー名</p>
-                                <p class="fw-bold mb-0" th:text="${profile.username}">yamada_taro</p>
+                                <p class="text-secondary mb-1" style="font-size: 0.8rem;">表示名</p>
+                                <p class="fw-bold mb-0" th:text="${profile.displayName}">山田 太郎</p>
                             </div>
                             <div class="col-6">
                                 <p class="text-secondary mb-1" style="font-size: 0.8rem;">メールアドレス</p>
@@ -126,6 +126,15 @@
                         <form th:action="@{/mypage/profile/update}" method="post" th:object="${userProfileEditForm}">
                             <div class="row g-4 mb-4">
                                 <div class="col-6">
+                                    <p class="text-secondary mb-1" style="font-size: 0.8rem;">ユーザー名</p>
+                                    <p class="fw-bold mb-0" th:text="${profile.username}"></p>
+                                </div>
+
+                                <div class="col-6">
+                                    <p class="text-secondary mb-1" style="font-size: 0.8rem;">保有ポイント</p>
+                                    <p class="fw-bold mb-0" th:text="${profile.point + 'ポイント'}">99,999ポイント</p>
+                                </div>
+                                <div class="col-6">
                                     <label for="displayName" class="text-secondary mb-1 d-block"
                                         style="font-size: 0.8rem;">表示名</label>
                                     <input id="displayName" type="text" name="displayName" th:field="*{displayName}"
@@ -134,10 +143,6 @@
                                     <div class="invalid-feedback" th:if="${#fields.hasErrors('displayName')}"
                                         th:errors="*{displayName}">
                                     </div>
-                                </div>
-                                <div class="col-6">
-                                    <p class="text-secondary mb-1" style="font-size: 0.8rem;">ユーザー名</p>
-                                    <p class="fw-bold mb-0" th:text="${profile.username}"></p>
                                 </div>
                                 <div class="col-6">
                                     <label for="email" class="text-secondary mb-1 d-block"

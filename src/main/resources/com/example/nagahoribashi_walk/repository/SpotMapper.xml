@@ -257,7 +257,7 @@
 	</select>
 
     <!-- キーワード検索 (ORでつないで、LIMIT数だけ取得) 関連スポット検索用 --> 
-	<select id="findRandomByAnyKeyword" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
+	<select id="findRandomByAnyKeywords" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
 		SELECT
 			<include refid="spotSummaryColumns"/>
 		FROM spots s

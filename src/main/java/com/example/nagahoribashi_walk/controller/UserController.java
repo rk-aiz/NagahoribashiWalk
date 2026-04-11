@@ -1,5 +1,6 @@
 package com.example.nagahoribashi_walk.controller;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.AccessDeniedException;
@@ -46,12 +47,11 @@ public class UserController {
             Model model) {
 
         UserProfile userProfile = userService.getProfileByUsername(loginUser.getUsername());
+        UserProfileEditForm form = new UserProfileEditForm();
+        BeanUtils.copyProperties(userProfile, form);
 
         model.addAttribute("profile", userProfile);
-        model.addAttribute("userProfileEditForm",
-                new UserProfileEditForm(
-                        userProfile.getDisplayName(),
-                        userProfile.getEmail()));
+        model.addAttribute("userProfileEditForm", form);
 
         model.addAttribute("favorites",
                 favoriteService.getPage(loginUser.getId(), pageable));

@@ -14,6 +14,10 @@ import lombok.Data;
 @Data
 public class ReviewForm {
 
+    private boolean isNew;
+
+    private Integer id;
+
     /** ５段階評価 */
     @Min(value = 1, message = "☆ 1～5で評価してください")
     @Max(value = 5, message = "☆ 1～5で評価してください")
@@ -23,4 +27,17 @@ public class ReviewForm {
     /** レビュー本文 */
     @Size(max = 400, message = "レビューは400文字以内で入力してください")
     private String comment;
+
+    // Thymeleafが正しくbooleanにアクセスする用
+    public boolean getIsNew() {
+        return this.isNew;
+    }
+
+    public void setIsNew(boolean isNew) {
+        this.isNew = isNew;
+    }
+
+    public void setNew(boolean isNew) {
+        setIsNew(isNew);
+    }
 }

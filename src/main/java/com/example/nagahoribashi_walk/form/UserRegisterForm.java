@@ -7,9 +7,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 新規ユーザー登録用のFormオブジェクト
@@ -17,8 +15,6 @@ import lombok.NoArgsConstructor;
  * @author 海津
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class UserRegisterForm {
 
     /** ユーザー名（ログインID） */

@@ -1,14 +1,11 @@
 package com.example.nagahoribashi_walk.form;
 
+import org.hibernate.validator.constraints.URL;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.URL;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Spot登録・編集用のForm
@@ -16,8 +13,6 @@ import lombok.NoArgsConstructor;
  * @author 海津
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class SpotForm {
 
     // 新規登録か編集(更新)を判定する

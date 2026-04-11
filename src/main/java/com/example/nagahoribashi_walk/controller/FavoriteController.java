@@ -39,6 +39,7 @@ public class FavoriteController {
 
         favoriteService.addFavorite(loginUser.getId(), spotId);
 
+        // returlUrlは必ず内部Urlになるように(セキュリティ対策)
         if (MyStringUtils.isInternalPath(returnUrl)) {
             redirectAttributes.addAttribute("returnUrl", returnUrl);
         }

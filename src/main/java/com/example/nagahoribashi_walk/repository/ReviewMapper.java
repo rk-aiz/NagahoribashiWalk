@@ -16,37 +16,37 @@ import com.example.nagahoribashi_walk.entity.Review;
 @Mapper
 public interface ReviewMapper {
 
-	//投稿
-	void insert(Review review);
+    // 投稿
+    void insert(Review review);
 
-	// レビューIDで1件取得
-	Optional<Review> findById(@Param("id") Long id);
+    // レビューIDで1件取得
+    Optional<Review> findById(@Param("id") Long id);
 
-	//編集
-	int update(Review review);
+    // 編集
+    int update(Review review);
 
-	//削除
-	void delete(@Param("userId") Long userId, @Param("spotId") Long spotId);
+    // 削除
+    void delete(@Param("userId") Long userId, @Param("spotId") Long spotId);
 
-	/**
-	 * 指定したユーザーが指定したスポットにレビュー投稿済みか確認する
-	 *
-	 * @param userId ユーザーID
-	 * @param spotId スポットID
-	 * @return 投稿済みならtrue
-	 */
-	boolean existsByUserIdAndSpotId(@Param("userId") Long userId, @Param("spotId") Long spotId);
+    /**
+     * 指定したユーザーが指定したスポットにレビュー投稿済みか確認する
+     *
+     * @param userId ユーザーID
+     * @param spotId スポットID
+     * @return 投稿済みならtrue
+     */
+    boolean existsByUserIdAndSpotId(@Param("userId") Long userId, @Param("spotId") Long spotId);
 
-	/** レビューの総数を取得する */
-	long count();
+    /** レビューの総数を取得する */
+    long count();
 
-	/** キーワードに対応したレビューをページネーション用に取得 */
+    /** キーワードに対応したレビューをページネーション用に取得 TODO : ビュー側未実装 */
     List<AdminReviewRow> findAllForAdminByKeyword(
             @Param("keyword") String keyword,
             @Param("offset") long offset,
             @Param("limit") int limit);
 
-	/** キーワードに対応したレビューの総数を取得 */
-	long countForAdminByKeyword(@Param("keyword") String keyword);
+    /** キーワードに対応したレビューの総数を取得 */
+    long countForAdminByKeyword(@Param("keyword") String keyword);
 
 }

@@ -2,6 +2,7 @@ package com.example.nagahoribashi_walk.controller;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -63,13 +64,13 @@ public class SpotController {
      */
     @GetMapping("/spot/search")
     public String search(
-            @RequestParam("q") String keyword,
+            @RequestParam("q") String keywords,
             @PageableDefault(size = 12) Pageable pageable,
             Model model) {
-        Page<SpotSummary> page = spotService.searchByKeywords(keyword, pageable);
+        Page<SpotSummary> page = spotService.searchByKeywords(keywords, pageable);
         model.addAttribute("page", page);
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("returnUrl", "/spot/search?q=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8));
+        model.addAttribute("keyword", keywords);
+        model.addAttribute("returnUrl", "/spot/search?q=" + URLEncoder.encode(keywords, StandardCharsets.UTF_8));
 
         return "spot/search";
     }
@@ -147,6 +148,9 @@ public class SpotController {
 
         // スポット詳細情報を画面へ渡す
         model.addAttribute("spotDetail", spotDetail);
+
+        // 関連スポットを画面へ渡す
+        model.addAttribute("relatedSpots", spotService.findRelatedSpots(spotId, spotDetail.getKeywords()));
 
         // どのレビューを編集中かを画面へ渡す
         model.addAttribute("editReviewId", editReviewId);

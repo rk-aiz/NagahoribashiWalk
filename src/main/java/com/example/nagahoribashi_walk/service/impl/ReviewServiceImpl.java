@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.nagahoribashi_walk.dto.AdminReviewRow;
 import com.example.nagahoribashi_walk.entity.Review;
 import com.example.nagahoribashi_walk.exception.ReviewAlreadyExistsException;
+import com.example.nagahoribashi_walk.exception.ReviewOperationException;
 import com.example.nagahoribashi_walk.repository.ReviewMapper;
 import com.example.nagahoribashi_walk.repository.SpotMapper;
 import com.example.nagahoribashi_walk.service.ReviewService;
@@ -36,12 +37,12 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 1. スポットが存在するか確認
         if (!spotMapper.existsBySpotId(review.getSpotId())) {
-            throw new IllegalArgumentException("対象のスポットが存在しません。");
+            throw new ReviewOperationException("対象のスポットが存在しません。", review.getSpotId());
         }
 
         // 2. 同じスポットに対して同じユーザーが既に投稿している場合は投稿不可
         if (reviewMapper.existsByUserIdAndSpotId(userId, review.getSpotId())) {
-            throw new ReviewAlreadyExistsException("このスポットには既にレビューを投稿しています。");
+            throw new ReviewAlreadyExistsException("このスポットには既にレビューを投稿しています。", review.getSpotId(), userId);
         }
 
         // 3. 投稿者のユーザーIDをセット
@@ -58,7 +59,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @return レビュー情報
      */
     @Override
-    public Review findById(Long reviewId) {
+    public Review getById(Long reviewId) {
         return reviewMapper.findById(reviewId).orElseThrow();
     }
 
@@ -69,14 +70,14 @@ public class ReviewServiceImpl implements ReviewService {
         // 更新対象のレビューを取得
         Review existingReview = reviewMapper.findById(review.getId()).orElseThrow();
 
-        // 1. スポットが存在するか確認
+        // スポットが存在するか確認
         if (!spotMapper.existsBySpotId(existingReview.getSpotId())) {
-            throw new IllegalArgumentException("対象のスポットが存在しません。");
+            throw new ReviewOperationException("対象のスポットが存在しません。", existingReview.getSpotId());
         }
 
         // 自分のレビュー以外は更新させない
         if (!existingReview.getUserId().equals(userId)) {
-            throw new IllegalArgumentException("他のユーザーのレビューは更新できません。");
+            throw new ReviewOperationException("他のユーザーのレビューは更新できません。", existingReview.getSpotId());
         }
 
         // 更新条件に必要な userId をセット
@@ -98,7 +99,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 自分のレビュー以外は削除させない
         if (!existingReview.getUserId().equals(userId)) {
-            throw new IllegalArgumentException("他のユーザーのレビューは削除できません。");
+            throw new ReviewOperationException("他のユーザーのレビューは削除できません。", existingReview.getSpotId());
         }
 
         // userId と spotId を条件に削除を実行

@@ -27,7 +27,7 @@ public class CustomLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
         setDefaultTargetUrl("/");
     }
 
-    // FlashAttributeで通知を渡す
+    // FlashAttributeで通知を渡す -> トースト通知
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {

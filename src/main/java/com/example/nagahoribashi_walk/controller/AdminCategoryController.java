@@ -1,7 +1,6 @@
 package com.example.nagahoribashi_walk.controller;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -53,8 +52,7 @@ public class AdminCategoryController {
     public String addCategory(
             @Validated CategoryForm form,
             BindingResult bindingResult,
-            RedirectAttributes redirectAttributes,
-            Model model) {
+            RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage",
@@ -67,14 +65,8 @@ public class AdminCategoryController {
         Category category = new Category();
         BeanUtils.copyProperties(form, category);
 
-        // カテゴリ登録処理理
-        try {
-            categoryService.insertCategory(category);
-            redirectAttributes.addFlashAttribute("message", "カテゴリーを追加しました。");
-        } catch (DataIntegrityViolationException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getLocalizedMessage());
-        }
-
+        categoryService.insertCategory(category);
+        redirectAttributes.addFlashAttribute("message", "カテゴリーを追加しました。");
         return "redirect:/admin/category/list";
     }
 
@@ -83,8 +75,7 @@ public class AdminCategoryController {
     public String updateCategory(
             @Validated CategoryForm form,
             BindingResult bindingResult,
-            RedirectAttributes redirectAttributes,
-            Model model) {
+            RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage",
@@ -97,14 +88,8 @@ public class AdminCategoryController {
         Category category = new Category();
         BeanUtils.copyProperties(form, category);
 
-        // カテゴリ更新処理
-        try {
-            categoryService.updateCategory(category);
-            redirectAttributes.addFlashAttribute("message", "カテゴリー名を更新しました。");
-        } catch (DataIntegrityViolationException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getLocalizedMessage());
-        }
-        
+        categoryService.updateCategory(category);
+        redirectAttributes.addFlashAttribute("message", "カテゴリー名を更新しました。");
         return "redirect:/admin/category/list";
     }
 
@@ -143,8 +128,7 @@ public class AdminCategoryController {
     public String addSubCategory(
             @Validated SubCategoryForm form,
             BindingResult bindingResult,
-            RedirectAttributes redirectAttributes,
-            Model model) {
+            RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage",
@@ -157,13 +141,8 @@ public class AdminCategoryController {
         SubCategory subCategory = new SubCategory();
         BeanUtils.copyProperties(form, subCategory);
 
-        // サブカテゴリ登録処理
-        try {
-            subCategoryService.insertSubCategory(subCategory);
-            redirectAttributes.addFlashAttribute("message", "サブカテゴリーを追加しました。");
-        } catch (DataIntegrityViolationException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getLocalizedMessage());
-        }
+        subCategoryService.insertSubCategory(subCategory);
+        redirectAttributes.addFlashAttribute("message", "サブカテゴリーを追加しました。");
         return "redirect:/admin/category/list";
     }
 
@@ -185,15 +164,9 @@ public class AdminCategoryController {
         // SubCategoryエンティティに詰め替えて更新
         SubCategory subCategory = new SubCategory();
         BeanUtils.copyProperties(form, subCategory);
-        
-        // サブカテゴリ更新処理
-        try {
-            subCategoryService.updateSubCategory(subCategory);
-            redirectAttributes.addFlashAttribute("message", "サブカテゴリー名を更新しました。");
-        } catch (DataIntegrityViolationException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getLocalizedMessage());
-        }
 
+        subCategoryService.updateSubCategory(subCategory);
+        redirectAttributes.addFlashAttribute("message", "サブカテゴリー名を更新しました。");
         return "redirect:/admin/category/list";
     }
 

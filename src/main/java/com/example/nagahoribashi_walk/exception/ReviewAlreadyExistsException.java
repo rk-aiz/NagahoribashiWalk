@@ -5,7 +5,22 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.CONFLICT) // 409
 public class ReviewAlreadyExistsException extends RuntimeException {
-    public ReviewAlreadyExistsException(String message) {
+
+    private final Long spotId;
+    private final Long userId;
+
+    public ReviewAlreadyExistsException(String message, Long spotId, Long userId) {
         super(message);
+        this.spotId = spotId;
+        this.userId = userId;
     }
+
+    public Long getSpotId() {
+        return spotId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
 }

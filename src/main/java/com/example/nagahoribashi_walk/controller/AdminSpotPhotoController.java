@@ -47,7 +47,7 @@ public class AdminSpotPhotoController {
             @RequestParam("files") List<MultipartFile> files,
             @RequestParam("displayOrder") Integer displayOrder,
             RedirectAttributes redirectAttributes) {
-        
+
         // 画像を保存する
         SaveImagesResult result = spotPhotoService.saveImages(files, spotId, displayOrder);
 
@@ -74,6 +74,8 @@ public class AdminSpotPhotoController {
             Model model) {
 
         spotPhotoService.delete(photoId, spotId);
+
+        // フラッシュメッセージを設定
         redirectAttributes.addFlashAttribute("message", "画像を削除しました");
 
         return "redirect:/admin/spot/" + spotId + "/photo";

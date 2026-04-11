@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.nagahoribashi_walk.entity.Review;
-import com.example.nagahoribashi_walk.exception.ReviewAlreadyExistsException;
 import com.example.nagahoribashi_walk.form.ReviewForm;
 import com.example.nagahoribashi_walk.service.FavoriteService;
 import com.example.nagahoribashi_walk.service.ReviewService;
@@ -23,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 /**
  * レビュー関連コントローラー
  */
-
 @Controller
 @RequiredArgsConstructor
 public class ReviewController {
@@ -44,12 +42,6 @@ public class ReviewController {
             RedirectAttributes redirectAttributes,
             Model model) {
 
-        // 未ログインの場合は投稿させない
-        if (loginUser == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "レビューを投稿するにはログインが必要です。");
-            return "redirect:/spot/" + spotId;
-        }
-
         if (bindingResult.hasErrors()) {
             model.addAttribute("errorMessage",
                     bindingResult.getAllErrors().getFirst().getDefaultMessage());
@@ -60,25 +52,13 @@ public class ReviewController {
             return "/spot/detail";
         }
 
-        // レビュー情報を生成する
         Review review = new Review();
         BeanUtils.copyProperties(form, review);
-
-        // スポットidをセット
         review.setSpotId(spotId);
 
-        try {
-            // Service呼び出し
-            reviewService.addReview(review, loginUser.getId()); // ←失敗したらthrow
+        reviewService.addReview(review, loginUser.getId());
+        redirectAttributes.addFlashAttribute("message", "レビューを投稿しました。");
 
-            // 成功メッセージを設定する
-            redirectAttributes.addFlashAttribute("message", "レビューを投稿しました。");
-        } catch (ReviewAlreadyExistsException e) {
-            // エラーメッセージを設定する
-            redirectAttributes.addFlashAttribute("errorMessage", e.getLocalizedMessage());
-        }
-
-        // 投稿後は詳細画面にリダイレクト
         return "redirect:/spot/" + spotId;
     }
 
@@ -94,50 +74,26 @@ public class ReviewController {
             RedirectAttributes redirectAttributes,
             Model model) {
 
-        // 未ログインの場合は更新させない
-        if (loginUser == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "レビューを更新するにはログインが必要です。");
-            return "redirect:/";
-        }
+        Review existing = reviewService.getById(reviewId);
 
-        // バリデーションエラー
         if (bindingResult.hasErrors()) {
             model.addAttribute("errorMessage",
                     bindingResult.getAllErrors().getFirst().getDefaultMessage());
-            Long spotId = reviewService.findById(reviewId).getSpotId();
             model.addAttribute("isFavorite",
-                    favoriteService.isFavorite(loginUser.getId(), spotId));
+                    favoriteService.isFavorite(loginUser.getId(), existing.getSpotId()));
             model.addAttribute("spotDetail",
-                    spotService.getById(spotId, loginUser.getId()));
+                    spotService.getById(existing.getSpotId(), loginUser.getId()));
             model.addAttribute("editReviewId", reviewId);
             return "/spot/detail";
         }
 
-        // 更新対象のレビュー情報を生成
-        Review review = new Review();
+        existing.setRating(form.getRating());
+        existing.setComment(form.getComment());
 
-        // 更新対象のレビューIDをセット
-        review.setId(reviewId);
+        reviewService.updateReview(existing, loginUser.getId());
+        redirectAttributes.addFlashAttribute("message", "レビューを更新しました。");
 
-        // フォーム入力値をセット
-        review.setRating(form.getRating());
-        review.setComment(form.getComment());
-
-        try {
-            // 更新処理を実行
-            reviewService.updateReview(review, loginUser.getId());
-
-            // 更新後のメッセージ
-            redirectAttributes.addFlashAttribute("message", "レビューを更新しました。");
-
-        } catch (IllegalArgumentException e) {
-            // エラーメッセージを設定
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-        }
-
-        // 元レビューを取得して、スポット詳細へ戻す
-        Review existingReview = reviewService.findById(reviewId);
-        return "redirect:/spot/" + existingReview.getSpotId() + "#review-" + reviewId;
+        return "redirect:/spot/" + existing.getSpotId() + "#review-" + reviewId;
     }
 
     /**
@@ -149,34 +105,11 @@ public class ReviewController {
             @AuthenticationPrincipal LoginUser loginUser,
             RedirectAttributes redirectAttributes) {
 
-        // 未ログインの場合は削除させない
-        if (loginUser == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "レビューを削除するにはログインが必要です。");
-            return "redirect:/";
-        }
+        Review existing = reviewService.getById(reviewId);
 
-        // 削除後はレビュー自体が消えるので、先に spotId を取得しておく
-        Review existingReview = reviewService.findById(reviewId);
+        reviewService.deleteReview(reviewId, loginUser.getId());
+        redirectAttributes.addFlashAttribute("message", "レビューを削除しました。");
 
-        if (existingReview == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "対象のレビューが存在しません。");
-            return "redirect:/";
-        }
-
-        try {
-            // 削除処理を実行
-            reviewService.deleteReview(reviewId, loginUser.getId());
-
-            // 成功メッセージを設定
-            redirectAttributes.addFlashAttribute("message", "レビューを削除しました。");
-
-        } catch (IllegalArgumentException e) {
-            // エラーメッセージを設定
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-        }
-
-        // 元のスポット詳細画面へ戻す
-        return "redirect:/spot/" + existingReview.getSpotId();
+        return "redirect:/spot/" + existing.getSpotId();
     }
-
 }

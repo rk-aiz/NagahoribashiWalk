@@ -1,7 +1,6 @@
 package com.example.nagahoribashi_walk.controller;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
@@ -102,21 +101,10 @@ public class AdminSpotController {
         Spot spot = new Spot();
         BeanUtils.copyProperties(form, spot);
 
-        // 新規スポットインサート処理
-        try {
-            adminSpotService.addSpot(spot);
-            redirectAttributes.addFlashAttribute("message", "新規スポットが登録されました。");
-        } catch (DataIntegrityViolationException e) {
+        adminSpotService.addSpot(spot);
 
-            // SQL ステートメントの実行が指定されたデータのマッピングに
-            // 失敗したとき
-            model.addAttribute("errorMessage", e.getLocalizedMessage());
-            model.addAttribute("dropDownCategories",
-                    categoryService.getAllAdminCategoryRows());
-            model.addAttribute("spotForm", form);
-            return "/admin/spot/edit";
-        }
-
+        // フラッシュメッセージを設定
+        redirectAttributes.addFlashAttribute("message", "新規スポットが登録されました。");
         return "redirect:/spot/" + spot.getId();
     }
 
@@ -139,21 +127,10 @@ public class AdminSpotController {
         Spot spot = new Spot();
         BeanUtils.copyProperties(form, spot);
 
-        // スポットアップデート処理
-        try {
-            adminSpotService.updateSpot(spot);
-            redirectAttributes.addFlashAttribute("message", "スポット情報が更新されました。");
-        } catch (DataIntegrityViolationException e) {
+        adminSpotService.updateSpot(spot);
 
-            // SQL ステートメントの実行が指定されたデータのマッピングに
-            // 失敗したとき
-            model.addAttribute("errorMessage", e.getLocalizedMessage());
-            model.addAttribute("dropDownCategories",
-                    categoryService.getAllAdminCategoryRows());
-            model.addAttribute("form", form);
-            return "/admin/spot/edit";
-        }
-
+        // フラッシュメッセージを設定
+        redirectAttributes.addFlashAttribute("message", "スポット情報が更新されました。");
         return "redirect:/admin/spot/edit/" + spot.getId();
     }
 
@@ -171,7 +148,7 @@ public class AdminSpotController {
         // スポットアップデート処理
         adminSpotService.softDelete(spotId);
 
-        // リダイレクトアトリビュートを設定
+        // フラッシュメッセージを設定
         redirectAttributes.addFlashAttribute("message", "スポット情報を削除しました。");
         if (keyword != null) {
             redirectAttributes.addAttribute("keyword", keyword);
