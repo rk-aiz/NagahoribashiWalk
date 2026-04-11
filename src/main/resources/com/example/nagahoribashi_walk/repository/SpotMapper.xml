@@ -19,6 +19,7 @@
 		<result property="address" column="address" />
 		<result property="gmapUrl" column="gmapUrl" />
 		<result property="websiteUrl" column="websiteUrl" />
+		<result property="closedDays" column="closedDays" />
 		<result property="keywords" column="keywords" />
 		<result property="categoryName" column="categoryName" />
 		<result property="subCategoryName" column="subCategoryName" />
@@ -493,6 +494,7 @@
 			s.address AS address,
 			s.gmap_url AS gmapUrl,
 			s.website_url AS websiteUrl,
+			s.closed_days AS closedDays,
 			s.keywords,
 			c.name AS categoryName,
 			sc.name AS subCategoryName,
@@ -562,8 +564,7 @@
 		SELECT EXISTS (SELECT 1 FROM spots WHERE id = #{spotId} AND deleted_at IS NULL)
 	</select>
 	
-	<select id="findRelatedSpots"
-		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
+	<select id="findRelatedSpots" resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
 		SELECT
 			s.id,
 			s.spot_name,
@@ -580,27 +581,20 @@
 			LIMIT 1
 		) sp ON true
 		LEFT JOIN (
-			SELECT
-				spot_id, AVG(rating) AS average_rating
-			FROM reviews
+			SELECT spot_id, AVG(rating) AS average_rating FROM reviews
 			GROUP BY spot_id
-		) r
-		ON r.spot_id = s.id
-		LEFT JOIN sub_categories sc 
-		ON sc.id = s.sub_category_id
-		LEFT JOIN categories c
-		ON c.id = sc.category_id
+		) r ON r.spot_id = s.id
+		LEFT JOIN sub_categories sc ON sc.id = s.sub_category_id
+		LEFT JOIN categories c ON c.id = sc.category_id
 		WHERE deleted_at IS NULL
 		AND s.id != #{spotId}
-
 		<if test="keywords != null and keywords.size() > 0">
 			AND (
-			<foreach collection="keywords" item="kw" separator="OR">
-				keywords LIKE CONCAT('%', #{kw}, '%')
-			</foreach>
+    			<foreach collection="keywords" item="kw" separator="OR">
+    				keywords LIKE CONCAT('%', #{kw}, '%')
+    			</foreach>
 			)
 		</if>
-
 		ORDER BY RANDOM()
 		LIMIT 3
 	</select>

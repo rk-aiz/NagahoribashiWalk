@@ -51,6 +51,10 @@ public class SpotDetail {
     // s.website_url
     private String websiteUrl;
 
+    // 定休日
+    // s.closed_days
+    private String closedDays;
+
     // キーワード(カンマ区切り)
     private String keywords;
 
