@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.URL;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -36,7 +37,7 @@ public class SpotForm {
     private String websiteUrl;
 
     // Googleマップの共有URL。埋め込み表示などに使用
-    @URL(message = "正しいURLを入力してください")
+    @Pattern(regexp = "^$|^https://www\\.google\\.com/maps/embed\\?.*", message = "GoogleマップURLはhttps://www.google.com/maps/embed?から始まる形式で入力してください")
     @Size(max = 500, message = "GoogleマップURLは500文字以内で入力してください")
     private String gmapUrl;
 

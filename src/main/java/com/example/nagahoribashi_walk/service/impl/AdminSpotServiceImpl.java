@@ -59,7 +59,6 @@ public class AdminSpotServiceImpl implements AdminSpotService {
     /** 新規スポットを追加する */
     @Override
     public void addSpot(Spot spot) {
-        // TODO : gmapUrlの検証処理(Google Map埋め込みのURLが正しい形か)を追加する -> (iframeで使用するため)
         adminSpotMapper.insert(spot);
     }
 

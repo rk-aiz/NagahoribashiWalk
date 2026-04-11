@@ -2,11 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/admin :: layout(
         ${spotForm.isNew ? 'スポット新規登録' : 'スポット編集'},
         ${spotForm.isNew ? 'スポット新規登録' : 'スポット編集'},
-        ~{}, ~{::main}
+        ~{::style}, ~{::main}
     )}" xml:lang="ja">
 
+<style th:fragment="style">
+    .spot-edit-form .form-control,
+    .spot-edit-form .form-select {
+        font-size: 0.875rem;
+    }
+</style>
+
 <main th:fragment="content">
-    <div class="container" style="max-width: 780px;">
+    <div class="container spot-edit-form" style="max-width: 780px;">
 
         <!-- 戻るリンク -->
         <div class="mb-3 d-flex justify-content-between align-items-center">
@@ -21,7 +28,7 @@
 
         <!-- フォームカード -->
         <div class="card shadow-sm border-0">
-            <div class="card-body p-4">
+            <div class="card-body p-4" style="font-size: 0.925rem;">
 
                 <h5 class="fw-bold mb-1" th:text="${spotForm.isNew ? '新規スポット登録' : 'スポット編集'}">新規スポット登録</h5>
                 <p class="text-muted small mb-4"
@@ -130,9 +137,9 @@
                     <!-- Googleマップ埋め込みURL -->
                     <div class="mb-3">
                         <label for="gmapUrl" class="form-label fw-semibold">Googleマップ埋め込みURL</label>
-                        <input type="url" id="gmapUrl" th:field="*{gmapUrl}" class="form-control"
+                        <textarea id="gmapUrl" th:field="*{gmapUrl}" class="form-control" rows="3"
                             th:classappend="${#fields.hasErrors('gmapUrl')} ? 'is-invalid'"
-                            placeholder="https://www.google.com/maps/embed?pb=...">
+                            placeholder="https://www.google.com/maps/embed?pb=..."></textarea>
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('gmapUrl')}" th:errors="*{gmapUrl}">
                         </div>
                     </div>
