@@ -25,7 +25,7 @@ public class SpotForm {
 
     // 主キー、新規登録の場合はNULL
     private Long id;
-    
+
     // スポットの正式名称。画面上のタイトルとして使用
     @NotBlank(message = "スポット名を入力してください")
     @Size(max = 255, message = "スポット名は255文字以内で入力してください")
@@ -37,13 +37,16 @@ public class SpotForm {
 
     // 公式サイトのURL。https://から始まる文字列
     @URL(message = "正しいURLを入力してください")
+    @Size(max = 255, message = "公式サイトURLは255文字以内で入力してください")
     private String websiteUrl;
 
     // Googleマップの共有URL。埋め込み表示などに使用
     @URL(message = "正しいURLを入力してください")
+    @Size(max = 500, message = "GoogleマップURLは500文字以内で入力してください")
     private String gmapUrl;
 
     // スポットの所在地
+    @Size(max = 255, message = "住所は255文字以内で入力してください")
     private String address;
 
     // 営業時間。自由テキスト入力
@@ -53,9 +56,11 @@ public class SpotForm {
     private String closedDays;
 
     // 予算の目安。「1,000円〜2,000円」のような表示用
+    @Size(max = 255, message = "予算目安は255文字以内で入力してください")
     private String estimatedBudget;
 
     // 検索用キーワード
+    @Size(max = 255, message = "キーワードは255文字以内で入力してください")
     private String keywords;
 
     // スポットの詳細説明

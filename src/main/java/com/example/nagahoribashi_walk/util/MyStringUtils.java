@@ -1,5 +1,9 @@
 package com.example.nagahoribashi_walk.util;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Objects;
+
 /**
  * 文字列関連のユーティリティクラス
  *
@@ -19,27 +23,38 @@ public class MyStringUtils {
 
     /**
      * 複数のパス文字列を"/"で結合する。
-     * 各セグメント間の重複する"/"は除去する。
      */
     public static String joinPath(String... segments) {
+
         if (segments == null || segments.length == 0) {
             return "";
         }
+
         StringBuilder sb = new StringBuilder();
-        for (String segment : segments) {
-            if (segment == null || segment.isEmpty()) {
-                continue;
-            }
-            if (sb.length() > 0) {
-                String trimmed = segment.startsWith("/") ? segment.substring(1) : segment;
-                if (!sb.toString().endsWith("/")) {
-                    sb.append("/");
-                }
-                sb.append(trimmed);
+
+        Iterator<String> it = Arrays.stream(segments).filter(s -> s != null && !s.isBlank()).iterator();
+
+        boolean isFirst = true;
+        while (it.hasNext()) {
+            String s = it.next();
+            if (!isFirst && s.startsWith("/")) {
+                sb.append(s.substring(1));
             } else {
-                sb.append(segment);
+                sb.append(s);
             }
+            if (it.hasNext() && !s.endsWith("/")) {
+                sb.append("/");
+            }
+            isFirst = false;
         }
         return sb.toString();
+    }
+
+    /**
+     * 文字列が安全な内部パスかどうかを検証する。
+     */
+    public static boolean isInternalPath(String path) {
+        return path != null && !path.isBlank()
+                && path.startsWith("/") && !path.startsWith("//");
     }
 }

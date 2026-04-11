@@ -7,11 +7,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.nagahoribashi_walk.service.FavoriteService;
-import com.example.nagahoribashi_walk.service.UserService;
 import com.example.nagahoribashi_walk.service.userdetails.LoginUser;
+import com.example.nagahoribashi_walk.util.MyStringUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,10 +33,15 @@ public class FavoriteController {
     @PostMapping("/favorite/add/{spotId}")
     public String add(
             @PathVariable("spotId") Long spotId,
-            @AuthenticationPrincipal LoginUser loginUser) {
+            @RequestParam(name = "returnUrl", required = false) String returnUrl,
+            @AuthenticationPrincipal LoginUser loginUser,
+            RedirectAttributes redirectAttributes) {
 
         favoriteService.addFavorite(loginUser.getId(), spotId);
 
+        if (MyStringUtils.isInternalPath(returnUrl)) {
+            redirectAttributes.addAttribute("returnUrl", returnUrl);
+        }
         return "redirect:/spot/" + spotId;
     }
 
@@ -45,10 +51,15 @@ public class FavoriteController {
     @PostMapping("/favorite/remove/{spotId}")
     public String remove(
             @PathVariable("spotId") Long spotId,
-            @AuthenticationPrincipal LoginUser loginUser) {
+            @RequestParam(name = "returnUrl", required = false) String returnUrl,
+            @AuthenticationPrincipal LoginUser loginUser,
+            RedirectAttributes redirectAttributes) {
 
         favoriteService.removeFavorite(loginUser.getId(), spotId);
 
+        if (MyStringUtils.isInternalPath(returnUrl)) {
+            redirectAttributes.addAttribute("returnUrl", returnUrl);
+        }
         return "redirect:/spot/" + spotId;
     }
 
@@ -70,5 +81,4 @@ public class FavoriteController {
 
         return "redirect:/mypage";
     }
-
 }

@@ -44,7 +44,7 @@
             <h3 class="mb-4 text-center">おすすめスポット</h3>
             <div class="row g-4">
                 <div class="col-md-4" th:each="spot : ${spots}">
-                    <th:block th:replace="~{fragments/spot-card :: card(${spot})}"></th:block>
+                    <th:block th:replace="~{fragments/spot-card :: card(${spot}, null)}"></th:block>
                 </div>
             </div>
         </section>

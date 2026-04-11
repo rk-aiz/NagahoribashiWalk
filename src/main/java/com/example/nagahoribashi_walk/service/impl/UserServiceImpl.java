@@ -1,5 +1,7 @@
 package com.example.nagahoribashi_walk.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -91,9 +93,12 @@ public class UserServiceImpl implements UserService {
         userMapper.toggleEnabled(id);
     }
 
-    @Transactional
+    @Override
     public void unsubscribe(Long userId) {
-        userMapper.softDelete(userId);
+        User user = userMapper.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("id: " + userId));
+        String prefix = "#del_" + LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS) + "#";
+        userMapper.softDelete(userId, prefix + user.getUsername(), prefix + user.getEmail());
     }
 
     @Override
@@ -132,7 +137,8 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException(username));
 
         // ★ 論理削除
-        userMapper.softDelete(user.getId());
+        String prefix = "#del_" + LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS) + "#";
+        userMapper.softDelete(user.getId(), prefix + user.getUsername(), prefix + user.getEmail());
     }
 
     /**

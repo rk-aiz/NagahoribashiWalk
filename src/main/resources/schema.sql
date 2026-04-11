@@ -209,13 +209,13 @@ ON sub_categories (category_id, is_default) WHERE is_default = TRUE;
 -- スポット（観光地・飲食店の情報）
 CREATE TABLE spots(
 	id SERIAL PRIMARY KEY,
-	spot_name VARCHAR(100) NOT NULL,
+	spot_name VARCHAR(255) NOT NULL,
 	sub_category_id INTEGER NOT NULL,
 	website_url VARCHAR(255),
 	gmap_url VARCHAR(500),
 	address VARCHAR(255),
-	business_hours VARCHAR(255),
-	closed_days VARCHAR(255),
+	business_hours TEXT,
+	closed_days TEXT,
 	estimated_budget VARCHAR(255),
 	keywords VARCHAR(255),       -- カンマ区切りで複数キーワードを格納。検索に使用
 	details TEXT,

@@ -1,5 +1,7 @@
 package com.example.nagahoribashi_walk.controller;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -28,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * スポット関連のコントローラー
  * 
- * @author 海津
+ * @author 海津、池田、篠原、大谷
  */
 @Controller
 @RequiredArgsConstructor
@@ -41,10 +43,6 @@ public class SpotController {
 
     /**
      * 全てのスポットを一覧表示する
-     * 
-     * @param pageable ページネーション情報
-     * @param model    モデル
-     * @return スポット一覧画面のパス
      */
     @GetMapping("/spot/category/all")
     public String list(
@@ -54,6 +52,7 @@ public class SpotController {
         model.addAttribute("categoryName", "すべて");
         model.addAttribute("spotPages", spotService.getPage(pageable));
         model.addAttribute("pagerBaseUrl", "/spot/category/");
+        model.addAttribute("returnUrl", "/spot/category/all");
         // サイドバー用の共通データを取得（カテゴリ一覧など）
         model.addAttribute("sidebar", categoryService.getSidebarDTO(null));
         return "spot/list";
@@ -61,41 +60,35 @@ public class SpotController {
 
     /**
      * キーワードによるスポット検索結果を表示する
-     * 
-     * @param keyword  検索キーワード
-     * @param pageable ページネーション情報
-     * @param model    モデル
-     * @return スポット検索結果画面のパス
      */
     @GetMapping("/spot/search")
     public String search(
             @RequestParam("q") String keyword,
-            @PageableDefault(size = 12) Pageable pageable, Model model) {
+            @PageableDefault(size = 12) Pageable pageable,
+            Model model) {
         Page<SpotSummary> page = spotService.searchByKeywords(keyword, pageable);
         model.addAttribute("page", page);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("returnUrl", "/spot/search?q=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8));
 
         return "spot/search";
     }
 
     /**
      * 指定されたカテゴリに属するスポットを一覧表示する
-     * 
-     * @param categoryId カテゴリID
-     * @param pageable   ページネーション情報
-     * @param model      モデル
-     * @return スポット一覧画面のパス
      */
     @GetMapping("/spot/category/{categoryId}")
     public String listByCategoryId(
             @PathVariable("categoryId") Long categoryId,
-            @PageableDefault(size = 12) Pageable pageable, Model model) {
+            @PageableDefault(size = 12) Pageable pageable,
+            Model model) {
 
         model.addAttribute("sidebar",
                 categoryService.getSidebarDTO(categoryId));
 
         model.addAttribute("spotPages", spotService.getPageByCategoryId(categoryId, pageable));
         model.addAttribute("pagerBaseUrl", "/spot/category/");
+        model.addAttribute("returnUrl", "/spot/category/" + categoryId);
 
         model.addAttribute("categoryId", categoryId);
         model.addAttribute("categoryName", categoryService.getById(categoryId).getName());
@@ -105,22 +98,19 @@ public class SpotController {
 
     /**
      * 指定されたサブカテゴリに属するスポットを一覧表示する
-     * 
-     * @param subCategoryId サブカテゴリID
-     * @param pageable      ページネーション情報
-     * @param model         モデル
-     * @return スポット一覧画面のパス
      */
     @GetMapping("/spot/subcategory/{subCategoryId}")
     public String listBySubCategoryId(
             @PathVariable("subCategoryId") Long subCategoryId,
             @PageableDefault(size = 12) Pageable pageable, Model model) {
 
+        // サイドカテゴリナビ用のDTOを取得
         model.addAttribute("sidebar",
                 subCategoryService.getSidebarDTO(subCategoryId));
 
         model.addAttribute("spotPages", spotService.getPageBySubCategoryId(subCategoryId, pageable));
         model.addAttribute("pagerBaseUrl", "/spot/subcategory/");
+        model.addAttribute("returnUrl", "/spot/subcategory/" + subCategoryId);
 
         model.addAttribute("categoryId", subCategoryId);
         model.addAttribute("categoryName", subCategoryService.getById(subCategoryId).getName());
@@ -130,18 +120,13 @@ public class SpotController {
 
     /**
      * スポット詳細画面を表示する
-     * 
-     * @param loginUser    ログインユーザー情報（未ログイン時はnull）
-     * @param spotId       スポットID
-     * @param editReviewId 編集中のレビューID
-     * @param model        モデル
-     * @return スポット詳細画面のパス
      */
     @GetMapping("/spot/{spotId}")
     public String detail(
             @AuthenticationPrincipal LoginUser loginUser,
             @PathVariable("spotId") Long spotId,
             @RequestParam(name = "editReviewId", required = false) Long editReviewId,
+            @RequestParam(name = "returnUrl", required = false) String returnUrl,
             Model model) {
 
         Long loginUserId = null;
@@ -157,13 +142,16 @@ public class SpotController {
             model.addAttribute("isFavorite", false);
         }
 
+        // スポット詳細情報
         SpotDetail spotDetail = spotService.findById(spotId, loginUserId);
+
         // スポット詳細情報を画面へ渡す
         model.addAttribute("spotDetail", spotDetail);
 
         // どのレビューを編集中かを画面へ渡す
         model.addAttribute("editReviewId", editReviewId);
-        
+        model.addAttribute("returnUrl", returnUrl);
+
         ReviewForm reviewForm = new ReviewForm();
         spotDetail.getReviews().stream()
                 .filter(r -> r.isMyReview())
@@ -172,7 +160,7 @@ public class SpotController {
                     BeanUtils.copyProperties(r, reviewForm);
                 });
         model.addAttribute("reviewForm", reviewForm);
-        
+
         return "spot/detail";
     }
 }
