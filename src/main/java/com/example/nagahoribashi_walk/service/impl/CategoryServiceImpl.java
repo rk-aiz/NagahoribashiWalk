@@ -2,11 +2,11 @@ package com.example.nagahoribashi_walk.service.impl;
 
 import java.util.List;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.nagahoribashi_walk.dto.AdminCategoryRow;
+import com.example.nagahoribashi_walk.exception.CategoryAlreadyExistsException;
 import com.example.nagahoribashi_walk.dto.NavCategory;
 import com.example.nagahoribashi_walk.dto.NavSubCategory;
 import com.example.nagahoribashi_walk.dto.SidebarDTO;
@@ -80,7 +80,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void insertCategory(Category category) {
         if (categoryMapper.existsByCategoryName(category.getName())) {
-            throw new DataIntegrityViolationException("カテゴリ名が既に存在します。");
+            throw new CategoryAlreadyExistsException("カテゴリ名が既に存在します。");
         }
         categoryMapper.insert(category);
     }
@@ -88,7 +88,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void updateCategory(Category category) {
         if (categoryMapper.existsByCategoryName(category.getName())) {
-            throw new DataIntegrityViolationException("カテゴリ名が既に存在します。");
+            throw new CategoryAlreadyExistsException("カテゴリ名が既に存在します。");
         }
         categoryMapper.update(category);
     }

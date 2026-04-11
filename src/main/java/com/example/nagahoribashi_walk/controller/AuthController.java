@@ -73,12 +73,12 @@ public class AuthController {
         try {
             userService.register(newUser, userRegisterForm.getPassword());
         } catch (UserAlreadyExistsException e) {
-            model.addAttribute("errorMessage", e.getLocalizedMessage());
+            model.addAttribute("errorMessage", e.getMessage());
             return "/auth/register";
         }
 
         log.info(String.format(
-                "新規会員 : %s", userRegisterForm));
+                "新規会員登録がありました : %s", userRegisterForm));
 
         return "redirect:/register/complete";
     }

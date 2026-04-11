@@ -2,9 +2,7 @@ package com.example.nagahoribashi_walk.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.data.domain.Page;
@@ -17,13 +15,15 @@ import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
 import com.example.nagahoribashi_walk.repository.SpotMapper;
 import com.example.nagahoribashi_walk.service.SpotService;
+import com.example.nagahoribashi_walk.util.MyListUtils;
+import com.example.nagahoribashi_walk.util.MyStringUtils;
 
 import lombok.RequiredArgsConstructor;
 
 /**
  * スポット関連サービスの実装クラス
  * 
- * @author 海津, 池田, 篠原
+ * @author 海津, 池田, 篠原, 大谷
  */
 @Service
 @Transactional
@@ -33,7 +33,7 @@ public class SpotServiceImpl implements SpotService {
     private final SpotMapper spotMapper;
 
     /**
-     * ページに対応したスポット一覧を返す
+     * スポット一覧(ページ)を返す
      */
     @Override
     public Page<SpotSummary> getPage(Pageable pageable) {
@@ -48,108 +48,7 @@ public class SpotServiceImpl implements SpotService {
         return new PageImpl<>(spots, pageable, total);
     }
 
-    /**
-     * カタカナ → ひらがな変換
-     */
-    private String toHiragana(String input) {
-        if (input == null)
-            return null;
-
-        StringBuilder sb = new StringBuilder();
-        for (char c : input.toCharArray()) {
-            // カタカナ範囲ならひらがなへ変換
-            if (c >= 'ァ' && c <= 'ン') {
-                sb.append((char) (c - 0x60));
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
-
-    /**
-     * ひらがな → カタカナ変換
-     */
-    private String toKatakana(String input) {
-        if (input == null)
-            return null;
-        StringBuilder sb = new StringBuilder();
-        for (char c : input.toCharArray()) {
-            // ひらがな範囲ならカタカナへ変換
-            if (c >= 'ぁ' && c <= 'ん') {
-                sb.append((char) (c + 0x60));
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
-
-    /**
-     * ページとキーワードに対応したスポット一覧を返す
-     */
-    @Override
-    public Page<SpotSummary> searchByKeywords(String keyword, Pageable pageable) {
-
-        // 空文字は一覧にフォールバック
-        if (keyword == null || keyword.isBlank()) {
-            return getPage(pageable);
-        }
-        // スペースで分割
-        String[] splitKeywords = keyword
-                // 全角スペースを半角スペースに置き換え
-                .replace('\u3000', ' ')
-                .trim().split("\\s+");
-
-        List<Map<String, String>> keywordMapList = new ArrayList<>();
-
-        for (String kw : splitKeywords) {
-            Map<String, String> map = new HashMap<>();
-            map.put("origin", kw);
-            map.put("hira", toHiragana(kw));
-            map.put("kana", toKatakana(kw));
-            keywordMapList.add(map);
-        }
-
-        // 件数取得
-        long total = spotMapper.countByKeywords(
-                keywordMapList);
-
-        // ヒットしている場合、この条件で取得
-        if (total > 0) {
-            // データ取得
-            List<SpotSummary> spots = spotMapper.searchByKeywords(
-                    keywordMapList,
-                    pageable.getOffset(),
-                    pageable.getPageSize());
-
-            return new PageImpl<>(spots, pageable, total);
-        }
-
-        // totalが0の時、OR検索で検索する
-        // スペース除去して1ワードにする
-        String looseKeyword = keyword.replaceAll("\\s+", "");
-
-        List<Map<String, String>> fallbackList = new ArrayList<>();
-
-        Map<String, String> map = new HashMap<>();
-        map.put("origin", looseKeyword);
-        map.put("hira", toHiragana(looseKeyword));
-        map.put("kana", toKatakana(looseKeyword));
-        fallbackList.add(map);
-
-        long fallbackTotal = spotMapper.countByKeywords(fallbackList);
-
-        List<SpotSummary> fallbackSpots = spotMapper.searchByKeywords(
-                fallbackList,
-                pageable.getOffset(),
-                pageable.getPageSize());
-
-        return new PageImpl<>(fallbackSpots, pageable, fallbackTotal);
-
-    }
-
-    // トップページおすすめ３件表示用
+    /** トップページおすすめ３件表示用 */
     @Override
     public List<SpotSummary> getRecommendedSpots() {
 
@@ -163,7 +62,7 @@ public class SpotServiceImpl implements SpotService {
         };
     }
 
-    // 大谷記載
+    /** カテゴリIDに対応したスポット一覧を取得(ページ) */
     @Override
     public Page<SpotSummary> getPageByCategoryId(Long categoryId, Pageable pageable) {
 
@@ -175,6 +74,7 @@ public class SpotServiceImpl implements SpotService {
         return new PageImpl<>(content, pageable, total);
     }
 
+    /** サブテゴリIDに対応したスポット一覧を取得(ページ) */
     @Override
     public Page<SpotSummary> getPageBySubCategoryId(Long subCategoryId, Pageable pageable) {
 
@@ -187,10 +87,12 @@ public class SpotServiceImpl implements SpotService {
     }
 
     /**
-     * IDに対応したスポットの詳細を取得
+     * スポットIDから詳細(DTO)を取得
+     * 
+     * @param loginUserId は、該当スポットについたレビューの中に、自身のレビューがあるか判定する用
      */
     @Override
-    public SpotDetail findById(Long id, Long loginUserId) {
+    public SpotDetail getById(Long id, Long loginUserId) {
         spotMapper.incrementPvCount(id);
 
         SpotDetail spotDetail = spotMapper.findById(id)
@@ -204,9 +106,6 @@ public class SpotServiceImpl implements SpotService {
             });
         }
 
-        // 関連スポット追加
-        findRelatedSpots(spotDetail);
-
         if (spotDetail.getAverageRating() != null) {
             double rounded = Math.round(spotDetail.getAverageRating() * 10.0) / 10.0;
             spotDetail.setAverageRating(rounded);
@@ -215,19 +114,77 @@ public class SpotServiceImpl implements SpotService {
         return spotDetail;
     }
 
-    private void findRelatedSpots(SpotDetail spotDetail) {
-        // 関連スポット
-        if (spotDetail.getKeywords() != null && !spotDetail.getKeywords().isBlank()) {
+    /** スポットIDとキーワードをもとに、関連するスポットを取得する */
+    @Override
+    public List<SpotSummary> findRelatedSpots(Long spotId, String keyword) {
 
-            List<String> keywords = Arrays.stream(spotDetail.getKeywords().split(","))
-                    .map(String::trim)
-                    .filter(k -> !k.isEmpty())
-                    .toList();
-
-            List<SpotSummary> relatedSpots = spotMapper.findRelatedSpots(spotDetail.getId(), keywords);
-
-            spotDetail.setRelatedSpots(relatedSpots);
+        if (keyword == null || keyword.isBlank()) {
+            return List.of();
         }
 
+        return spotMapper.findRandomByAnyKeywords(
+                spotId,
+                Arrays.stream(keyword.split(","))
+                        .map(String::trim)
+                        .filter(k -> !k.isEmpty())
+                        .toList(),
+                3);
+    }
+
+    /** ページとキーワードに対応したスポット一覧を返す */
+    @Override
+    public Page<SpotSummary> searchByKeywords(String keywords, Pageable pageable) {
+
+        // 1. 空文字検索は全取得にフォールバック
+        if (keywords == null || keywords.isBlank()) {
+            return getPage(pageable);
+        }
+
+        // 2. 検索ワードリストを、カタカナ・ひらがなのバリアントを用意したマトリックスに変換
+        List<List<String>> keywordMatrix = buildKeywordMatrix(keywords);
+
+        // 3. AND検索でのヒット件数取得
+        long total = spotMapper.countByKeywords(keywordMatrix);
+
+        // 4. AND検索にヒットがあれば、AND検索結果をreturn
+        if (total > 0) {
+            return searchByKeywordsCore(keywordMatrix, pageable, total);
+        }
+
+        // 5. AND検索にヒットがなければ、OR検索にフォールバック
+        List<List<String>> fallback = List.of(MyListUtils.flatMatrix(keywordMatrix));
+        long fallbackTotal = spotMapper.countByKeywords(fallback);
+        return searchByKeywordsCore(fallback, pageable, fallbackTotal);
+    }
+
+    /**
+     * keywordMatrix と件数をもとにスポット一覧(ページ)を返す。
+     * 件数が0の場合は空ページを返す。
+     */
+    private Page<SpotSummary> searchByKeywordsCore(List<List<String>> keywordMatrix, Pageable pageable, Long total) {
+        List<SpotSummary> spots = switch (total.compareTo(0L)) {
+            case 0 -> List.of();
+            default -> spotMapper.searchByKeywords(
+                    keywordMatrix,
+                    pageable.getOffset(),
+                    pageable.getPageSize());
+        };
+        return new PageImpl<>(spots, pageable, total);
+    }
+
+    /**
+     * キーワード文字列をスペースで分割し、各キーワードを
+     * [原文, ひらがな, カタカナ] のバリアントリストに変換して返す。
+     *
+     * 例: "カフェ" → [["なんばグランド", "なんばぐらんど", "ナンバグランド"], ...]
+     */
+    private List<List<String>> buildKeywordMatrix(String keywords) {
+
+        return Arrays.stream(keywords
+                .replace('\u3000', ' ') // 全角スペースを半角スペースに置き換え
+                .trim().split("\\s+")) // スペースで分割
+                .filter(kw -> kw != null && !kw.isBlank()) // 空ワードをフィルター
+                .map(kw -> List.of(kw, MyStringUtils.toHiragana(kw), MyStringUtils.toKatakana(kw))) // バリアント作成
+                .toList();
     }
 }

@@ -25,4 +25,12 @@ public class CategoryForm {
     public boolean getIsNew() {
         return this.isNew;
     }
+
+    public void setIsNew(boolean isNew) {
+        this.isNew = isNew;
+    }
+
+    public void setNew(boolean isNew) {
+        setIsNew(isNew);
+    }
 }

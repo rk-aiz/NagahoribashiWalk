@@ -2,7 +2,6 @@ package com.example.nagahoribashi_walk.util;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Objects;
 
 /**
  * 文字列関連のユーティリティクラス
@@ -56,5 +55,63 @@ public class MyStringUtils {
     public static boolean isInternalPath(String path) {
         return path != null && !path.isBlank()
                 && path.startsWith("/") && !path.startsWith("//");
+    }
+
+    /**
+     * ひらがな・カタカナのコードポイント差分。
+     *
+     * Unicode においてひらがな（U+3041〜U+3094）とカタカナ（U+30A1〜U+30F4）は
+     * 同じ並び順で配置されており、対応する文字同士の差は常に 0x60（= 96）で一定。
+     * この値は Unicode 仕様で固定されているため、定数として定義して使用する。
+     */
+    private static final int KANA_OFFSET = 'ア' - 'あ'; // 0x60
+
+    /**
+     * カタカナ → ひらがな変換。
+     */
+    public static String toHiragana(String input) {
+        if (input == null) {
+            return null;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (char c : input.toCharArray()) {
+
+            // 変換範囲: 'ァ'(U+30A1) 〜 'ヴ'(U+30F4)
+            // 末尾を 'ン'(U+30F3) ではなく 'ヴ'(U+30F4) まで広げているのは、
+            // 対応するひらがな 'ゔ'(U+3094) が存在するため。
+            // 'ヴ' は 'ン' の次のコードポイントなので、'ァ'〜'ン' の範囲では変換されない。
+            if (c >= 'ァ' && c <= 'ヴ') {
+                sb.append((char) (c - KANA_OFFSET));
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * ひらがな → カタカナ変換。
+     */
+    public static String toKatakana(String input) {
+
+        if (input == null) {
+            return null;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (char c : input.toCharArray()) {
+
+            // 変換範囲: 'ァ'(U+30A1) 〜 'ヴ'(U+30F4)
+            // 末尾を 'ン'(U+30F3) ではなく 'ヴ'(U+30F4) まで広げているのは、
+            // 対応するひらがな 'ゔ'(U+3094) が存在するため。
+            // 'ヴ' は 'ン' の次のコードポイントなので、'ァ'〜'ン' の範囲では変換されない。
+            if (c >= 'ぁ' && c <= 'ゔ') {
+                sb.append((char) (c + KANA_OFFSET));
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 }

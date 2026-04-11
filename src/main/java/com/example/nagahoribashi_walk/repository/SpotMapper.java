@@ -1,7 +1,6 @@
 package com.example.nagahoribashi_walk.repository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -13,16 +12,16 @@ import com.example.nagahoribashi_walk.dto.SpotSummary;
 /**
  * spotsテーブルに対応したMapperのインターフェース(一般・ユーザー側)
  * 
- * @author 海津
+ * @author 海津、篠原、池田、大谷
  */
 @Mapper
 public interface SpotMapper {
 
-    /** スポット一覧を取得する(ページネーション) */
-    List<SpotSummary> findAll(@Param("offset") long offset, @Param("limit") int limit);
-
     // findById
     Optional<SpotDetail> findById(@Param("id") Long id);
+
+    /** スポット一覧を取得する(ページネーション) */
+    List<SpotSummary> findAll(@Param("offset") long offset, @Param("limit") int limit);
 
     List<SpotSummary> findByCategoryId(
             @Param("categoryId") Long categoryId,
@@ -35,31 +34,32 @@ public interface SpotMapper {
             @Param("limit") int limit);
 
     List<SpotSummary> searchByKeywords(
-            @Param("keywordList") List<Map<String, String>> keywordList,
+            @Param("keywordMatrix") List<List<String>> keywordMatrix,
             @Param("offset") long offset,
             @Param("limit") int limit);
 
     // 関連スポット用
-    List<SpotSummary> findRelatedSpots(
+    List<SpotSummary> findRandomByAnyKeywords(
             @Param("spotId") Long spotId,
-            @Param("keywords") List<String> keywords);
-
-    boolean existsBySpotId(@Param("spotId") Long spotId);
-
-    /** スポット数をカウントする */
-    long count();
-
-    long countByKeywords(@Param("keywordList") List<Map<String, String>> keywordList);
-
-    long countByCategoryId(@Param("categoryId") Long categoryId);
-
-    long countBySubCategoryId(@Param("subCategoryId") Long subCategoryId);
+            @Param("keywords") List<String> keywords,
+            @Param("limit") int limit);
 
     List<SpotSummary> findTopByRating();
 
     List<SpotSummary> findTopByFavorite();
 
     List<SpotSummary> findRandomSpots();
+
+    /** スポット数をカウントする */
+    long count();
+
+    long countByKeywords(@Param("keywordMatrix") List<List<String>> keywordMatrix);
+
+    long countByCategoryId(@Param("categoryId") Long categoryId);
+
+    long countBySubCategoryId(@Param("subCategoryId") Long subCategoryId);
+
+    boolean existsBySpotId(@Param("spotId") Long spotId);
 
     // PV数を1加算
     void incrementPvCount(@Param("id") Long id);

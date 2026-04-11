@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 認証要求時に元のURLを保持するためのカスタムエントリーポイント
+ * CustomAuthenticationSuccessHandlerで使用
  * 
  * @author 海津
  */
@@ -21,20 +22,20 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
     @Override
     public void commence(HttpServletRequest request,
-                         HttpServletResponse response,
-                         AuthenticationException authException) throws IOException {
+            HttpServletResponse response,
+            AuthenticationException authException) throws IOException {
 
         // Refererヘッダー（直前のページURL）を取得
         String referer = request.getHeader("Referer");
-        
-    	String loginUrl;
+
+        String loginUrl;
         if (referer != null && !referer.isEmpty()) {
             // 詳細ページのURLをreturnUrlとして渡す
             loginUrl = "/login?returnUrl=" + URLEncoder.encode(referer, StandardCharsets.UTF_8);
         } else {
             loginUrl = "/login";
         }
-        
+
         response.sendRedirect(loginUrl);
     }
 }

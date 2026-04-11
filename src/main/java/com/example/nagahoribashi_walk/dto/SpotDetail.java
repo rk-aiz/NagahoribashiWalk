@@ -71,8 +71,5 @@ public class SpotDetail {
 
     // レビュー一覧。子DTOとして保持
     private List<ReviewDTO> reviews;
-    
-    //関連スポット
-    private List<SpotSummary> relatedSpots;
 
 }

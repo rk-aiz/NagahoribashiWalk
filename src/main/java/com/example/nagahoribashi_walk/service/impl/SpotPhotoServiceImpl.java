@@ -1,6 +1,7 @@
 package com.example.nagahoribashi_walk.service.impl;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,6 +25,11 @@ import com.example.nagahoribashi_walk.util.MyStringUtils;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * スポット画像関連サービスの実装
+ *
+ * @author 海津
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -62,7 +68,7 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
         try {
             Files.createDirectories(uploadPath);
         } catch (IOException e) {
-            throw new RuntimeException("アップロードディレクトリの作成に失敗しました", e);
+            throw new UncheckedIOException("アップロードディレクトリの作成に失敗しました", e);
         }
 
         for (MultipartFile file : files) {

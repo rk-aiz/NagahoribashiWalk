@@ -17,22 +17,22 @@ import com.example.nagahoribashi_walk.entity.Spot;
 @Mapper
 public interface AdminSpotMapper {
 
-    List<AdminSpotRow> findAllForAdmin(
+    List<AdminSpotRow> findAll(
             @Param("offset") long offset, @Param("limit") int limit);
 
-    List<AdminSpotRow> findAllForAdminByKeyword(
+    List<AdminSpotRow> findAllByKeyword(
             @Param("keyword") String keyword,
             @Param("sort") String sort,
             @Param("offset") long offset,
             @Param("limit") int limit);
 
-    long countForAdminByKeyword(@Param("keyword") String keyword);
+    long countByKeyword(@Param("keyword") String keyword);
 
     void insert(Spot spot);
 
     void update(Spot spot);
 
-    Optional<Spot> findByIdForAdmin(@Param("spotId") Long spotId);
+    Optional<Spot> findEntityById(@Param("spotId") Long spotId);
 
     void softDelete(@Param("spotId") Long spotId);
 

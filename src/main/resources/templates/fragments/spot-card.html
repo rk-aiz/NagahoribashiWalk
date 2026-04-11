@@ -51,7 +51,9 @@
                          font-size:0.8rem; font-weight:600;
                          padding:0.25em 0.65em; border-radius:9999px;
                          box-shadow:0 1px 4px rgba(0,0,0,0.1);">
-                <i class="bi bi-star-fill" style="color:#f59e0b; font-size:0.75rem;"></i>
+                <i th:classappend="${spot.averageRating != null} ? 'bi-star-fill' : 'bi-star'"
+                   th:style="${spot.averageRating != null} ? 'color:#f59e0b; font-size:0.75rem;' : 'color:#9ca3af; font-size:0.75rem;'"
+                   class="bi"></i>
                 <span th:text="${spot.averageRating != null ? #numbers.formatDecimal(spot.averageRating, 1, 1) : '-'}">4.5</span>
             </span>
         </div>

@@ -20,7 +20,7 @@ public interface SpotService {
      * ・スポットに対して投稿されたレビュー一覧も取得
      * ・ユーザーの場合は自身のレビューにフラグを付ける
      */
-    SpotDetail findById(Long id, Long loginUserId);
+    SpotDetail getById(Long id, Long loginUserId);
 
     /** 【一般】スポット一覧をページネーションで取得 */
     Page<SpotSummary> getPage(Pageable pageable);
@@ -35,6 +35,9 @@ public interface SpotService {
     Page<SpotSummary> getPageByCategoryId(Long categoryId, Pageable pageable);
 
     /** 【一般】対象サブカテゴリに属するスポットをページネーションで取得 */
-    Page<SpotSummary> getPageBySubCategoryId(Long SubcategoryId, Pageable pageable);
+    Page<SpotSummary> getPageBySubCategoryId(Long subcategoryId, Pageable pageable);
+
+    /** スポットIDとキーワードをもとに、関連するスポットを取得する */
+    List<SpotSummary> findRelatedSpots(Long spotId, String keyword);
 
 }

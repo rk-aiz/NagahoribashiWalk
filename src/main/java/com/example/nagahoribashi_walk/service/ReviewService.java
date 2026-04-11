@@ -22,7 +22,7 @@ public interface ReviewService {
      * @param reviewId レビューID
      * @return レビュー情報
      */
-    Review findById(Long reviewId);
+    Review getById(Long reviewId);
 
     /**
      * レビュー情報を更新する

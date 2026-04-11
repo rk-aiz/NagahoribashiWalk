@@ -1,7 +1,6 @@
 package com.example.nagahoribashi_walk.controller;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
@@ -50,11 +49,13 @@ public class AdminSpotController {
     @GetMapping("/admin/spot/new")
     public String showNew(Model model) {
 
-        // 新規登録用にSpotFormを準備
-        SpotForm form = new SpotForm();
-        form.setNew(true);
+        // カテゴリ再読み込み経由でない場合のみ新規フォームを生成
+        if (!model.containsAttribute("spotForm")) {
+            SpotForm form = new SpotForm();
+            form.setIsNew(true);
+            model.addAttribute("spotForm", form);
+        }
 
-        model.addAttribute("spotForm", form);
         model.addAttribute("dropDownCategories",
                 categoryService.getAllAdminCategoryRows());
         return "admin/spot/edit";
@@ -68,15 +69,16 @@ public class AdminSpotController {
             @PathVariable("spotId") Long spotId,
             Model model) {
 
-        // 編集用にSpotFormを準備
-        SpotForm form = new SpotForm();
-        Spot spot = adminSpotService.getByIdForAdmin(spotId);
-        BeanUtils.copyProperties(spot, form);
+        // カテゴリ再読み込み経由でない場合のみDBからフォームを生成
+        if (!model.containsAttribute("spotForm")) {
+            SpotForm form = new SpotForm();
+            Spot spot = adminSpotService.getByIdForAdmin(spotId);
+            BeanUtils.copyProperties(spot, form);
+            model.addAttribute("spotForm", form);
+        }
 
-        model.addAttribute("spotForm", form);
         model.addAttribute("dropDownCategories",
                 categoryService.getAllAdminCategoryRows());
-
         return "admin/spot/edit";
     }
 
@@ -99,21 +101,10 @@ public class AdminSpotController {
         Spot spot = new Spot();
         BeanUtils.copyProperties(form, spot);
 
-        // 新規スポットインサート処理
-        try {
-            adminSpotService.addSpot(spot);
-            redirectAttributes.addFlashAttribute("message", "新規スポットが登録されました。");
-        } catch (DataIntegrityViolationException e) {
+        adminSpotService.addSpot(spot);
 
-            // SQL ステートメントの実行が指定されたデータのマッピングに
-            // 失敗したとき
-            model.addAttribute("errorMessage", e.getLocalizedMessage());
-            model.addAttribute("dropDownCategories",
-                    categoryService.getAllAdminCategoryRows());
-            model.addAttribute("spotForm", form);
-            return "/admin/spot/edit";
-        }
-
+        // フラッシュメッセージを設定
+        redirectAttributes.addFlashAttribute("message", "新規スポットが登録されました。");
         return "redirect:/spot/" + spot.getId();
     }
 
@@ -136,21 +127,10 @@ public class AdminSpotController {
         Spot spot = new Spot();
         BeanUtils.copyProperties(form, spot);
 
-        // スポットアップデート処理
-        try {
-            adminSpotService.updateSpot(spot);
-            redirectAttributes.addFlashAttribute("message", "スポット情報が更新されました。");
-        } catch (DataIntegrityViolationException e) {
+        adminSpotService.updateSpot(spot);
 
-            // SQL ステートメントの実行が指定されたデータのマッピングに
-            // 失敗したとき
-            model.addAttribute("errorMessage", e.getLocalizedMessage());
-            model.addAttribute("dropDownCategories",
-                    categoryService.getAllAdminCategoryRows());
-            model.addAttribute("form", form);
-            return "/admin/spot/edit";
-        }
-
+        // フラッシュメッセージを設定
+        redirectAttributes.addFlashAttribute("message", "スポット情報が更新されました。");
         return "redirect:/admin/spot/edit/" + spot.getId();
     }
 
@@ -168,12 +148,28 @@ public class AdminSpotController {
         // スポットアップデート処理
         adminSpotService.softDelete(spotId);
 
-        // リダイレクトアトリビュートを設定
+        // フラッシュメッセージを設定
         redirectAttributes.addFlashAttribute("message", "スポット情報を削除しました。");
         if (keyword != null) {
             redirectAttributes.addAttribute("keyword", keyword);
         }
 
         return "redirect:/admin/spot/list?page=" + page;
+    }
+
+    /**
+     * カテゴリ再読み込み（保存せずに入力値を保持したままリダイレクト）
+     */
+    @PostMapping("/admin/spot/refresh")
+    public String refresh(
+            SpotForm form,
+            RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute("spotForm", form);
+        if (form.getIsNew()) {
+            return "redirect:/admin/spot/new";
+        } else {
+            return "redirect:/admin/spot/edit/" + form.getId();
+        }
     }
 }
