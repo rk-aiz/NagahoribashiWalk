@@ -37,7 +37,7 @@ public class AdminSpotServiceImpl implements AdminSpotService {
         long total = adminSpotMapper.count();
 
         // 対象ページに対応したスポットを取得する
-        List<AdminSpotRow> spots = adminSpotMapper.findAllForAdmin(pageable.getOffset(), pageable.getPageSize());
+        List<AdminSpotRow> spots = adminSpotMapper.findAll(pageable.getOffset(), pageable.getPageSize());
 
         // Page<T>インスタンスに詰めて返す
         return new PageImpl<>(spots, pageable, total);
@@ -48,17 +48,18 @@ public class AdminSpotServiceImpl implements AdminSpotService {
      */
     @Override
     public Page<AdminSpotRow> searchForAdmin(String keyword, String sort, Pageable pageable) {
-        long total = adminSpotMapper.countForAdminByKeyword(keyword);
+        long total = adminSpotMapper.countByKeyword(keyword);
 
-        List<AdminSpotRow> spots = adminSpotMapper.findAllForAdminByKeyword(
+        List<AdminSpotRow> spots = adminSpotMapper.findAllByKeyword(
                 keyword, sort, pageable.getOffset(), pageable.getPageSize());
 
         return new PageImpl<>(spots, pageable, total);
     }
 
-    /** 新規スポットを追加する TODO : gmapUrlの検証処理を追加する(frameで使用するため) */
+    /** 新規スポットを追加する */
     @Override
     public void addSpot(Spot spot) {
+        // TODO : gmapUrlの検証処理(Google Map埋め込みのURLが正しい形か)を追加する -> (iframeで使用するため)
         adminSpotMapper.insert(spot);
     }
 
@@ -77,7 +78,7 @@ public class AdminSpotServiceImpl implements AdminSpotService {
      */
     @Override
     public Spot getByIdForAdmin(Long spotId) {
-        return adminSpotMapper.findByIdForAdmin(spotId).orElseThrow();
+        return adminSpotMapper.findEntityById(spotId).orElseThrow();
     }
 
     @Override

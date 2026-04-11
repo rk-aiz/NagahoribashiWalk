@@ -1,7 +1,6 @@
 package com.example.nagahoribashi_walk.repository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -35,21 +34,22 @@ public interface SpotMapper {
             @Param("limit") int limit);
 
     List<SpotSummary> searchByKeywords(
-            @Param("keywordList") List<Map<String, String>> keywordList,
+            @Param("keywordMatrix") List<List<String>> keywordMatrix,
             @Param("offset") long offset,
             @Param("limit") int limit);
 
     // 関連スポット用
-    List<SpotSummary> findRelatedSpots(
+    List<SpotSummary> findRandomByAnyKeyword(
             @Param("spotId") Long spotId,
-            @Param("keywords") List<String> keywords);
+            @Param("keywords") List<String> keywords,
+            @Param("limit") int limit);
 
     boolean existsBySpotId(@Param("spotId") Long spotId);
 
     /** スポット数をカウントする */
     long count();
 
-    long countByKeywords(@Param("keywordList") List<Map<String, String>> keywordList);
+    long countByKeywords(@Param("keywordMatrix") List<List<String>> keywordMatrix);
 
     long countByCategoryId(@Param("categoryId") Long categoryId);
 

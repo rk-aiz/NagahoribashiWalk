@@ -143,7 +143,7 @@ public class SpotController {
         }
 
         // スポット詳細情報
-        SpotDetail spotDetail = spotService.findById(spotId, loginUserId);
+        SpotDetail spotDetail = spotService.getById(spotId, loginUserId);
 
         // スポット詳細情報を画面へ渡す
         model.addAttribute("spotDetail", spotDetail);

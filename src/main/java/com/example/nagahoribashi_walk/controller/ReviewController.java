@@ -31,7 +31,7 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final SpotService spotService;
     private final FavoriteService favoriteService;
-    
+
     /**
      * レビュー投稿処理
      */
@@ -51,12 +51,12 @@ public class ReviewController {
         }
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("errorMessage", 
+            model.addAttribute("errorMessage",
                     bindingResult.getAllErrors().getFirst().getDefaultMessage());
             model.addAttribute("isFavorite",
                     favoriteService.isFavorite(loginUser.getId(), spotId));
             model.addAttribute("spotDetail",
-                spotService.findById(spotId, loginUser.getId()));
+                    spotService.getById(spotId, loginUser.getId()));
             return "/spot/detail";
         }
 
@@ -81,7 +81,7 @@ public class ReviewController {
         // 投稿後は詳細画面にリダイレクト
         return "redirect:/spot/" + spotId;
     }
-    
+
     /**
      * レビュー更新処理
      */
@@ -102,13 +102,13 @@ public class ReviewController {
 
         // バリデーションエラー
         if (bindingResult.hasErrors()) {
-            model.addAttribute("errorMessage", 
+            model.addAttribute("errorMessage",
                     bindingResult.getAllErrors().getFirst().getDefaultMessage());
             Long spotId = reviewService.findById(reviewId).getSpotId();
             model.addAttribute("isFavorite",
                     favoriteService.isFavorite(loginUser.getId(), spotId));
             model.addAttribute("spotDetail",
-                spotService.findById(spotId, loginUser.getId()));
+                    spotService.getById(spotId, loginUser.getId()));
             model.addAttribute("editReviewId", reviewId);
             return "/spot/detail";
         }
@@ -139,7 +139,7 @@ public class ReviewController {
         Review existingReview = reviewService.findById(reviewId);
         return "redirect:/spot/" + existingReview.getSpotId() + "#review-" + reviewId;
     }
-    
+
     /**
      * レビュー削除処理
      */

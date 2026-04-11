@@ -50,11 +50,13 @@ public class AdminSpotController {
     @GetMapping("/admin/spot/new")
     public String showNew(Model model) {
 
-        // 新規登録用にSpotFormを準備
-        SpotForm form = new SpotForm();
-        form.setNew(true);
+        // カテゴリ再読み込み経由でない場合のみ新規フォームを生成
+        if (!model.containsAttribute("spotForm")) {
+            SpotForm form = new SpotForm();
+            form.setIsNew(true);
+            model.addAttribute("spotForm", form);
+        }
 
-        model.addAttribute("spotForm", form);
         model.addAttribute("dropDownCategories",
                 categoryService.getAllAdminCategoryRows());
         return "admin/spot/edit";
@@ -68,15 +70,16 @@ public class AdminSpotController {
             @PathVariable("spotId") Long spotId,
             Model model) {
 
-        // 編集用にSpotFormを準備
-        SpotForm form = new SpotForm();
-        Spot spot = adminSpotService.getByIdForAdmin(spotId);
-        BeanUtils.copyProperties(spot, form);
+        // カテゴリ再読み込み経由でない場合のみDBからフォームを生成
+        if (!model.containsAttribute("spotForm")) {
+            SpotForm form = new SpotForm();
+            Spot spot = adminSpotService.getByIdForAdmin(spotId);
+            BeanUtils.copyProperties(spot, form);
+            model.addAttribute("spotForm", form);
+        }
 
-        model.addAttribute("spotForm", form);
         model.addAttribute("dropDownCategories",
                 categoryService.getAllAdminCategoryRows());
-
         return "admin/spot/edit";
     }
 
@@ -175,5 +178,21 @@ public class AdminSpotController {
         }
 
         return "redirect:/admin/spot/list?page=" + page;
+    }
+
+    /**
+     * カテゴリ再読み込み（保存せずに入力値を保持したままリダイレクト）
+     */
+    @PostMapping("/admin/spot/refresh")
+    public String refresh(
+            SpotForm form,
+            RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute("spotForm", form);
+        if (form.getIsNew()) {
+            return "redirect:/admin/spot/new";
+        } else {
+            return "redirect:/admin/spot/edit/" + form.getId();
+        }
     }
 }

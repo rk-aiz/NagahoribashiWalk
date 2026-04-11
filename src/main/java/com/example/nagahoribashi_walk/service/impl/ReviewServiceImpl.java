@@ -30,11 +30,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewMapper reviewMapper;
     private final SpotMapper spotMapper;
 
-    /**
-     * レビューを投稿する
-     * 
-     * @Param review レビュー情報
-     */
+    /** レビューを投稿する */
     @Override
     public void addReview(Review review, Long userId) {
 
@@ -66,12 +62,7 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewMapper.findById(reviewId).orElseThrow();
     }
 
-    /**
-     * レビュー情報を更新する
-     * 
-     * @param review レビュー情報
-     * @param userId ログイン中のユーザーID
-     */
+    /** レビュー情報を更新する */
     @Override
     public void updateReview(Review review, Long userId) {
 
@@ -98,12 +89,7 @@ public class ReviewServiceImpl implements ReviewService {
         reviewMapper.update(review);
     }
 
-    /**
-     * レビューを削除する
-     * 
-     * @param reviewId レビューID
-     * @param userId   ログイン中のユーザーID
-     */
+    /** レビューを削除する */
     @Override
     public void deleteReview(Long reviewId, Long userId) {
 
