@@ -1,6 +1,7 @@
 package com.example.nagahoribashi_walk.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,17 +116,17 @@ public class SpotServiceImpl implements SpotService {
                 keywordMapList);
 
         // ヒットしている場合、この条件で取得
-        if (total > 0) {            
+        if (total > 0) {
             // データ取得
             List<SpotSummary> spots = spotMapper.searchByKeywords(
                     keywordMapList,
                     pageable.getOffset(),
                     pageable.getPageSize());
-                    
+
             return new PageImpl<>(spots, pageable, total);
         }
 
-        //totalが0の時、OR検索で検索する
+        // totalが0の時、OR検索で検索する
         // スペース除去して1ワードにする
         String looseKeyword = keyword.replaceAll("\\s+", "");
 
@@ -190,8 +191,8 @@ public class SpotServiceImpl implements SpotService {
      */
     @Override
     public SpotDetail findById(Long id, Long loginUserId) {
-    	spotMapper.incrementPvCount(id);
-    	
+        spotMapper.incrementPvCount(id);
+
         SpotDetail spotDetail = spotMapper.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("指定したスポットが存在しません。id=" + id));
 
@@ -203,11 +204,30 @@ public class SpotServiceImpl implements SpotService {
             });
         }
 
+        // 関連スポット追加
+        findRelatedSpots(spotDetail);
+
         if (spotDetail.getAverageRating() != null) {
             double rounded = Math.round(spotDetail.getAverageRating() * 10.0) / 10.0;
             spotDetail.setAverageRating(rounded);
         }
 
         return spotDetail;
+    }
+
+    private void findRelatedSpots(SpotDetail spotDetail) {
+        // 関連スポット
+        if (spotDetail.getKeywords() != null && !spotDetail.getKeywords().isBlank()) {
+
+            List<String> keywords = Arrays.stream(spotDetail.getKeywords().split(","))
+                    .map(String::trim)
+                    .filter(k -> !k.isEmpty())
+                    .toList();
+
+            List<SpotSummary> relatedSpots = spotMapper.findRelatedSpots(spotDetail.getId(), keywords);
+
+            spotDetail.setRelatedSpots(relatedSpots);
+        }
+
     }
 }

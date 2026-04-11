@@ -7,29 +7,22 @@ import java.util.Optional;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.example.nagahoribashi_walk.dto.AdminSpotRow;
 import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
-import com.example.nagahoribashi_walk.entity.Spot;
 
 /**
- * spotsテーブルに対応したMapperのインターフェース
+ * spotsテーブルに対応したMapperのインターフェース(一般・ユーザー側)
  * 
  * @author 海津
  */
 @Mapper
 public interface SpotMapper {
 
-    /** ページネーション付きでスポット一覧を取得する */
+    /** スポット一覧を取得する(ページネーション) */
     List<SpotSummary> findAll(@Param("offset") long offset, @Param("limit") int limit);
-
-    List<SpotSummary> findRecommendedSpots();
 
     // findById
     Optional<SpotDetail> findById(@Param("id") Long id);
-    
-    //PV数を1加算
-    void incrementPvCount(@Param("id")Long id);
 
     List<SpotSummary> findByCategoryId(
             @Param("categoryId") Long categoryId,
@@ -45,6 +38,11 @@ public interface SpotMapper {
             @Param("keywordList") List<Map<String, String>> keywordList,
             @Param("offset") long offset,
             @Param("limit") int limit);
+
+    // 関連スポット用
+    List<SpotSummary> findRelatedSpots(
+            @Param("spotId") Long spotId,
+            @Param("keywords") List<String> keywords);
 
     boolean existsBySpotId(@Param("spotId") Long spotId);
 
@@ -62,4 +60,7 @@ public interface SpotMapper {
     List<SpotSummary> findTopByFavorite();
 
     List<SpotSummary> findRandomSpots();
+
+    // PV数を1加算
+    void incrementPvCount(@Param("id") Long id);
 }

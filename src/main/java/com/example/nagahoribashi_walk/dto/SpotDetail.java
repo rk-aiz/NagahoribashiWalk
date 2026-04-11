@@ -51,6 +51,10 @@ public class SpotDetail {
     // s.website_url
     private String websiteUrl;
 
+    // 定休日
+    // s.closed_days
+    private String closedDays;
+
     // キーワード(カンマ区切り)
     private String keywords;
 
@@ -67,5 +71,8 @@ public class SpotDetail {
 
     // レビュー一覧。子DTOとして保持
     private List<ReviewDTO> reviews;
+    
+    //関連スポット
+    private List<SpotSummary> relatedSpots;
 
 }
