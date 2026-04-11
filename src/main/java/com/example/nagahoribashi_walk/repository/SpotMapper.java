@@ -44,11 +44,11 @@ public interface SpotMapper {
             @Param("keywords") List<String> keywords,
             @Param("limit") int limit);
 
-    List<SpotSummary> findTopByRating();
+    List<SpotSummary> findTopByRating(@Param("limit") int limit);
 
-    List<SpotSummary> findTopByFavorite();
+    List<SpotSummary> findTopByFavorite(@Param("limit") int limit);
 
-    List<SpotSummary> findRandomSpots();
+    List<SpotSummary> findRandomSpots(@Param("limit") int limit);
 
     /** スポット数をカウントする */
     long count();
