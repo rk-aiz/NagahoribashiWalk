@@ -139,7 +139,7 @@
                     <!-- スポットグリッド（2カラム） -->
                     <div class="row row-cols-1 row-cols-sm-2 g-3">
                         <div class="col" th:each="spot : ${spotPages}">
-                            <th:block th:replace="~{fragments/spot-card :: card(${spot})}"></th:block>
+                            <th:block th:replace="~{fragments/spot-card :: card(${spot}, ${returnUrl})}"></th:block>
                         </div>
                     </div>
 

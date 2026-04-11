@@ -40,9 +40,14 @@ public interface UserMapper {
     void updateProfile(User user);
 
     /**
+     * IDからUserを取得する
+     */
+    Optional<User> findById(@Param("id") Long id);
+
+    /**
      * ソフトデリートを行う
      */
-    void softDelete(Long id);
+    void softDelete(@Param("id") Long id, @Param("username") String username, @Param("email") String email);
 
     /**
      * ユーザーの有効・無効を切り替える

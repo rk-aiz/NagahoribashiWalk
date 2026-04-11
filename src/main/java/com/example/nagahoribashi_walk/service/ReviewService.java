@@ -1,6 +1,5 @@
 package com.example.nagahoribashi_walk.service;
 
-import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

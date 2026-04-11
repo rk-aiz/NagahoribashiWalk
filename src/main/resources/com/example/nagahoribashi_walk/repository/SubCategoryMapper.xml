@@ -68,6 +68,11 @@
         WHERE is_default = true AND category_id = #{categoryId}
     </select>
 
+    <!-- カテゴリIDに対応する、サブカテゴリ名が既に存在するか確認する -->
+    <select id="existsBySubCategoryNameAndCategoryId" resultType="boolean">
+        SELECT EXISTS (SELECT 1 FROM sub_categories WHERE name = #{name} AND category_id = #{categoryId})
+    </select>
+
     <update id="update">
         UPDATE sub_categories 
         SET name = #{name}

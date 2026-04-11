@@ -13,10 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.nagahoribashi_walk.dto.AdminSpotRow;
 import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
-import com.example.nagahoribashi_walk.entity.Spot;
 import com.example.nagahoribashi_walk.repository.SpotMapper;
 import com.example.nagahoribashi_walk.service.SpotService;
 
@@ -93,7 +91,11 @@ public class SpotServiceImpl implements SpotService {
     @Override
     public Page<SpotSummary> searchByKeywords(String keyword, Pageable pageable) {
 
-        // 🔸 スペースで分割
+        // 空文字は一覧にフォールバック
+        if (keyword == null || keyword.isBlank()) {
+            return getPage(pageable);
+        }
+        // スペースで分割
         String[] splitKeywords = keyword
                 // 全角スペースを半角スペースに置き換え
                 .replace('\u3000', ' ')
@@ -102,7 +104,6 @@ public class SpotServiceImpl implements SpotService {
         List<Map<String, String>> keywordMapList = new ArrayList<>();
 
         for (String kw : splitKeywords) {
-
             Map<String, String> map = new HashMap<>();
             map.put("origin", kw);
             map.put("hira", toHiragana(kw));
@@ -110,45 +111,42 @@ public class SpotServiceImpl implements SpotService {
             keywordMapList.add(map);
         }
 
-        // 空文字は一覧にフォールバック
-        if (keyword == null || keyword.isBlank()) {
-            return getPage(pageable);
-        }
-        // 🔸 件数取得
+        // 件数取得
         long total = spotMapper.countByKeywords(
                 keywordMapList);
 
-        // 🔸 データ取得
-        List<SpotSummary> spots = spotMapper.searchByKeywords(
-                keywordMapList,
-                pageable.getOffset(),
-                pageable.getPageSize());
-        
-        //totalが0の時ふぉ
-        if (total == 0) {
-
-            // 🔸 スペース除去して1ワードにする
-            String looseKeyword = keyword.replaceAll("\\s+", "");
-
-            List<Map<String, String>> fallbackList = new ArrayList<>();
-
-            Map<String, String> map = new HashMap<>();
-            map.put("origin", looseKeyword);
-            map.put("hira", toHiragana(looseKeyword));
-            map.put("kana", toKatakana(looseKeyword));
-            fallbackList.add(map);
-
-            long fallbackTotal = spotMapper.countByKeywords(fallbackList);
-
-            List<SpotSummary> fallbackSpots = spotMapper.searchByKeywords(
-                    fallbackList,
+        // ヒットしている場合、この条件で取得
+        if (total > 0) {
+            // データ取得
+            List<SpotSummary> spots = spotMapper.searchByKeywords(
+                    keywordMapList,
                     pageable.getOffset(),
                     pageable.getPageSize());
 
-            return new PageImpl<>(fallbackSpots, pageable, fallbackTotal);
+            return new PageImpl<>(spots, pageable, total);
         }
 
-        return new PageImpl<>(spots, pageable, total);
+        // totalが0の時、OR検索で検索する
+        // スペース除去して1ワードにする
+        String looseKeyword = keyword.replaceAll("\\s+", "");
+
+        List<Map<String, String>> fallbackList = new ArrayList<>();
+
+        Map<String, String> map = new HashMap<>();
+        map.put("origin", looseKeyword);
+        map.put("hira", toHiragana(looseKeyword));
+        map.put("kana", toKatakana(looseKeyword));
+        fallbackList.add(map);
+
+        long fallbackTotal = spotMapper.countByKeywords(fallbackList);
+
+        List<SpotSummary> fallbackSpots = spotMapper.searchByKeywords(
+                fallbackList,
+                pageable.getOffset(),
+                pageable.getPageSize());
+
+        return new PageImpl<>(fallbackSpots, pageable, fallbackTotal);
+
     }
 
     // トップページおすすめ３件表示用
@@ -193,11 +191,11 @@ public class SpotServiceImpl implements SpotService {
      */
     @Override
     public SpotDetail findById(Long id, Long loginUserId) {
-    	spotMapper.incrementPvCount(id);
-    	
+        spotMapper.incrementPvCount(id);
+
         SpotDetail spotDetail = spotMapper.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("指定したスポットが存在しません。id=" + id));
-        
+
         if (loginUserId != null) {
             spotDetail.getReviews().stream().forEach(review -> {
                 if (review.getUserId() != null && review.getUserId().equals(loginUserId)) {
@@ -205,7 +203,7 @@ public class SpotServiceImpl implements SpotService {
                 }
             });
         }
-        
+
         // 関連スポット追加
         findRelatedSpots(spotDetail);
 
@@ -217,76 +215,8 @@ public class SpotServiceImpl implements SpotService {
         return spotDetail;
     }
 
-    /**
-     * 【管理者】ページに対応したスポット一覧を返す
-     */
-    @Override
-    public Page<AdminSpotRow> getPageForAdmin(Pageable pageable) {
-
-        // スポットの総数を取得する
-        long total = spotMapper.count();
-
-        // 対象ページに対応したスポットを取得する
-        List<AdminSpotRow> spots = spotMapper.findAllForAdmin(pageable.getOffset(), pageable.getPageSize());
-
-        // Page<T>インスタンスに詰めて返す
-        return new PageImpl<>(spots, pageable, total);
-    }
-
-    /**
-     * 【管理者】キーワードでスポットを絞り込んだページを返す
-     */
-    @Override
-    public Page<AdminSpotRow> searchForAdmin(String keyword, String sort, Pageable pageable) {
-        long total = spotMapper.countForAdminByKeyword(keyword);
-
-        List<AdminSpotRow> spots = spotMapper.findAllForAdminByKeyword(
-                keyword, sort, pageable.getOffset(), pageable.getPageSize());
-
-        return new PageImpl<>(spots, pageable, total);
-    }
-
-    /** 新規スポットを追加する TODO : gmapUrlの検証処理を追加する(frameで使用するため) */
-    @Override
-    public void addSpot(Spot spot) {
-        spotMapper.insert(spot);
-    }
-
-    @Override
-    public void updateSpot(Spot spot) {
-        spotMapper.update(spot);
-    }
-
-    @Override
-    public void softDelete(Long spotId) {
-        spotMapper.softDelete(spotId);
-    }
-
-    /**
-     * 【管理者】スポットをIDから取得する
-     */
-    @Override
-    public Spot getByIdForAdmin(Long spotId) {
-        return spotMapper.findByIdForAdmin(spotId).orElseThrow();
-    }
-
-    @Override
-    public long getSpotCount() {
-        return spotMapper.count();
-    }
-
-    @Override
-    public Double getAverageRatingAll() {
-        return spotMapper.findAverageRatingAll();
-    }
-
-    @Override
-    public List<AdminSpotRow> findRecent(int i) {
-        return spotMapper.findRecent(i);
-    }
-    
     private void findRelatedSpots(SpotDetail spotDetail) {
-        //関連スポット
+        // 関連スポット
         if (spotDetail.getKeywords() != null && !spotDetail.getKeywords().isBlank()) {
 
             List<String> keywords = Arrays.stream(spotDetail.getKeywords().split(","))

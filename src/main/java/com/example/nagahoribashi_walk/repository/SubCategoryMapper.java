@@ -45,6 +45,11 @@ public interface SubCategoryMapper {
     /** カテゴリIDに対応する「その他」サブカテゴリを取得する */
     Optional<SubCategory> findDefaultByCategoryId(@Param("categoryId") Long categoryId);
 
+    /** カテゴリIDに対応する、サブカテゴリ名が既に存在するか確認する */
+    boolean existsBySubCategoryNameAndCategoryId(
+            @Param("name") String name,
+            @Param("categoryId") Long categoryId);
+
     /** 追加 */
     void insert(SubCategory subCategory);
 

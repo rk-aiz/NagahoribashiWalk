@@ -54,7 +54,8 @@ public class AdminUserController {
      * 【管理者】ユーザーの有効 / 無効を切り替える
      */
     @PostMapping("/toggle")
-    public String toggle(@RequestParam Long id,
+    public String toggle(
+            @RequestParam("id") Long id,
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam("page") Integer page,
             @RequestParam("sort") String sort,

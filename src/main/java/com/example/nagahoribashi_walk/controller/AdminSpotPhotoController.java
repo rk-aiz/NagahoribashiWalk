@@ -12,8 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.nagahoribashi_walk.dto.SaveImagesResult;
+import com.example.nagahoribashi_walk.service.AdminSpotService;
 import com.example.nagahoribashi_walk.service.SpotPhotoService;
-import com.example.nagahoribashi_walk.service.SpotService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminSpotPhotoController {
 
-    private final SpotService spotService;
+    private final AdminSpotService adminSpotService;
     private final SpotPhotoService spotPhotoService;
 
     /**
@@ -32,7 +32,7 @@ public class AdminSpotPhotoController {
             @PathVariable("spotId") Long spotId,
             Model model) {
 
-        model.addAttribute("spot", spotService.getByIdForAdmin(spotId));
+        model.addAttribute("spot", adminSpotService.getByIdForAdmin(spotId));
         model.addAttribute("photos", spotPhotoService.getAllBySpotId(spotId));
 
         return "/admin/spot/photo";

@@ -11,6 +11,14 @@
 		WHERE username = #{username} AND deleted_at IS NULL
 	</select>
 
+	<select id="findById"
+		resultType="com.example.nagahoribashi_walk.entity.User">
+		SELECT id, username, password, email, role, display_name, point,
+			deleted_at, created_at, updated_at, enabled
+		FROM users
+		WHERE id = #{id} AND deleted_at IS NULL
+	</select>
+
 	<!-- ユーザープロファイル取得 -->
 	<select id="findProfileByUsername"
 		resultType="com.example.nagahoribashi_walk.dto.UserProfile">
@@ -116,8 +124,8 @@
 		UPDATE users
 		SET
 			deleted_at = CURRENT_TIMESTAMP,
-			username = '#del_'  || CURRENT_TIMESTAMP::timestamp(0) || '#' || username,
-			email = '#del_'  || CURRENT_TIMESTAMP::timestamp(0) || '#' || email
+			username = #{username},
+			email = #{email}
 		WHERE id = #{id}
 	</update>
 
