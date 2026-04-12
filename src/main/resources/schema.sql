@@ -15,153 +15,9 @@ DROP TABLE IF EXISTS spots;
 DROP TABLE IF EXISTS sub_categories;
 DROP TABLE IF EXISTS categories;
 
-
--- ============================================================
--- トリガー関数
--- ============================================================
-
--- UPDATE のたびに updated_at を現在時刻へ自動更新する。
--- users / spots / reviews テーブルのトリガーから呼び出す。
-CREATE OR REPLACE FUNCTION update_timestamp()
-RETURNS TRIGGER AS '
-	BEGIN
-    IF TG_TABLE_NAME = ''spots'' THEN
-        IF NEW.spot_name IS NOT DISTINCT FROM OLD.spot_name
-           AND NEW.sub_category_id IS NOT DISTINCT FROM OLD.sub_category_id
-           AND NEW.website_url IS NOT DISTINCT FROM OLD.website_url
-           AND NEW.gmap_url IS NOT DISTINCT FROM OLD.gmap_url
-           AND NEW.address IS NOT DISTINCT FROM OLD.address
-           AND NEW.business_hours IS NOT DISTINCT FROM OLD.business_hours
-           AND NEW.closed_days IS NOT DISTINCT FROM OLD.closed_days
-           AND NEW.estimated_budget IS NOT DISTINCT FROM OLD.estimated_budget
-           AND NEW.keywords IS NOT DISTINCT FROM OLD.keywords
-           AND NEW.details IS NOT DISTINCT FROM OLD.details
-           AND NEW.deleted_at IS NOT DISTINCT FROM OLD.deleted_at
-           AND NEW.pv_count IS DISTINCT FROM OLD.pv_count
-        THEN
-           RETURN NEW;
-        END IF;
-    END IF;
-
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-' language 'plpgsql';
-
--- カテゴリ新規追加時に「その他」サブカテゴリを自動生成する。
--- これにより spots.sub_category_id は常に有効なレコードを参照できる
--- （フォールバック設計: カテゴリを作るだけで受け皿が必ず存在する）。
--- display_order=NULL で一覧の末尾に固定、is_default=TRUE で削除不可とする。
-CREATE OR REPLACE FUNCTION add_default_sub_category()
-RETURNS TRIGGER AS '
-    BEGIN
-    INSERT INTO sub_categories (category_id, name, display_order, is_default)
-    VALUES (NEW.id, ''その他'', NULL, TRUE);
-    RETURN NEW;
-    END;
-' LANGUAGE 'plpgsql';
-
--- spots テーブルのサブカテゴリが削除されたときのフォールバック
-CREATE OR REPLACE FUNCTION fallback_to_default_sub_category()
-RETURNS TRIGGER AS ' 
-    BEGIN
-    UPDATE spots
-    SET sub_category_id = (
-        SELECT id FROM sub_categories
-        WHERE category_id = OLD.category_id AND is_default = TRUE
-    )
-    WHERE sub_category_id = OLD.id;
-    RETURN OLD;
-    END;
-' LANGUAGE 'plpgsql';
-
-CREATE OR REPLACE FUNCTION fallback_on_category_delete()
-RETURNS TRIGGER AS '
-DECLARE
-    v_default_category_id         INTEGER;
-    v_default_sub_category_id     INTEGER;
-    v_old_default_sub_category_id INTEGER;
-BEGIN
-    -- デフォルトカテゴリ（未分類）のIDを取得
-    SELECT id INTO v_default_category_id
-    FROM categories
-    WHERE is_default = TRUE;
-
-    -- 「未分類/その他」サブカテゴリのIDを取得
-    SELECT id INTO v_default_sub_category_id
-    FROM sub_categories
-    WHERE category_id = v_default_category_id AND is_default = TRUE;
-
-    -- 削除されるカテゴリの「その他」（is_default=TRUE）サブカテゴリのIDを取得
-    SELECT id INTO v_old_default_sub_category_id
-    FROM sub_categories
-    WHERE category_id = OLD.id AND is_default = TRUE;
-
-    -- 削除カテゴリの「その他」に属する spots を「未分類/その他」へ移動
-    UPDATE spots
-    SET sub_category_id = v_default_sub_category_id
-    WHERE sub_category_id = v_old_default_sub_category_id;
-
-    -- prevent_default_sub_category_delete トリガーをくぐるため is_default を FALSE にしてから削除
-    UPDATE sub_categories SET is_default = FALSE WHERE id = v_old_default_sub_category_id;
-    DELETE FROM sub_categories WHERE id = v_old_default_sub_category_id;
-
-    -- 残りの非デフォルトサブカテゴリで名前が衝突するものはサフィックスを付与
-    UPDATE sub_categories
-    SET name = name || ''(OLD_'' || OLD.name || '')''
-    WHERE category_id = OLD.id
-    AND name IN (
-        SELECT name FROM sub_categories
-        WHERE category_id = v_default_category_id
-    );
-
-    -- 残りの非デフォルトサブカテゴリをデフォルトカテゴリへ移動
-    UPDATE sub_categories
-    SET category_id = v_default_category_id
-    WHERE category_id = OLD.id;
-
-    RETURN OLD;
-END;
-' LANGUAGE 'plpgsql';
-
-
-CREATE OR REPLACE FUNCTION prevent_default_category_delete()
-RETURNS TRIGGER AS '
-BEGIN
-    IF OLD.is_default = TRUE THEN
-        RAISE EXCEPTION ''デフォルトカテゴリは削除できません'';
-    END IF;
-    RETURN OLD;
-END;
-' LANGUAGE 'plpgsql';
-
-CREATE OR REPLACE FUNCTION prevent_default_sub_category_delete()
-RETURNS TRIGGER AS '
-BEGIN
-    IF OLD.is_default = TRUE THEN
-        RAISE EXCEPTION ''デフォルトサブカテゴリは削除できません'';
-    END IF;
-    RETURN OLD;
-END;
-' LANGUAGE 'plpgsql';
-
 -- ============================================================
 -- テーブル定義
 -- ============================================================
-
-CREATE TABLE users (
-	id SERIAL PRIMARY KEY,
-	username VARCHAR(60) UNIQUE NOT NULL,
-	password VARCHAR(255) NOT NULL,           -- BCrypt ハッシュ済みで保存
-	email VARCHAR(255) UNIQUE NOT NULL,
-	role VARCHAR(20) NOT NULL DEFAULT 'USER', -- 'USER' または 'ADMIN'
-	display_name VARCHAR(50) NOT NULL,
-	deleted_at TIMESTAMP,                     -- NULL = 有効。論理削除は日時をセット
-	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	enabled BOOLEAN DEFAULT TRUE,              -- 管理者による一時的な無効化フラグ（論理削除とは別）
-	point NUMERIC NOT NULL DEFAULT 0
-);
 
 -- カテゴリ（グルメ／観光スポット／ショッピング／娯楽／カフェ＋未分類）
 CREATE TABLE categories(
@@ -229,6 +85,23 @@ CREATE TABLE spots(
 		ON DELETE RESTRICT
 );
 
+CREATE TABLE users (
+	id SERIAL PRIMARY KEY,
+	username VARCHAR(60) UNIQUE NOT NULL,
+	password VARCHAR(255) NOT NULL,           -- BCrypt ハッシュ済みで保存
+	email VARCHAR(255) UNIQUE NOT NULL,
+	role VARCHAR(20) NOT NULL DEFAULT 'USER', -- 'USER' または 'ADMIN'
+	display_name VARCHAR(50) NOT NULL,
+	deleted_at TIMESTAMP,                     -- NULL = 有効。論理削除は日時をセット
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	enabled BOOLEAN DEFAULT TRUE,              -- 管理者による一時的な無効化フラグ（論理削除とは別）
+	point NUMERIC NOT NULL DEFAULT 0,
+    last_drawn_at TIMESTAMP,                                             -- 直近におみくじを引いた日時
+    recommended_spot_id INTEGER REFERENCES spots(id) ON DELETE SET NULL, -- おみくじでおすすめされたスポット
+    fortune_favorite_rewarded BOOLEAN NOT NULL DEFAULT FALSE             -- おみくじのお気に入りボーナスを付与済みか
+);
+
 -- レビュー（5段階評価＋コメント）
 CREATE TABLE reviews (
 	id SERIAL PRIMARY KEY,
@@ -277,26 +150,109 @@ CREATE TABLE spot_photos (
 		ON DELETE CASCADE
 );
 
+-- ============================================================
+-- トリガー関数
+-- ============================================================
+
+-- カテゴリ新規追加時に「その他」サブカテゴリを自動生成する。
+-- これにより spots.sub_category_id は常に有効なレコードを参照できる
+-- display_order=NULL で一覧の末尾に固定、is_default=TRUE で削除不可とする。
+CREATE OR REPLACE FUNCTION add_default_sub_category()
+RETURNS TRIGGER AS '
+    BEGIN
+    INSERT INTO sub_categories (category_id, name, display_order, is_default)
+    VALUES (NEW.id, ''その他'', NULL, TRUE);
+    RETURN NEW;
+    END;
+' LANGUAGE 'plpgsql';
+
+-- spots テーブルのサブカテゴリが削除されたときのフォールバック
+CREATE OR REPLACE FUNCTION fallback_to_default_sub_category()
+RETURNS TRIGGER AS ' 
+    BEGIN
+    UPDATE spots
+    SET sub_category_id = (
+        SELECT id FROM sub_categories
+        WHERE category_id = OLD.category_id AND is_default = TRUE
+    )
+    WHERE sub_category_id = OLD.id;
+    RETURN OLD;
+    END;
+' LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION fallback_on_category_delete()
+RETURNS TRIGGER AS '
+DECLARE
+    v_default_category_id         INTEGER;
+    v_default_sub_category_id     INTEGER;
+    v_old_default_sub_category_id INTEGER;
+BEGIN
+    -- デフォルトカテゴリ（未分類）のIDを取得
+    SELECT id INTO v_default_category_id
+    FROM categories
+    WHERE is_default = TRUE;
+
+    -- 「未分類/その他」サブカテゴリのIDを取得
+    SELECT id INTO v_default_sub_category_id
+    FROM sub_categories
+    WHERE category_id = v_default_category_id AND is_default = TRUE;
+
+    -- 削除されるカテゴリの「その他」（is_default=TRUE）サブカテゴリのIDを取得
+    SELECT id INTO v_old_default_sub_category_id
+    FROM sub_categories
+    WHERE category_id = OLD.id AND is_default = TRUE;
+
+    -- 削除カテゴリの「その他」に属する spots を「未分類/その他」へ移動
+    UPDATE spots
+    SET sub_category_id = v_default_sub_category_id
+    WHERE sub_category_id = v_old_default_sub_category_id;
+
+    -- prevent_default_sub_category_delete トリガーをくぐるため is_default を FALSE にしてから削除
+    UPDATE sub_categories SET is_default = FALSE WHERE id = v_old_default_sub_category_id;
+    DELETE FROM sub_categories WHERE id = v_old_default_sub_category_id;
+
+    -- 残りの非デフォルトサブカテゴリで名前が衝突するものはサフィックスを付与
+    UPDATE sub_categories
+    SET name = name || ''(OLD_'' || OLD.name || ''_'' || TO_CHAR(NOW(), ''YYYYMMDD_HH24MISS'') || '')''
+    WHERE category_id = OLD.id
+    AND name IN (
+        SELECT name FROM sub_categories
+        WHERE category_id = v_default_category_id
+    );
+
+    -- 残りの非デフォルトサブカテゴリをデフォルトカテゴリへ移動
+    UPDATE sub_categories
+    SET category_id = v_default_category_id
+    WHERE category_id = OLD.id;
+
+    RETURN OLD;
+END;
+' LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION prevent_default_category_delete()
+RETURNS TRIGGER AS '
+BEGIN
+    IF OLD.is_default = TRUE THEN
+        RAISE EXCEPTION ''デフォルトカテゴリは削除できません'';
+    END IF;
+    RETURN OLD;
+END;
+' LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION prevent_default_sub_category_delete()
+RETURNS TRIGGER AS '
+BEGIN
+    IF OLD.is_default = TRUE THEN
+        RAISE EXCEPTION ''デフォルトサブカテゴリは削除できません'';
+    END IF;
+    RETURN OLD;
+END;
+' LANGUAGE 'plpgsql';
+
 
 -- ============================================================
 -- トリガー バインド
 -- ============================================================
-
--- UPDATE 時に updated_at を自動更新
-CREATE TRIGGER update_users_updated_at
-BEFORE UPDATE ON users
-FOR EACH ROW
-EXECUTE FUNCTION update_timestamp();
-
-CREATE TRIGGER update_spots_updated_at
-BEFORE UPDATE ON spots
-FOR EACH ROW
-EXECUTE FUNCTION update_timestamp();
-
-CREATE TRIGGER update_reviews_updated_at
-BEFORE UPDATE ON reviews
-FOR EACH ROW
-EXECUTE FUNCTION update_timestamp();
 
 -- categories に行が追加されたとき「未分類」サブカテゴリを自動生成
 CREATE TRIGGER trigger_add_default_sub_category

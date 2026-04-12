@@ -1,333 +1,12 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org"
-    th:replace="~{layout/default :: layout('おみくじ', ~{::main}, ~{:: headStyles})}"
+    th:replace="~{layout/default :: layout('たこやき神社', ~{::main}, ~{:: headStyles})}"
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-    <title>おみくじ</title>
+    <title>長堀橋たこやき神社</title>
     <th:block th:fragment="headStyles">
-        <style>
-            /* ===== おみくじ全体 ===== */
-            .fortune-page {
-                background-color: #f8fafc;
-                min-height: 60vh;
-            }
-
-            /* ===== 神社モチーフのヒーローバナー ===== */
-            .fortune-hero {
-                background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 50%, #7f1d1d 100%);
-                color: #fff;
-                padding: 3rem 0 2.5rem;
-                text-align: center;
-                position: relative;
-                overflow: hidden;
-            }
-
-            .fortune-hero::before {
-                content: '';
-                position: absolute;
-                inset: 0;
-                background-image:
-                    repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(255,255,255,0.03) 30px, rgba(255,255,255,0.03) 31px),
-                    repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(255,255,255,0.03) 30px, rgba(255,255,255,0.03) 31px);
-            }
-
-            .fortune-hero h1 {
-                font-size: 2rem;
-                font-weight: 700;
-                letter-spacing: 0.15em;
-                position: relative;
-            }
-
-            .fortune-hero p {
-                color: #fecaca;
-                font-size: 0.9rem;
-                position: relative;
-            }
-
-            /* ===== おみくじ筒エリア ===== */
-            .omikuji-container {
-                max-width: 480px;
-                margin: 0 auto;
-            }
-
-            /* ===== 抽選前カード（筒のイメージ） ===== */
-            .draw-card {
-                background: #fff;
-                border: 1px solid #e2e8f0;
-                border-radius: 1rem;
-                padding: 2.5rem 2rem;
-                text-align: center;
-                box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-            }
-
-            .omikuji-tube {
-                display: inline-flex;
-                flex-direction: column;
-                align-items: center;
-                margin-bottom: 1.5rem;
-            }
-
-            .omikuji-tube-top {
-                width: 60px;
-                height: 16px;
-                background: linear-gradient(135deg, #b91c1c, #991b1b);
-                border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-                box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
-            }
-
-            .omikuji-tube-body {
-                width: 80px;
-                height: 120px;
-                background: linear-gradient(160deg, #dc2626 0%, #b91c1c 40%, #991b1b 100%);
-                border-radius: 4px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 2.5rem;
-                box-shadow: inset -4px 0 8px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.15);
-                position: relative;
-            }
-
-            .omikuji-tube-body::after {
-                content: '';
-                position: absolute;
-                left: 10px;
-                top: 10px;
-                bottom: 10px;
-                width: 6px;
-                background: rgba(255,255,255,0.1);
-                border-radius: 3px;
-            }
-
-            /* ===== 引くボタン ===== */
-            .btn-draw {
-                background: linear-gradient(135deg, #b91c1c, #dc2626);
-                color: #fff;
-                border: none;
-                border-radius: 9999px;
-                padding: 0.75rem 2.5rem;
-                font-size: 1.05rem;
-                font-weight: 700;
-                letter-spacing: 0.05em;
-                cursor: pointer;
-                box-shadow: 0 4px 14px rgba(185, 28, 28, 0.35);
-                transition: transform 0.15s, box-shadow 0.15s;
-            }
-
-            .btn-draw:hover:not(:disabled) {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(185, 28, 28, 0.4);
-            }
-
-            .btn-draw:active:not(:disabled) {
-                transform: translateY(0);
-            }
-
-            .btn-draw:disabled {
-                opacity: 0.6;
-                cursor: not-allowed;
-            }
-
-            /* ===== シェイクアニメーション ===== */
-            @keyframes shake {
-                0%, 100% { transform: rotate(0deg); }
-                15% { transform: rotate(-10deg); }
-                30% { transform: rotate(10deg); }
-                45% { transform: rotate(-8deg); }
-                60% { transform: rotate(8deg); }
-                75% { transform: rotate(-5deg); }
-                90% { transform: rotate(5deg); }
-            }
-
-            .shaking .omikuji-tube-body {
-                animation: shake 0.6s ease-in-out 2;
-            }
-
-            /* ===== 結果スリップ ===== */
-            @keyframes slideIn {
-                from { opacity: 0; transform: translateY(30px) scale(0.95); }
-                to   { opacity: 1; transform: translateY(0) scale(1); }
-            }
-
-            .result-card {
-                background: #fff;
-                border: 1px solid #e2e8f0;
-                border-radius: 1rem;
-                overflow: hidden;
-                box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-                animation: slideIn 0.5s ease-out both;
-            }
-
-            /* おみくじ券のヘッダー部分 */
-            .result-header {
-                background: linear-gradient(135deg, #7f1d1d 0%, #b91c1c 100%);
-                color: #fff;
-                text-align: center;
-                padding: 1.25rem 1rem 1rem;
-            }
-
-            .result-site-name {
-                font-size: 0.75rem;
-                letter-spacing: 0.15em;
-                color: #fecaca;
-                margin-bottom: 0.25rem;
-            }
-
-            .result-label {
-                font-size: 0.8rem;
-                letter-spacing: 0.2em;
-                color: #fca5a5;
-                margin-bottom: 0.4rem;
-            }
-
-            /* 運勢ランク */
-            .result-rank {
-                font-size: 3.5rem;
-                font-weight: 900;
-                letter-spacing: 0.05em;
-                line-height: 1;
-                margin-bottom: 0.2rem;
-                text-shadow: 0 2px 8px rgba(0,0,0,0.25);
-            }
-
-            .rank-daikichi  { color: #fde68a; }
-            .rank-chukichi  { color: #fef3c7; }
-            .rank-shokichi  { color: #ecfdf5; }
-            .rank-suekichi  { color: #dbeafe; }
-            .rank-kyo       { color: #e2e8f0; }
-
-            /* おみくじ券の本文 */
-            .result-body {
-                padding: 1.5rem 1.75rem;
-                background: #fffbf0;
-                /* 和紙っぽい縦線 */
-                background-image: repeating-linear-gradient(
-                    90deg,
-                    transparent,
-                    transparent 38px,
-                    rgba(0,0,0,0.04) 38px,
-                    rgba(0,0,0,0.04) 39px
-                );
-            }
-
-            .result-message {
-                font-size: 0.95rem;
-                color: #1e293b;
-                line-height: 1.8;
-                text-align: center;
-                font-weight: 500;
-                margin-bottom: 1.25rem;
-                padding-bottom: 1.25rem;
-                border-bottom: 1px dashed #e2e8f0;
-            }
-
-            /* 運勢項目 */
-            .fortune-items {
-                display: flex;
-                flex-direction: column;
-                gap: 0.6rem;
-            }
-
-            .fortune-item {
-                display: flex;
-                align-items: baseline;
-                gap: 0.5rem;
-                font-size: 0.85rem;
-            }
-
-            .fortune-item-label {
-                min-width: 5rem;
-                color: #64748b;
-                font-weight: 500;
-                flex-shrink: 0;
-            }
-
-            .fortune-item-value {
-                color: #1e293b;
-                font-weight: 600;
-            }
-
-            .fortune-item-detail {
-                color: #475569;
-                font-size: 0.8rem;
-            }
-
-            /* おすすめスポット */
-            .recommended-spot {
-                background: #fff;
-                border: 1px solid #e2e8f0;
-                border-radius: 0.75rem;
-                padding: 1rem 1.25rem;
-                display: flex;
-                align-items: center;
-                gap: 0.75rem;
-                text-decoration: none;
-                color: inherit;
-                transition: border-color 0.15s, box-shadow 0.15s;
-            }
-
-            .recommended-spot:hover {
-                border-color: #b91c1c;
-                box-shadow: 0 2px 8px rgba(185,28,28,0.1);
-                color: inherit;
-            }
-
-            .spot-icon {
-                width: 2.5rem;
-                height: 2.5rem;
-                border-radius: 50%;
-                background: linear-gradient(135deg, #fef2f2, #fee2e2);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #b91c1c;
-                font-size: 1.1rem;
-                flex-shrink: 0;
-            }
-
-            /* もう一度ボタン */
-            .btn-retry {
-                background: #fff;
-                color: #b91c1c;
-                border: 1.5px solid #b91c1c;
-                border-radius: 9999px;
-                padding: 0.6rem 2rem;
-                font-size: 0.9rem;
-                font-weight: 600;
-                cursor: pointer;
-                transition: background-color 0.15s, color 0.15s;
-            }
-
-            .btn-retry:hover {
-                background: #b91c1c;
-                color: #fff;
-            }
-
-            /* ポイント消費バッジ */
-            .point-badge {
-                display: inline-flex;
-                align-items: center;
-                gap: 0.3rem;
-                background: #fef3c7;
-                color: #92400e;
-                border-radius: 9999px;
-                font-size: 0.75rem;
-                font-weight: 600;
-                padding: 0.2rem 0.7rem;
-                border: 1px solid #fde68a;
-            }
-
-            /* ===== 未ログイン時のCTAカード ===== */
-            .login-cta-card {
-                background: #fff;
-                border: 1px solid #e2e8f0;
-                border-radius: 1rem;
-                padding: 2.5rem 2rem;
-                text-align: center;
-                box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-            }
-        </style>
+        <link rel="stylesheet" th:href="@{/css/fortune.css}">
     </th:block>
 </head>
 
@@ -337,8 +16,8 @@
         <!-- ヒーローバナー -->
         <div class="fortune-hero">
             <div class="container">
-                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⛩️</div>
-                <h1>長堀橋おみくじ</h1>
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🐙</div>
+                <h1>長堀橋たこやき神社</h1>
                 <p class="mb-0">今日の運勢と、あなたにぴったりのスポットをお伝えします</p>
             </div>
         </div>
@@ -346,16 +25,16 @@
         <div class="container py-5">
             <div class="omikuji-container">
 
-                <!-- ===== 未ログイン時 ===== -->
+                <!-- ===== 未ログイン ===== -->
                 <div sec:authorize="isAnonymous()" class="login-cta-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎋</div>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🐙</div>
                     <h2 class="h5 fw-bold mb-2">ログインしておみくじを引こう</h2>
                     <p class="text-secondary small mb-4">
                         おみくじはログイン会員限定の機能です。<br>
                         会員登録は無料です。
                     </p>
                     <div class="d-flex flex-column gap-2 align-items-center">
-                        <a th:href="@{/login}" class="btn btn-sm btn-outline-secondary"
+                        <a th:href="@{/login(returnUrl=@{/fortune})}" class="btn btn-sm btn-outline-secondary"
                             style="border-color: #d1d5db; color: #374151; border-radius: 0.5rem; padding: 0.4rem 1.5rem;">
                             <i class="bi bi-box-arrow-in-right me-1"></i>ログインする
                         </a>
@@ -373,7 +52,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span class="text-secondary small">
                             <i class="bi bi-person-circle me-1"></i>
-                            <span th:text="${account?.displayName}">ユーザー名</span> さん
+                            <span th:text="${profile?.displayName}">ユーザー名</span> さん
                         </span>
                         <span class="point-badge">
                             <i class="bi bi-star-fill"></i>
@@ -381,133 +60,33 @@
                         </span>
                     </div>
 
-                    <!-- ===== 抽選前 (resultがnullの場合) ===== -->
-                    <div th:if="${fortuneResult == null}" class="draw-card" id="drawSection">
+                    <!-- 気分選択（コントローラーで引き済みはリダイレクト済みのため常に表示） -->
+                    <div class="draw-card" id="drawSection">
                         <div class="omikuji-tube" id="omikujiTube">
+                            <div class="slip-peek" id="slipPeek"></div>
                             <div class="omikuji-tube-top"></div>
-                            <div class="omikuji-tube-body">🎋</div>
+                            <div class="omikuji-tube-body">おみくじ</div>
                         </div>
-                        <p class="text-secondary mb-1" style="font-size: 0.85rem;">
-                            心を静めて、おみくじ棒を引いてください
-                        </p>
-                        <p class="text-secondary mb-3" style="font-size: 0.8rem;">
-                            ※ 1日1回まで引けます
-                        </p>
-                        <!-- ポイント消費がある場合はここに追記 -->
-                        <!--
-                        <p class="text-secondary mb-3" style="font-size: 0.8rem;">
-                            ※ 1回につき <strong class="text-warning">10 pt</strong> 消費します
-                        </p>
-                        -->
-                        <form th:action="@{/fortune-slip/draw}" method="post">
-                            <button type="submit" class="btn-draw" id="drawBtn">
+                        <p class="fw-bold mb-1" id="drawPrompt" style="font-size: 0.95rem;">今日の気分はどれに近い？</p>
+                        <p class="text-secondary mb-3" style="font-size: 0.8rem;">※ 1日1回まで引けます</p>
+
+                        <form th:action="@{/fortune/draw}" method="post" id="drawForm">
+                            <div class="mood-grid mb-3">
+                                <div class="mood-option" th:each="entry : ${moodSelection}">
+                                    <input type="radio" name="themeId" th:id="'mood-' + ${entry.key}"
+                                        th:value="${entry.key}">
+                                    <label th:for="'mood-' + ${entry.key}">
+                                        <span>🐙</span>
+                                        <span th:text="${entry.value}">気分</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-draw" id="drawBtn" disabled>
                                 おみくじを引く
                             </button>
+
                         </form>
-
-                        <!-- 当日分を引き済みの場合 -->
-                        <div th:if="${alreadyDrawnToday}" class="mt-3">
-                            <p class="text-secondary small mb-0">
-                                <i class="bi bi-info-circle me-1"></i>
-                                本日分はすでに引かれています。明日またお試しください。
-                            </p>
-                        </div>
                     </div>
-
-                    <!-- ===== 結果表示 ===== -->
-                    <div th:if="${fortuneResult != null}" id="resultSection">
-
-                        <!-- おみくじ券 -->
-                        <div class="result-card mb-4">
-
-                            <!-- 券ヘッダー -->
-                            <div class="result-header">
-                                <p class="result-site-name mb-1">長堀橋さんぽ</p>
-                                <p class="result-label mb-2">おみくじ</p>
-                                <div class="result-rank"
-                                    th:classappend="${fortuneResult.rank == '大吉'} ? 'rank-daikichi'
-                                                  : (${fortuneResult.rank == '中吉'} ? 'rank-chukichi'
-                                                  : (${fortuneResult.rank == '小吉'} ? 'rank-shokichi'
-                                                  : (${fortuneResult.rank == '末吉'} ? 'rank-suekichi'
-                                                  : 'rank-kyo')))"
-                                    th:text="${fortuneResult.rank}">大吉</div>
-                                <p class="mb-0 mt-1" style="font-size: 0.75rem; color: #fca5a5;"
-                                    th:text="${#temporals.format(fortuneResult.drawnAt, 'yyyy年M月d日')}">2026年4月10日</p>
-                            </div>
-
-                            <!-- 券本文 -->
-                            <div class="result-body">
-
-                                <!-- 総評メッセージ -->
-                                <p class="result-message" th:text="${fortuneResult.message}">
-                                    今日は新しい出会いに恵まれる一日です。積極的に行動することで運気が開けるでしょう。
-                                </p>
-
-                                <!-- 運勢項目 -->
-                                <div class="fortune-items">
-                                    <div class="fortune-item" th:if="${fortuneResult.loveFortuneLabel != null}">
-                                        <span class="fortune-item-label">恋愛運</span>
-                                        <span class="fortune-item-value" th:text="${fortuneResult.loveFortuneLabel}">吉</span>
-                                        <span class="fortune-item-detail" th:text="${fortuneResult.loveFortune}">素直な気持ちを伝えると良い結果に。</span>
-                                    </div>
-                                    <div class="fortune-item" th:if="${fortuneResult.workFortuneLabel != null}">
-                                        <span class="fortune-item-label">仕事運</span>
-                                        <span class="fortune-item-value" th:text="${fortuneResult.workFortuneLabel}">中吉</span>
-                                        <span class="fortune-item-detail" th:text="${fortuneResult.workFortune}">コツコツと積み重ねることが大切。</span>
-                                    </div>
-                                    <div class="fortune-item" th:if="${fortuneResult.moneyFortuneLabel != null}">
-                                        <span class="fortune-item-label">金運</span>
-                                        <span class="fortune-item-value" th:text="${fortuneResult.moneyFortuneLabel}">吉</span>
-                                        <span class="fortune-item-detail" th:text="${fortuneResult.moneyFortune}">無駄遣いを控えると運気アップ。</span>
-                                    </div>
-                                    <div class="fortune-item" th:if="${fortuneResult.healthFortuneLabel != null}">
-                                        <span class="fortune-item-label">健康運</span>
-                                        <span class="fortune-item-value" th:text="${fortuneResult.healthFortuneLabel}">大吉</span>
-                                        <span class="fortune-item-detail" th:text="${fortuneResult.healthFortune}">適度な運動が吉。散歩で運気を呼ぼう。</span>
-                                    </div>
-                                    <div class="fortune-item" th:if="${fortuneResult.luckyColor != null}">
-                                        <span class="fortune-item-label">ラッキーカラー</span>
-                                        <span class="fortune-item-value" th:text="${fortuneResult.luckyColor}">青</span>
-                                    </div>
-                                    <div class="fortune-item" th:if="${fortuneResult.luckySpot != null}">
-                                        <span class="fortune-item-label">ラッキースポット</span>
-                                        <span class="fortune-item-value" th:text="${fortuneResult.luckySpot}">神社・仏閣</span>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <!-- おすすめスポット -->
-                        <div th:if="${fortuneResult.recommendedSpot != null}" class="mb-4">
-                            <p class="text-secondary small mb-2">
-                                <i class="bi bi-geo-alt-fill me-1" style="color: #b91c1c;"></i>
-                                今日の運勢にぴったりのスポット
-                            </p>
-                            <a th:href="@{/spot/{id}(id=${fortuneResult.recommendedSpot.id})}"
-                                class="recommended-spot">
-                                <div class="spot-icon">
-                                    <i class="bi bi-geo-alt"></i>
-                                </div>
-                                <div>
-                                    <p class="fw-bold mb-0 small" th:text="${fortuneResult.recommendedSpot.name}">スポット名</p>
-                                    <p class="text-secondary mb-0" style="font-size: 0.78rem;"
-                                        th:text="${fortuneResult.recommendedSpot.subCategoryName}">カテゴリ</p>
-                                </div>
-                                <i class="bi bi-chevron-right ms-auto text-secondary" style="font-size: 0.8rem;"></i>
-                            </a>
-                        </div>
-
-                        <!-- SNS共有・もう一度エリア -->
-                        <div class="text-center d-flex flex-column gap-2 align-items-center">
-                            <p class="text-secondary small mb-1">次回は明日から引けます</p>
-                            <a th:href="@{/}" class="btn-retry">
-                                トップページへ戻る
-                            </a>
-                        </div>
-
-                    </div>
-                    <!-- /result -->
 
                 </div>
                 <!-- /isAuthenticated -->
@@ -518,14 +97,49 @@
 
         <script>
             (function () {
+                var form = document.getElementById('drawForm');
                 var drawBtn = document.getElementById('drawBtn');
                 var tube = document.getElementById('omikujiTube');
-                if (!drawBtn || !tube) return;
+                var prompt = document.getElementById('drawPrompt');
+                if (!form || !drawBtn || !tube) return;
 
-                drawBtn.closest('form').addEventListener('submit', function () {
+                // ラジオが選択されたらボタンを有効化
+                form.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+                    radio.addEventListener('change', function () {
+                        drawBtn.disabled = false;
+                    });
+                });
+
+                function phase3Submit() {
+                    form.submit();
+                }
+
+                function phase2Reveal() {
+                    tube.classList.remove('shaking');
+                    tube.classList.add('revealing');
+                    if (prompt) prompt.textContent = 'おみくじが出てきた…！';
+                    drawBtn.textContent = '結果を確認中…';
+                    setTimeout(phase3FadeOut, 1200);
+                }
+
+                function phase3FadeOut() {
+                    tube.classList.add('submitting');
+                    setTimeout(phase3Submit, 450);
+                }
+
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
                     drawBtn.disabled = true;
-                    drawBtn.textContent = '引いています…';
+                    drawBtn.textContent = '振っています…';
+                    if (prompt) prompt.textContent = 'おみくじを振っています…';
+
+                    // ボタン背景プログレス開始（reflow を挟んで transition を確実に発火させる）
+                    drawBtn.getBoundingClientRect();
+                    drawBtn.classList.add('in-progress');
+
+                    // フェーズ1: シェイク（0.7s × 3 = 2.1s）
                     tube.classList.add('shaking');
+                    setTimeout(phase2Reveal, 2200);
                 });
             })();
         </script>

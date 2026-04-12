@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/default :: layout('トップ', ~{::main}, ~{})}" xml:lang="ja">
-<head><title>トップ</title></head>
+
+<head>
+    <title>トップ</title>
+</head>
+
 <body>
     <main class="flex-grow-1">
         <link rel="stylesheet" th:href="@{/css/home.css}">
@@ -44,7 +48,7 @@
             <h3 class="mb-4 text-center">おすすめスポット</h3>
             <div class="row g-4">
                 <div class="col-md-4" th:each="spot : ${spots}">
-                    <th:block th:replace="~{fragments/spot-card :: card(${spot}, null)}"></th:block>
+                    <th:block th:replace="~{fragments/spot-card :: card(${spot}, '/')}"></th:block>
                 </div>
             </div>
         </section>

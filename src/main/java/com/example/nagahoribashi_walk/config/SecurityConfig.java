@@ -57,7 +57,7 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         // ログイン成功時は管理者ダッシュボードへ
                         // hasAuthority("ADMIN") で弾かれるため、ここに到達するのはADMINのみ
-                        .defaultSuccessUrl("/admin")
+                        .defaultSuccessUrl("/admin", true)
                         // ログイン失敗時は管理者ログイン画面にエラーパラメーター付きで戻る
                         .failureUrl("/admin/login?error"))
 
@@ -91,7 +91,7 @@ public class SecurityConfig {
                 // ★アクセス制御
                 .authorizeHttpRequests(authz -> authz
                         // 認証不要のURL（非ログインユーザーも閲覧可能）
-                        .requestMatchers("/", "/about", "/spot/**", "/login",
+                        .requestMatchers("/", "/about", "/spot/**", "/login", "/fortune", "/fortune/**",
                                 "/register", "/register/**", "/unsubscribe/complete",
                                 "/error", "/error/**", "/403")
                         .permitAll()

@@ -3,6 +3,9 @@ package com.example.nagahoribashi_walk.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import lombok.Getter;
+
+@Getter
 @ResponseStatus(HttpStatus.CONFLICT) // 409
 public class ReviewAlreadyExistsException extends RuntimeException {
 
@@ -14,13 +17,4 @@ public class ReviewAlreadyExistsException extends RuntimeException {
         this.spotId = spotId;
         this.userId = userId;
     }
-
-    public Long getSpotId() {
-        return spotId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
 }

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout/default :: layout('たこやき神社 - 結果', ~{::main}, ~{:: headStyles})}"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>たこやき神社 - 結果</title>
+    <th:block th:fragment="headStyles">
+        <link rel="stylesheet" th:href="@{/css/fortune.css}">
+    </th:block>
+</head>
+
+<body>
+    <main class="flex-grow-1 fortune-page">
+
+        <!-- ヒーローバナー -->
+        <div class="fortune-hero">
+            <div class="container">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🐙</div>
+                <h1>長堀橋たこやき神社</h1>
+                <p class="mb-0">おみくじの結果</p>
+            </div>
+        </div>
+
+        <div class="container py-5">
+            <div class="omikuji-container">
+
+                <!-- ユーザー名 / ポイント表示 -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-secondary small">
+                        <i class="bi bi-person-circle me-1"></i>
+                        <span th:text="${profile?.displayName}">ユーザー名</span> さん
+                    </span>
+                    <span class="point-badge">
+                        <i class="bi bi-star-fill"></i>
+                        <span th:text="${profile?.point + ' pt'}">0 pt</span>
+                    </span>
+                </div>
+
+                <div class="result-card">
+
+                    <!-- おみくじ紙 + ランク -->
+                    <div th:classappend="${fortuneResult.rank.cssClass}" class="omikuji-slip">
+                        <span class="rank-sub">運勢</span>
+                        <span class="rank-label" th:text="${fortuneResult.rank.displayName}">大吉</span>
+                    </div>
+
+                    <!-- 一言メッセージ -->
+                    <p class="mb-3" style="font-size: 0.9rem; color: #4b5563; font-style: italic;">
+                        <span style="margin-right: 0.3em; font-style: normal; font-size: 1.8em;">🐙</span><span
+                            th:text="${fortuneResult.fortuneMessage}"></span>
+                    </p>
+
+                    <!-- 付与ポイント -->
+                    <div class="mb-1">
+                        <span class="point-award">
+                            <i class="bi bi-star-fill"></i>
+                            <span th:text="${fortuneResult.rank.point + ' pt 獲得！'}">50 pt 獲得！</span>
+                        </span>
+                    </div>
+
+                    <!-- 引いた日時 -->
+                    <p class="text-secondary mb-4" style="font-size: 0.8rem;">
+                        <span th:text="${#temporals.format(fortuneResult.drawnAt, 'yyyy年M月d日 HH:mm')}">2026年4月12日
+                            12:00</span> に引きました
+                    </p>
+
+                    <!-- おすすめスポット -->
+                    <div class="text-start mb-4">
+                        <p class="fw-bold mb-2" style="font-size: 0.9rem; color: var(--tako-main);">
+                            <i class="bi bi-geo-alt-fill me-1"></i>今日のおすすめスポット
+                        </p>
+
+                        <!-- スポットが存在する場合 -->
+                        <a th:if="${fortuneResult.recommendedSpot != null}"
+                            th:href="@{/spot/{id}(id=${fortuneResult.recommendedSpot.id})}" class="spot-recommend-card">
+                            <img th:src="${fortuneResult.recommendedSpot.photoUrl != null}
+                                         ? @{/uploads/{url}(url=${fortuneResult.recommendedSpot.photoUrl})}
+                                         : @{/images/no-image.svg}"
+                                th:onerror="|this.onerror=null; this.src='[[@{/images/no-image.svg}]]';|"
+                                th:alt="${fortuneResult.recommendedSpot.spotName}" class="spot-recommend-img">
+                            <div class="spot-recommend-body">
+                                <div class="spot-recommend-name" th:text="${fortuneResult.recommendedSpot.spotName}">
+                                    スポット名</div>
+                                <div class="spot-recommend-category">
+                                    <span th:text="${fortuneResult.recommendedSpot.categoryName} ?: 'その他'"
+                                        style="color: #4b82f6; font-weight: 600;">カテゴリ</span>
+                                    <span class="mx-1">/</span>
+                                    <span
+                                        th:text="${fortuneResult.recommendedSpot.subCategoryName} ?: 'その他'">サブカテゴリ</span>
+                                </div>
+                                <div th:if="${fortuneResult.recommendedSpot.averageRating != null}"
+                                    style="font-size: 0.8rem; color: #f59e0b; font-weight: 600;">
+                                    <i class="bi bi-star-fill me-1"></i>
+                                    <span
+                                        th:text="${#numbers.formatDecimal(fortuneResult.recommendedSpot.averageRating, 1, 1)}">4.5</span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- スポットが削除済みの場合 -->
+                        <p th:if="${fortuneResult.recommendedSpot == null}"
+                            class="text-secondary small text-center py-3">
+                            おすすめスポットの情報を取得できませんでした。
+                        </p>
+                    </div>
+
+                    <!-- お気に入りボーナス（スポットが存在する場合のみ） -->
+                    <th:block th:if="${fortuneResult.recommendedSpot != null}">
+
+                        <!-- 未登録 → 追加CTA -->
+                        <div th:if="${!fortuneResult.alreadyFavorited}" class="favorite-bonus-banner">
+                            <span class="favorite-bonus-text">
+                                おすすめスポットをお気に入りに追加して<br>
+                                <span class="favorite-bonus-pt" th:text="${'+' + fortuneBonusPoint + ' pt'}">+1000
+                                    pt</span> ゲット！
+                            </span>
+                            <form th:action="@{/fortune/favorite/add}" method="post">
+                                <input type="hidden" name="spotId" th:value="${fortuneResult.recommendedSpot.id}">
+                                <button type="submit" class="btn-favorite-add">
+                                    <i class="bi bi-heart me-1"></i>追加する
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- 登録済み → チェックバッジ（ボーナス付与済み） -->
+                        <div th:if="${fortuneResult.alreadyFavorited}" class="favorited-badge">
+                            <i class="bi bi-heart-fill" style="color: #22c55e;"></i>
+                            <span>お気に入り済み</span>
+                            <span style="margin-left: auto; font-size: 0.75rem; color: #ca8a04; font-weight: 700;"
+                                th:text="${'+' + fortuneBonusPoint + ' pt 獲得済み'}">+3000 pt 獲得済み</span>
+                        </div>
+
+                    </th:block>
+
+                    <!-- 翌日の案内 -->
+                    <p class="next-draw-note mb-4">おみくじは翌日0時以降にまた引けます</p>
+
+                    <!-- ナビボタン -->
+                    <div class="d-flex flex-column gap-2 align-items-center">
+                        <a th:href="@{/}" class="btn-back">
+                            <i class="bi bi-house me-1"></i>トップページへ戻る
+                        </a>
+                    </div>
+
+                </div>
+                <!-- /result-card -->
+
+            </div>
+            <!-- /omikuji-container -->
+        </div>
+
+    </main>
+</body>
+
+</html>

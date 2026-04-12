@@ -6,18 +6,18 @@
 	<!-- 指定したユーザーが指定したスポットにレビュー投稿済みか確認 -->
 	<select id="existsByUserIdAndSpotId" resultType="boolean">
 		SELECT EXISTS (
-		SELECT 1
-		FROM reviews
-		WHERE user_id = #{userId}
-		AND spot_id = #{spotId}
+    		SELECT 1
+    		FROM reviews
+    		WHERE user_id = #{userId}
+    		AND spot_id = #{spotId}
 		)
 	</select>
 
 	<!-- 【UPDATE】レビュー編集 -->
 	<update id="update"
 		parameterType="com.example.nagahoribashi_walk.entity.Review">
-		UPDATE reviews SET rating = #{rating},comment =
-		#{comment}
+		UPDATE reviews
+        SET rating = #{rating}, comment = #{comment}, updated_at = CURRENT_TIMESTAMP
 		WHERE user_id = #{userId}
 		AND spot_id = #{spotId}
 	</update>
@@ -26,8 +26,7 @@
 	<delete id="delete">
 		DELETE FROM reviews
 		WHERE user_id = #{userId}
-		AND
-		spot_id = #{spotId}
+		AND spot_id = #{spotId}
 
 	</delete>
 
@@ -40,22 +39,21 @@
 	<select id="findById"
 		resultType="com.example.nagahoribashi_walk.entity.Review">
 		SELECT
-		id,
-		user_id,
-		spot_id,
-		rating,
-		comment,
-		created_at,
-		updated_at
+    		id,
+    		user_id,
+    		spot_id,
+    		rating,
+    		comment,
+    		created_at,
+    		updated_at
 		FROM reviews
 		WHERE id = #{id}
 	</select>
 
 	<!--【insert】レビュー投稿　 -->
 	<insert id="insert" parameterType="com.example.nagahoribashi_walk.entity.Review">
-		INSERT INTO reviews (user_id, spot_id, rating,
-		comment)values(#{userId},
-		#{spotId}, #{rating}, #{comment})
+		INSERT INTO reviews (user_id, spot_id, rating, comment)
+        VALUES (#{userId}, #{spotId}, #{rating}, #{comment})
 	</insert>
 
 	<select id="findAllForAdminByKeyword" resultType="com.example.nagahoribashi_walk.dto.AdminReviewRow">
@@ -68,10 +66,8 @@
 			r.created_at
 		FROM
 			reviews r
-		LEFT JOIN spots s
-		ON r.spot_id = s.id
-		LEFT JOIN users u
-		ON r.user_id = u.id
+		LEFT JOIN spots s ON r.spot_id = s.id
+		LEFT JOIN users u ON r.user_id = u.id
 		<if test="keyword != null and keyword != ''">
 			WHERE
 				r.comment LIKE CONCAT('%', #{keyword}, '%') OR
@@ -85,8 +81,7 @@
 
 	<select id="countForAdminByKeyword" resultType="long">
 	    SELECT COUNT(*)
-		FROM
-			reviews r
+		FROM reviews r
 		LEFT JOIN spots s
 		ON r.spot_id = s.id
 		LEFT JOIN users u

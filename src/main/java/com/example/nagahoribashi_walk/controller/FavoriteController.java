@@ -37,7 +37,10 @@ public class FavoriteController {
             @AuthenticationPrincipal LoginUser loginUser,
             RedirectAttributes redirectAttributes) {
 
-        favoriteService.addFavorite(loginUser.getId(), spotId);
+        int pointDelta = favoriteService.addFavorite(loginUser.getId(), spotId);
+        if (pointDelta > 0) {
+            redirectAttributes.addFlashAttribute("message", "お気に入りに追加しました。+" + pointDelta + " ptゲット！");
+        }
 
         // returlUrlは必ず内部Urlになるように(セキュリティ対策)
         if (MyStringUtils.isInternalPath(returnUrl)) {
@@ -56,7 +59,10 @@ public class FavoriteController {
             @AuthenticationPrincipal LoginUser loginUser,
             RedirectAttributes redirectAttributes) {
 
-        favoriteService.removeFavorite(loginUser.getId(), spotId);
+        int pointDelta = favoriteService.removeFavorite(loginUser.getId(), spotId);
+        if (pointDelta < 0) {
+            redirectAttributes.addFlashAttribute("message", "お気に入りを解除しました。" + pointDelta + " pt");
+        }
 
         if (MyStringUtils.isInternalPath(returnUrl)) {
             redirectAttributes.addAttribute("returnUrl", returnUrl);
@@ -75,7 +81,10 @@ public class FavoriteController {
             RedirectAttributes redirectAttributes,
             Model model) {
 
-        favoriteService.removeFavorite(loginUser.getId(), spotId);
+        int pointDelta = favoriteService.removeFavorite(loginUser.getId(), spotId);
+        if (pointDelta < 0) {
+            redirectAttributes.addFlashAttribute("message", "お気に入りを解除しました。" + pointDelta + " pt");
+        }
 
         redirectAttributes.addAttribute("tab", "favorites");
         redirectAttributes.addAttribute("edit", false);

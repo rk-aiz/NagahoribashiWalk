@@ -9,12 +9,13 @@ import com.example.nagahoribashi_walk.entity.Review;
 public interface ReviewService {
 
     /**
-     * レビュー情報を登録する
-     * 
-     * @param review   レビュー情報
-     * @param username ログイン中のユーザー名
+     * レビュー情報を登録する。投稿に成功した場合は付与したポイント数を返す。
+     *
+     * @param review レビュー情報
+     * @param userId ログイン中のユーザーID
+     * @return 付与したポイント数
      */
-    void addReview(Review review, Long userId);
+    int addReview(Review review, Long userId);
 
     /**
      * レビューIDに対応するレビューを1件取得する
@@ -33,12 +34,13 @@ public interface ReviewService {
     void updateReview(Review review, Long userId);
 
     /**
-     * レビューを削除する
-     * 
+     * レビューを削除する。投稿から一定時間以内の削除はポイントを減算し、その差分を返す。
+     *
      * @param reviewId レビューID
      * @param userId   ログイン中のユーザーID
+     * @return ポイント差分（減算なしは0）
      */
-    void deleteReview(Long reviewId, Long userId);
+    int deleteReview(Long reviewId, Long userId);
 
     /** 【管理者】レビューを削除する */
     void deleteForAdmin(Long reviewId);

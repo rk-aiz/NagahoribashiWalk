@@ -328,6 +328,18 @@
 		LIMIT #{limit}
 	</select>
 
+	<select id="findSummaryById"
+		resultType="com.example.nagahoribashi_walk.dto.SpotSummary">
+		SELECT
+			<include refid="spotSummaryColumns"/>
+		FROM spots s
+		<include refid="firstPhotoJoin"/>
+		<include refid="avgRatingJoin"/>
+		LEFT JOIN sub_categories sc ON sc.id = s.sub_category_id
+		LEFT JOIN categories c ON c.id = sc.category_id
+		WHERE s.id = #{id} AND s.deleted_at IS NULL
+	</select>
+
 	<!-- 全スポットの平均評価（小数第1位）を取得 -->
 	<select id="findAverageRatingAll" resultType="java.lang.Double">
 		SELECT

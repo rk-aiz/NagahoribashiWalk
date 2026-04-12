@@ -1,5 +1,6 @@
 package com.example.nagahoribashi_walk.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,15 +34,17 @@ public interface UserMapper {
      */
     void insert(User user);
 
-    /**
-     * @author 池田
-     *         プロフィールを更新する
-     */
+    /** プロフィールを更新する */
     void updateProfile(User user);
 
-    /**
-     * IDからUserを取得する
-     */
+    /** おみくじ用おすすめスポットIDと、おみくじを引いた日時を更新 */
+    void updateFortuneSlip(@Param("id") Long id, @Param("spotId") Long spotId,
+            @Param("lastDrawnAt") LocalDateTime lastDrawnAt);
+
+    /** ポイントを加算する */
+    void addPoint(@Param("id") Long id, @Param("point") int point);
+
+    /** IDからUserを取得する */
     Optional<User> findById(@Param("id") Long id);
 
     /**
