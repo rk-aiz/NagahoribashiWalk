@@ -7,6 +7,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 
 import lombok.RequiredArgsConstructor;
 
@@ -91,10 +92,13 @@ public class SecurityConfig {
                 // ★アクセス制御
                 .authorizeHttpRequests(authz -> authz
                         // 認証不要のURL（非ログインユーザーも閲覧可能）
-                        .requestMatchers("/", "/about", "/spot/**", "/login", "/fortune", "/fortune/**",
+                        .requestMatchers("/", "/about", "/spot/**", "/login",
                                 "/register", "/register/**", "/unsubscribe/complete",
                                 "/error", "/error/**", "/403")
                         .permitAll()
+                        // おみくじは管理者以外でアクセスしてください
+                        .requestMatchers("/fortune", "/fortune/**")
+                        .access(new WebExpressionAuthorizationManager("!hasRole('ADMIN')"))
                         // CSS・JS・画像などの静的リソースは認証不要
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         // アップロード画像も認証不要

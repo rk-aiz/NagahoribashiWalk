@@ -98,8 +98,7 @@ CREATE TABLE users (
 	enabled BOOLEAN DEFAULT TRUE,              -- 管理者による一時的な無効化フラグ（論理削除とは別）
 	point NUMERIC NOT NULL DEFAULT 0,
     last_drawn_at TIMESTAMP,                                             -- 直近におみくじを引いた日時
-    recommended_spot_id INTEGER REFERENCES spots(id) ON DELETE SET NULL, -- おみくじでおすすめされたスポット
-    fortune_favorite_rewarded BOOLEAN NOT NULL DEFAULT FALSE             -- おみくじのお気に入りボーナスを付与済みか
+    recommended_spot_id INTEGER REFERENCES spots(id) ON DELETE SET NULL -- おみくじでおすすめされたスポット
 );
 
 -- レビュー（5段階評価＋コメント）

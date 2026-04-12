@@ -52,7 +52,4 @@ public class User implements Serializable {
 
     // おみくじ後におすすめされたスポットのID
     private Long recommendedSpotId;
-
-    // おみくじのお気に入りボーナスを付与済みか（draw()時にFALSEにリセット）
-    private boolean fortuneFavoriteRewarded;
 }

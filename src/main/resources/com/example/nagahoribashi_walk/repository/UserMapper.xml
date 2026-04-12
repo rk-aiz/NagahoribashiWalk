@@ -7,7 +7,7 @@
 		resultType="com.example.nagahoribashi_walk.entity.User">
 		SELECT id, username, password, email, role, display_name, point,
 			deleted_at, created_at, updated_at, enabled,
-			last_drawn_at, recommended_spot_id, fortune_favorite_rewarded
+			last_drawn_at, recommended_spot_id
 		FROM users
 		WHERE username = #{username} AND deleted_at IS NULL
 	</select>
@@ -27,8 +27,7 @@
             updated_at,
             enabled,
             last_drawn_at,
-            recommended_spot_id,
-            fortune_favorite_rewarded
+            recommended_spot_id
 		FROM users
 		WHERE id = #{id} AND deleted_at IS NULL
 	</select>
@@ -82,8 +81,7 @@
 		UPDATE users
 		SET
     		recommended_spot_id = #{spotId},
-            last_drawn_at = #{lastDrawnAt},
-            fortune_favorite_rewarded = FALSE
+            last_drawn_at = #{lastDrawnAt}
 		WHERE id = #{id} AND deleted_at IS NULL
 	</update>
 

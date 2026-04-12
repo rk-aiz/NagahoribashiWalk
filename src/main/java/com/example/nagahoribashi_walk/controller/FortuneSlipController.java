@@ -39,17 +39,18 @@ public class FortuneSlipController {
             @AuthenticationPrincipal LoginUser loginUser,
             Model model) {
 
-        // テスト中は何度も引ける TODO : 本番ではコメントアウト解除
-        // if (fortuneSlipService.isAlreadyDrawn(loginUser)) {
-        // return "redirect:/fortune-result";
-        // }
-
-        if (loginUser != null) {
-            model.addAttribute("moodSelection",
-                    fortuneSlipService.getMoodSelection(loginUser));
-            model.addAttribute("profile",
-                    userService.getProfileByUsername(loginUser.getUsername()));
+        if (loginUser == null) {
+            return "/user/fortune-slip";
         }
+
+        if (fortuneSlipService.isAlreadyDrawn(loginUser)) {
+            return "redirect:/fortune/result";
+        }
+
+        model.addAttribute("moodSelection",
+                fortuneSlipService.getMoodSelection(loginUser));
+        model.addAttribute("profile",
+                userService.getProfileByUsername(loginUser.getUsername()));
 
         return "/user/fortune-slip";
     }
@@ -59,6 +60,10 @@ public class FortuneSlipController {
     public String draw(
             @RequestParam(name = "themeId", required = false) Long themeId,
             @AuthenticationPrincipal LoginUser loginUser) {
+
+        if (loginUser == null) {
+            return "redirect:/fortune";
+        }
 
         fortuneSlipService.draw(themeId, loginUser);
 
@@ -71,6 +76,10 @@ public class FortuneSlipController {
             @RequestParam("spotId") Long spotId,
             @AuthenticationPrincipal LoginUser loginUser,
             RedirectAttributes redirectAttributes) {
+
+        if (loginUser == null) {
+            return "redirect:/fortune";
+        }
 
         int pointDelta = favoriteService.addFavorite(loginUser.getId(), spotId);
         if (pointDelta > 0) {
@@ -85,7 +94,7 @@ public class FortuneSlipController {
             @AuthenticationPrincipal LoginUser loginUser,
             Model model) {
 
-        if (!fortuneSlipService.isAlreadyDrawn(loginUser)) {
+        if (loginUser == null || !fortuneSlipService.isAlreadyDrawn(loginUser)) {
             return "redirect:/fortune";
         }
         model.addAttribute("fortuneResult",

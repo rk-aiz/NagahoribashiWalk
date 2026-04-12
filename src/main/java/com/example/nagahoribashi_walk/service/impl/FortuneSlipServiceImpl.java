@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +29,6 @@ import com.example.nagahoribashi_walk.type.FortuneRank;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Value;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -37,6 +37,8 @@ public class FortuneSlipServiceImpl implements FortuneSlipService {
     @Value("${fortune.bonus-point}")
     private int fortuneBonusPoint;
 
+    @Qualifier("serverStartupSeed")
+    private final Long serverSeed;
     private final UserMapper userMapper;
     private final FavoriteMapper favoriteMapper;
     private final FortuneThemeRepository fortuneThemeRepository;
@@ -102,7 +104,7 @@ public class FortuneSlipServiceImpl implements FortuneSlipService {
 
         Long recommendedSpotId = recommends.getFirst().getId();
 
-        // 推薦スポットIDと引いた日時をDBに保存（fortune_favorite_rewarded もリセットされる）
+        // 推薦スポットIDと引いた日時をDBに保存
         userMapper.updateFortuneSlip(loginUser.getId(), recommendedSpotId, drawnAt);
 
         // ランクに応じたポイントを付与
@@ -150,8 +152,7 @@ public class FortuneSlipServiceImpl implements FortuneSlipService {
 
     /** 気分選択肢をその日固定にするシード（日付ベース） */
     private long buildDailySeed(String preString) {
-        // return 31L * preString.hashCode() + LocalDate.now().toEpochDay();
-        return LocalDateTime.now().toEpochSecond(ZoneOffset.UTC); // テスト中はランダム TODO : 本番では削除
+        return (31L * preString.hashCode()) + serverSeed + LocalDate.now().toEpochDay();
     }
 
     /**
