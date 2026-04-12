@@ -51,9 +51,9 @@ com.example.nagahoribashi   ← ベースパッケージ （プロジェクト�
 
 | 処理内容     | プレフィックス        | 例                                                                                   |
 | ------------ | --------------------- | ------------------------------------------------------------------------------------ |
-| 一覧取得     | findAll               | findAll()                                                                            |
-| 1件取得      | findById              | findById(Long id)                                                                    |
-| ページで取得 | findByIdWithPaging    | findByIdWithPaging(Long id, @Param("offset") long offset, @Param("limit") int limit) |
+| 一覧取得     | findAll / getAll      | findAll()                                                                            |
+| 1件取得      | findById / getById    | findById(Long id)                                                                    |
+| ページで取得 | getPage                | getPage(Pageable pageable) |
 | 検索         | search / findBy○○     | searchByCategory(Long categoryId)                                                    |
 | 登録         | create / insert / add | create(Review review)                                                                |
 | 更新         | update                | update(Spot spot)                                                                    |
@@ -100,9 +100,9 @@ public class SpotController {
 ### ルール
 
 - `@Controller` を使用（REST APIではないので `@RestController` は使わない）
-- URLは名詞・複数形を基本とする: `/spots`, `/reviews`
+- URLは名詞・単数形を基本とする: `/spot`, `/review`
 - 画面表示は `@GetMapping`、データ送信は `@PostMapping`
-- PRG パターン: POST処理後は `return "redirect:/spots";` でリダイレクト
+- PRG パターン: POST処理後は `return "redirect:/spot";` でリダイレクト
 
 ---
 
@@ -127,8 +127,8 @@ public class SpotServiceImpl implements SpotService {
 
 ### ルール
 
-- インターフェース + 実装クラスの構成にする
-- `@Transactional` は更新系メソッドに付ける
+- サービス・リポジトリはインターフェース + 実装クラスの構成にする
+- `@Transactional` をサービス実装クラスに付ける
 
 ---
 
@@ -157,11 +157,12 @@ src/main/resources/mapper/SpotMapper.xml
 
 ### ルール
 
-- SQL は XML ファイルに書く（アノテーション方式は短い SQL のみ許可）
+- SQL は XML ファイルに書く
 - SELECT文では `SELECT *` を使わず、カラムを明示する
 - テーブル名・カラム名はスネークケース: `spots`, `created_at`
 - Java側のフィールド名はキャメルケース: `createdAt`
     - `application.properties` に `mybatis.configuration.map-underscore-to-camel-case=true` を設定
+- 1件取得の際はOptional<T>を使用し、サービスでチェック、コントローラーに想定外のNULLが渡らないようにする
 
 ---
 
@@ -180,7 +181,7 @@ src/main/resources/
 │   ├── user/
 │   │   ├── login.html         ← ログイン
 │   │   ├── register.html      ← 会員登録
-│   │   └── register_complete.html      ← 会員登録完了
+│   │   └── register-complete.html      ← 会員登録完了
 │   └── error/
 │       └── 404.html
 └── static/
@@ -215,7 +216,7 @@ src/main/resources/
 ### ブランチ戦略
 
 ```
-master      ← 本番（常に動く状態を維持）
+master      ← 常に動く状態を維持
   ├── feature/spot-list       ← スポット一覧機能
   ├── feature/login           ← ログイン機能
   └── feature/review          ← レビュー機能
@@ -227,7 +228,6 @@ master      ← 本番（常に動く状態を維持）
 - 機能ごとに `feature/○○` ブランチを切る
 - 作業完了後、`master` へ Pull Request を出す
 - マージ前に最低1人がレビューする
-- コンフリクトは発生した人が責任を持って解消する
 
 ### コミットメッセージ
 
