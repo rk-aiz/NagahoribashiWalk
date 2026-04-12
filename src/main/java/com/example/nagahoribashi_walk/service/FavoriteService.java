@@ -9,11 +9,11 @@ public interface FavoriteService {
 	
 		Page<FavoriteSummary> getPage(Long userId, Pageable pageable);
 	
-       //お気に入り登録
-	    void addFavorite(Long userId, Long spotId);
-	    
-	   //お気に入り削除
-	    void removeFavorite(Long userId, Long spotId);
+       //お気に入り登録。ポイントが変動した場合はその差分を返す（変動なしは0）
+	    int addFavorite(Long userId, Long spotId);
+
+	   //お気に入り削除。ポイントが変動した場合はその差分を返す（変動なしは0）
+	    int removeFavorite(Long userId, Long spotId);
 	    
 	   //お気に入り存在確認
 	    boolean isFavorite(Long userid, Long spotId);

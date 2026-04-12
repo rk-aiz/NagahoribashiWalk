@@ -6,33 +6,53 @@
 	<select id="findByUsername"
 		resultType="com.example.nagahoribashi_walk.entity.User">
 		SELECT id, username, password, email, role, display_name, point,
-			deleted_at, created_at, updated_at, enabled
+			deleted_at, created_at, updated_at, enabled,
+			last_drawn_at, recommended_spot_id
 		FROM users
 		WHERE username = #{username} AND deleted_at IS NULL
 	</select>
 
 	<select id="findById"
 		resultType="com.example.nagahoribashi_walk.entity.User">
-		SELECT id, username, password, email, role, display_name, point,
-			deleted_at, created_at, updated_at, enabled
+		SELECT
+            id,
+            username,
+            password,
+            email,
+            role,
+            display_name,
+            point,
+			deleted_at,
+            created_at,
+            updated_at,
+            enabled,
+            last_drawn_at,
+            recommended_spot_id
 		FROM users
 		WHERE id = #{id} AND deleted_at IS NULL
 	</select>
 
 	<!-- ユーザープロファイル取得 -->
-	<select id="findProfileByUsername"
-		resultType="com.example.nagahoribashi_walk.dto.UserProfile">
+	<select id="findProfileByUsername" resultType="com.example.nagahoribashi_walk.dto.UserProfile">
 		SELECT id, username, email, display_name, point, created_at
-		FROM
-			users
+		FROM users
 		WHERE username = #{username} AND deleted_at IS NULL AND enabled = true
 	</select>
 
 	<!-- ページネーション付き取得 -->
-	<select id="findAll"
-		resultType="com.example.nagahoribashi_walk.entity.User">
-		SELECT id, username, password, email, role, display_name, point, deleted_at,
-			created_at, updated_at, enabled
+	<select id="findAll" resultType="com.example.nagahoribashi_walk.entity.User">
+		SELECT 
+            id, 
+            username, 
+            password, 
+            email, 
+            role, 
+            display_name, 
+            point, 
+            deleted_at,
+			created_at, 
+            updated_at, 
+            enabled
 		FROM users
 		LIMIT #{limit} OFFSET #{offset}
 	</select>
@@ -40,17 +60,9 @@
 	<!-- ユーザーの新規追加 -->
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO users (
-			username,
-			password,
-			email,
-			role,
-			display_name
+			username, password, email, role, display_name
 		) VALUES (
-			#{username},
-			#{password},
-			#{email},
-			#{role},
-			#{displayName}
+			#{username}, #{password}, #{email}, #{role}, #{displayName}
 		)
 	</insert>
 
@@ -58,10 +70,26 @@
 	<update id="updateProfile">
 		UPDATE users
 		SET
-		email = #{email},
-		display_name = #{displayName}
-		WHERE username = #{username}
-		AND deleted_at IS NULL
+    		email = #{email},
+    		display_name = #{displayName},
+            updated_at = CURRENT_TIMESTAMP
+		WHERE username = #{username} AND deleted_at IS NULL
+	</update>
+
+	<!-- おみくじ用 おすすめスポットIDと引いた日時を更新。ボーナスフラグもリセットする -->
+	<update id="updateFortuneSlip">
+		UPDATE users
+		SET
+    		recommended_spot_id = #{spotId},
+            last_drawn_at = #{lastDrawnAt}
+		WHERE id = #{id} AND deleted_at IS NULL
+	</update>
+
+	<!-- おみくじ付与ポイントを加算 -->
+	<update id="addPoint">
+		UPDATE users
+		SET point = point + #{point}
+		WHERE id = #{id} AND deleted_at IS NULL
 	</update>
 
 	<!-- ユーザー数のカウント -->
@@ -80,23 +108,22 @@
 	</select>
 
 	<!-- 管理者用ユーザー一覧 -->
-	<select id="findAllForAdmin"
-		resultType="com.example.nagahoribashi_walk.dto.AdminUserRow">
+	<select id="findAllForAdmin" resultType="com.example.nagahoribashi_walk.dto.AdminUserRow">
 		SELECT
-		id,
-		username,
-		display_name AS displayName,
-		email,
-		role,
-		created_at AS createdAt,
-		updated_at AS updatedAt,
-		deleted_at AS deletedAt,
-		enabled
+    		id,
+    		username,
+    		display_name,
+    		email,
+    		role,
+    		created_at,
+    		updated_at,
+    		deleted_at,
+    		enabled
 		FROM users
 		<where>
-		<if test="includeDeleted == false">
-		deleted_at IS NULL
-		</if>
+    		<if test="includeDeleted == false">
+        		deleted_at IS NULL
+    		</if>
 		</where>
 		ORDER BY id
 		<choose>
@@ -107,7 +134,6 @@
 				DESC
 			</otherwise>
 		</choose>
-
 		LIMIT #{limit} OFFSET #{offset}
 	</select>
 

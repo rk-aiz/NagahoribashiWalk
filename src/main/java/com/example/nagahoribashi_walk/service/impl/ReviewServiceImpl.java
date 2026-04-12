@@ -1,5 +1,6 @@
 package com.example.nagahoribashi_walk.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -14,9 +15,12 @@ import com.example.nagahoribashi_walk.exception.ReviewAlreadyExistsException;
 import com.example.nagahoribashi_walk.exception.ReviewOperationException;
 import com.example.nagahoribashi_walk.repository.ReviewMapper;
 import com.example.nagahoribashi_walk.repository.SpotMapper;
+import com.example.nagahoribashi_walk.repository.UserMapper;
 import com.example.nagahoribashi_walk.service.ReviewService;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * レビュー関連のサービス
@@ -28,12 +32,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 
+    @Value("${review.post-point}")
+    private int reviewPostPoint;
+
+    @Value("${review.delete-penalty-window-hours}")
+    private int deletePenaltyWindowHours;
+
     private final ReviewMapper reviewMapper;
     private final SpotMapper spotMapper;
+    private final UserMapper userMapper;
 
-    /** レビューを投稿する */
+    /** レビューを投稿する。投稿に成功した場合は付与したポイント数を返す。 */
     @Override
-    public void addReview(Review review, Long userId) {
+    public int addReview(Review review, Long userId) {
 
         // 1. スポットが存在するか確認
         if (!spotMapper.existsBySpotId(review.getSpotId())) {
@@ -50,6 +61,10 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 4. 保存処理を実行
         reviewMapper.insert(review);
+
+        // 5. ポイント付与
+        userMapper.addPoint(userId, reviewPostPoint);
+        return reviewPostPoint;
     }
 
     /**
@@ -90,9 +105,9 @@ public class ReviewServiceImpl implements ReviewService {
         reviewMapper.update(review);
     }
 
-    /** レビューを削除する */
+    /** レビューを削除する。投稿から一定時間以内の削除はポイントを減算し、その差分を返す。 */
     @Override
-    public void deleteReview(Long reviewId, Long userId) {
+    public int deleteReview(Long reviewId, Long userId) {
 
         // 削除対象のレビューを取得
         Review existingReview = reviewMapper.findById(reviewId).orElseThrow();
@@ -104,6 +119,14 @@ public class ReviewServiceImpl implements ReviewService {
 
         // userId と spotId を条件に削除を実行
         reviewMapper.delete(userId, existingReview.getSpotId());
+
+        // 投稿からウィンドウ時間以内の削除はポイントを減算する
+        if (existingReview.getCreatedAt() != null
+                && existingReview.getCreatedAt().isAfter(LocalDateTime.now().minusHours(deletePenaltyWindowHours))) {
+            userMapper.addPoint(userId, -reviewPostPoint);
+            return -reviewPostPoint;
+        }
+        return 0;
     }
 
     /**  */

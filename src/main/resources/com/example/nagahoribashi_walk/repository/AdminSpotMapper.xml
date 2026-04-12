@@ -207,7 +207,8 @@
 			details = #{details},
 			website_url = #{websiteUrl},
 			gmap_url = #{gmapUrl},
-			keywords = #{keywords}
+			keywords = #{keywords},
+            updated_at = CURRENT_TIMESTAMP
 		WHERE id = #{id}
 	</update>
 

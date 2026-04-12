@@ -56,7 +56,9 @@
 
         <!-- 左: サムネイル -->
         <a th:href="@{/spot/{id}(id=${fav.spotId})}" class="d-block flex-shrink-0">
-            <img th:src="@{/uploads/{url}(url=${fav.photoUrl})}" th:alt="${fav.spotName}" class="fav-row-img">
+            <img th:src="${fav.photoUrl != null} ? @{/uploads/{url}(url=${fav.photoUrl})} : @{/images/no-image.svg}"
+                 th:onerror="|this.onerror=null; this.src='[[@{/images/no-image.svg}]]';|"
+                 th:alt="${fav.spotName}" class="fav-row-img">
         </a>
 
         <!-- 右: スポット情報 -->

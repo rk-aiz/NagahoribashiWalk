@@ -56,8 +56,8 @@ public class ReviewController {
         BeanUtils.copyProperties(form, review);
         review.setSpotId(spotId);
 
-        reviewService.addReview(review, loginUser.getId());
-        redirectAttributes.addFlashAttribute("message", "レビューを投稿しました。");
+        int pointDelta = reviewService.addReview(review, loginUser.getId());
+        redirectAttributes.addFlashAttribute("message", "レビューを投稿しました。+" + pointDelta + " pt ゲット！");
 
         return "redirect:/spot/" + spotId;
     }
@@ -107,8 +107,12 @@ public class ReviewController {
 
         Review existing = reviewService.getById(reviewId);
 
-        reviewService.deleteReview(reviewId, loginUser.getId());
-        redirectAttributes.addFlashAttribute("message", "レビューを削除しました。");
+        int pointDelta = reviewService.deleteReview(reviewId, loginUser.getId());
+        if (pointDelta < 0) {
+            redirectAttributes.addFlashAttribute("message", "レビューを削除しました。" + pointDelta + " pt");
+        } else {
+            redirectAttributes.addFlashAttribute("message", "レビューを削除しました。");
+        }
 
         return "redirect:/spot/" + existing.getSpotId();
     }

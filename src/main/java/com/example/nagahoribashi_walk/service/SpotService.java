@@ -26,7 +26,7 @@ public interface SpotService {
     Page<SpotSummary> getPage(Pageable pageable);
 
     /** 【一般】キーワードにヒットしたスポットをページネーションで取得 */
-    Page<SpotSummary> searchByKeywords(String keyword, Pageable pageable);
+    Page<SpotSummary> searchByKeywords(String keywords, Pageable pageable);
 
     /** 【一般】おすすめスポットを取得 */
     List<SpotSummary> getRecommendedSpots();
@@ -38,6 +38,6 @@ public interface SpotService {
     Page<SpotSummary> getPageBySubCategoryId(Long subcategoryId, Pageable pageable);
 
     /** スポットIDとキーワードをもとに、関連するスポットを取得する */
-    List<SpotSummary> findRelatedSpots(Long spotId, String keyword);
+    List<SpotSummary> findRelatedSpots(Long spotId, String keywords);
 
 }

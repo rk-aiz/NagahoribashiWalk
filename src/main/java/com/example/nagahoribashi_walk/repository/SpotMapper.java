@@ -50,6 +50,8 @@ public interface SpotMapper {
 
     List<SpotSummary> findRandomSpots(@Param("limit") int limit);
 
+    Optional<SpotSummary> findSummaryById(@Param("id") Long id);
+
     /** スポット数をカウントする */
     long count();
 

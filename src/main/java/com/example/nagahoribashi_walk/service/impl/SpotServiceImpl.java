@@ -1,6 +1,5 @@
 package com.example.nagahoribashi_walk.service.impl;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -13,11 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
+import com.example.nagahoribashi_walk.exception.ResourceNotFoundException;
 import com.example.nagahoribashi_walk.repository.SpotMapper;
 import com.example.nagahoribashi_walk.service.SpotService;
 import com.example.nagahoribashi_walk.util.MyListUtils;
 import com.example.nagahoribashi_walk.util.MyStringUtils;
 
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -36,6 +37,7 @@ public class SpotServiceImpl implements SpotService {
      * スポット一覧(ページ)を返す
      */
     @Override
+    @Transactional(readOnly = true)
     public Page<SpotSummary> getPage(Pageable pageable) {
 
         // スポットの総数を取得する
@@ -50,6 +52,7 @@ public class SpotServiceImpl implements SpotService {
 
     /** トップページおすすめ３件表示用 */
     @Override
+    @Transactional(readOnly = true)
     public List<SpotSummary> getRecommendedSpots() {
 
         int rand = ThreadLocalRandom.current().nextInt(3);
@@ -64,6 +67,7 @@ public class SpotServiceImpl implements SpotService {
 
     /** カテゴリIDに対応したスポット一覧を取得(ページ) */
     @Override
+    @Transactional(readOnly = true)
     public Page<SpotSummary> getPageByCategoryId(Long categoryId, Pageable pageable) {
 
         List<SpotSummary> content = spotMapper.findByCategoryId(
@@ -76,6 +80,7 @@ public class SpotServiceImpl implements SpotService {
 
     /** サブテゴリIDに対応したスポット一覧を取得(ページ) */
     @Override
+    @Transactional(readOnly = true)
     public Page<SpotSummary> getPageBySubCategoryId(Long subCategoryId, Pageable pageable) {
 
         List<SpotSummary> content = spotMapper.findBySubCategoryId(
@@ -92,11 +97,12 @@ public class SpotServiceImpl implements SpotService {
      * @param loginUserId は、該当スポットについたレビューの中に、自身のレビューがあるか判定する用
      */
     @Override
-    public SpotDetail getById(Long id, Long loginUserId) {
-        spotMapper.incrementPvCount(id);
+    public SpotDetail getById(Long id, @Nullable Long loginUserId) {
 
         SpotDetail spotDetail = spotMapper.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("指定したスポットが存在しません。id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("指定したスポットが存在しません", id));
+
+        spotMapper.incrementPvCount(id);
 
         if (loginUserId != null) {
             spotDetail.getReviews().stream().forEach(review -> {
@@ -116,15 +122,16 @@ public class SpotServiceImpl implements SpotService {
 
     /** スポットIDとキーワードをもとに、関連するスポットを取得する */
     @Override
-    public List<SpotSummary> findRelatedSpots(Long spotId, String keyword) {
+    @Transactional(readOnly = true)
+    public List<SpotSummary> findRelatedSpots(Long spotId, String keywords) {
 
-        if (keyword == null || keyword.isBlank()) {
+        if (keywords == null || keywords.isBlank()) {
             return List.of();
         }
 
         return spotMapper.findRandomByAnyKeywords(
                 spotId,
-                Arrays.stream(keyword.split(","))
+                Arrays.stream(keywords.split(","))
                         .map(String::trim)
                         .filter(k -> !k.isEmpty())
                         .toList(),
@@ -133,6 +140,7 @@ public class SpotServiceImpl implements SpotService {
 
     /** ページとキーワードに対応したスポット一覧を返す */
     @Override
+    @Transactional(readOnly = true)
     public Page<SpotSummary> searchByKeywords(String keywords, Pageable pageable) {
 
         // 1. 空文字検索は全取得にフォールバック

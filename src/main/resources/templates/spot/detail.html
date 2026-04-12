@@ -24,23 +24,29 @@
     <main class="flex-grow-1 pt-3 pb-4 pb-md-5">
         <div class="container" style="max-width: 1100px;">
             <div class="mb-3 ms-4">
-                <th:block th:if="${returnUrl != null}">
+                <th:block th:if="${returnUrl != null and returnUrl != '/'}">
                     <a th:href="${returnUrl}"
                         class="text-decoration-none text-secondary small d-inline-flex align-items-center">
                         <i class="bi bi-arrow-left me-1"></i>&nbsp;一覧へ戻る
                     </a>
                 </th:block>
+                <th:block th:if="${returnUrl != null and returnUrl == '/'}">
+                    <a th:href="${returnUrl}"
+                        class="text-decoration-none text-secondary small d-inline-flex align-items-center">
+                        <i class="bi bi-arrow-left me-1"></i>&nbsp;トップへ戻る
+                    </a>
+                </th:block>
                 <th:block th:unless="${returnUrl != null}">
                     <button type="button" onclick="history.back()"
                         class="btn btn-link text-secondary small d-inline-flex align-items-center p-0">
-                        <i class="bi bi-arrow-left me-1"></i>戻る
+                        <i class="bi bi-arrow-left me-1"></i>&nbsp;戻る
                     </button>
                 </th:block>
             </div>
             <div class="detail-card p-4 p-md-5 mb-4">
                 <div class="mb-4">
 
-                    <!-- タイトル行: スポット名 + お気に入りボタン -->
+                    <!--// タイトル行: スポット名 + お気に入りボタン //-->
                     <div class="d-flex justify-content-between align-items-start gap-3">
                         <h1 class="fw-bold mb-2 d-flex align-items-start">
                             <i class="bi bi-geo-alt me-2" aria-hidden="true"
@@ -99,19 +105,20 @@
                                     </form>
                                 </th:block>
                             </th:block>
-                        </div><!-- /ボタングループ -->
+                        </div>
                     </div>
 
-                </div><!-- /mb-4 -->
+                </div>
 
                 <div class="row g-4">
-                    <!-- 左: 画像・説明・営業情報 -->
+                    <!--// 左: 画像・説明・営業情報 //-->
                     <div class="col-lg-7">
                         <div class="subtle-box p-4 h-100">
                             <div th:if="${spotDetail.images != null and !#lists.isEmpty(spotDetail.images)}"
                                 class="mt-1 mb-4">
                                 <div class="photo-frame">
                                     <img th:src="${'/uploads/' + spotDetail.images[0].photoUrl}" alt="スポット画像"
+                                        th:onerror="|this.onerror=null; this.src='[[@{/images/no-image.svg}]]';|"
                                         style="width: 100%; height: 320px; object-fit: cover; border-radius: 0.5rem;">
                                 </div>
                             </div>
@@ -149,11 +156,11 @@
                         </div>
                     </div>
 
-                    <!-- 右: バッジ・評価・公式サイト・住所・地図 -->
+                    <!--// 右: バッジ・評価・公式サイト・住所・地図 //-->
                     <div class="col-lg-5">
                         <div class="subtle-box p-4 h-100 d-flex flex-column">
 
-                            <!-- バッジ・評価・キーワード -->
+                            <!--// バッジ・評価・キーワード //-->
                             <div class="d-flex flex-column gap-2 mt-3">
                                 <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
                                     <span class="rounded-pill d-inline-flex align-items-center gap-1"
@@ -189,7 +196,7 @@
 
                             <hr class="my-3">
 
-                            <!-- 公式サイト -->
+                            <!--// 公式サイト //-->
                             <th:block
                                 th:if="${spotDetail.websiteUrl != null and !#strings.isEmpty(spotDetail.websiteUrl)}">
                                 <div class=" d-flex align-items-start gap-2">
@@ -203,7 +210,7 @@
                                 <hr class="my-3">
                             </th:block>
 
-                            <!-- 住所 -->
+                            <!--// 住所 //-->
                             <div class="d-flex align-items-start gap-2 mb-3">
                                 <i class="bi bi-geo-alt" style="color:#2563eb; margin-top:3px; flex-shrink:0;"></i>
                                 <div>
@@ -233,7 +240,8 @@
                 <div th:if="${spotDetail.images != null and spotDetail.images.size() > 0}" class="row g-3">
                     <div th:each="image, stat : ${spotDetail.images}" class="col-12 col-sm-6 col-lg-4">
                         <div class="photo-frame">
-                            <img th:src="${'/uploads/' + image.photoUrl}" alt="スポット画像">
+                            <img th:src="${'/uploads/' + image.photoUrl}" alt="スポット画像"
+                                th:onerror="|this.onerror=null; this.src='[[@{/images/no-image.svg}]]';|">
                         </div>
                     </div>
                 </div>
@@ -255,10 +263,10 @@
                     <div th:each="review : ${spotDetail.reviews}" th:id="'review-' + ${review.id}"
                         class="review-card p-4">
 
-                        <!-- 編集中ではないレビューは通常表示 -->
+                        <!--// 編集中ではないレビューは通常表示 //-->
                         <th:block th:if="${editReviewId == null or editReviewId != review.id}">
                             <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
-                                <!-- 左: アバター + 投稿者名 + 日付 + 評価 -->
+                                <!--// 左: アバター + 投稿者名 + 日付 + 評価 //-->
                                 <div class="d-flex align-items-center gap-2">
                                     <div class="rounded-circle d-flex align-items-center justify-content-center"
                                         style="width: 42px; height: 42px; background: #dbeafe; color: #2563eb;">
@@ -284,9 +292,9 @@
                                     </div>
                                 </div>
 
-                                <!-- 右: ボタン群 -->
+                                <!--// 右: ボタン群 //-->
                                 <div class="d-flex align-items-center gap-1">
-                                    <!-- 自分のレビューだけ編集・削除ボタンを表示 -->
+                                    <!--// 自分のレビューだけ編集・削除ボタンを表示 //-->
                                     <th:block th:if="${review.isMyReview}">
                                         <a th:href="@{'/spot/' + ${spotDetail.id} + '?editReviewId=' + ${review.id} + '#review-' + ${review.id}}"
                                             class="btn btn-sm btn-outline-primary">
@@ -300,7 +308,7 @@
                                         </form>
                                     </th:block>
 
-                                    <!-- 管理者削除ボタン -->
+                                    <!--// 管理者削除ボタン //-->
                                     <div sec:authorize="hasRole('ADMIN')">
                                         <form th:action="@{/admin/review/delete/form-spot}" method="post"
                                             onsubmit="return confirm('このレビューを削除しますか？');">
@@ -319,7 +327,7 @@
                             </p>
                         </th:block>
 
-                        <!-- 編集中のレビューだけフォーム表示 -->
+                        <!--// 編集中のレビューだけフォーム表示 //-->
                         <th:block th:if="${editReviewId != null and editReviewId == review.id}">
                             <form th:action="@{/review/{id}/update(id=${review.id})} + '#review-' + ${review.id}"
                                 method="post" th:object="${reviewForm}">
@@ -375,7 +383,7 @@
                 </div>
 
                 <div class="mt-4">
-                    <!-- 未ログイン時の案内 -->
+                    <!--// 未ログイン時の案内 //-->
                     <div sec:authorize="isAnonymous()" class="alert alert-info mb-0">
                         レビューを投稿するには
                         <a th:href="@{/login(returnUrl=@{/spot/{id}(id=${spotDetail.id})})}"
@@ -383,14 +391,14 @@
                         してください
                     </div>
 
-                    <!-- 投稿済みの場合は非表示 -->
+                    <!--// 投稿済みの場合は非表示 //-->
                     <div sec:authorize="hasRole('USER')"
                         th:if="${spotDetail.reviews == null or #lists.isEmpty(spotDetail.reviews.?[isMyReview])}">
                         <h5 class="fw-bold mb-3" style="color: #1e293b;">レビューを投稿する</h5>
                         <div class="subtle-box p-4">
                             <form th:action="@{/review/post/{id}(id=${spotDetail.id})}" method="post"
                                 th:object="${reviewForm}">
-                                <!-- 評価 -->
+                                <!--// 評価 //-->
                                 <div class="mb-3">
                                     <label for="rating" class="form-label fw-semibold"
                                         style="font-size: 0.875rem;">評価</label>
@@ -410,7 +418,7 @@
                                         th:errors="*{rating}"></div>
                                 </div>
 
-                                <!-- コメント -->
+                                <!--// コメント //-->
                                 <div class="mb-3">
                                     <label for="comment" class="form-label fw-semibold"
                                         style="font-size: 0.875rem;">コメント</label>
@@ -429,7 +437,7 @@
                 </div>
             </div>
 
-            <!-- 関連スポット -->
+            <!--// 関連スポット //-->
             <div class="section-card p-4 p-md-5 mt-4" th:if="${!#lists.isEmpty(relatedSpots)}">
 
                 <h2 class="section-title">

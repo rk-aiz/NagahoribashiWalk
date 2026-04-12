@@ -96,7 +96,7 @@
                         <div class="photo-card">
                             <!-- サムネイル -->
                             <img th:src="${'/uploads/' + photo.photoUrl}" th:alt="'画像 ' + ${photo.id}"
-                                onerror="this.src='/images/no-image.png'">
+                                th:onerror="|this.onerror=null; this.src='[[@{/images/no-image.svg}]]';|">
 
                             <!-- フッター：並び替え ＋ 表示順 ＋ 削除ボタン -->
                             <div class="photo-card-footer">

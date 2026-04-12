@@ -7,6 +7,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 
 import lombok.RequiredArgsConstructor;
 
@@ -57,7 +58,7 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         // ログイン成功時は管理者ダッシュボードへ
                         // hasAuthority("ADMIN") で弾かれるため、ここに到達するのはADMINのみ
-                        .defaultSuccessUrl("/admin")
+                        .defaultSuccessUrl("/admin", true)
                         // ログイン失敗時は管理者ログイン画面にエラーパラメーター付きで戻る
                         .failureUrl("/admin/login?error"))
 
@@ -95,6 +96,9 @@ public class SecurityConfig {
                                 "/register", "/register/**", "/unsubscribe/complete",
                                 "/error", "/error/**", "/403")
                         .permitAll()
+                        // おみくじは管理者以外でアクセスしてください
+                        .requestMatchers("/fortune", "/fortune/**")
+                        .access(new WebExpressionAuthorizationManager("!hasRole('ADMIN')"))
                         // CSS・JS・画像などの静的リソースは認証不要
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         // アップロード画像も認証不要

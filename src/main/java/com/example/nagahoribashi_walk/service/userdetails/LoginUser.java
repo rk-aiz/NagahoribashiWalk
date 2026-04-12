@@ -1,8 +1,11 @@
 package com.example.nagahoribashi_walk.service.userdetails;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,6 +48,18 @@ public class LoginUser implements UserDetails, Serializable {
 
     public String getDisplayName() {
         return user.getDisplayName();
+    }
+
+    public BigDecimal getPoint() {
+        return user.getPoint();
+    }
+
+    public Optional<LocalDateTime> getLastDrawnAt() {
+        return Optional.ofNullable(user.getLastDrawnAt());
+    }
+
+    public Optional<Long> getRecommendedSpotId() {
+        return Optional.ofNullable(user.getRecommendedSpotId());
     }
 
     @Override
