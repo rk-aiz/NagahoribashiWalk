@@ -7,16 +7,13 @@ import lombok.Data;
 /**
  * @author 池田
  */
-
 @Data
 public class SpotDetail {
 
-    // スポットID
-    // s.id
+    /** スポットID s.id */
     private Long id;
 
-    // 店舗名
-    // s.spot_name
+    /** 店舗名 s.spot_name */
     private String spotName;
 
     // 平均評価。レビュー0件時は null
@@ -65,6 +62,9 @@ public class SpotDetail {
     // サブカテゴリ名
     // sc.name
     private String subCategoryName;
+
+    // カテゴリ色
+    private String categoryColor;
 
     // 画像一覧
     private List<SpotPhotoDTO> images;

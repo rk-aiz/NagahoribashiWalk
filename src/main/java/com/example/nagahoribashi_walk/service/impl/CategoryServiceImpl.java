@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.nagahoribashi_walk.dto.AdminCategoryRow;
+import com.example.nagahoribashi_walk.util.ColorUtils;
 import com.example.nagahoribashi_walk.exception.CategoryAlreadyExistsException;
 import com.example.nagahoribashi_walk.dto.NavCategory;
 import com.example.nagahoribashi_walk.dto.NavSubCategory;
@@ -76,24 +77,28 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    /** 新規カテゴリの登録 */ 
+    /** 新規カテゴリの登録 */
     @Override
     public void insertCategory(Category category) {
         if (categoryMapper.existsByCategoryName(category.getName())) {
             throw new CategoryAlreadyExistsException("カテゴリ名が既に存在します。");
         }
+        if (category.getColor() == null || category.getColor().isBlank()) {
+            category.setColor(ColorUtils.generateReadableColor());
+        }
         categoryMapper.insert(category);
     }
 
+    /** カテゴリを更新 */
     @Override
     public void updateCategory(Category category) {
-        if (categoryMapper.existsByCategoryName(category.getName())) {
+        if (categoryMapper.existsByCategoryNameExcludingId(category.getName(), category.getId())) {
             throw new CategoryAlreadyExistsException("カテゴリ名が既に存在します。");
         }
         categoryMapper.update(category);
     }
 
-    // 削除
+    /** カテゴリを削除 */
     @Override
     public void deleteCategory(Long id) {
         // spots の移動・デフォルトサブカテゴリの削除・非デフォルトサブカテゴリの移動は
@@ -103,6 +108,7 @@ public class CategoryServiceImpl implements CategoryService {
         normalizeDisplayOrder();
     }
 
+    /** カテゴリ表示順を正規化する */
     private void normalizeDisplayOrder() {
         List<Category> categories = categoryMapper.findAllEntities();
         boolean requireUpdate = false;

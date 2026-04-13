@@ -29,6 +29,9 @@ public class AdminSubCategoryRow {
     /** trueは未分類カテゴリ・フォールバック先・削除不可 */
     private boolean isDefault;
 
+    /** 対象スポット数 */
+    private int spotCount;
+
     /** Thymeleafから参照用 */
     public boolean getIsDefault() {
         return this.isDefault;

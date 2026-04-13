@@ -89,7 +89,7 @@ public class AdminCategoryController {
         BeanUtils.copyProperties(form, category);
 
         categoryService.updateCategory(category);
-        redirectAttributes.addFlashAttribute("message", "カテゴリー名を更新しました。");
+        redirectAttributes.addFlashAttribute("message", "カテゴリーを更新しました。");
         return "redirect:/admin/category/list";
     }
 

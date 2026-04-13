@@ -89,8 +89,8 @@
 
                 <!-- カテゴリヘッダー行 -->
                 <div class="category-header d-flex align-items-center gap-2">
-                    <i class="bi bi-tag text-secondary"></i>
-                    <span class="fw-semibold" th:text="${cat.name}">カテゴリ名</span>
+                    <i class="bi bi-tag" th:style="|color: ${cat.color};|"></i>
+                    <span class="fw-semibold" th:text="${cat.name}" th:style="|color: ${cat.color};|">カテゴリ名</span>
                     <span class="text-muted" style="font-size: 0.78rem;"
                         th:text="'（' + ${#lists.size(cat.subCategories)} + ' サブカテゴリ）'">
                         （サブカテゴリ数）
@@ -144,12 +144,14 @@
                     削除ボタンを disabled にすること
                 */-->
                 <div th:id="|cat-edit-${cat.id}|" class="d-none px-3 py-2 border-bottom bg-white">
-                    <form th:action="@{/admin/category/update}" method="post" class="d-flex gap-2 align-items-center">
+                    <form th:action="@{/admin/category/update}" method="post" class="d-flex gap-2 align-items-center flex-wrap">
                         <input type="hidden" name="isNew" value="false">
                         <input type="hidden" name="id" th:value="${cat.id}">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <input type="text" name="name" class="form-control form-control-sm" th:value="${cat.name}"
                             style="max-width: 240px;" required>
+                        <input type="color" name="color" class="form-control form-control-color form-control-sm"
+                            th:value="${cat.color}" title="カテゴリの色">
                         <input type="hidden" name="displayOrder" th:value="${cat.displayOrder}">
                         <button type="submit" class="btn btn-sm btn-primary">保存</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary"
@@ -168,6 +170,8 @@
 
                     <i class="bi bi-dash text-secondary me-2" style="font-size: 0.75rem;"></i>
                     <span th:text="${sub.name}">サブカテゴリ名</span>
+                    <span class="text-muted ms-1" style="font-size: 0.78rem;"
+                        th:text="'（' + ${sub.spotCount} + ' スポット）'">（xx スポット）</span>
 
                     <!-- デフォルトバッジ（スタブ: 名前で判定） -->
                     <span th:if="${sub.name == 'その他'}" class="badge-default-tag ms-2">デフォルト</span>

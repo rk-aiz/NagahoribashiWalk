@@ -36,6 +36,8 @@ public interface CategoryMapper {
 
     boolean existsByCategoryName(@Param("name") String name);
 
+    boolean existsByCategoryNameExcludingId(@Param("name") String name, @Param("id") Long id);
+
     /** 追加 */
     void insert(Category category);
 

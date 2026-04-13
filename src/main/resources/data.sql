@@ -27,18 +27,19 @@ INSERT INTO users (username, password, email, role, display_name, point) VALUES
 -- カテゴリ
 -- is_default=TRUE の「その他」はフォールバック先。display_order=NULL で常に末尾に表示。
 -- categories に INSERT するたびに add_default_sub_category トリガーが発火し、
--- 「未分類」サブカテゴリ（is_default=TRUE, display_order=NULL）を自動生成する。
-INSERT INTO categories (name, display_order, is_default) VALUES
-('その他', NULL, true),    -- フォールバック用デフォルトカテゴリ（削除不可）
-('グルメ', 1, false),
-('観光スポット', 2, false),
-('ショッピング', 3, false),
-('娯楽', 4, false),
-('カフェ', 5, false);
+-- 「その他」サブカテゴリ（is_default=TRUE, display_order=NULL）を自動生成する。
+INSERT INTO categories (name, display_order, is_default, color) VALUES
+('その他',         NULL, true,  '#94a3b8'), -- 落ち着いたグレー
+('グルメ',         1,    false, '#f97316'), -- オレンジ
+('観光スポット',   2,    false, '#3b82f6'), -- ブルー
+('ショッピング',   3,    false, '#ec4899'), -- ピンク
+('娯楽',           4,    false, '#8b5cf6'), -- パープル
+('カフェ',         5,    false, '#a38671'); -- ブラウン
+
 
 -- サブカテゴリ
 -- display_order はカテゴリ内での表示順（1始まりの連番）
--- is_default=TRUE の「未分類」はカテゴリINSERT時のトリガーが自動挿入するため、ここでは書かない
+-- is_default=TRUE の「その他」はカテゴリINSERT時のトリガーが自動挿入するため、ここでは書かない
 -- category_id の対応: 1=その他, 2=グルメ, 3=観光スポット, 4=ショッピング, 5=娯楽, 6=カフェ
 INSERT INTO sub_categories (category_id, name, display_order) VALUES
 (2, '居酒屋',             1),  -- グルメ
@@ -64,6 +65,8 @@ INSERT INTO sub_categories (category_id, name, display_order) VALUES
 (5, 'サウナ',             3),  -- 娯楽
 (6, 'カフェ',             1),  -- カフェ
 (6, '猫カフェ',           2);  -- 娯楽
+
+
 -- スポット
 -- sub_category_id はサブクエリで名前引きしている。
 -- 同名のサブカテゴリが複数カテゴリに存在する場合は意図しないIDが入る可能性があるため注意。
@@ -374,7 +377,33 @@ INSERT INTO reviews (user_id, spot_id, rating, comment) VALUES
 
 -- 高津公園 (spot_id=51)
 (3, 51, 4, '桜の季節に行きました。高津宮と合わせて散策するのがおすすめ。'),
-(5, 51, 4, '都会の中でほっと一息できる公園。静かで落ち着きます。');
+(5, 51, 4, '都会の中でほっと一息できる公園。静かで落ち着きます。'),
+
+-- 旧ヤム邸 空堀店 (spot_id=70)
+(2, 70, 5, '小麦粉なしとは思えないコクと深み！薬膳カレーなのに食べ応え満点でした。'),
+(4, 70, 5, '古民家の雰囲気が最高。スパイスの香りに包まれながら食べるカレーは格別。'),
+(6, 70, 4, '空堀商店街の雰囲気と相まって、タイムスリップした感覚になれる素敵なお店。'),
+
+-- エクチュア からほり「蔵」本店 (spot_id=71)
+(3, 71, 5, '蔵の空間が本当に特別。チョコレートスイーツの完成度が高くて感動しました。'),
+(5, 71, 4, 'レトロモダンな内装と一枚板カウンターがおしゃれ。チョコのケーキが絶品。'),
+
+-- 韓国ダイニング まにぽぽ (spot_id=72)
+(2, 72, 4, 'K-POPが流れる中で食べる韓国料理は最高の雰囲気！チーズタッカルビが特においしかった。'),
+(4, 72, 5, '韓国料理とK-POPの融合という独自コンセプトが面白い。友達と盛り上がれる店。'),
+(6, 72, 3, '料理は美味しいが、音楽が大きめなので静かに食べたい人には不向きかも。'),
+
+-- 星カフェ SPIKA (spot_id=73)
+(3, 73, 5, '完全予約制で少し敷居が高かったけど、星空演出が幻想的で来て大正解！デートに最高。'),
+(5, 73, 4, 'プラネタリウムのような空間でドリンクを楽しめる不思議な体験。予約を忘れずに。'),
+
+-- BOOK AND BED TOKYO SHINSAIBASI (spot_id=74)
+(2, 74, 4, '本に囲まれたおしゃれな空間。カフェ利用だけでも十分楽しめます。'),
+(4, 74, 5, 'ラウンジでゆっくり本を読みながら過ごす時間が最高。バーもあって夜も楽しめる。'),
+
+-- ネットカフェ・ダーツポパイ 心斎橋店 (spot_id=75)
+(3, 75, 4, 'ダーツが本格的で楽しい！友達グループで来ると盛り上がれる。料金もお手頃。'),
+(6, 75, 3, '設備はシンプルだけどコスパは良い。深夜でも使えるので急な時に助かります。');
 
 
 -- spot_photos (開発用初期データ)
@@ -458,7 +487,45 @@ INSERT INTO spot_photos (spot_id, photo_url, display_order) VALUES
 -- 公園
 (50, 'images/park_image_01.jpg', 1),      -- 御津公園（三角公園）
 (51, 'images/park_image_01.jpg', 1),      -- 高津公園
-(52, 'images/park_image_01.jpg', 1);      -- 道仁公園
+(52, 'images/park_image_01.jpg', 1),      -- 道仁公園
+
+(53, 'images/seven_eleven_1.jpg', 1),      -- セブン
+(54, 'images/seven_eleven_1.jpg', 1),      -- セブン
+(55, 'images/seven_eleven_1.jpg', 1),      -- セブン
+(56, 'images/seven_eleven_1.jpg', 2),      -- セブン
+(57, 'images/seven_eleven_1.jpg', 2),      -- セブン
+(58, 'images/seven_eleven_1.jpg', 2),      -- セブン
+
+(59, 'images/family_mart_1.jpg', 1),      -- ファミマ
+(60, 'images/family_mart_1.jpg', 1),      -- ファミマ
+(61, 'images/family_mart_1.jpg', 1),      -- ファミマ
+(62, 'images/family_mart_1.jpg', 1),      -- ファミマ
+(63, 'images/family_mart_1.jpg', 1),      -- ファミマ
+
+(64, 'images/lawson_1.jpg', 1),      -- ローソン
+(65, 'images/lawson_1.jpg', 1),      -- ローソン
+(66, 'images/lawson_1.jpg', 1),      -- ローソン
+(67, 'images/lawson_1.jpg', 1),      -- ローソン
+(68, 'images/lawson_1.jpg', 1),      -- ローソン
+(69, 'images/lawson_1.jpg', 1),      -- ローソン
+
+-- カレー（空堀）
+(70, 'images/curry_image_01.jpg', 1),     -- 旧ヤム邸 空堀店
+
+-- カフェ（空堀）
+(71, 'images/cafe_image_01.jpg', 1),      -- エクチュア からほり「蔵」本店
+
+-- 韓国料理
+(72, 'images/koreanfood_image_01.jpg', 1), -- 韓国ダイニング まにぽぽ
+
+-- カフェ（星空）
+(73, 'images/cafe_image_01.jpg', 1),      -- 星カフェ SPIKA
+
+-- カフェ・本・バー
+(74, 'images/cafe_image_01.jpg', 1),      -- BOOK AND BED TOKYO SHINSAIBASI
+
+-- ネットカフェ・娯楽
+(75, 'images/cafe_image_01.jpg', 1);      -- ネットカフェ・ダーツポパイ 心斎橋店
 
 
 

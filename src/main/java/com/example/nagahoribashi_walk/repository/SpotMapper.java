@@ -23,11 +23,13 @@ public interface SpotMapper {
     /** スポット一覧を取得する(ページネーション) */
     List<SpotSummary> findAll(@Param("offset") long offset, @Param("limit") int limit);
 
+    /** カテゴリIDから、List<SpotSummary>を取得 */
     List<SpotSummary> findByCategoryId(
             @Param("categoryId") Long categoryId,
             @Param("offset") long offset,
             @Param("limit") int limit);
 
+    /** サブカテゴリIDから、List<SpotSummary>を取得 */
     List<SpotSummary> findBySubCategoryId(
             @Param("subCategoryId") Long subCategoryId,
             @Param("offset") long offset,

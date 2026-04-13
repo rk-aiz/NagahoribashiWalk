@@ -21,6 +21,9 @@ public class Category {
     /** 表示順 */
     private Integer displayOrder;
 
+    /** 色 */
+    private String color;
+
     /** 「その他」扱いのカテゴリフラグ */
     private boolean isDefault;
 }

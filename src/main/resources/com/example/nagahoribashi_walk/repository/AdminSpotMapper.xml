@@ -16,6 +16,7 @@
 		r.average_rating,
 		sc.name AS sub_category_name,
 		c.name AS category_name,
+        c.color AS category_color,
 		s.pv_count,
 		s.updated_at
 	</sql>
