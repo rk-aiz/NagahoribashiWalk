@@ -38,7 +38,12 @@ out/
 
 ### files ###
 /uploads/
-src/main/resources/static/images/
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+
 
 # Eclipse
 .metadata/
