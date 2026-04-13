@@ -111,7 +111,11 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
                     .build());
         }
 
+        // 表示順を正規化する
+        normalizeDisplayOrder(spotId);
+
         return new SaveImagesResult(savedFilenames, errors);
+
     }
 
     /**
@@ -119,8 +123,19 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
      */
     @Override
     public void delete(Long id, Long spotId) {
+
+        // ファイルを削除
         spotPhotoMapper.delete(id);
 
+        // 表示順を正規化する
+        normalizeDisplayOrder(spotId);
+
+    }
+
+    /**
+     * 表示順を正規化する
+     */
+    private void normalizeDisplayOrder(Long spotId) {
         // display_orderを更新する
         List<SpotPhoto> photos = spotPhotoMapper.findAllBySpotId(spotId);
         boolean requireUpdate = false;

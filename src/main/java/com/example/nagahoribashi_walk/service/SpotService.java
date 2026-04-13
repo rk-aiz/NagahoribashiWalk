@@ -11,7 +11,7 @@ import com.example.nagahoribashi_walk.dto.SpotSummary;
 /**
  * スポット関連サービスのインターフェース
  * 
- * @author 海津
+ * @author 海津, 池田, 篠原, 大谷
  */
 public interface SpotService {
 
