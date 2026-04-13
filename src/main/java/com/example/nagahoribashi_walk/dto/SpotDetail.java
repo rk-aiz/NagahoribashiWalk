@@ -57,6 +57,8 @@ public class SpotDetail {
     // カテゴリ名
     // c.name
     private String categoryName;
+    
+    private String categoryColor;
 
     // サブカテゴリ名
     // sc.name

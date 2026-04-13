@@ -195,11 +195,22 @@
                         </form>
 
                         <!-- サブカテゴリ名編集 -->
-                        <button type="button" class="btn btn-sm btn-outline-secondary order-btn" title="名前を編集"
+                        <button＞ type="button" class="btn btn-sm btn-outline-secondary order-btn" title="名前を編集"
                             th:onclick="|toggleEdit('sub-edit-' + ${sub.id})|" th:disabled="${sub.isDefault}">
                             <i class="bi bi-pencil"></i>
-                        </button>
-
+                        </button>						   
+							   
+						<label for="color">カテゴリの色:</label>
+						<!-- type="color" を使うと、OS標準のカラーピッカーが開きます -->
+						<input type="color" id="color" name="color" 
+						       th:value="${category.color != null ? category.color : '#007bff'}" 
+						       class="form-control form-control-color">
+					    <span class="badge rounded-pill" 
+							   th:style="'background-color: ' + ${spot.category.color} + '; color: #ffffff;'">
+							   [[${spot.category.name}]]
+					    </span>
+						
+						
                         <!-- サブカテゴリ削除（デフォルトは無効） -->
                         <form th:action="@{/admin/subcategory/remove/{id}(id=${sub.id})}" method="post" class="m-0"
                             onsubmit="return confirm('このサブカテゴリを削除します。紐づくスポットは同カテゴリの「その他」へ移動されます。よろしいですか？')">

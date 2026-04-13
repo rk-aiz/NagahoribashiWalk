@@ -24,6 +24,7 @@
 		<result property="subCategoryName" column="subCategoryName" />
 		<result property="averageRating" column="averageRating" />
 		<result property="reviewCount" column="reviewCount" />
+		<result property="categoryColor" column="categoryColor" />
 
 		<!-- reviews 一覧 -->
 		<collection property="reviews"
@@ -55,6 +56,7 @@
 		r.average_rating,
 		sc.name AS sub_category_name,
 		c.name AS category_name,
+		c.color AS categoryColor,
 		s.keywords
 		FROM
 		spots s
@@ -87,8 +89,8 @@
 		s.spot_name,
 		sp.photo_url,
 		r.average_rating,
-		c.name AS
-		category_name,
+		c.name AS category_name,
+		c.color AS categoryColor,
 		sc.name AS sub_category_name,
 		s.keywords
 		FROM spots s
@@ -220,6 +222,7 @@
 		r.average_rating,
 		sc.name AS sub_category_name,
 		c.name AS category_name,
+		c.color AS categoryColor,
 		s.keywords
 		FROM
 		spots s
@@ -261,6 +264,7 @@
 		sp.photo_url,
 		r.average_rating,
 		sc.name AS sub_category_name,
+		c.color AS categoryColor,
 		c.name AS category_name,
 		s.keywords,
 		COUNT(f.id) AS favorite_count
@@ -314,6 +318,7 @@
 		r.average_rating,
 		sc.name AS sub_category_name,
 		c.name AS category_name,
+		c.color AS categoryColor,
 		s.keywords
 
 		FROM
@@ -367,6 +372,7 @@
 		r.average_rating,
 		sc.name AS sub_category_name,
 		c.name AS category_name,
+		c.color AS categoryColor,
 		s.updated_at
 		FROM
 		spots s
@@ -461,6 +467,7 @@
 		r.average_rating,
 		sc.name AS sub_category_name,
 		c.name AS category_name,
+		c.color AS categoryColor,
 		s.pv_count AS
 		pvCount,
 		s.updated_at
@@ -507,6 +514,7 @@
 		r.average_rating,
 		sc.name AS sub_category_name,
 		c.name AS category_name,
+		c.color AS categoryColor,
 		s.pv_count AS pvCount,
 		s.updated_at
 		FROM spots s

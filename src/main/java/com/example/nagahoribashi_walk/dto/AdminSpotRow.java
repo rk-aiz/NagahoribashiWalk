@@ -20,4 +20,5 @@ public class AdminSpotRow {
     private Double averageRating;
     private Integer pvCount;
     private LocalDateTime updatedAt;
+    private String categoryColor;
 }

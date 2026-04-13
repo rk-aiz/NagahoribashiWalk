@@ -36,4 +36,6 @@ public class SpotSummary {
     // スポットの特徴・検索用キーワード。一覧画面で概要表示として利用する
     // s.keywords
     private String keywords;
+    
+    private String categoryColor;
 }

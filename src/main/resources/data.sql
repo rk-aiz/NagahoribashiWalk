@@ -28,13 +28,13 @@ INSERT INTO users (username, password, email, role, display_name, point) VALUES
 -- is_default=TRUE の「その他」はフォールバック先。display_order=NULL で常に末尾に表示。
 -- categories に INSERT するたびに add_default_sub_category トリガーが発火し、
 -- 「未分類」サブカテゴリ（is_default=TRUE, display_order=NULL）を自動生成する。
-INSERT INTO categories (name, display_order, is_default) VALUES
-('その他', NULL, true),    -- フォールバック用デフォルトカテゴリ（削除不可）
-('グルメ', 1, false),
-('観光スポット', 2, false),
-('ショッピング', 3, false),
-('娯楽', 4, false),
-('カフェ', 5, false);
+INSERT INTO categories (name, display_order, is_default, color) VALUES
+('その他',         NULL, true,  '#94a3b8'), -- 落ち着いたグレー
+('グルメ',         1,    false, '#f97316'), -- オレンジ
+('観光スポット',   2,    false, '#3b82f6'), -- ブルー
+('ショッピング',   3,    false, '#ec4899'), -- ピンク
+('娯楽',           4,    false, '#8b5cf6'), -- パープル
+('カフェ',         5,    false, '#a38671'); -- ブラウン
 
 -- サブカテゴリ
 -- display_order はカテゴリ内での表示順（1始まりの連番）

@@ -23,4 +23,6 @@ public class Category {
 
     /** 「その他」扱いのカテゴリフラグ */
     private boolean isDefault;
+    
+    private String color;
 }

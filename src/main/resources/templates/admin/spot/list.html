@@ -143,15 +143,26 @@
 								<td class="fw-medium" th:text="${spot.spotName}">スポット名</td>
 
 								<!-- カテゴリー（バッジ色はカテゴリー名で分岐） -->
-								<td><span class="badge rounded-pill px-2 py-1 fw-normal"
-									th:text="${spot.categoryName}"
-									th:classappend="${spot.categoryName == 'グルメ'}         ? 'badge-gourmet'       :
-                                                          (${spot.categoryName == '観光スポット'}  ? 'badge-tourism'       :
-                                                          (${spot.categoryName == 'ショッピング'}   ? 'badge-shopping'      :
-                                                          (${spot.categoryName == '娯楽'}          ? 'badge-entertainment' :
-                                                          (${spot.categoryName == 'カフェ'}         ? 'badge-cafe'          :
-                                                           'badge-default'))))">
-										カテゴリー </span></td>
+<!--								<td><span class="badge rounded-pill px-2 py-1 fw-normal"-->
+<!--									th:text="${spot.categoryName}"-->
+<!--									th:classappend="${spot.categoryName == 'グルメ'}         ? 'badge-gourmet'       :-->
+<!--                                                          (${spot.categoryName == '観光スポット'}  ? 'badge-tourism'       :-->
+<!--                                                          (${spot.categoryName == 'ショッピング'}   ? 'badge-shopping'      :-->
+<!--                                                          (${spot.categoryName == '娯楽'}          ? 'badge-entertainment' :-->
+<!--                                                          (${spot.categoryName == 'カフェ'}         ? 'badge-cafe'          :-->
+<!--                                                           'badge-default'))))">-->
+<!--										カテゴリー </span></td>-->
+
+                                 <!-- カテゴリー（DBから取得した色を直接指定） -->
+                                 <td>
+                                 <span class="badge rounded-pill px-2 py-1 fw-normal"
+                                       th:if="${spot.categoryName != null}"
+                                    th:style="'background-color: ' + ${spot.categoryColor} + '; color: #ffffff;'"
+                                     th:text="${spot.categoryName}">
+                                    カテゴリー
+                                 </span>
+                                 </td>
+
 
 								<!-- 更新日 -->
 								<td class="text-secondary small"><span

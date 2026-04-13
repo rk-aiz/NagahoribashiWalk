@@ -172,6 +172,9 @@ CREATE TABLE categories(
 	is_default BOOLEAN DEFAULT FALSE  -- TRUE は「未分類」カテゴリ。全体で1件のみ（後述のINDEXで保証）
 );
 
+ALTER TABLE categories 
+ADD COLUMN color VARCHAR(7) DEFAULT '#808080';
+
 -- 「その他」カテゴリは全体でただ1件だけ存在できる
 CREATE UNIQUE INDEX uq_categories_default
 ON categories (is_default) WHERE is_default = TRUE;
