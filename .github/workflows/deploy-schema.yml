@@ -48,6 +48,9 @@ jobs:
       - name: Start Database
         run: docker compose up -d db --wait
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
       # Gradleタスクを実行
       # CI環境(localhost)向けに接続情報を上書きします
       # 値は docker-compose.yml の設定値に合わせます
