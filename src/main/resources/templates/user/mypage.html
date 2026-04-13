@@ -50,7 +50,7 @@
 <body>
     <main class="flex-grow-1" style="background-color: #f8fafc;" th:data-active-tab="${activeTab}">
 
-        <!-- ページヘッダー -->
+        <!--/* ページヘッダー */-->
         <div class="bg-white border-bottom py-3">
             <div class="container">
                 <a th:href="@{/}"
@@ -63,7 +63,7 @@
 
         <div class="container py-5" style="max-width: 800px;">
 
-            <!-- タブ切り替え -->
+            <!--/* タブ切り替え */-->
             <div class="mypage-tabs mb-4">
                 <button class="tab-btn" data-target="profile" type="button">
                     <i class="bi bi-person me-1"></i>プロフィール
@@ -73,14 +73,14 @@
                 </button>
             </div>
 
-            <!-- プロフィールパネル -->
+            <!--/* プロフィールパネル */-->
             <div id="panel-profile" class="tab-panel">
                 <div class="bg-white rounded-3 border p-4" style="border-color: #e2e8f0 !important;">
 
                     <h2 class="fw-bold mb-1" style="font-size: 1rem; color: #1e293b;">会員情報</h2>
                     <p class="text-secondary mb-4" style="font-size: 0.85rem;">登録されている会員情報を確認できます</p>
 
-                    <!-- 通常表示モード -->
+                    <!--/* 通常表示モード */-->
                     <th:block th:if="${!editMode}">
                         <div class="row g-4 mb-4">
                             <div class="col-6">
@@ -121,7 +121,7 @@
                         </div>
                     </th:block>
 
-                    <!-- 編集モード -->
+                    <!--/* 編集モード */-->
                     <th:block th:if="${editMode}">
                         <form th:action="@{/mypage/profile/update}" method="post" th:object="${userProfileEditForm}">
                             <div class="row g-4 mb-4">
@@ -179,7 +179,7 @@
                 </div>
             </div>
 
-            <!-- お気に入りパネル -->
+            <!--/* お気に入りパネル */-->
             <div id="panel-favorites" class="tab-panel">
                 <div th:if="${favorites.totalElements == 0}" class="text-center py-5 text-secondary">
                     <i class="bi bi-heart" style="font-size: 2.5rem;"></i>

@@ -17,7 +17,7 @@
 
 <body class="d-flex flex-column min-vh-100">
     <header>
-        <!--// ロゴ + アカウントエリア //-->
+        <!--/* ロゴ + アカウントエリア */-->
         <nav class="navbar bg-white border-bottom shadow-sm align-items-stretch" aria-label="サイトヘッダー">
             <div class="container align-items-stretch">
 
@@ -29,10 +29,10 @@
 
                 </div>
 
-                <!--// アカウントエリア //-->
+                <!--/* アカウントエリア */-->
                 <div class="d-flex align-items-center gap-2">
 
-                    <!--// 検索フォーム（共通） //-->
+                    <!--/* 検索フォーム（共通） */-->
                     <form th:action="@{/spot/search}" method="get" class="d-flex align-items-center"
                         style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:9999px; padding:0.25rem 0.75rem;">
                         <i class="bi bi-search text-secondary me-2" style="font-size:0.85rem;"></i>
@@ -41,7 +41,7 @@
                             aria-label="キーワード検索">
                     </form>
 
-                    <!--// 未ログイン //-->
+                    <!--/* 未ログイン */-->
                     <div sec:authorize="isAnonymous()" class="d-flex gap-2 ms-2">
                         <a th:href="@{/login}" class="btn btn-sm btn-outline-secondary btn-header">
                             <i class="bi bi-box-arrow-in-right me-1"></i>ログイン
@@ -51,7 +51,7 @@
                         </a>
                     </div>
 
-                    <!--// ログイン済み（管理者） //-->
+                    <!--/* ログイン済み（管理者） */-->
                     <div sec:authorize="hasRole('ADMIN')" class="d-flex align-items-center gap-2 ms-2">
                         <span class="small text-secondary" th:text="${account?.displayName}">管理者名</span>
                         <a th:href="@{/admin}" class="btn btn-sm btn-outline-secondary btn-header">
@@ -62,7 +62,7 @@
                         </form>
                     </div>
 
-                    <!--// ログイン済み（一般ユーザー） //-->
+                    <!--/* ログイン済み（一般ユーザー） */-->
                     <div sec:authorize="hasRole('USER')" class="d-flex align-items-center gap-2 ms-2">
                         <span class="small text-secondary me-2" th:text="${account?.displayName}">ユーザー名</span>
                         <a th:href="@{/mypage?tab=profile}" class="btn btn-sm btn-outline-secondary btn-header">
@@ -80,7 +80,7 @@
             </div>
         </nav>
 
-        <!--// カテゴリナビ //-->
+        <!--/* カテゴリナビ */-->
         <nav class="cat-nav border-bottom" style="background-color: #f8fafc;" aria-label="カテゴリナビゲーション">
             <div class="container">
                 <ul class="nav justify-content-center" id="categoryNav">
@@ -88,7 +88,7 @@
                         <a class="nav-link fw-medium" th:href="@{/spot/category/{id}(id=${cat.id})}"
                             th:text="${cat.name}">カテゴリ</a>
 
-                        <!--// メガメニューパネル //-->
+                        <!--/* メガメニューパネル */-->
                         <div class="mega-panel" th:if="${not #lists.isEmpty(cat.subCategories)}">
                             <div class="container">
                                 <a th:each="sub : ${cat.subCategories}" class="mega-item"
@@ -115,14 +115,14 @@
         </div>
     </div>
 
-    <div th:replace="${content}" class="flex-grow-1"><!-- ページコンテンツ --></div>
+    <div th:replace="${content}" class="flex-grow-1"><!--/* ページコンテンツ */--></div>
 
     <footer class="mt-auto" style="background-color: #1e293b; color: #cbd5e1;">
-        <!-- メインフッター -->
+        <!--/* メインフッター */-->
         <div class="container py-5">
             <div class="row g-4 justify-content-center">
 
-                <!-- ブランド -->
+                <!--/* ブランド */-->
                 <div class="col-12 col-md-3">
                     <p class="fw-bold text-white mb-2" style="font-family: 'Nunito', sans-serif; font-size: 1.1rem;">
                         <i class="bi bi-geo-alt me-1" style="color: #60a5fa;"></i>長堀橋さんぽ
@@ -132,7 +132,7 @@
                     </p>
                 </div>
 
-                <!-- カテゴリー -->
+                <!--/* カテゴリー */-->
                 <div class="col-6 col-md-2">
                     <p class="fw-semibold text-white mb-3 small text-uppercase" style="letter-spacing: 0.08em;">カテゴリー
                     </p>
@@ -144,7 +144,7 @@
                     </ul>
                 </div>
 
-                <!-- ユーザーメニュー -->
+                <!--/* ユーザーメニュー */-->
                 <div class="col-6 col-md-2">
                     <p class="fw-semibold text-white mb-3 small text-uppercase" style="letter-spacing: 0.08em;">ユーザーメニュー
                     </p>
@@ -167,7 +167,7 @@
                     </ul>
                 </div>
 
-                <!-- サイト情報 -->
+                <!--/* サイト情報 */-->
                 <div class="col-6 col-md-2">
                     <p class="fw-semibold text-white mb-3 small text-uppercase" style="letter-spacing: 0.08em;">サイト情報
                     </p>
@@ -187,7 +187,7 @@
             </div>
         </div>
 
-        <!-- ボトムバー -->
+        <!--/* ボトムバー */-->
         <div style="border-top: 1px solid #334155;">
             <div class="container py-3 text-center">
                 <p class="mb-1 small" style="color: #64748b;">
@@ -200,7 +200,7 @@
         </div>
     </footer>
 
-    <!-- ログアウトトースト -->
+    <!--/* ログアウトトースト */-->
     <div th:if="${logoutSuccess}" class="toast-container position-fixed top-0 start-50 translate-middle-x p-3"
         style="z-index:1070;">
         <div id="logoutToast" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive"
@@ -215,7 +215,7 @@
         </div>
     </div>
 
-    <!-- トップへ戻るボタン -->
+    <!--/* トップへ戻るボタン */-->
     <button id="backToTop" aria-label="ページ上部へ戻る" style="display:none; position:fixed; bottom:1.75rem; right:1.75rem; z-index:1060;
                width:2.75rem; height:2.75rem; border-radius:50%; border:1px solid #cbd5e1;
                background-color:#f1f5f9; color:#64748b; font-size:1.1rem;

@@ -38,7 +38,7 @@
         <div class="admin-card">
             <div class="p-4">
 
-                <!-- タイトル + 新規登録ボタン -->
+                <!--/* タイトル + 新規登録ボタン */-->
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="fw-bold mb-0">
                         スポット一覧 <span class="text-muted fw-normal fs-6"
@@ -50,7 +50,7 @@
                     </a>
                 </div>
 
-                <!-- 検索バー -->
+                <!--/* 検索バー */-->
                 <form th:action="@{/admin/spot/list}" method="get" class="mb-4" style="position: relative;">
                     <i class="bi bi-search"
                         style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none;"></i>
@@ -60,7 +60,7 @@
                     <input type="hidden" name="sort" th:value="${sort}">
                 </form>
 
-                <!-- ソートボタン -->
+                <!--/* ソートボタン */-->
                 <div class="d-flex justify-content-end gap-2 mb-3">
                     <a th:href="@{/admin/spot/list(keyword=${keyword}, sort='id_asc')}" class="btn btn-sm"
                         th:classappend="${sort == 'id_asc'} ? 'btn-primary' : 'btn-outline-secondary'">
@@ -76,12 +76,12 @@
                     </a>
                 </div>
 
-                <!-- ページネーション -->
+                <!--/* ページネーション */-->
                 <div
                     th:replace="~{fragments/pagination :: pagerSimple(${spotPages}, '/admin/spot/list', ${keyword}, ${sort}, 'my-3')}">
                 </div>
 
-                <!-- テーブル -->
+                <!--/* テーブル */-->
                 <div class="table-responsive">
                     <table class="table table-borderless align-middle mb-0 admin-table" id="spotTable">
                         <thead>
@@ -98,58 +98,58 @@
                         <tbody>
                             <tr th:each="spot : ${spotPages.content}" class="spot-row">
 
-                                <!-- ID -->
+                                <!--/* ID */-->
                                 <td class="text-secondary small" th:text="${spot.id}">1</td>
 
-                                <!-- スポット名 -->
+                                <!--/* スポット名 */-->
                                 <td class="fw-medium">
                                     <a th:href="@{/spot/{id}(id=${spot.id})}" class="text-decoration-none text-dark"
                                         th:text="${spot.spotName}">スポット名</a>
                                 </td>
 
-                                <!-- カテゴリー -->
+                                <!--/* カテゴリー */-->
                                 <td><span class="badge rounded-pill px-2 py-1 fw-normal" th:text="${spot.categoryName}"
                                         th:style="|background-color: ${spot.categoryColor}20; color: ${spot.categoryColor};|">
                                         カテゴリー</span></td>
 
-                                <!-- 更新日 -->
+                                <!--/* 更新日 */-->
                                 <td class="text-secondary small"><span th:if="${spot.updatedAt != null}"
                                         th:text="${#temporals.format(spot.updatedAt, 'yyyy/M/d')}">2026/4/2</span>
                                     <span th:if="${spot.updatedAt == null}" class="text-muted">-</span>
                                 </td>
 
-                                <!-- 閲覧数 -->
+                                <!--/* 閲覧数 */-->
                                 <td class="text-secondary small" th:text="${spot.pvCount}">0</td>
 
-                                <!-- 評価 -->
+                                <!--/* 評価 */-->
                                 <td><span th:if="${spot.averageRating != null}"> <i class="bi bi-star-fill text-warning"
                                             style="font-size: 0.8rem;"></i> <span class="ms-1 small fw-semibold"
                                             th:text="${#numbers.formatDecimal(spot.averageRating, 1, 1)}">4.5</span>
                                     </span> <span th:if="${spot.averageRating == null}"
                                         class="text-muted small">-</span></td>
 
-                                <!-- 操作 -->
+                                <!--/* 操作 */-->
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center d-flex align-items-center gap-1">
-                                        <!-- 詳細 -->
+                                        <!--/* 詳細 */-->
                                         <a th:href="@{/spot/{id}(id=${spot.id})}"
                                             class="btn btn-sm btn-link text-secondary p-1" title="詳細を見る">
                                             <i class="bi bi-box-arrow-up-right" style="font-size: 1rem;"></i>
                                         </a>
 
-                                        <!-- 編集 -->
+                                        <!--/* 編集 */-->
                                         <a th:href="@{/admin/spot/edit/{id}(id=${spot.id})}"
                                             class="btn btn-sm btn-link p-1" style="color: #3b82f6;" title="編集">
                                             <i class="bi bi-pencil-square" style="font-size: 1rem;"></i>
                                         </a>
 
-                                        <!-- 画像管理 -->
+                                        <!--/* 画像管理 */-->
                                         <a th:href="@{/admin/spot/{id}/photo(id=${spot.id})}"
                                             class="btn btn-sm btn-link p-1" style="color: #10b981;" title="画像管理">
                                             <i class="bi bi-images" style="font-size: 1rem;"></i>
                                         </a>
 
-                                        <!-- 削除 -->
+                                        <!--/* 削除 */-->
                                         <form th:action="@{/admin/spot/delete}" method="POST" class="d-inline m-0 p-0"
                                             onsubmit="return confirm('スポット情報を削除します\n本当によろしいですか？');">
                                             <input type="hidden" th:name="${_csrf.parameterName}"
@@ -166,7 +166,7 @@
 
                             </tr>
 
-                            <!-- データなし -->
+                            <!--/* データなし */-->
                             <tr th:if="${spotPages.totalElements == 0}">
                                 <td colspan="7" class="text-center text-muted py-5"><i class="bi bi-inbox d-block mb-2"
                                         style="font-size: 1.75rem;"></i>
@@ -176,7 +176,7 @@
                     </table>
                 </div>
 
-                <!-- ページネーション -->
+                <!--/* ページネーション */-->
                 <div
                     th:replace="~{fragments/pagination :: pagerSimple(${spotPages}, '/admin/spot/list', ${keyword}, ${sort}, 'mt-4')}">
                 </div>

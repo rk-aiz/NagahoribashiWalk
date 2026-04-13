@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@700&display=swap');
+
 .hero {
     position: relative;
     min-height: 500px;
@@ -87,4 +89,84 @@
 
 .search-bar button:hover {
     background: #1d4ed8;
+}
+
+/* ===== おみくじバナー（ヒーロー右上） ===== */
+.omikuji-banner {
+    position: absolute;
+    top: -8.5rem;
+    right: -12rem;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    /* たこ焼きテーマ：濃い茶→中茶のグラデーション */
+    background: linear-gradient(135deg, rgba(92,46,0,0.92), rgba(123,63,0,0.92));
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(232,117,10,0.35);   /* --tako-orange 系 */
+    border-radius: 0.875rem;
+    padding: 0.65rem 1.1rem;
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,200,120,0.15);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.omikuji-banner:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 22px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,200,120,0.2);
+    color: #fff;
+}
+
+/* タコアイコン */
+.omikuji-banner-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+    flex-shrink: 0;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
+}
+
+.omikuji-banner-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    line-height: 1.3;
+}
+
+.omikuji-banner-label {
+    font-size: 0.7rem;
+    color: #f5c899;   /* fortune-hero p と同じ色 */
+    letter-spacing: 0.08em;
+}
+
+.omikuji-banner-main {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.1em;
+}
+
+
+.omikuji-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4ade80;
+    flex-shrink: 0;
+    box-shadow: 0 0 6px rgba(74,222,128,0.6);
+}
+
+@media (max-width: 480px) {
+    .omikuji-banner {
+        top: -3.5rem;
+        right: 0;
+        padding: 0.55rem 0.8rem;
+        gap: 0.4rem;
+    }
+
+    .omikuji-banner-body {
+        display: none;
+    }
 }

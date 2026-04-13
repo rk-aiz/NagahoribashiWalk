@@ -84,7 +84,7 @@
 
     <div class="w-100" style="max-width: 420px; padding: 0 1rem;">
 
-        <!-- ロゴ・システム名 -->
+        <!--/* ロゴ・システム名 */-->
         <div class="text-center mb-4">
             <p class="fw-bold mb-1" style="font-size: 1.1rem; letter-spacing: 0.04em; color: #1e293b;">
                 <i class="bi bi-geo-alt me-1" style="color: #3b82f6;"></i>長堀橋さんぽ
@@ -95,7 +95,7 @@
             </span>
         </div>
 
-        <!-- ログインカード -->
+        <!--/* ログインカード */-->
         <div class="admin-card p-4 p-sm-5">
 
             <h1 class="fw-bold mb-1" style="font-size: 1.25rem; color: #1e293b;">管理者ログイン</h1>
@@ -103,25 +103,25 @@
 
             <hr class="divider mb-4">
 
-            <!-- 権限エラー（一般ユーザーが /admin/login にアクセスした場合） -->
+            <!--/* 権限エラー（一般ユーザーが /admin/login にアクセスした場合） */-->
             <div th:if="${param.error != null and param.error[0] == 'forbidden'}" class="alert py-2 mb-3"
                 style="background-color: #fef2f2; border: 1px solid #fee2e2; color: #991b1b; font-size: 0.8rem;">
                 <i class="bi bi-shield-x me-1"></i>
                 管理者権限がありません。
             </div>
 
-            <!-- 認証エラー（メアド・パスワード不一致） -->
+            <!--/* 認証エラー（メアド・パスワード不一致） */-->
             <div th:if="${param.error != null and param.error[0] != 'forbidden'}" class="alert py-2 mb-3"
                 style="background-color: #fef2f2; border: 1px solid #fee2e2; color: #991b1b; font-size: 0.8rem;">
                 <i class="bi bi-exclamation-triangle me-1"></i>
                 メールアドレスまたはパスワードが正しくありません。
             </div>
 
-            <!-- ログインフォーム -->
+            <!--/* ログインフォーム */-->
             <form th:action="@{/admin/authentication}" method="post">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
-                <!-- ユーザー名 -->
+                <!--/* ユーザー名 */-->
                 <div class="mb-3">
                     <label for="username" class="form-label form-label-dark">ユーザー名</label>
                     <div class="input-group">
@@ -134,7 +134,7 @@
                     </div>
                 </div>
 
-                <!-- パスワード -->
+                <!--/* パスワード */-->
                 <div class="mb-4">
                     <label for="password" class="form-label form-label-dark">パスワード</label>
                     <div class="input-group">
@@ -147,13 +147,13 @@
                     </div>
                 </div>
 
-                <!-- ログインボタン -->
+                <!--/* ログインボタン */-->
                 <button type="submit" class="btn btn-primary w-100 py-2">
                     <i class="bi bi-box-arrow-in-right me-1"></i>ログイン
                 </button>
             </form>
 
-            <!-- デモ用アカウント -->
+            <!--/* デモ用アカウント */-->
             <div class="mt-4 p-3 rounded-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">
                 <p class="fw-semibold mb-1 text-dark" style="font-size: 0.8rem;">デモ用アカウント：</p>
                 <p class="mb-0 text-secondary" style="font-size: 0.8rem;">ユーザー名: admin</p>
@@ -162,7 +162,7 @@
 
         </div>
 
-        <!-- 一般サイトへのリンク -->
+        <!--/* 一般サイトへのリンク */-->
         <p class="text-center mt-4" style="color: #475569; font-size: 0.8rem;">
             <a th:href="@{/}" style="color: #475569; text-decoration: underline;">
                 一般サイトへ戻る

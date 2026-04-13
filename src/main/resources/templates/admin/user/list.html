@@ -9,7 +9,7 @@
 
 <main th:fragment="content">
 
-    <!-- 検索用 -->
+    <!--/* 検索用 */-->
     <form th:action="@{/admin/user/list}" method="get"
         class="mb-4 d-flex justify-content-center align-items-center gap-2">
 
@@ -35,7 +35,7 @@
         <div class="admin-card">
             <div class="p-4">
 
-                <!-- タイトル + ソートボタン -->
+                <!--/* タイトル + ソートボタン */-->
                 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
                     <div>
                         <h5 class="fw-bold mb-0">ユーザー一覧</h5>
@@ -52,7 +52,7 @@
                     </div>
                 </div>
 
-                <!-- テーブル -->
+                <!--/* テーブル */-->
                 <div class="table-responsive">
                     <table class="table table-borderless align-middle mb-0 admin-table">
                         <thead>
@@ -78,7 +78,7 @@
                                 <td class="small" style="color: #64748b; font-size: 0.8rem; word-break: break-all;"
                                     th:text="${user.email}"></td>
 
-                                <!-- 権限バッジ -->
+                                <!--/* 権限バッジ */-->
                                 <td class="text-center"><span class="badge rounded-pill px-2 py-1 fw-normal"
                                         th:text="${user.role}" th:style="${user.role == 'ADMIN'}
                                               ? 'background-color: #dbeafe; color: #1d4ed8;'
@@ -88,7 +88,7 @@
                                 <td class="text-center" style="color: #64748b; font-size: 0.875rem;"
                                     th:text="${#temporals.format(user.createdAt, 'yyyy/MM/dd')}"></td>
 
-                                <!-- 状態バッジ -->
+                                <!--/* 状態バッジ */-->
                                 <td class="text-center">
                                     <th:block th:if="${user.deletedAt != null}">
                                         <span class="badge rounded-pill px-2 py-1 fw-normal"
@@ -102,11 +102,11 @@
                                     </th:block>
                                 </td>
 
-                                <!-- 操作 -->
+                                <!--/* 操作 */-->
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-1">
 
-                                        <!-- 有効/無効切り替え -->
+                                        <!--/* 有効/無効切り替え */-->
                                         <form th:action="@{/admin/user/toggle}" method="post"
                                             class="m-0 form-switch d-flex align-items-center me-2"
                                             style="padding-left: 0;"
@@ -124,7 +124,7 @@
                                                 style="cursor: pointer; margin: 0;" title="有効/無効を切り替え">
                                         </form>
 
-                                        <!-- 削除 -->
+                                        <!--/* 削除 */-->
                                         <form th:action="@{/admin/user/delete}" method="post" class="m-0"
                                             onsubmit="return confirm('削除しますか？');">
                                             <input type="hidden" name="username" th:value="${user.username}"> <input
@@ -146,7 +146,7 @@
 
                             </tr>
 
-                            <!-- データなし -->
+                            <!--/* データなし */-->
                             <tr th:if="${page == null or page.content.isEmpty()}">
                                 <td colspan="8" class="text-center py-5" style="color: #64748b;">
                                     <i class="bi bi-people d-block mb-2" style="font-size: 1.75rem;"></i> ユーザーが登録されていません
@@ -159,7 +159,7 @@
             </div>
         </div>
 
-        <!-- ページネーション -->
+        <!--/* ページネーション */-->
         <nav class="mt-4" th:if="${page.totalPages > 1}">
             <ul class="pagination justify-content-center admin-pagination">
 

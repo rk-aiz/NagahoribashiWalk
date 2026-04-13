@@ -19,7 +19,7 @@
 
 <body class="d-flex flex-column min-vh-100" style="background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);">
 
-    <!-- シンプルヘッダー -->
+    <!--/* シンプルヘッダー */-->
     <header class="bg-white border-bottom py-3">
         <div class="container">
             <a th:href="@{/}" class="text-decoration-none fw-bold d-inline-flex align-items-center"
@@ -29,31 +29,31 @@
         </div>
     </header>
 
-    <!-- メインコンテンツ -->
+    <!--/* メインコンテンツ */-->
     <main class="flex-grow-1 d-flex align-items-center justify-content-center py-5">
         <div class="w-100" style="max-width: 440px; padding: 0 1rem;">
             <div class="bg-white rounded-4 shadow p-4 p-sm-5">
 
-                <!-- タイトル -->
+                <!--/* タイトル */-->
                 <h1 class="text-center fw-bold text-dark mb-1" style="font-size: 1.5rem;">ログイン</h1>
                 <p class="text-center text-secondary mb-4" style="font-size: 0.875rem;">
                     お気に入り登録・レビュー投稿を利用するにはログインしてください
                 </p>
 
-                <!-- エラーメッセージ -->
+                <!--/* エラーメッセージ */-->
                 <div th:if="${param.error}" class="alert alert-danger py-2 mb-3" style="font-size: 0.875rem;">
                     <i class="bi bi-exclamation-circle me-1"></i>
                     メールアドレスまたはパスワードが正しくありません。
                 </div>
 
-                <!-- ログインフォーム -->
+                <!--/* ログインフォーム */-->
                 <form th:action="@{/authentication}" method="post">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
-                    <!-- returnUrlをhiddenで引き継ぐ -->
+                    <!--/* returnUrlをhiddenで引き継ぐ */-->
                     <input type="hidden" name="returnUrl" th:value="${param.returnUrl}">
 
-                    <!-- ユーザー名 -->
+                    <!--/* ユーザー名 */-->
                     <div class="mb-3">
                         <label for="username" class="form-label fw-semibold" style="font-size: 0.875rem;">ユーザー名</label>
                         <div class="input-group">
@@ -67,7 +67,7 @@
                         </div>
                     </div>
 
-                    <!-- パスワード -->
+                    <!--/* パスワード */-->
                     <div class="mb-4">
                         <label for="password" class="form-label fw-semibold" style="font-size: 0.875rem;">パスワード</label>
                         <div class="input-group">
@@ -82,7 +82,7 @@
                         </div>
                     </div>
 
-                    <!-- ログインボタン -->
+                    <!--/* ログインボタン */-->
                     <button type="submit" class="btn btn-primary w-100 fw-semibold py-2 mb-4"
                         style="border-radius: 0.5rem; font-size: 1rem;">
                         ログイン
@@ -90,14 +90,14 @@
 
                 </form>
 
-                <!-- 新規登録へ -->
+                <!--/* 新規登録へ */-->
                 <p class="text-center text-secondary mb-2" style="font-size: 0.875rem;">アカウントをお持ちでない方は</p>
                 <a th:href="@{/register}" class="btn btn-outline-secondary btn-register w-100 fw-bold py-2"
                     style="border-radius: 0.5rem; font-size: 0.95rem; border-color: #d1d5db; color: #374151;">
                     新規登録
                 </a>
 
-                <!-- デモ用アカウント -->
+                <!--/* デモ用アカウント */-->
                 <div class="mt-4 p-3 rounded-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">
                     <p class="fw-semibold mb-1 text-dark" style="font-size: 0.8rem;">デモ用アカウント：</p>
                     <p class="mb-0 text-secondary" style="font-size: 0.8rem;">ユーザー名: demouser</p>

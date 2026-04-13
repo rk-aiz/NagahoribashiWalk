@@ -13,7 +13,7 @@
 <body>
     <main class="flex-grow-1 fortune-page">
 
-        <!-- ヒーローバナー -->
+        <!--/* ヒーローバナー */-->
         <div class="fortune-hero">
             <div class="container">
                 <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🐙</div>
@@ -25,7 +25,7 @@
         <div class="container py-5">
             <div class="omikuji-container">
 
-                <!-- ===== 未ログイン ===== -->
+                <!--/* ===== 未ログイン ===== */-->
                 <div sec:authorize="isAnonymous()" class="login-cta-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🐙</div>
                     <h2 class="h5 fw-bold mb-2">ログインしておみくじを引こう</h2>
@@ -45,10 +45,10 @@
                     </div>
                 </div>
 
-                <!-- ===== ログイン済み ===== -->
+                <!--/* ===== ログイン済み ===== */-->
                 <div sec:authorize="isAuthenticated()">
 
-                    <!-- ポイント表示 -->
+                    <!--/* ポイント表示 */-->
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span class="text-secondary small">
                             <i class="bi bi-person-circle me-1"></i>
@@ -60,7 +60,7 @@
                         </span>
                     </div>
 
-                    <!-- 気分選択（コントローラーで引き済みはリダイレクト済みのため常に表示） -->
+                    <!--/* 気分選択（コントローラーで引き済みはリダイレクト済みのため常に表示） */-->
                     <div class="draw-card" id="drawSection">
                         <div class="omikuji-tube" id="omikujiTube">
                             <div class="slip-peek" id="slipPeek"></div>
@@ -89,10 +89,10 @@
                     </div>
 
                 </div>
-                <!-- /isAuthenticated -->
+                <!--/* /isAuthenticated */-->
 
             </div>
-            <!-- /omikuji-container -->
+            <!--/* /omikuji-container */-->
         </div>
 
         <script>
