@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.example.nagahoribashi_walk.exception.CategoryAlreadyExistsException;
+import com.example.nagahoribashi_walk.exception.InvalidRequestException;
 import com.example.nagahoribashi_walk.exception.ResourceNotFoundException;
 import com.example.nagahoribashi_walk.exception.ReviewAlreadyExistsException;
 import com.example.nagahoribashi_walk.exception.ReviewOperationException;
@@ -27,6 +28,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    /** 想定外のPOSTリクエストなど、不正なリクエスト値 */
+    @ExceptionHandler(InvalidRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleInvalidRequest(InvalidRequestException e, Model model) {
+        log.warn("不正なリクエストを検知しました: {}", e.getMessage());
+        return "error/400";
+    }
 
     /** カテゴリ名・サブカテゴリ名の重複エラー */
     @ExceptionHandler(CategoryAlreadyExistsException.class)

@@ -18,6 +18,7 @@ import com.example.nagahoribashi_walk.dto.FortuneResult;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
 import com.example.nagahoribashi_walk.entity.FortuneTheme;
 import com.example.nagahoribashi_walk.entity.User;
+import com.example.nagahoribashi_walk.exception.InvalidRequestException;
 import com.example.nagahoribashi_walk.exception.ResourceNotFoundException;
 import com.example.nagahoribashi_walk.repository.FavoriteMapper;
 import com.example.nagahoribashi_walk.repository.FortuneThemeRepository;
@@ -29,24 +30,31 @@ import com.example.nagahoribashi_walk.type.FortuneRank;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * おみくじ関連サービスの実装クラス
+ * 
+ * @author 海津
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class FortuneSlipServiceImpl implements FortuneSlipService {
 
+    /** おみくじ後におすすめされたスポットをお気に入り登録した際のポイント。application.propertiesから取得 */
     @Value("${fortune.bonus-point}")
     private int fortuneBonusPoint;
 
+    /** サーバー起動ごとに変わるシード値 */
     @Qualifier("serverStartupSeed")
     private final Long serverSeed;
+
+    /* リポジトリを注入 */
     private final UserMapper userMapper;
     private final FavoriteMapper favoriteMapper;
-    private final FortuneThemeRepository fortuneThemeRepository;
+    private final FortuneThemeRepository fortuneThemeRepository; // <- Java実装なのでTransaction管理なし
     private final SpotMapper spotMapper;
 
-    /**
-     * 当日分のおみくじを引き済みか判定する
-     */
+    /** ユーザーが既に当日分のおみくじを引き済みか判定する */
     @Override
     @Transactional(readOnly = true)
     public boolean isAlreadyDrawn(LoginUser user) {
@@ -56,11 +64,8 @@ public class FortuneSlipServiceImpl implements FortuneSlipService {
                 .orElse(false);
     }
 
-    /**
-     * 気分の選択肢を取得する（当日固定・4件）
-     */
+    /** 気分の選択肢を取得する（当日固定・4件） */
     @Override
-    @Transactional(readOnly = true)
     public Map<Long, String> getMoodSelection(LoginUser user) {
         // 日付ベースのシードでその日の選択肢を固定する
         // 同じユーザーが同じ日に何度訪れても同じ4件が表示される
@@ -78,6 +83,11 @@ public class FortuneSlipServiceImpl implements FortuneSlipService {
 
         // 引いた日時をJava側で確定させる（ランク再現シードとDB保存値を一致させるため）
         LocalDateTime drawnAt = LocalDateTime.now();
+
+        // 提示された選択肢を選んでいない場合は例外 (不正なPOSTリクエストを弾くため)
+        if (!this.getMoodSelection(loginUser).containsKey(themeId)) {
+            throw new InvalidRequestException("不正な値が送信されました");
+        }
 
         // 選択された気分のキーワードを取得（無効なthemeIdの場合は空文字列で続行）
         String keywords = fortuneThemeRepository.findById(themeId).map(t -> t.getKeywords()).orElse("");
@@ -99,7 +109,7 @@ public class FortuneSlipServiceImpl implements FortuneSlipService {
             throw new ResourceNotFoundException("おすすめスポットを見つけられませんでした", themeId);
         }
 
-        // ランクを決定する（drawnAtをシードにすることでgetFortuneResult()で再現可能）
+        // おみくじランクを決定する（drawnAtがシードなので決定的・再現する）
         FortuneRank rank = FortuneRank.draw(new Random(buildDrawSeed(loginUser.getUsername(), drawnAt))::nextInt);
 
         Long recommendedSpotId = recommends.getFirst().getId();
@@ -135,11 +145,12 @@ public class FortuneSlipServiceImpl implements FortuneSlipService {
         boolean alreadyFavorited = spotSummary != null
                 && favoriteMapper.existsByUserAndSpot(loginUser.getId(), spotSummary.getId());
 
-        // ランクは「ユーザー名 + 引いた日時」のシードから再現する
+        // ランク(大吉や中吉など)は「ユーザー名 + 引いた日時」のシードから再現する
         // draw()でも同じシードを使っているため、何度ページを開いても同じランクが表示される
         long drawSeed = buildDrawSeed(loginUser.getUsername(), lastDrawnAt);
         FortuneRank rank = FortuneRank.draw(new Random(drawSeed)::nextInt);
 
+        // おみくじ結果用のDTOに詰めて返す
         FortuneResult result = new FortuneResult();
         result.setRecommendedSpot(spotSummary);
         result.setDrawnAt(lastDrawnAt);
@@ -150,14 +161,13 @@ public class FortuneSlipServiceImpl implements FortuneSlipService {
         return result;
     }
 
-    /** 気分選択肢をその日固定にするシード（日付ベース） */
+    /** 気分選択肢用のシード値を用意する (日付ベースで固定にする) */
     private long buildDailySeed(String preString) {
         return (31L * preString.hashCode()) + serverSeed + LocalDate.now().toEpochDay();
     }
 
     /**
-     * ランク抽選シード（ユーザー名 + 引いた瞬間の日時）
-     * draw()とgetFortuneResult()で同じ値を渡すことで結果を再現する
+     * おみくじ結果ランク用のシード値を用意する (プレフィックス + 引いた日時)
      */
     private long buildDrawSeed(String preString, LocalDateTime drawTime) {
         return preString.hashCode() + drawTime.toEpochSecond(ZoneOffset.UTC);
