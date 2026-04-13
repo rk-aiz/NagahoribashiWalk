@@ -105,6 +105,7 @@
 				s.spot_name LIKE CONCAT('%', #{keyword}, '%')
 				OR c.name LIKE CONCAT('%', #{keyword}, '%')
 				OR s.address LIKE CONCAT('%', #{keyword}, '%')
+				OR s.keywords LIKE CONCAT('%', #{keyword}, '%')
 				)
 			</if>
 		</where>
