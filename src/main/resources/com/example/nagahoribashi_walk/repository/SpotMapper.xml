@@ -27,6 +27,7 @@
 		<result property="keywords" column="keywords" />
 		<result property="categoryName" column="categoryName" />
 		<result property="subCategoryName" column="subCategoryName" />
+        <result property="categoryColor" column="categoryColor" />
 		<result property="averageRating" column="averageRating" />
 		<result property="reviewCount" column="reviewCount" />
 
@@ -62,6 +63,7 @@
 		r.average_rating,
 		sc.name AS sub_category_name,
 		c.name AS category_name,
+        c.color AS category_color,
 		s.keywords
 	</sql>
 
@@ -103,6 +105,7 @@
 			s.keywords,
 			c.name AS categoryName,
 			sc.name AS subCategoryName,
+            c.color AS categoryColor,
 
 			r.avg_rating AS averageRating,
 			r.review_count AS reviewCount,
@@ -308,7 +311,7 @@
 		WHERE s.deleted_at IS NULL
 		GROUP BY
 			s.id, s.spot_name, sp.photo_url,
-			r.average_rating, sc.name, c.name, s.keywords
+			r.average_rating, sc.name, c.name, c.color, s.keywords
 		ORDER BY favorite_count DESC
 		LIMIT #{limit}
 	</select>

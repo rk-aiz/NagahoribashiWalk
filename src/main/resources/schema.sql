@@ -24,6 +24,7 @@ CREATE TABLE categories(
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(100) UNIQUE NOT NULL,
 	display_order INTEGER,
+    color VARCHAR(7) DEFAULT '#808080',
 	is_default BOOLEAN DEFAULT FALSE  -- TRUE は「未分類」カテゴリ。全体で1件のみ（後述のINDEXで保証）
 );
 

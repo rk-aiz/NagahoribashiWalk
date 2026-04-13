@@ -5,36 +5,6 @@
 <head>
     <title>スポット管理 - 長堀橋さんぽ 管理画面</title>
     <style>
-        .badge-gourmet {
-            background-color: #dbeafe;
-            color: #1d4ed8;
-        }
-
-        .badge-tourism {
-            background-color: #ede9fe;
-            color: #6d28d9;
-        }
-
-        .badge-shopping {
-            background-color: #ccfbf1;
-            color: #0f766e;
-        }
-
-        .badge-entertainment {
-            background-color: #fef3c7;
-            color: #b45309;
-        }
-
-        .badge-cafe {
-            background-color: #fce7f3;
-            color: #be185d;
-        }
-
-        .badge-default {
-            background-color: #f1f5f9;
-            color: #475569;
-        }
-
         #spotTable {
             --bs-table-bg: transparent;
             --bs-table-color: #1e293b;
@@ -137,15 +107,10 @@
                                         th:text="${spot.spotName}">スポット名</a>
                                 </td>
 
-                                <!-- カテゴリー（バッジ色はカテゴリー名で分岐） -->
+                                <!-- カテゴリー -->
                                 <td><span class="badge rounded-pill px-2 py-1 fw-normal" th:text="${spot.categoryName}"
-                                        th:classappend="${spot.categoryName == 'グルメ'}         ? 'badge-gourmet'       :
-                                                          (${spot.categoryName == '観光スポット'}  ? 'badge-tourism'       :
-                                                          (${spot.categoryName == 'ショッピング'}   ? 'badge-shopping'      :
-                                                          (${spot.categoryName == '娯楽'}          ? 'badge-entertainment' :
-                                                          (${spot.categoryName == 'カフェ'}         ? 'badge-cafe'          :
-                                                           'badge-default'))))">
-                                        カテゴリー </span></td>
+                                        th:style="|background-color: ${spot.categoryColor}20; color: ${spot.categoryColor};|">
+                                        カテゴリー</span></td>
 
                                 <!-- 更新日 -->
                                 <td class="text-secondary small"><span th:if="${spot.updatedAt != null}"

@@ -164,7 +164,7 @@
                             <div class="d-flex flex-column gap-2 mt-3">
                                 <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
                                     <span class="rounded-pill d-inline-flex align-items-center gap-1"
-                                        style="background:#dbeafe; color:#1d4ed8; font-size:0.9rem; padding:0.35rem 0.9rem;">
+                                        th:style="|background-color: ${spotDetail.categoryColor}20; color: ${spotDetail.categoryColor}; font-size:0.9rem; padding:0.35rem 0.9rem;|">
                                         <span class="fw-bold" th:text="${spotDetail.categoryName}">カテゴリ名</span>
                                         <span style="opacity:0.6;">/</span>
                                         <span th:text="${spotDetail.subCategoryName}">サブカテゴリ名</span>

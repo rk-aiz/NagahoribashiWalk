@@ -28,6 +28,9 @@ public class AdminCategoryRow {
     /** trueは未分類カテゴリ・フォールバック先・削除不可 */
     private boolean isDefault;
 
+    /** カテゴリ色 */
+    private String color;
+
     /** 属するサブカテゴリのリスト */
     private List<AdminSubCategoryRow> subCategories;
 
@@ -36,8 +39,8 @@ public class AdminCategoryRow {
         return this.isDefault;
     }
 
-	public boolean isDefault() {
-		// TODO 自動生成されたメソッド・スタブ
-		return false;
-	}
+    public boolean isDefault() {
+        // TODO 自動生成されたメソッド・スタブ
+        return false;
+    }
 }

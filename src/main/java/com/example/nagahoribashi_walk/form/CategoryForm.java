@@ -1,6 +1,7 @@
 package com.example.nagahoribashi_walk.form;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -21,6 +22,10 @@ public class CategoryForm {
     private String name;
 
     private Integer displayOrder;
+
+    /** カテゴリ色（#rrggbb 形式） */
+    @Pattern(regexp = "^#[0-9a-fA-F]{6}$", message = "色は #rrggbb 形式で入力してください")
+    private String color;
 
     public boolean getIsNew() {
         return this.isNew;
