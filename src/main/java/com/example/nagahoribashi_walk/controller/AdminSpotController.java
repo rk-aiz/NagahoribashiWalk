@@ -94,6 +94,8 @@ public class AdminSpotController {
 
         // バリデーションエラー
         if (bindingResult.hasErrors()) {
+            model.addAttribute("dropDownCategories",
+                    categoryService.getAllAdminCategoryRows());
             return "/admin/spot/edit";
         }
 
@@ -120,6 +122,8 @@ public class AdminSpotController {
 
         // バリデーションエラー
         if (bindingResult.hasErrors()) {
+            model.addAttribute("dropDownCategories",
+                    categoryService.getAllAdminCategoryRows());
             return "/admin/spot/edit";
         }
 
