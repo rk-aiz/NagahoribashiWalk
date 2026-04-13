@@ -87,7 +87,7 @@ public class GlobalExceptionHandler {
         return "error/404";
     }
 
-    /** 存在しないリソースへのアクセス（orElseThrow() など）*/
+    /** 存在しないリソースへのアクセス（orElseThrow() など） */
     @ExceptionHandler(NoSuchElementException.class)
     public String handleNoSuchElement(NoSuchElementException e) {
         log.warn("リソースが見つかりません", e);

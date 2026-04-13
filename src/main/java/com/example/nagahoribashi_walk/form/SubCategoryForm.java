@@ -15,6 +15,7 @@ public class SubCategoryForm {
     /** 主キー */
     private Long id;
 
+    /** 親となるカテゴリのID（categories.id 参照） */
     private Long categoryId;
 
     /** サブカテゴリ名 */
