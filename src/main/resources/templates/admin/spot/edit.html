@@ -15,7 +15,7 @@
 <main th:fragment="content">
     <div class="container spot-edit-form" style="max-width: 780px;">
 
-        <!-- 戻るリンク -->
+        <!--/* 戻るリンク */-->
         <div class="mb-3 d-flex justify-content-between align-items-center">
             <a th:href="@{/admin/spot/list}" class="btn btn-outline-secondary btn-sm">
                 <i class="bi bi-arrow-left me-1"></i>一覧に戻る
@@ -26,7 +26,7 @@
             </a>
         </div>
 
-        <!-- フォームカード -->
+        <!--/* フォームカード */-->
         <div class="card shadow-sm border-0">
             <div class="card-body p-4" style="font-size: 0.925rem;">
 
@@ -42,7 +42,7 @@
                     <input type="hidden" th:field="*{isNew}" />
                     <input type="hidden" th:field="*{id}" />
 
-                    <!-- スポット名 -->
+                    <!--/* スポット名 */-->
                     <div class="mb-3">
                         <label for="spotName" class="form-label fw-semibold">
                             スポット名 <span class="text-danger">*</span>
@@ -54,7 +54,7 @@
                         </div>
                     </div>
 
-                    <!-- カテゴリー ＋ 料金 -->
+                    <!--/* カテゴリー ＋ 料金 */-->
                     <div class="row g-3 mb-3">
                         <div class="col-md-7">
                             <label for="subCategoryId"
@@ -93,7 +93,7 @@
                         </div>
                     </div>
 
-                    <!-- 住所 -->
+                    <!--/* 住所 */-->
                     <div class="mb-3">
                         <label for="address" class="form-label fw-semibold">
                             住所
@@ -102,21 +102,21 @@
                             placeholder="例：〒542-0082 大阪府大阪市中央区島之内1-4-7 3階">
                     </div>
 
-                    <!-- 営業時間 -->
+                    <!--/* 営業時間 */-->
                     <div class="mb-3">
                         <label for="businessHours" class="form-label fw-semibold">営業時間</label>
                         <textarea id="businessHours" th:field="*{businessHours}" class="form-control" rows="3"
                             placeholder="例：平日 8:30-18:00&#10;土曜 9:00-17:00"></textarea>
                     </div>
 
-                    <!-- 定休日 -->
+                    <!--/* 定休日 */-->
                     <div class="mb-3">
                         <label for="closedDays" class="form-label fw-semibold">定休日</label>
                         <textarea id="closedDays" th:field="*{closedDays}" class="form-control" rows="3"
                             placeholder="例：日曜・祝日&#10;年末年始（12/29-1/3）"></textarea>
                     </div>
 
-                    <!-- キーワード -->
+                    <!--/* キーワード */-->
                     <div class="mb-3">
                         <label for="keywords" class="form-label fw-semibold">キーワード</label>
                         <input type="text" id="keywords" th:field="*{keywords}" class="form-control"
@@ -124,7 +124,7 @@
                         <div class="form-text">カンマ区切りで複数入力できます。検索に使用されます。</div>
                     </div>
 
-                    <!-- 公式サイトURL -->
+                    <!--/* 公式サイトURL */-->
                     <div class="mb-3">
                         <label for="websiteUrl" class="form-label fw-semibold">公式サイトURL</label>
                         <input type="url" id="websiteUrl" th:field="*{websiteUrl}" class="form-control"
@@ -134,7 +134,7 @@
                             th:errors="*{websiteUrl}"></div>
                     </div>
 
-                    <!-- Googleマップ埋め込みURL -->
+                    <!--/* Googleマップ埋め込みURL */-->
                     <div class="mb-3">
                         <label for="gmapUrl" class="form-label fw-semibold">Googleマップ埋め込みURL</label>
                         <textarea id="gmapUrl" th:field="*{gmapUrl}" class="form-control" rows="3"
@@ -144,7 +144,7 @@
                         </div>
                     </div>
 
-                    <!-- 説明 -->
+                    <!--/* 説明 */-->
                     <div class="mb-4">
                         <label for="details" class="form-label fw-semibold">
                             説明
@@ -153,7 +153,7 @@
                             placeholder="スポットの詳細な説明を入力してください"></textarea>
                     </div>
 
-                    <!-- ボタン -->
+                    <!--/* ボタン */-->
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn text-white px-4" style="background-color: #7c3aed;">
                             <i class="bi bi-floppy me-1"></i>

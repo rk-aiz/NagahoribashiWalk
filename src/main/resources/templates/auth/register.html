@@ -19,7 +19,7 @@
 
 <body class="d-flex flex-column min-vh-100" style="background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);">
 
-    <!-- シンプルヘッダー -->
+    <!--/* シンプルヘッダー */-->
     <header class="bg-white border-bottom py-3">
         <div class="container">
             <a th:href="@{/}" class="text-decoration-none fw-bold d-inline-flex align-items-center"
@@ -29,28 +29,28 @@
         </div>
     </header>
 
-    <!-- メインコンテンツ -->
+    <!--/* メインコンテンツ */-->
     <main class="flex-grow-1 d-flex align-items-center justify-content-center py-5">
         <div class="w-100" style="max-width: 480px; padding: 0 1rem;">
             <div class="bg-white rounded-4 shadow p-4 p-sm-5">
 
-                <!-- タイトル -->
+                <!--/* タイトル */-->
                 <h1 class="text-center fw-bold text-dark mb-1" style="font-size: 1.5rem;">新規登録</h1>
                 <p class="text-center text-secondary mb-4" style="font-size: 0.875rem;">
                     お気に入り登録・レビュー投稿を利用するにはユーザー登録が必要です
                 </p>
 
-                <!-- エラーメッセージ -->
+                <!--/* エラーメッセージ */-->
                 <div th:if="${errorMessage}" class="alert alert-danger py-2 mb-3" style="font-size: 0.875rem;">
                     <i class="bi bi-exclamation-circle me-1"></i>
                     <span th:text="${errorMessage}"></span>
                 </div>
 
-                <!-- 登録フォーム -->
+                <!--/* 登録フォーム */-->
                 <form th:action="@{/register}" method="post" th:object="${userRegisterForm}">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
-                    <!-- ユーザー名 -->
+                    <!--/* ユーザー名 */-->
                     <div class="mb-3">
                         <label for="username" class="form-label fw-semibold" style="font-size: 0.875rem;">
                             ユーザー名 <span class="text-danger">*</span>
@@ -62,14 +62,14 @@
                             </span>
                             <input type="text" id="username" th:field="*{username}"
                                 class="form-control border-start-0 ps-0"
-                                style="border-color: #e5e7eb; background: #f9fafb;"
-                                placeholder="ログインに使うIDを入力" autocomplete="username" required>
+                                style="border-color: #e5e7eb; background: #f9fafb;" placeholder="ログインに使うIDを入力"
+                                autocomplete="username" required>
                         </div>
                         <div th:if="${#fields.hasErrors('username')}" class="text-danger mt-1"
                             style="font-size: 0.8rem;" th:errors="*{username}"></div>
                     </div>
 
-                    <!-- 表示名 -->
+                    <!--/* 表示名 */-->
                     <div class="mb-3">
                         <label for="displayName" class="form-label fw-semibold" style="font-size: 0.875rem;">
                             表示名 <span class="text-danger">*</span>
@@ -81,14 +81,14 @@
                             </span>
                             <input type="text" id="displayName" th:field="*{displayName}"
                                 class="form-control border-start-0 ps-0"
-                                style="border-color: #e5e7eb; background: #f9fafb;"
-                                placeholder="画面上に表示される名前" autocomplete="nickname" required>
+                                style="border-color: #e5e7eb; background: #f9fafb;" placeholder="画面上に表示される名前"
+                                autocomplete="nickname" required>
                         </div>
                         <div th:if="${#fields.hasErrors('displayName')}" class="text-danger mt-1"
                             style="font-size: 0.8rem;" th:errors="*{displayName}"></div>
                     </div>
 
-                    <!-- メールアドレス -->
+                    <!--/* メールアドレス */-->
                     <div class="mb-3">
                         <label for="email" class="form-label fw-semibold" style="font-size: 0.875rem;">
                             メールアドレス <span class="text-danger">*</span>
@@ -98,16 +98,15 @@
                                 style="color: #9ca3af; border-color: #e5e7eb;">
                                 <i class="bi bi-envelope"></i>
                             </span>
-                            <input type="email" id="email" th:field="*{email}"
-                                class="form-control border-start-0 ps-0"
-                                style="border-color: #e5e7eb; background: #f9fafb;"
-                                placeholder="example@email.com" autocomplete="email" required>
+                            <input type="email" id="email" th:field="*{email}" class="form-control border-start-0 ps-0"
+                                style="border-color: #e5e7eb; background: #f9fafb;" placeholder="example@email.com"
+                                autocomplete="email" required>
                         </div>
-                        <div th:if="${#fields.hasErrors('email')}" class="text-danger mt-1"
-                            style="font-size: 0.8rem;" th:errors="*{email}"></div>
+                        <div th:if="${#fields.hasErrors('email')}" class="text-danger mt-1" style="font-size: 0.8rem;"
+                            th:errors="*{email}"></div>
                     </div>
 
-                    <!-- パスワード -->
+                    <!--/* パスワード */-->
                     <div class="mb-3">
                         <label for="password" class="form-label fw-semibold" style="font-size: 0.875rem;">
                             パスワード <span class="text-danger">*</span>
@@ -119,14 +118,14 @@
                             </span>
                             <input type="password" id="password" th:field="*{password}"
                                 class="form-control border-start-0 ps-0"
-                                style="border-color: #e5e7eb; background: #f9fafb;"
-                                placeholder="パスワードを入力" autocomplete="new-password" required>
+                                style="border-color: #e5e7eb; background: #f9fafb;" placeholder="パスワードを入力"
+                                autocomplete="new-password" required>
                         </div>
                         <div th:if="${#fields.hasErrors('password')}" class="text-danger mt-1"
                             style="font-size: 0.8rem;" th:errors="*{password}"></div>
                     </div>
 
-                    <!-- パスワード確認 -->
+                    <!--/* パスワード確認 */-->
                     <div class="mb-4">
                         <label for="passwordConfirm" class="form-label fw-semibold" style="font-size: 0.875rem;">
                             パスワード（確認） <span class="text-danger">*</span>
@@ -138,21 +137,21 @@
                             </span>
                             <input type="password" id="passwordConfirm" th:field="*{passwordConfirm}"
                                 class="form-control border-start-0 ps-0"
-                                style="border-color: #e5e7eb; background: #f9fafb;"
-                                placeholder="もう一度入力してください" autocomplete="new-password" required>
+                                style="border-color: #e5e7eb; background: #f9fafb;" placeholder="もう一度入力してください"
+                                autocomplete="new-password" required>
                         </div>
                         <div th:if="${#fields.hasErrors('passwordConfirm')}" class="text-danger mt-1"
                             style="font-size: 0.8rem;" th:errors="*{passwordConfirm}"></div>
                     </div>
 
-                    <!-- 登録ボタン -->
+                    <!--/* 登録ボタン */-->
                     <button type="submit" class="btn btn-primary w-100 fw-semibold py-2 mb-4"
                         style="border-radius: 0.5rem; font-size: 1rem;">
                         登録する
                     </button>
                 </form>
 
-                <!-- ログインへ -->
+                <!--/* ログインへ */-->
                 <p class="text-center mb-0" style="font-size: 0.875rem; color: #64748b;">
                     既にアカウントをお持ちの方は
                     <a th:href="@{/login}" class="text-primary fw-semibold text-decoration-none">ログイン</a>

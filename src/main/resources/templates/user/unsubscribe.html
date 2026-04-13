@@ -145,7 +145,7 @@
         <div class="container">
             <div class="unsubscribe-card">
 
-                <!-- 警告アイコン -->
+                <!--/* 警告アイコン */-->
                 <div class="warning-icon">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -160,7 +160,7 @@
                 <h1 class="unsubscribe-title">退会処理</h1>
                 <p class="unsubscribe-subtitle">本当に退会しますか？</p>
 
-                <!-- 削除される情報 -->
+                <!--/* 削除される情報 */-->
                 <div class="deletion-notice">
                     <p>退会すると以下の情報が削除されます</p>
                     <ul>
@@ -170,7 +170,7 @@
                     </ul>
                 </div>
 
-                <!-- 同意チェックボックス + 退会ボタン -->
+                <!--/* 同意チェックボックス + 退会ボタン */-->
                 <form th:action="@{/unsubscribe/{id}(id=${account.id})}" method="post" id="unsubscribe-form">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 

@@ -9,7 +9,7 @@
       spot : SpotSummary オブジェクト
 -->
 
-    <!-- CSS（ページ内で1回だけ th:replace で読み込む） -->
+    <!--/* CSS（ページ内で1回だけ th:replace で読み込む） */-->
     <th:block th:fragment="styles">
         <style>
             .spot-card {
@@ -37,13 +37,13 @@
         </style>
     </th:block>
 
-    <!-- カード本体（<div class="col"> などのラッパーは呼び出し側で用意） -->
+    <!--/* カード本体（<div class="col"> などのラッパーは呼び出し側で用意） */-->
     <a th:fragment="card(spot, returnUrl)"
         th:href="${returnUrl != null} ? @{/spot/{id}(id=${spot.id}, returnUrl=${returnUrl})} : @{/spot/{id}(id=${spot.id})}"
         class="text-decoration-none">
         <div class="card h-100 border-0 shadow-sm spot-card">
 
-            <!-- 画像 + 評価バッジ -->
+            <!--/* 画像 + 評価バッジ */-->
             <div class="spot-img-wrap overflow-hidden" style="border-radius: 0.5rem 0.5rem 0 0;">
                 <img th:src="${spot.photoUrl != null} ? @{/uploads/{url}(url=${spot.photoUrl})} : @{/images/no-image.svg}"
                     th:onerror="|this.onerror=null; this.src='[[@{/images/no-image.svg}]]';|" th:alt="${spot.spotName}"
@@ -62,18 +62,18 @@
             </div>
 
             <div class="card-body p-3 d-flex flex-column">
-                <!-- スポット名 -->
+                <!--/* スポット名 */-->
                 <h5 class="card-title fw-bold text-dark mb-2" style="font-size:1rem;" th:text="${spot.spotName}">スポット名
                 </h5>
 
-                <!-- カテゴリ / サブカテゴリ -->
+                <!--/* カテゴリ / サブカテゴリ */-->
                 <p class="mb-0" th:style="|color: ${spot.categoryColor}; font-size:0.82rem;|">
                     <span th:text="${spot.categoryName} ?: 'その他'" style="font-weight:600;">グルメ</span>
                     <span class="mx-1 text-secondary">/</span>
                     <span th:text="${spot.subCategoryName} ?: 'その他'" class="text-secondary">ラーメン</span>
                 </p>
 
-                <!-- キーワードバッジ（最大3件・下揃え） -->
+                <!--/* キーワードバッジ（最大3件・下揃え） */-->
                 <div class="d-flex flex-wrap gap-1 mt-auto pt-2">
                     <th:block th:if="${spot.keywords != null and !#strings.isEmpty(spot.keywords)}">
                         <span th:each="kw, stat : ${#strings.arraySplit(spot.keywords, ',')}" th:if="${stat.index < 3}"

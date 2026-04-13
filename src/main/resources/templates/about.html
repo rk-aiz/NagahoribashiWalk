@@ -1,6 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/default :: layout('このサイトについて', ~{::main}, ~{})}" xml:lang="ja">
-<head><title>このサイトについて</title></head>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/default :: layout('このサイトについて', ~{::main}, ~{})}"
+    xml:lang="ja">
+
+<head>
+    <title>このサイトについて</title>
+</head>
+
 <body>
     <main class="flex-grow-1">
         <div class="container py-5" style="max-width: 800px;">
@@ -9,7 +14,7 @@
                 <i class="bi bi-info-circle me-2" style="color: #2563eb;"></i>このサイトについて
             </h1>
 
-            <!-- サイト紹介 -->
+            <!--/* サイト紹介 */-->
             <section class="mb-5">
                 <h2 class="h5 fw-semibold mb-3" style="color: #374151;">長堀橋さんぽとは</h2>
                 <p class="text-secondary lh-lg">
@@ -18,7 +23,7 @@
                 </p>
             </section>
 
-            <!-- 機能紹介 -->
+            <!--/* 機能紹介 */-->
             <section class="mb-5">
                 <h2 class="h5 fw-semibold mb-3" style="color: #374151;">主な機能</h2>
                 <ul class="list-unstyled">
@@ -46,7 +51,7 @@
                 </ul>
             </section>
 
-            <!-- 免責事項 -->
+            <!--/* 免責事項 */-->
             <section class="mb-5">
                 <h2 class="h5 fw-semibold mb-3" style="color: #374151;">免責事項</h2>
                 <p class="text-secondary lh-lg small">
@@ -56,7 +61,7 @@
                 </p>
             </section>
 
-            <!-- 制作者 -->
+            <!--/* 制作者 */-->
             <section>
                 <h2 class="h5 fw-semibold mb-3" style="color: #374151;">制作</h2>
                 <p class="text-secondary lh-lg small">

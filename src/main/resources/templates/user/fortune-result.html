@@ -13,7 +13,7 @@
 <body>
     <main class="flex-grow-1 fortune-page">
 
-        <!-- ヒーローバナー -->
+        <!--/* ヒーローバナー */-->
         <div class="fortune-hero">
             <div class="container">
                 <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🐙</div>
@@ -25,7 +25,7 @@
         <div class="container py-5">
             <div class="omikuji-container">
 
-                <!-- ユーザー名 / ポイント表示 -->
+                <!--/* ユーザー名 / ポイント表示 */-->
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <span class="text-secondary small">
                         <i class="bi bi-person-circle me-1"></i>
@@ -39,19 +39,19 @@
 
                 <div class="result-card">
 
-                    <!-- おみくじ紙 + ランク -->
+                    <!--/* おみくじ紙 + ランク */-->
                     <div th:classappend="${fortuneResult.rank.cssClass}" class="omikuji-slip">
                         <span class="rank-sub">運勢</span>
                         <span class="rank-label" th:text="${fortuneResult.rank.displayName}">大吉</span>
                     </div>
 
-                    <!-- 一言メッセージ -->
+                    <!--/* 一言メッセージ */-->
                     <p class="mb-3" style="font-size: 0.9rem; color: #4b5563; font-style: italic;">
                         <span style="margin-right: 0.3em; font-style: normal; font-size: 1.8em;">🐙</span><span
                             th:text="${fortuneResult.fortuneMessage}"></span>
                     </p>
 
-                    <!-- 付与ポイント -->
+                    <!--/* 付与ポイント */-->
                     <div class="mb-1">
                         <span class="point-award">
                             <i class="bi bi-star-fill"></i>
@@ -59,19 +59,19 @@
                         </span>
                     </div>
 
-                    <!-- 引いた日時 -->
+                    <!--/* 引いた日時 */-->
                     <p class="text-secondary mb-4" style="font-size: 0.8rem;">
                         <span th:text="${#temporals.format(fortuneResult.drawnAt, 'yyyy年M月d日 HH:mm')}">2026年4月12日
                             12:00</span> に引きました
                     </p>
 
-                    <!-- おすすめスポット -->
+                    <!--/* おすすめスポット */-->
                     <div class="text-start mb-4">
                         <p class="fw-bold mb-2" style="font-size: 0.9rem; color: var(--tako-main);">
                             <i class="bi bi-geo-alt-fill me-1"></i>今日のおすすめスポット
                         </p>
 
-                        <!-- スポットが存在する場合 -->
+                        <!--/* スポットが存在する場合 */-->
                         <a th:if="${fortuneResult.recommendedSpot != null}"
                             th:href="@{/spot/{id}(id=${fortuneResult.recommendedSpot.id})}" class="spot-recommend-card">
                             <img th:src="${fortuneResult.recommendedSpot.photoUrl != null}
@@ -98,17 +98,17 @@
                             </div>
                         </a>
 
-                        <!-- スポットが削除済みの場合 -->
+                        <!--/* スポットが削除済みの場合 */-->
                         <p th:if="${fortuneResult.recommendedSpot == null}"
                             class="text-secondary small text-center py-3">
                             おすすめスポットの情報を取得できませんでした。
                         </p>
                     </div>
 
-                    <!-- お気に入りボーナス（スポットが存在する場合のみ） -->
+                    <!--/* お気に入りボーナス（スポットが存在する場合のみ） */-->
                     <th:block th:if="${fortuneResult.recommendedSpot != null}">
 
-                        <!-- 未登録 → 追加CTA -->
+                        <!--/* 未登録 → 追加CTA */-->
                         <div th:if="${!fortuneResult.alreadyFavorited}" class="favorite-bonus-banner">
                             <span class="favorite-bonus-text">
                                 おすすめスポットをお気に入りに追加して<br>
@@ -123,7 +123,7 @@
                             </form>
                         </div>
 
-                        <!-- 登録済み → チェックバッジ（ボーナス付与済み） -->
+                        <!--/* 登録済み → チェックバッジ（ボーナス付与済み） */-->
                         <div th:if="${fortuneResult.alreadyFavorited}" class="favorited-badge">
                             <i class="bi bi-heart-fill" style="color: #22c55e;"></i>
                             <span>お気に入り済み</span>
@@ -133,10 +133,10 @@
 
                     </th:block>
 
-                    <!-- 翌日の案内 -->
+                    <!--/* 翌日の案内 */-->
                     <p class="next-draw-note mb-4">おみくじは翌日0時以降にまた引けます</p>
 
-                    <!-- ナビボタン -->
+                    <!--/* ナビボタン */-->
                     <div class="d-flex flex-column gap-2 align-items-center">
                         <a th:href="@{/}" class="btn-back">
                             <i class="bi bi-house me-1"></i>トップページへ戻る
@@ -144,10 +144,10 @@
                     </div>
 
                 </div>
-                <!-- /result-card -->
+                <!--/* /result-card */-->
 
             </div>
-            <!-- /omikuji-container -->
+            <!--/* /omikuji-container */-->
         </div>
 
     </main>

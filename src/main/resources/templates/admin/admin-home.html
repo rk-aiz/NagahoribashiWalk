@@ -113,7 +113,7 @@
 <main th:fragment="content">
     <div class="container" style="max-width: 1100px;">
 
-        <!-- 統計カード -->
+        <!--/* 統計カード */-->
         <div class="row g-3 mb-4">
 
             <div class="col-sm-6 col-xl-3">
@@ -155,10 +155,10 @@
 
         </div>
 
-        <!-- メニューカード -->
+        <!--/* メニューカード */-->
         <div class="row g-3 mb-4">
 
-            <!-- スポット管理 -->
+            <!--/* スポット管理 */-->
             <div class="col-md-6">
                 <a th:href="@{/admin/spot/list}" class="menu-card p-4 h-100">
                     <div class="d-flex align-items-start gap-3 mb-3">
@@ -176,7 +176,7 @@
                 </a>
             </div>
 
-            <!-- レビュー管理 -->
+            <!--/* レビュー管理 */-->
             <div class="col-md-6">
                 <a th:href="@{/admin/review/list}" class="menu-card p-4 h-100">
                     <div class="d-flex align-items-start gap-3 mb-3">
@@ -194,7 +194,7 @@
                 </a>
             </div>
 
-            <!-- ユーザー管理 -->
+            <!--/* ユーザー管理 */-->
             <div class="col-md-6">
                 <a th:href="@{/admin/user/list}" class="menu-card p-4 h-100">
                     <div class="d-flex align-items-start gap-3 mb-3">
@@ -212,7 +212,7 @@
                 </a>
             </div>
 
-            <!-- カテゴリ管理 -->
+            <!--/* カテゴリ管理 */-->
             <div class="col-md-6">
                 <a th:href="@{/admin/category/list}" class="menu-card p-4 h-100">
                     <div class="d-flex align-items-start gap-3 mb-3">
@@ -230,7 +230,7 @@
 
         </div>
 
-        <!-- 最近登録されたスポット -->
+        <!--/* 最近登録されたスポット */-->
         <div class="admin-card p-4">
 
             <div class="mb-3">
@@ -246,14 +246,14 @@
 
             <div th:each="spot : ${recentSpots}" class="recent-row">
 
-                <!-- サムネイル -->
+                <!--/* サムネイル */-->
                 <img th:if="${spot.photoUrl != null}" th:src="@{'/uploads/' + ${spot.photoUrl}}" class="recent-thumb"
                     th:onerror="|this.onerror=null; this.src='[[@{/images/no-image.svg}]]';|" alt="">
                 <div th:if="${spot.photoUrl == null}" class="recent-thumb-placeholder">
                     <i class="bi bi-image" style="font-size: 1.1rem;"></i>
                 </div>
 
-                <!-- スポット名・カテゴリー -->
+                <!--/* スポット名・カテゴリー */-->
                 <div class="flex-grow-1 min-width-0">
                     <p class="fw-medium mb-0" style="color: #1e293b; font-size: 0.9rem;" th:text="${spot.spotName}">
                         スポット名</p>
@@ -265,7 +265,7 @@
                     </p>
                 </div>
 
-                <!-- 操作ボタン -->
+                <!--/* 操作ボタン */-->
                 <div class="d-flex gap-2 flex-shrink-0">
                     <a th:href="@{/spot/{id}(id=${spot.id})}" target="_blank" class="btn btn-sm btn-outline-secondary"
                         style="font-size: 0.78rem;">詳細</a>
