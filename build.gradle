@@ -17,6 +17,8 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	// SchemaSpy実行用の依存関係設定を定義
+	schemaspy
 }
 
 repositories {
@@ -54,8 +56,43 @@ dependencies {
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:4.0.1' // MyBatisのテストサポート
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'                 // JUnitテストの実行エンジン
 
+	// SchemaSpy本体とドライバ (ドキュメント生成用)
+	schemaspy 'org.schemaspy:schemaspy:6.2.4'
+	schemaspy 'org.postgresql:postgresql:42.7.3'
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+// SchemaSpyを実行するタスク
+tasks.register('generateDbDocs', JavaExec) {
+	group = 'documentation'
+	description = 'Generates database documentation using SchemaSpy'
+	classpath = configurations.schemaspy
+	mainClass = 'org.schemaspy.Main'
+
+	// 出力先ディレクトリがない場合は作成
+	doFirst {
+		file('docs/schema').mkdirs()
+	}
+
+	// 環境に応じて接続先を変更できるようにプロパティ化 (デフォルトは開発環境用)
+	def dbName = project.findProperty('dbName') ?: 'nagahoribashi_walkdb'
+	def dbHost = project.findProperty('dbHost') ?: 'localhost'
+	def dbPort = project.findProperty('dbPort') ?: '5432'
+	def dbUser = project.findProperty('dbUser') ?: 'nagahoribashi_walk'
+	def dbPass = project.findProperty('dbPass') ?: 'nagahoribashi'
+	args = [
+		'-t', 'pgsql',
+		'-db', dbName,
+		'-host', dbHost,
+		'-port', dbPort,
+		'-u', dbUser,
+		'-p', dbPass,
+		'-s', 'public',
+		'-o', 'docs/schema',
+		'-font', 'IPAGothic'        // 日本語フォント指定
+	]
 }

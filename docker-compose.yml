@@ -1,0 +1,39 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/nagahoribashi_walkdb
+      SPRING_DATASOURCE_USERNAME: nagahoribashi_walk
+      SPRING_DATASOURCE_PASSWORD: nagahoribashi
+      SPRING_DATASOURCE_DRIVER-CLASS-NAME: org.postgresql.Driver
+      SPRING_SQL_INIT_MODE: never
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: nagahoribashi_walkdb
+      POSTGRES_USER: nagahoribashi_walk
+      POSTGRES_PASSWORD: nagahoribashi
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./docker/db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nagahoribashi_walk -d nagahoribashi_walkdb"]
+      interval: 2s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  db_data:
+  uploads_data:

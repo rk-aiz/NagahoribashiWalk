@@ -1,0 +1,531 @@
+
+-- ============================================================
+-- data.sql  長堀橋さんぽ 初期データ（開発用）
+-- ============================================================
+-- schema.sql 実行後に流す。実行順序は依存関係に従うこと:
+--   users → categories → sub_categories → spots → favorites → reviews
+-- ============================================================
+
+
+-- ユーザー
+-- パスワードはすべて同じ文字列を BCrypt でハッシュしたもの
+INSERT INTO users (username, password, email, role, display_name, point) VALUES
+
+-- パス : Admin@2026
+('admin', '$2a$10$lERDBGAj7aGIPChXyUEj.OIZHO50N/9BnVn6EO6T5uOauUVkH37Ry', 'admin@nagahori.com', 'ADMIN', '管理者', 0),
+
+-- パス : User@2026
+('user1', '$2a$10$ah6tn/KV6rc34sdUGh0wF.5UEZbs0UG5ObXiW0c72MfiEhAW3ljFa', 'user1@nagahori.com', 'USER', 'ユーザー1', 1000),
+('user2', '$2a$10$ah6tn/KV6rc34sdUGh0wF.5UEZbs0UG5ObXiW0c72MfiEhAW3ljFa', 'user2@nagahori.com', 'USER', 'ユーザー2', 2000),
+('user3', '$2a$10$ah6tn/KV6rc34sdUGh0wF.5UEZbs0UG5ObXiW0c72MfiEhAW3ljFa', 'user3@nagahori.com', 'USER', 'ユーザー3', 3000),
+('user4', '$2a$10$ah6tn/KV6rc34sdUGh0wF.5UEZbs0UG5ObXiW0c72MfiEhAW3ljFa', 'user4@nagahori.com', 'USER', 'ユーザー4', 4000),
+('user5', '$2a$10$ah6tn/KV6rc34sdUGh0wF.5UEZbs0UG5ObXiW0c72MfiEhAW3ljFa', 'user5@nagahori.com', 'USER', 'ユーザー5', 5000),
+
+-- パス : Demo@2026
+('demouser', '$2a$10$CKcgVyyKiMiVPZS88S.EeON2w6FKEVr.1wVQVVa8d6vDi74mGKEmq', 'demouser@example.com', 'USER', 'デモユーザー', 10000);
+
+-- カテゴリ
+-- is_default=TRUE の「その他」はフォールバック先。display_order=NULL で常に末尾に表示。
+-- categories に INSERT するたびに add_default_sub_category トリガーが発火し、
+-- 「その他」サブカテゴリ（is_default=TRUE, display_order=NULL）を自動生成する。
+INSERT INTO categories (name, display_order, is_default, color) VALUES
+('その他',         NULL, true,  '#94a3b8'), -- 落ち着いたグレー
+('グルメ',         1,    false, '#f97316'), -- オレンジ
+('観光スポット',   2,    false, '#3b82f6'), -- ブルー
+('ショッピング',   3,    false, '#ec4899'), -- ピンク
+('娯楽',           4,    false, '#8b5cf6'), -- パープル
+('カフェ',         5,    false, '#a38671'); -- ブラウン
+
+
+-- サブカテゴリ
+-- display_order はカテゴリ内での表示順（1始まりの連番）
+-- is_default=TRUE の「その他」はカテゴリINSERT時のトリガーが自動挿入するため、ここでは書かない
+-- category_id の対応: 1=その他, 2=グルメ, 3=観光スポット, 4=ショッピング, 5=娯楽, 6=カフェ
+INSERT INTO sub_categories (category_id, name, display_order) VALUES
+(2, '居酒屋',             1),  -- グルメ
+(2, '外国料理屋',         2),  -- グルメ
+(2, 'カレー',             3),  -- グルメ
+(2, 'ラーメン',           4),  -- グルメ
+(2, 'たこ焼き',           5),  -- グルメ
+(2, 'イタリアン',         6),  -- グルメ
+(2, 'ハンバーガー',       7),  -- グルメ
+(2, '韓国料理',           8),  -- グルメ
+(2, '中華料理',           9),  -- グルメ
+(2, '焼肉',              10),  -- グルメ
+(3, '神社',               1),  -- 観光スポット
+(3, '公園',               2),  -- 観光スポット
+(4, 'ガチャ',             1),  -- ショッピング
+(4, 'ドラッグストア',     2),  -- ショッピング
+(4, 'スーパーマーケット', 3),  -- ショッピング
+(4, '雑貨屋',             4),  -- ショッピング
+(4, '100円ショップ',      5),  -- ショッピング
+(4, 'コンビニ',           6),  -- ショッピング
+(5, 'ライブハウス',       1),  -- 娯楽
+(5, '劇場',               2),  -- 娯楽
+(5, 'サウナ',             3),  -- 娯楽
+(6, 'カフェ',             1),  -- カフェ
+(6, '猫カフェ',           2);  -- 娯楽
+
+
+-- スポット
+-- sub_category_id はサブクエリで名前引きしている。
+-- 同名のサブカテゴリが複数カテゴリに存在する場合は意図しないIDが入る可能性があるため注意。
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('なんばグランド花月', (SELECT id FROM sub_categories WHERE name = '劇場'), '542-0075大阪府大阪市中央区難波千日前11-6', '一般的 10:00～22:00', '不定休(HP詳細)', '3000円～', '新喜劇と漫才が楽しめる笑いの殿堂', 'https://ngk.yoshimoto.co.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.5927351932255!2d135.5036556!3d34.66498689999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e76ba92f02e7%3A0x195e2eacccd22e5!2z44Gq44KT44Gw44Kw44Op44Oz44OJ6Iqx5pyI!5e0!3m2!1sja!2sjp!4v1775695135648!5m2!1sja!2sjp', 'なんば,お笑い,吉本,新喜劇,劇場,観光,定番');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('よしもと漫才劇場', (SELECT id FROM sub_categories WHERE name = '劇場'), '542-0075大阪府大阪市中央区難波千日前12-7 YES-NAMBAビル5F', '一般的 10:00～22:00', '不定休(HP詳細)', '1300円～', '次世代のお笑いスターを発掘できる', 'https://manzaigekijyo.yoshimoto.co.jp/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13125.797784719583!2d135.4944699!3d34.6686045!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e76ba447e0f1%3A0x2868e0551ab1bec9!2z44KI44GX44KC44Go5ryr5omN5YqH5aC0!5e0!3m2!1sja!2sjp!4v1775697174874!5m2!1sja!2sjp', '大阪,コント,漫才,若手芸人,お笑い,劇場');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('よしもと道頓堀シアター', (SELECT id FROM sub_categories WHERE name = '劇場'), '542-0071大阪府大阪市中央区道頓堀1-7-21 中座くいだおれビル 6F', '一般的 10:00～22:00', '不定休(HP詳細)', '2000円～', '食べて笑って楽しめる英語対応お笑い劇場', 'https://dotonbori.yoshimoto.co.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.4471685648073!2d135.5025077!3d34.668662!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e70020059f3f%3A0x9e59f6d3719b652!2z44KI44GX44KC44Go6YGT6aCT5aCA44K344Ki44K_44O8IChZb3NoaW1vdG8gRG90b25ib3JpIFRoZWF0ZXIp!5e0!3m2!1sja!2sjp!4v1775697511371!5m2!1sja!2sjp', '道頓堀,お笑い,シアター,観光');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('牛かつ　富田', (SELECT id FROM sub_categories WHERE name = '居酒屋'), '〒226-0011大阪府大阪市浪速区難波中2-3-1 2F', '11:00～23:00', '不定休', '1500円～', '自分好みに焼いて楽しむ、体験型の牛かつ専門店', 'null', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.681393075217!2d135.5039325!3d34.662748400000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e713520208c7%3A0x49546279f33f3fa3!2z54mb44GL44GkIOWGqOeUsA!5e0!3m2!1sja!2sjp!4v1775697662033!5m2!1sja!2sjp', 'なんば,牛かつ,人気,行列,グルメ');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('たこ焼き道楽わなか
+千日前本店', (SELECT id FROM sub_categories WHERE name = 'たこ焼き'), '542-0075大阪府大阪市中央区難波千日前11-19', '(月～金) 10:30～21:00(土・日・祝) 9:30～21:00', '定休日：なし（年中無休）
+※営業時間や定休日は予告なく変更される可能性がありますので、訪問前に店舗へ直接確認することをおすすめします。', '500円～', '外はカリッ、中はトロッ！大阪名物たこ焼きの老舗', 'http://takoyaki-wanaka.com/#content04', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3281.583633466217!2d135.500788!3d34.6652167!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e76b07f5de63%3A0xc68f6cb004cb8af6!2z44Gf44GT54S86YGT5qW944KP44Gq44GLIOWNg-aXpeWJjeacrOW6lw!5e0!3m2!1sja!2sjp!4v1775697736097!5m2!1sja!2sjp', '大阪,たこ焼き,有名,食べ歩き,千日前,たこやき');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('中華そばふじい難波千日前店', (SELECT id FROM sub_categories WHERE name = 'ラーメン'), '542-0076大阪府大阪市中央区難波1-3-14', '11:00～23:30', '火曜日', '昼 900円～/夜 1000円～', '昔懐かしい醤油ベースの中華そばに背脂のコクが効いた、大阪名物ラーメン', 'https://ra-men.co/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.491246761725!2d135.5023311!3d34.667549199999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e714ba5d30a3%3A0x319918fbe1e1d56e!2z5Lit6I-v44Gd44GwIOOBteOBmOOBhCDpm6Pms6Llupc!5e0!3m2!1sja!2sjp!4v1775697813484!5m2!1sja!2sjp', '難波,中華そば,ラーメン,醤油ラーメン,餃子,あっさり,人気店');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('ねこ浴場＆ねこ旅籠', (SELECT id FROM sub_categories WHERE name = '猫カフェ'), '〒542-0082 大阪府大阪市中央区島之内1丁目14-29', '12:00～20:00', 'なし（猫の健康管理のため月一回不定休あり）', 'カフェ利用 ¥220〜¥4,180／宿泊 ¥16,500〜', '遊んで、くつろいで、泊まれる猫カフェ体験', 'https://www.neco-republic.jp/necoyokujo/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3281.2618943056154!2d135.5051731!3d34.6733391!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e71a273632cf%3A0x724cb908070168e5!2z54yr44Kr44OV44KnIOOBreOBk-a1tOWgtO-8huOBreOBk-aXheexoCDkv53orbfnjKvjgqvjg5Xjgqcg44ON44Kz44Oq44OR44OW44Oq44OD44Kv5aSn6Ziq!5e0!3m2!1sja!2sjp!4v1775697866718!5m2!1sja!2sjp', '大阪,猫カフェ,癒し,体験,室内スポット,宿泊');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('本宮的茶 大阪　タピオカミルクティー専門店｜BEN GONG’S TEA Osaka', (SELECT id FROM sub_categories WHERE name = 'カフェ'), '〒542-0082大阪府大阪市中央区島之内１丁目２１−３０ １階', '11:00～23:00 (LO.22:30)', 'なし', '700円〜', 'もちもちタピオカと本格中国茶の専門店', 'https://www.bengongstea-osaka.app/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d205.07859182869322!2d135.5067847!3d34.6734508!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7fb33ab79af%3A0x1ab4ce2a6fb68db!2z5pys5a6u55qE6Iy2IOWkp-mYqu-9nOOCv-ODlOOCquOCq-ODn-ODq-OCr-ODhuOCo-ODvOWwgumWgOW6l--9nEJFTiBHT05H4oCZUyBURUEgT3Nha2HvvZxCb2JhICYgQ2hpbmVzZSBTdHlsZSBUZWHvvZzjg5njg7PjgrTjg7Pjgrrjg4bjgqPjg7wg5aSn6Ziq!5e0!3m2!1sja!2sjp!4v1775697945558!5m2!1sja!2sjp', '心斎橋,タピオカ,人気,中国茶,インスタ映え');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('ハーリス　なんばマルイ店', (SELECT id FROM sub_categories WHERE name = 'カフェ'), '〒542-0076 大阪府大阪市中央区難波３丁目８−９ なんばマルイ １階', '8：30～22：00', '不定休（なんばマルイに準ずる）', '500円～', '韓国発のおしゃれ空間で楽しむ本格カフェ体験', 'https://www.0101.co.jp/085/shop-guide/shop-detail.html?shop_id=20898', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.577078447357!2d135.5008593!3d34.665382199999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7006dddf3c7%3A0xef65c1e693fce7b8!2z44OP44O844Oq44K5IOOBquOCk-OBsOODnuODq-OCpOW6lw!5e0!3m2!1sja!2sjp!4v1775697993458!5m2!1sja!2sjp', 'なんば,カフェ,韓国カフェ,おしゃれ,なんばマルイ,スイーツ');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('豚と炭火 こぶた家 なんばパークス店', (SELECT id FROM sub_categories WHERE name = '居酒屋'), '〒556-0011 大阪府大阪市浪速区難波中２丁目１０−７０ なんばパークス 6F', '11:00～23:00 (LO 22:00)', 'なし（年中無休）', '1000円～', '炭火焼きとせいろ蒸しで楽しむ、イベリコ豚と野菜の専門店', 'https://nambaparks.com/shopresearch/677', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6563.453091749245!2d135.49936!3d34.6616083!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e700460c3123%3A0xee8ff3724b1491bf!2z6LGa44Go54Kt54GrIOOBk-OBtuOBn-WutiDjgarjgpPjgbDjg5Hjg7zjgq_jgrnlupc!5e0!3m2!1sja!2sjp!4v1775698346023!5m2!1sja!2sjp', 'なんばパークス,豚料理,炭火,ディナー');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('坐摩神社', (SELECT id FROM sub_categories WHERE name = '神社'), '〒541-0056 大阪府大阪市中央区久太郎町４丁目渡辺３ 渡辺3号', '【開門時間】
+平日　７：３０～１７：３０
+土日祝日　７：３０～１７：００', '年中無休（詳細はHP参照）', 'ご自身の塩梅', '都会の中で静かにご利益を感じられるパワースポット！', 'http://www.ikasuri.or.jp/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13124.353762309769!2d135.4921714!3d34.6777173!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e71ce2632307%3A0xd6cab3ad9421a8db!2z5Z2Q5pGp56We56S-!5e0!3m2!1sja!2sjp!4v1775698471038!5m2!1sja!2sjp', '大阪,神社,パワースポット,縁結び,都会の中,静か');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('サムハラ神社', (SELECT id FROM sub_categories WHERE name = '神社'), '〒550-0012 大阪府大阪市西区立売堀２丁目５−２６', '参拝はいつでも自由にできます（HP記載あり）', '年中無休（詳細はHP参照）', 'ご自身の塩梅', '強力な厄除けで有名な知る人ぞ知る神社', 'https://samuhara.or.jp/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13124.47739064543!2d135.4881442!3d34.6769372!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e701dd45b08f%3A0x4a6060c401171b0d!2z44K144Og44OP44Op56We56S-!5e0!3m2!1sja!2sjp!4v1775698502538!5m2!1sja!2sjp', '大阪,神社,厄除け,最強,ご利益,指輪,お守り');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('難波八坂神社', (SELECT id FROM sub_categories WHERE name = '神社'), '〒556-0016 大阪府大阪市浪速区元町２丁目９−１９', '開門：6:00〜17:00
+お守り・授与所：9:00〜17:00', '年中無休（詳細はHP参照）', 'ご自身の塩梅', 'インパクト抜群の獅子殿で写真映えもご利益も◎', 'https://nambayasaka.jp/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13126.268959706298!2d135.4978268!3d34.6656306!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e77279bd5541%3A0x80c374197554ea9f!2z6Zuj5rOi5YWr6Ziq56We56S-!5e0!3m2!1sja!2sjp!4v1775698546218!5m2!1sja!2sjp', '難波,神社,獅子殿,写真映え,パワースポット,観光');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('＃C-pla 大阪心斎橋筋北店', (SELECT id FROM sub_categories WHERE name = 'ガチャ'), '〒542-0081 大阪府大阪市中央区南船場３丁目１０−１１ リンクス心斎橋 1F', '10:00～23:00', '記載なし（HP要参照）', '200円～', '種類豊富でつい回したくなるガチャ天国', 'https://toshin.jpn.com/shop/%e5%a4%a7%e9%98%aa%e5%bf%83%e6%96%8e%e6%a9%8b%e7%ad%8b%e5%8c%97%e5%ba%97/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3281.169381695996!2d135.5037384!3d34.6756743!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7002f12164d%3A0x4d0964fe2b849ec5!2z77yDQy1wbGEg5aSn6Ziq5b-D5paO5qmL562L5YyX5bqX!5e0!3m2!1sja!2sjp!4v1775698611587!5m2!1sja!2sjp', '心斎橋,ガチャガチャ,専門店,カプセルトイ,人気');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('＃C-pla大阪心斎橋筋1丁目店', (SELECT id FROM sub_categories WHERE name = 'ガチャ'), '〒542-0085 大阪府大阪市中央区心斎橋筋１丁目５−２１', '10:00～23:00', '記載なし（HP要参照）', '200円～', '最新ガチャが揃うトレンドスポット！設置ボックス数は1297種類！(周辺では最大数)', 'https://toshin.jpn.com/shop/%e5%a4%a7%e9%98%aa%e5%bf%83%e6%96%8e%e6%a9%8b%e7%ad%8b1%e4%b8%81%e7%9b%ae%e5%ba%97/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d820.3248949960712!2d135.5010654!3d34.6723878!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e70000967f7f%3A0xb568a6416fa1e0d8!2z77yDQy1wbGHlpKfpmKrlv4Pmlo7mqYvnrYsx5LiB55uu5bqX!5e0!3m2!1sja!2sjp!4v1775698699541!5m2!1sja!2sjp', '心斎橋,ガチャガチャ,大型店,カプセルトイ,最新');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('＃C-pla+ 大阪心斎橋筋店', (SELECT id FROM sub_categories WHERE name = 'ガチャ'), '〒542-0085 大阪府大阪市中央区心斎橋筋２丁目７−３', '10:00~23:00', '記載なし（HP要参照）', '200円～', 'レア系や大人向けガチャも楽しめる', 'https://toshin.jpn.com/shop/%e5%a4%a7%e9%98%aa%e5%bf%83%e6%96%8e%e6%a9%8b%e7%ad%8b%e5%ba%97-3/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3281.3622091806997!2d135.4986923!3d34.6708068!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e74b4f4d59d1%3A0x3aec8114ca7f4d4c!2z77yDQy1wbGErIOWkp-mYquW_g-aWjuapi-eti-W6lw!5e0!3m2!1sja!2sjp!4v1775698745478!5m2!1sja!2sjp', '心斎橋,ガチャガチャ,レア,大人向け,カプセルトイ');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('#C-pla 大阪心斎橋筋南店1号館', (SELECT id FROM sub_categories WHERE name = 'ガチャ'), '〒542-0085 大阪府大阪市中央区心斎橋筋２丁目６−3 1-2階', '10:00～23:00', '記載なし（HP要参照）', '200円～', '店内広々でゆっくり選べるガチャ専門店', 'https://toshin.jpn.com/shop/%e5%a4%a7%e9%98%aa%e5%bf%83%e6%96%8e%e6%a9%8b%e7%ad%8b%e5%8d%97%e5%ba%971%e5%8f%b7%e9%a4%a8/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d820.3467516603394!2d135.5013226!3d34.6701808!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7003c99320b%3A0x65f5571f4a07fcae!2zI0MtcGxhIOWkp-mYquW_g-aWjuapi-eti-WNl-W6lzHlj7fppKg!5e0!3m2!1sja!2sjp!4v1775698782964!5m2!1sja!2sjp', '心斎橋,ガチャガチャ,専門店,人気');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('#C-pla 大阪心斎橋筋南店2号館', (SELECT id FROM sub_categories WHERE name = 'ガチャ'), '〒542-0085 大阪府大阪市中央区心斎橋筋２丁目３−２７ 心央ビル 1階', '10:00~22:00', '記載なし（HP要参照）', '200円～', '1号館と合わせて巡ると満足度アップ', 'https://toshin.jpn.com/shop/%E5%A4%A7%E9%98%AA%E5%BF%83%E6%96%8E%E6%A9%8B%E7%AD%8B%E5%8D%97%E5%BA%972%E5%8F%B7%E9%A4%A8/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1640.6916336205304!2d135.5005857!3d34.6702752!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7cf80aefd3b%3A0x3ad8966a4d36c408!2zI0MtcGxhIOWkp-mYquW_g-aWjuapi-eti-WNl-W6lzLlj7fppKg!5e0!3m2!1sja!2sjp!4v1775699072207!5m2!1sja!2sjp', '心斎橋,ガチャガチャ,店舗巡り,カプセルトイ,観光');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('想 ‐SOU- SAUNA', (SELECT id FROM sub_categories WHERE name = 'サウナ'), '〒542-0082 大阪府大阪市中央区島之内１丁目５−１１', '9:00 ～ 23:00（最終受付 21:30）', '不定休', '4,500円～', 'しゃれ空間で整える大人のリラックスサウ', 'https://sou-sauna.jp/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6562.557120832703!2d135.5007548!3d34.6729184!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7df420ce1db%3A0x7e3150a5e9d93edf!2z5oOzIOKAkFNPVS0gU0FVTkE!5e0!3m2!1sja!2sjp!4v1775699145232!5m2!1sja!2sjp', '心斎橋,サウナ,おしゃれ,個室サウナ,整う,リラックス');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('炭火焼き鳥 鶏尽', (SELECT id FROM sub_categories WHERE name = '居酒屋'), '〒542-0075 大阪府大阪市中央区難波千日前２−２１', '(平日) 17:00〜25:30L.O
+(土・日・祝日)12:00〜25:30L.O', '年中無休', '3,000円～', '炭火の香りがたまらない本格焼き鳥で締めに最高', 'https://torijin.jp/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13125.665863963464!2d135.5077023!3d34.6694371!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e79a041a8a3f%3A0xe56fd6f30eaed9bd!2z54Kt54Gr54S844GN6bOlIOm2j-WwvQ!5e0!3m2!1sja!2sjp!4v1775699229996!5m2!1sja!2sjp', '心斎橋,焼き鳥,炭火,居酒屋,ディナー,人気店');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('黒毛和牛タンとハラミ焼肉ごりちゃん心斎橋店', (SELECT id FROM sub_categories WHERE name = '焼肉'), '〒542-0085 大阪府大阪市中央区心斎橋筋１丁目３−１３ 茶茶心斎橋ビル 2階', '11:00～15:00
+17:00～07:00', '記載なし（HP要参照）', '5,000円～', '食べログHOTレストラン2年連続受賞、A5和牛と名物タンが楽しめる実力派焼肉店！', NULL, 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6562.470584677028!2d135.4989832!3d34.6740106!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e734d1446495%3A0xc310ae8cdfed2973!2z6buS5q-b5ZKM54mb44K_44Oz44Go44OP44Op44Of54S86IKJ44GU44KK44Gh44KD44KT5b-D5paO5qmL5bqX!5e0!3m2!1sja!2sjp!4v1775699287682!5m2!1sja!2sjp', '心斎橋,焼肉,A5黒毛和牛,タン,ハラミ,人気店,食べログホットレストラン');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('なんばHatch', (SELECT id FROM sub_categories WHERE name = 'ライブハウス'), '大阪市浪速区湊町1-3-1', '公演による (通常17:00-)', '不定休', 'チケット代（別途ドリンク代）', '湊町リバープレイス内。音響・照明が最高峰の大規模ホール。', 'http://www.namba-hatch.com/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.4579268011043!2d135.4955867!3d34.6683904!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e70e0aea2b1b%3A0x95f0543cc6961cfa!2z44Gq44KT44GwSGF0Y2g!5e0!3m2!1sja!2sjp!4v1775699516886!5m2!1sja!2sjp', 'なんば,ライブハウス,音楽,コンサート,中規模,スタンディング');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('Zepp Namba', (SELECT id FROM sub_categories WHERE name = 'ライブハウス'), '大阪市浪速区敷津東2-1-39', '公演による (通常18:00-)', '不定休', 'チケット代（別途ドリンク代）', '国内最大級。圧倒的な没入感と迫力を楽しめる。', 'https://www.zepp.co.jp/hall/namba/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6563.7891188571275!2d135.50128340000003!3d34.6573657!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e765e16ddc8d%3A0x8f3dcd1552b2d1a!2sZepp%20Namba!5e0!3m2!1sja!2sjp!4v1775699591664!5m2!1sja!2sjp', 'なんば,ライブハウス,大型,コンサート,アーティスト,Zepp');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('梅田芸術劇場', (SELECT id FROM sub_categories WHERE name = '劇場'), '大阪市北区茶屋町19-1', '公演による', '不定休', 'チケット代', '宝塚から最新海外ミュージカルまで、最高の臨場感で味わえる『関西エンタメの聖地』', 'https://www.umegei.com/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3279.86997319843!2d135.4986204!3d34.708459399999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e69042b4aa81%3A0xf1e14dcc54f407d5!2z5qKF55Sw6Iq46KGT5YqH5aC0!5e0!3m2!1sja!2sjp!4v1775699654403!5m2!1sja!2sjp', '梅田,劇場,ミュージカル,舞台,演劇,観劇');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('心斎橋BIGCAT', (SELECT id FROM sub_categories WHERE name = 'ライブハウス'), '大阪市中央区西心斎橋1-6-14', '公演による', '不定休', 'チケット代（別途ドリンク代）', 'アメリカ村「BIG STEP」内。プロも認める定番のハコ。', 'http://bigcat-live.com/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6562.589422721634!2d135.49874549999998!3d34.6725107!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e710519fc2c9%3A0x290d8038f398edb3!2z5b-D5paO5qmLQklHQ0FU!5e0!3m2!1sja!2sjp!4v1775699782797!5m2!1sja!2sjp', '心斎橋,ライブハウス,音楽,インディーズ,バンド');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('Music Club JANUS', (SELECT id FROM sub_categories WHERE name = 'ライブハウス'), '大阪市中央区東心斎橋2-4-30', '12:00〜23:00 (公演による)', '無休', 'チケット代（別途ドリンク代）', 'お洒落なバーカウンター併設。大人なライブにも最適。', 'http://www.arm-live.com/janus/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.3256738057307!2d135.5050898!3d34.6717291!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e715c1eb3977%3A0x4f637226e70d84e2!2sMusic%20Club%20JANUS!5e0!3m2!1sja!2sjp!4v1775699925730!5m2!1sja!2sjp', '心斎橋,ライブハウス,音楽,バンド,ライブ,地下');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('OSAKA MUSE', (SELECT id FROM sub_categories WHERE name = 'ライブハウス'), '大阪市中央区心斎橋筋1-5-6', '18:00〜21:30 (公演による)', '年中無休', 'チケット代（別途ドリンク代）', '1987年創業の老舗。バンドマンの登竜門的存在。', 'http://www.osaka-muse.com/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.304817005856!2d135.502104!3d34.67225559999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e716b64e3227%3A0x379048a20f8600ee!2sOSAKA%20MUSE!5e0!3m2!1sja!2sjp!4v1775699973882!5m2!1sja!2sjp', '心斎橋,ライブハウス,音楽,バンド,ライブ,老舗');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('なんばMele', (SELECT id FROM sub_categories WHERE name = 'ライブハウス'), '大阪市浪速区元町1-2-2', '17:00〜22:00 (公演による)', '不定休', 'チケット代（別途ドリンク代）', 'ロック・ガレージ系に強い。アングラで熱い夜。', 'https://namba-mele.com/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.5153767528377!2d135.4970042!3d34.66693999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7127f329e9d%3A0x52e8e6301201d674!2z6Zuj5rOi44Oh44Os77yITkFNQkEgTWVsZe-8iQ!5e0!3m2!1sja!2sjp!4v1775700875188!5m2!1sja!2sjp', 'なんば,ライブハウス,音楽,小規模,アコースティック,親密');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('心斎橋SUNHALL', (SELECT id FROM sub_categories WHERE name = 'ライブハウス'), '大阪市中央区西心斎橋2-9-28', '公演による', '不定休', 'チケット代（別途ドリンク代）', 'アメ村のど真ん中。アイドルからヒップホップまで多ジャンル。', 'https://sunhall.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6562.710213154146!2d135.49836729999998!3d34.6709861!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e711bc15e3e7%3A0xf6ddae4002a0c85c!2z5b-D5paO5qmLU1VOSEFMTA!5e0!3m2!1sja!2sjp!4v1775700938598!5m2!1sja!2sjp', '心斎橋,ライブハウス,音楽,地下,クラブ,DJ,ダンス');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('KoKuMiN クリスタ長堀店', (SELECT id FROM sub_categories WHERE name = 'ドラッグストア'), '中央区南船場2丁目 長堀地下街2号', '8:00 - 22:00', '2月第3月曜日・年末年始', 'null', '駅直結で雨に濡れない： 堺筋線や長堀鶴見緑地線の改札からすぐなので、移動のついでに寄るのに最も便利です。', 'https://store.welcia.co.jp/welcia/spot/detail?code=7690D', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3281.1954697578158!2d135.4996274!3d34.6750158!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e71a70ae345b%3A0x26369fee3318338a!2zS29LdU1pTiDjgq_jg6rjgrnjgr_plbfloIDlupc!5e0!3m2!1sja!2sjp!4v1775701008129!5m2!1sja!2sjp', '長堀橋,ドラッグストア,コスメ,日用品,お土産,地下街');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('スギ薬局 南船場店', (SELECT id FROM sub_categories WHERE name = 'ドラッグストア'), '大阪市中央区南船場二丁目1番地3号　PHOENIX南船場1階', '08:00〜23:30', '無休', 'null', '夜遅くまで営業', 'https://www.sugi-net.jp/stores/001569', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.087806660882!2d135.50600749999998!3d34.67773330000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e77c2af01dad%3A0xccc589e1dbb738da!2z44K544Ku6Jas5bGAIOWNl-iIueWgtOW6lw!5e0!3m2!1sja!2sjp!4v1775701057507!5m2!1sja!2sjp', '南船場,ドラッグストア,薬局,日用品,医薬品,便利');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('玉出', (SELECT id FROM sub_categories WHERE name = 'スーパーマーケット'), '〒542-0082 大阪府大阪市中央区島之内１丁目１２−１０', '24 時間営業', '無', NULL, '24 時間営業', 'https://supertamade.co.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6562.630589915992!2d135.5090672!3d34.6719911!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e73f03d00001%3A0xb6110516839d326d!2z44K544O844OR44O8546J5Ye6IOWRqOmYsueUuuW6lw!5e0!3m2!1sja!2sjp!4v1775701214676!5m2!1sja!2sjp', '難波,スーパー,激安,大阪名物,ローカル,24時間');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('SARISARI MAMA（PHILIPPINE FOODS）', (SELECT id FROM sub_categories WHERE name = '雑貨屋'), '島之内２丁目６−２０ ブロンズハイツ 202号06-6484-7627', '12:00～22:00', '無', NULL, 'フィリピン雑貨', 'https://shop.philippinefoods-sarisarimama.com/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.348174154081!2d135.50437748887703!3d34.67116110313289!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7c7cdd34dfb%3A0xef331de8716698fa!2zU0FSSVNBUkkgTUFNQeOAiiBQSElMSVBQSU5FIEZPT0RTIOOAi-ODleOCo-ODquODlOODs-mjn-adkOODu-mjn-WTgeiyqeWjsuW6lw!5e0!3m2!1sja!2sjp!4v1775701300266!5m2!1sja!2sjp', '心斎橋,フィリピン料理,外国料理,エスニック,本格,異国グルメ');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('タワンタイ', (SELECT id FROM sub_categories WHERE name = '外国料理屋'), '大阪府大阪市中央区南船場２-６-２１ グラン・ビルド心斎橋 １F', 'ランチ 11:30 〜 15:00
+ディナー 17:00 〜 23:00', '無', '～4000', 'タイ料理', 'https://k118500.gorp.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.1366304454286!2d135.50191507645766!3d34.67650097292846!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e71785de666d%3A0x74b50c4d84e80444!2sTAWAN%20THAI!5e0!3m2!1sja!2sjp!4v1775701416436!5m2!1sja!2sjp', '難波,タイ料理,外国料理,エスニック,本格,パッタイ,トムヤムクン');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('ヒマラヤン', (SELECT id FROM sub_categories WHERE name = 'カレー'), '大阪府大阪市中央区南船場２-１０-１７南愛ビル２F', 'ランチ 11:00 〜 15:00 L.O. 14:30
+ディナー 17:00 〜 22:00 L.O. 21:30', '無', '～3000', 'インド料理 インドカレー ネパール料理 カレー', 'https://tabelog.com/osaka/A2701/A270201/27062700/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4640.280616386487!2d135.5009851324819!3d34.67556049324526!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e719d1cdca3f%3A0x71ff075c6a428c9c!2z44OS44Oe44Op44Ok44OzIOWNl-iIueWgtOW6lw!5e0!3m2!1sja!2sjp!4v1775701599634!5m2!1sja!2sjp', '心斎橋,ネパール料理,インド料理,カレー,ナン,エスニック');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('オーサカバインミー', (SELECT id FROM sub_categories WHERE name = '外国料理屋'), '大阪府大阪市中央区南船場１-１３-１５ 長堀三栄プラザ１０６', '[月〜金]
+10:00 〜 20:00
+[土・祝]
+10:00 〜 17:00
+[日]
+10:00 〜 15:00', '無', '～1000', 'ベトナム料理 スイーツ', 'https://x.com/osaka_banhmi', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.121995280698!2d135.50494357645758!3d34.67687037292833!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7f0010fec4b%3A0x95deaa6d4915958!2z44Kq44O844K144Kr44OQ44Kk44Oz44Of44O8!5e0!3m2!1sja!2sjp!4v1775701665464!5m2!1sja!2sjp', '心斎橋,ベトナム料理,バインミー,サンドイッチ,食べ歩き,テイクアウト');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('韓国料理 HANSSAM ハンサム 難波心斎橋店', (SELECT id FROM sub_categories WHERE name = '韓国料理'), '大阪府大阪市中央区島之内１-２１-１９ B１F', '[全日]
+11:00 〜 22:30 L.O. 21:00', '無', NULL, '韓国料理', 'https://tabelog.com/osaka/A2701/A270201/27151669/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.277951417933!2d135.50398897645726!3d34.67293377292947!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e71c64d0360d%3A0xa1790f1ea6925e86!2z6Z-T5Zu95paZ55CGIEhBTlNTQU0o44OP44Oz44K144OgKSDpm6Pms6Llv4Pmlo7mqYvlupc!5e0!3m2!1sja!2sjp!4v1775701943434!5m2!1sja!2sjp', '難波,韓国料理,焼肉,サムギョプサル,外国料理,本格');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('トルコ料理ナザール心斎橋本店', (SELECT id FROM sub_categories WHERE name = '外国料理屋'), '大阪府大阪市中央区東心斎橋１-１６-１３ マツムラビル２F', '[全日]
+ディナー 17:30 〜 23:00
+[日・土・祝]
+ランチ 12:00 〜 15:00', '無', '～4000', 'トルコ料理 居酒屋 テイクアウト', 'http://www.nazar.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.312111057217!2d135.50021877645736!3d34.67207147292984!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e716a2af4d5b%3A0x6f0b5009c555aa60!2zTmF6YVIg5b-D5paO5qmL5bqX!5e0!3m2!1sja!2sjp!4v1775702061414!5m2!1sja!2sjp', '心斎橋,トルコ料理,ケバブ,外国料理,エスニック,本格');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('EL PANCHO', (SELECT id FROM sub_categories WHERE name = '外国料理屋'), '大阪府大阪市中央区心斎橋筋１-１０-１ 心斎橋タワービル ８F', '[全日]
+11:30 〜 23:30 L.O. 22:30', '無', '～4000', 'メキシコ料理 ダイニングバー ハンバーガー タコス', 'https://www.instagram.com/elpancho_osaka/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.2028514743592!2d135.4985900764574!3d34.674829472929005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e710ae52616b%3A0x60bc0a43d7ab3ba9!2z44Ko44Or44O744OR44Oz44OB44On!5e0!3m2!1sja!2sjp!4v1775702123848!5m2!1sja!2sjp', '心斎橋,メキシコ料理,タコス,外国料理,ラテン,陽気');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('老四川紅燒牛肉麺', (SELECT id FROM sub_categories WHERE name = 'ラーメン'), '〒542-0082 大阪府大阪市中央区𡷊之内, ２丁目８−１８', '11:00～20:30', '日曜', '～1000', '中華・ラーメン', 'https://tabelog.com/osaka/A2701/A270202/27146840/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2759.2995814908563!2d135.50612598227494!3d34.67039063124245!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000efbeb71fc34b%3A0x99d6369f1fc37fb!2z6ICB5Zub5bed57SF54eS54mb6IKJ6bq6!5e0!3m2!1sja!2sjp!4v1775702175858!5m2!1sja!2sjp', '難波,中華料理,牛肉麺,四川,本格,辛い,麺');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('Naga～n cucina italiana （ナガーン クッチーナ イタリアーナ）', (SELECT id FROM sub_categories WHERE name = 'イタリアン'), '〒542-0083 大阪府大阪市中央区東心斎橋１丁目３−７ 1F', '17:30～22:00', '日曜', '1,000～2,000', 'イタリア料理店', 'http://www.naga-n.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.24566058869!2d135.50390665634623!3d34.67374888085812!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7161c81064d%3A0x79ec562bd1af8b08!2zTmFnYe-9nm4gY3VjaW5hIGl0YWxpYW5hIO-8iOODiuOCrOODvOODsyDjgq_jg4Pjg4Hjg7zjg4og44Kk44K_44Oq44Ki44O844OK77yJ!5e0!3m2!1sja!2sjp!4v1775702270546!5m2!1sja!2sjp', '南船場,イタリアン,パスタ,ピザ,おしゃれ,ディナー');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('橋本屋', (SELECT id FROM sub_categories WHERE name = 'カレー'), '〒542-0081 大阪府大阪市中央区南船場２丁目２−21ｰ101', '11時45分～13時00分', '金曜日、土曜日、日曜日、祝日', '￥1,000～2,000', '平日のお昼のみという限られた時間で営業している人気のスパイスカレー店です。', NULL, 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.1041774740224!2d135.505468!3d34.677320099999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7181dde5f43%3A0xff28531f5d4ff790!2z5qmL5pys5bGL!5e0!3m2!1sja!2sjp!4v1775702585327!5m2!1sja!2sjp', 'スパイスカレー,ランチ,人気店, 行列, 激レア');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('定食堂 金剛石', (SELECT id FROM sub_categories WHERE name = 'カレー'), '〒542-0066 大阪府大阪市中央区瓦屋町１丁目８−２５', '11時30分～14時00分、18時00分～21時00分
+(火曜日: 11時30分～15時30分)', '水曜日', '￥1,000～2,000', 'スパイスカレーやエスニックな定食メニューが連日大人気のお店です。', 'https://www.twitter.com/currykenmiconos', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3281.2740601481205!2d135.5102009!3d34.673032!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e738ed2ca30b%3A0xb6f8812bc6ad0ec!2z5a6a6aOf5aCCIOmHkeWJm-efsw!5e0!3m2!1sja!2sjp!4v1775702750513!5m2!1sja!2sjp', 'バスマティライス,魯肉飯,定食屋,豆乳,ポリヤル,ミシュラン,マライ');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('CRITTERS BURGER / クリッターズバーガー', (SELECT id FROM sub_categories WHERE name = 'ハンバーガー'), '〒542-0086 大阪府大阪市中央区西心斎橋１丁目１０−３５ １F', '11時00分～22時00分', '無し', '￥1,000～2,000', 'アメリカン スタイルのジューシーなハンバーガーとフライドポテト、サラダ、ビールを楽しめる気さくな飲食店。', 'http://critters.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.2273136413105!2d135.498635!3d34.674212000000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e71a9d2505a7%3A0x146eede70b2a89eb!2sCRITTERS%20BURGER!5e0!3m2!1sja!2sjp!4v1775702787295!5m2!1sja!2sjp', 'ハンバーガー,グルメ,ランチ,アメリカン,人気店');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('日本橋 さか一', (SELECT id FROM sub_categories WHERE name = 'ラーメン'), '〒542-0082 大阪府大阪市中央区島之内２丁目１１−３', '日曜日
+7時00分～13時30分
+平日
+9時30分～14時00分', '土曜日、木曜日', '￥1,000～2,000', 'ストレート平打ち中太麺。
+煮干し感強めの醤油スープが美味しいです。', 'https://twitter.com/nipponbashisak1', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3281.36439184831!2d135.5067434!3d34.6707517!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e74185139d23%3A0xb0c8050396865041!2z5pel5pys5qmLIOOBleOBi-S4gA!5e0!3m2!1sja!2sjp!4v1775702830736!5m2!1sja!2sjp', 'ランチ,ディナー,人気,麺スタグラム,醤油ラーメン');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('たこりき', (SELECT id FROM sub_categories WHERE name = 'たこ焼き'), '〒542-0066 大阪府大阪市中央区瓦屋町１丁目６−１', '12時00分～16時00分', '月曜日、火曜日', '￥1,000～2,000', 'オリジナルたこ焼きがさまざまな味付けで味わえる。グリル料理やワインなども提供している。カウンター席のみ。テイクアウト可。', 'http://www.takoriki.jp/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d820.3148100178767!2d135.5130123!3d34.6734061!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e738f5860129%3A0x61f9af9a8332e548!2z44Gf44GT44KK44GN!5e0!3m2!1sja!2sjp!4v1775702883841!5m2!1sja!2sjp', '空堀,たこ焼き,食べ歩き,大阪名物,谷町,たこやき');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('カフェ＆カレー ボタ', (SELECT id FROM sub_categories WHERE name = 'カフェ'), '〒542-0083 大阪府大阪市中央区東心斎橋１丁目８−２０', '12:00 - 21:00', '水曜日', '￥1,000～2,000', '長屋を改装した店内は、レトロで趣きのある雰囲気。看板メニューのカレーはテイクアウトも可能。チャイやラッシー、スイーツも楽しめる。', 'https://www.buttah.net/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1640.6194150248857!2d135.5038922!3d34.6739213!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7165add760d%3A0x9e55661b75f013a9!2z44Kr44OV44Kn77yG44Kr44Os44O8IOODnOOCvw!5e0!3m2!1sja!2sjp!4v1775702922679!5m2!1sja!2sjp', 'ランチ,ディナー,アルコール,コーヒー,ビール,ワイン,カジュアル');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('中国料理 艶家', (SELECT id FROM sub_categories WHERE name = '中華料理'), '〒542-0082 大阪府大阪市中央区島之内１丁目２２−１２ ロイヤルハイツ寿 B1F', '[全日]
+ランチ:11:30〜14:30 LO14:00
+ディナー:17:00〜24:00 LO23:30', '無し', '￥1,000～4,000', '山東料理メインの町中華です。お一人でのご利用大歓迎です。味とコスパには自信があり、中国のお客様からもお褒め頂いております。', 'https://tsuyakenagahoribashi.foodre.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.3125853543916!2d135.5067903!3d34.672059499999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e73e2376f571%3A0x809a1cd98da9c3a7!2z5Lit5Zu95paZ55CGIOiJtuWutg!5e0!3m2!1sja!2sjp!4v1775702981761!5m2!1sja!2sjp', '居酒屋,中華/ラーメン');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('イルピアット', (SELECT id FROM sub_categories WHERE name = 'イタリアン'), '〒542-0083 大阪府大阪市中央区東心斎橋１丁目６−３０', 'OPEN17:00～CLOSE 2:00
+(L.O フード1:00/ドリンク1:30)', '火曜日', 'お手頃', '調理工程が見えるカウンター席で気軽に食事ができる隠れ家的な店。自家製麵を使用したパスタなど、多数のメニューを提供。', 'http://www.ilpiatto.info/honten/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.291197544264!2d135.5050338!3d34.672599399999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e716757c3bcd%3A0x3b9e0ac9d7a5208e!2z44Kk44Or44OU44Ki44OD44OI!5e0!3m2!1sja!2sjp!4v1775703263821!5m2!1sja!2sjp', 'イタリアン,パスタ,ピザ,肉料理,魚料理');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('御津公園（三角公園）', (SELECT id FROM sub_categories WHERE name = '公園'), '大阪府大阪市中央区西心斎橋2-11-34', '24時間', 'なし', '無料', 'アメリカ村の中心にあり、「三角公園」として親しまれている憩いの場。', NULL, 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.312216943014!2d135.4979236!3d34.6720688!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e71037632915%3A0xdd5cde103de71bdc!2z5b6h5rSl5YWs5ZySIO-8iOS4ieinkuWFrOWcku-8iQ!5e0!3m2!1sja!2sjp!4v1775703376609!5m2!1sja!2sjp', '三角公園,アメリカ村,休憩,待ち合わせ');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('高津公園', (SELECT id FROM sub_categories WHERE name = '公園'), '大阪府大阪市中央区高津1丁目1', '24時間', 'なし', '無料', '高津宮に隣接する公園で、春には桜の名所としても知られる。', 'http://www.city.osaka.lg.jp/chuo/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1640.7102511988!2d135.5129635!3d34.6693352!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7465a58cb31%3A0xb412e6d218bbd06c!2z6auY5rSl5YWs5ZyS!5e0!3m2!1sja!2sjp!4v1775703425289!5m2!1sja!2sjp', '高津宮,桜,散策,公園');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('道仁公園', (SELECT id FROM sub_categories WHERE name = '公園'), '〒542-0082 大阪府大阪市中央区島之内２丁目５', '24時間', 'なし', '無料', '都会の中の公園🛝', 'http://www.city.osaka.lg.jp/chuo/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d410.1715457359583!2d135.5095328!3d34.6705504!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e73f64e7d16b%3A0xc56d618b2014b0b3!2z6YGT5LuB5YWs5ZyS!5e0!3m2!1sja!2sjp!4v1775703472111!5m2!1sja!2sjp', 'ベンチ,自販機');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('セブンイレブン 大阪長堀心斎橋店', (SELECT id FROM sub_categories WHERE name = 'コンビニ'), '大阪長堀心斎橋店大阪市中央区東心斎橋1-1-12', '24時間', 'なし', '～￥2000', NULL, 'https://www.sej.co.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.2017807454786!2d135.50564029999998!3d34.674856500000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e71632270061%3A0xa0997265fd0bf9b0!2z44K744OW44OzLeOCpOODrOODluODsyDlpKfpmKrplbfloIDlv4Pmlo7mqYvlupc!5e0!3m2!1sja!2sjp!4v1775984558634!5m2!1sja!2sjp', 'セブン,セブイレ,コンビニ,ホットスナック,タバコ,弁当,ATM');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('セブンイレブン 大阪島之内1丁目店', (SELECT id FROM sub_categories WHERE name = 'コンビニ'), '大阪島之内1丁目店大阪市中央区島之内1-11-32', '24時間', 'なし', '～￥2000', NULL, 'https://www.sej.co.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.2588122243947!2d135.5091471!3d34.6734169!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7001acfb6df%3A0xdc7b236ede0a05ea!2z44K744OW44Oz44Kk44Os44OW44OzIOWkp-mYquWztuS5i-WGhe-8keS4geebruW6lw!5e0!3m2!1sja!2sjp!4v1775984581125!5m2!1sja!2sjp', 'セブン,セブイレ,コンビニ,ホットスナック,タバコ,弁当,ATM');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('セブンイレブン 大阪南船場1丁目店', (SELECT id FROM sub_categories WHERE name = 'コンビニ'), '大阪南船場1丁目店大阪市中央区南船場1-17-20', '24時間', 'なし', '～￥2000', NULL, 'https://www.sej.co.jp/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3281.1256906500157!2d135.5047968!3d34.6767771!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7001bbc1a03%3A0xb4c4b1db877d519b!2z44K744OW44OzLeOCpOODrOODluODsyDlpKfpmKrljZfoiLnloLTvvJHkuIHnm67ljJflupc!5e0!3m2!1sja!2sjp!4v1775984599687!5m2!1sja!2sjp', 'セブン,セブイレ,コンビニ,ホットスナック,タバコ,弁当,ATM');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('セブンイレブン 大阪南船場1丁目北店', (SELECT id FROM sub_categories WHERE name = 'コンビニ'), '大阪南船場1丁目北店大阪市中央区南船場1-13-5', '24時間', 'なし', '～￥2000', NULL, 'https://www.sej.co.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.1166456434166!2d135.50812050000002!3d34.6770054!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7001bbc1a03%3A0xb4c4b1db877d519b!2z44K744OW44OzLeOCpOODrOODluODsyDlpKfpmKrljZfoiLnloLTvvJHkuIHnm67ljJflupc!5e0!3m2!1sja!2sjp!4v1775984492536!5m2!1sja!2sjp', 'セブン,セブイレ,コンビニ,ホットスナック,タバコ,弁当,ATM');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('セブンイレブン クリスタ長堀店', (SELECT id FROM sub_categories WHERE name = 'コンビニ'), 'クリスタ長堀店大阪市中央区南船場2丁目 長堀地下街', '7:00 ～ 23:00', '施設に準ずる', '～￥2000', NULL, 'https://www.sej.co.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6562.376709029381!2d135.5057329!3d34.6751954!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e717cd9f8841%3A0x7a5cc12df595a52b!2z44K744OW44OzLeOCpOODrOODluODsyDjgq_jg6rjgrnjgr_plbfloIDlupc!5e0!3m2!1sja!2sjp!4v1775984464394!5m2!1sja!2sjp', 'セブン,セブイレ,コンビニ,ホットスナック,タバコ,弁当,ATM');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('セブンイレブン ウエストタウン店', (SELECT id FROM sub_categories WHERE name = 'コンビニ'), 'ウエストタウン店大阪市中央区南船場3丁目 長堀地下街', '7:00 ～ 23:00', '施設に準ずる', '～￥2000', NULL, 'https://www.sej.co.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9280.43366543711!2d135.50042305568647!3d34.67669377389372!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7005b6519e5%3A0xc3665a31365437ab!2z44K744OW44Oz44Kk44Os44OW44OzIOOCpuOCqOOCueODiOOCv-OCpuODs-W6lw!5e0!3m2!1sja!2sjp!4v1775984343521!5m2!1sja!2sjp', 'セブン,セブイレ,コンビニ,ホットスナック,タバコ,弁当,ATM');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('ファミリーマート 長堀橋駅北店', (SELECT id FROM sub_categories WHERE name = 'コンビニ'), '大阪府大阪市中央区南船場2-4-8', '24時間', 'なし', '～￥2000', NULL, 'https://www.family.co.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.1623336851158!2d135.50616670000002!3d34.6758522!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e717d7a16769%3A0x6a1153873f66ba15!2z44OV44Kh44Of44Oq44O844Oe44O844OIIOmVt-WggOapi-mnheWMl-W6lw!5e0!3m2!1sja!2sjp!4v1775984632644!5m2!1sja!2sjp', 'ファミマ,コンビニ,ホットスナック,タバコ,弁当,ATM');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('ファミリーマート 長堀橋駅南店', (SELECT id FROM sub_categories WHERE name = 'コンビニ'), '大阪府大阪市中央区島之内1-21-22', '24時間', 'なし', '～￥2000', NULL, 'https://www.family.co.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.2674721441645!2d135.5065066!3d34.673198299999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e740832ad671%3A0xee26dc868b3400ea!2z44OV44Kh44Of44Oq44O844Oe44O844OIIOmVt-WggOapi-mnheWNl-W6lw!5e0!3m2!1sja!2sjp!4v1775984789032!5m2!1sja!2sjp', 'ファミマ,コンビニ,ホットスナック,タバコ,弁当,ATM');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('ファミリーマート 南船場二丁目店', (SELECT id FROM sub_categories WHERE name = 'コンビニ'), '大阪府大阪市中央区南船場2-7-16', '24時間', 'なし', '～￥2000', NULL, 'https://www.family.co.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.123420488999!2d135.5046338!3d34.6768344!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e71828673ca1%3A0x34349b24f5a4b27d!2z44OV44Kh44Of44Oq44O844Oe44O844OIIOWNl-iIueWgtOS6jOS4geebruW6lw!5e0!3m2!1sja!2sjp!4v1775984828819!5m2!1sja!2sjp', 'ファミマ,コンビニ,ホットスナック,タバコ,弁当,ATM');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('ファミリーマート 東心斎橋店', (SELECT id FROM sub_categories WHERE name = 'コンビニ'), '大阪府大阪市中央区東心斎橋1-5-1', '24時間', 'なし', '～￥2000', NULL, 'https://www.family.co.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.287751064921!2d135.5060858!3d34.672686399999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e715f3bf21e7%3A0x8a689dddd49919a3!2z44OV44Kh44Of44Oq44O844Oe44O844OIIOadseW_g-aWjuapi-W6lw!5e0!3m2!1sja!2sjp!4v1775984854566!5m2!1sja!2sjp', 'ファミマ,コンビニ,ホットスナック,タバコ,弁当,ATM');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('ファミリーマート 島之内中央店', (SELECT id FROM sub_categories WHERE name = 'コンビニ'), '大阪府大阪市中央区島之内1-13-10', '24時間', 'なし', '～￥2000', NULL, 'https://www.family.co.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.3154930282512!2d135.5081512!3d34.67198609999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7408efdc841%3A0x5de1f4ec94585fbf!2z44OV44Kh44Of44Oq44O844Oe44O844OIIOWztuS5i-WGheS4reWkruW6lw!5e0!3m2!1sja!2sjp!4v1775984888137!5m2!1sja!2sjp', 'ファミマ,コンビニ,ホットスナック,タバコ,弁当,ATM');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('ローソン サテライト OSL長堀橋駅店', (SELECT id FROM sub_categories WHERE name = 'コンビニ'), '大阪府大阪市中央区島之内1-18-9', '6:00 - 21:00', 'なし', '～￥2000', NULL, 'https://www.lawson.co.jp/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3281.178917655866!2d135.5010411!3d34.6754336!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7162038aa47%3A0x5e1801f9d7ad0351!2z44Ot44O844K944OzIO-8syDvvK_vvLPvvKzplbfloIDmqYvpp4Xlupc!5e0!3m2!1sja!2sjp!4v1775984914378!5m2!1sja!2sjp', 'ローソン,コンビニ,ホットスナック,タバコ,弁当,ATM');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('ローソン 南船場二丁目店', (SELECT id FROM sub_categories WHERE name = 'コンビニ'), '大阪府大阪市中央区南船場2-5-7', '24時間', 'なし', '～￥2000', NULL, 'https://www.lawson.co.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.180950032017!2d135.5052715!3d34.67538229999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e73eb0c90803%3A0xd7a7624299bf5cb8!2z44Ot44O844K944OzIOWNl-iIueWgtOS6jOS4geebruW6lw!5e0!3m2!1sja!2sjp!4v1775985047607!5m2!1sja!2sjp', 'ローソン,コンビニ,ホットスナック,タバコ,弁当,ATM');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('ローソン 長堀橋店', (SELECT id FROM sub_categories WHERE name = 'コンビニ'), '大阪府大阪市中央区島之内1-16-22', '24時間', 'なし', '～￥2000', NULL, 'https://www.lawson.co.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6562.420216398973!2d135.5081179!3d34.67464629999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e73dc57ce661%3A0x1f78753e61c0bbc5!2z44Ot44O844K944OzIOmVt-WggOapi-W6lw!5e0!3m2!1sja!2sjp!4v1775985090011!5m2!1sja!2sjp', 'ローソン,コンビニ,ホットスナック,タバコ,弁当,ATM');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('ローソン 長堀橋南店', (SELECT id FROM sub_categories WHERE name = 'コンビニ'), '大阪府大阪市中央区島之内1-15-9', '24時間', 'なし', '～￥2000', NULL, 'https://www.lawson.co.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.2480962008294!2d135.5080883!3d34.6736874!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7da376941e5%3A0x9b7303fadc1f601c!2z44Ot44O844K944OzIOmVt-WggOapi-WNl-W6lw!5e0!3m2!1sja!2sjp!4v1775985110003!5m2!1sja!2sjp', 'ローソン,コンビニ,ホットスナック,タバコ,弁当,ATM');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('ローソン 東心斎橋一丁目店', (SELECT id FROM sub_categories WHERE name = 'コンビニ'), '大阪府大阪市中央区東心斎橋1-8-2', '24時間', 'なし', '～￥2000', NULL, 'https://www.lawson.co.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.2283357408332!2d135.50521750000001!3d34.674186199999994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7e92ef967e5%3A0x220274a628d45210!2z44Ot44O844K944OzIOadseW_g-aWjuapi-S4gOS4geebruW6lw!5e0!3m2!1sja!2sjp!4v1775985138119!5m2!1sja!2sjp', 'ローソン,コンビニ,ホットスナック,タバコ,弁当,ATM');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('ローソン 南船場一丁目店', (SELECT id FROM sub_categories WHERE name = 'コンビニ'), '大阪府大阪市中央区南船場1-17-29', '24時間', 'なし', '～￥2000', NULL, 'https://www.lawson.co.jp/', 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3281.1158651476335!2d135.5047482!3d34.6770251!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e79a0a9387b9%3A0x272975c1fbb4c879!2z44Ot44O844K944OzIOWNl-iIueWgtOS4gOS4geebruW6lw!5e0!3m2!1sja!2sjp!4v1775985156109!5m2!1sja!2sjp', 'ローソン,コンビニ,ホットスナック,タバコ,弁当,ATM');
+
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('旧ヤム邸 空堀店', (SELECT id FROM sub_categories WHERE name = 'カレー'), '大阪府大阪市中央区谷町6-4-23', '11:30より開店', '月曜日、火曜日', '1,500円~2,500円', '小麦粉を一切使わないスパイスの効いたオリジナルの薬膳カレーが頂けるお店。
+古民家風のレトロ感ある店内はゆったりとして心が和らぐ。', 'なし', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d820.3184694543584!2d135.51493337057107!3d34.673036602555705!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7381a0490fd%3A0xf0f50c36de4f7a66!2z5pen44Ok44Og6YK4IOepuuWggOW6lw!5e0!3m2!1sja!2sjp!4v1775785280412!5m2!1sja!2sjp', 'スパイスカレー,ランチ,人気店');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('エクチュア からほり「蔵」本店', (SELECT id FROM sub_categories WHERE name = 'カフェ'), '大阪府大阪市中央区谷町6-17-43 練', '店舗に問い合わせ', '水曜日', '￥1,000 ～ ￥1,999', '蔵を改装したレトロモダンな空間に一枚板のカウンター席を完備。名物のチョコレートスイーツなどを提供する。ショップを併設。', 'https://www.ek-chuah.co.jp/user_data/shop_honten.php', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1160.0795753085201!2d135.5119271019467!3d34.67488787746198!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7396d05534b%3A0xe4d28bb0f21e992!2z44Ko44Kv44OB44Ol44KiIOOBi-OCieOBu-OCig!5e0!3m2!1sja!2sjp!4v1775785679021!5m2!1sja!2sjp', 'チョコ,ランチ,グルメ,人気店,サンドイッチ');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('韓国ダイニング まにぽぽ', (SELECT id FROM sub_categories WHERE name = '韓国料理'), '大阪府大阪市中央区東心斎橋1-12-19
+ エイトビルヂング 4F', '月～金17:00~23:00
+土日祝11:00~00:00', '不定休', '1,500円~2,500円
+3,000円~4,000円', '韓国料理とk-POPの融合が織りなす新感覚ダイニング', 'https://kdzc000.gorp.jp/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1951.0239826433292!2d135.5025328237698!3d34.67444340634257!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e7049a2c43df%3A0x370fdcaa4ef281fd!2z6Z-T5Zu944OA44Kk44OL44Oz44KwIOOBvuOBq-OBveOBvQ!5e0!3m2!1sja!2sjp!4v1775785847391!5m2!1sja!2sjp', '韓国料理,ランチ,ディナー,グルメ');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('星カフェ　SPIKA', (SELECT id FROM sub_categories WHERE name = 'カフェ'), '大阪市中央区松屋町4-18 5階', '18:00–23:30', '火曜日', '2,000円~3,999円', '完全予約制　「星空をエンターテイメントに」をコンセプトに、都会での星空の楽しみ方を提供するカフェバー', 'https://cafespica.com/index.html', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6562.454526425197!2d135.50966597645746!3d34.6742132729292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e73922ad55b1%3A0xdd74855823a36229!2z5pif44Kr44OV44KnIFNQSUNB!5e0!3m2!1sja!2sjp!4v1775789066030!5m2!1sja!2sjp', 'プラネタリウム,ディナー,人気店');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('BOOK AND BED TOKYO SHINSAIBASI', 4, '大阪府大阪市中央区東心斎橋１丁目１９−１１ 3階', '月～金12:00~23:00
+土日祝11:00~23:00', 'なし', '1,999円~2,000円', 'OOK AND BED TOKYO 心斎橋は、エアコン付きのお部屋、共用ラウンジ、
+無料WiFi、バーを提供、カフェではおいしいランチを食べられます', 'https://bookandbedtokyo.com/ja/shinsaibashi/', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.2213196828075!2d135.50261660886528!3d34.6743633001234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e76ceab872ef%3A0x344134835d0f3882!2zQk9PSyBBTkQgQkVEIFRPS1lPIFNISU5TQUlCQVNISSAo44Kr44OV44KnKQ!5e0!3m2!1sja!2sjp!4v1775789907785!5m2!1sja!2sjp', 'ホテル,カフェ,デザート,本');
+INSERT INTO spots (spot_name, sub_category_id, address, business_hours, closed_days, estimated_budget, details, website_url, gmap_url, keywords) VALUES ('ネットカフェ・ダーツポパイ 心斎橋店', 4, '大阪府大阪市中央区東心斎橋１丁目１７−２８ 渡辺ビル 1F', '24時間', 'なし', '1,999円~2,500円', 'ネットカフェ・ダーツポパイ 心斎橋店では比較的安い料金でダーツやネットを利用できます', 'http://www.media-cafe.ne.jp/tenpo/shinsaibashi/shinsaibashi.html', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.2213196828075!2d135.50261660886528!3d34.6743633001234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e716ddf393c9%3A0x10dd43aeb3ce93fa!2z44ON44OD44OI44Kr44OV44Kn44O744OA44O844OE44Od44OR44KkIOW_g-aWjuapi-W6lw!5e0!3m2!1sja!2sjp!4v1775794620403!5m2!1sja!2sjp', 'ダーツ,ネット,カフェ,本');
+
+-- お気に入り
+-- user_id: 1=admin, 2=user1, 3=user2, 4=user3, 5=user4, 6=user5, 7=demouser
+-- spot_id はスポットの挿入順（INSERT順の連番）に対応する
+INSERT INTO favorites (user_id, spot_id) VALUES
+
+-- user1 (id=2): グルメ重視
+(2,  5),   -- たこ焼き道楽わなか
+(2,  6),   -- 中華そばふじい
+(2, 20),   -- 炭火焼き鳥 鶏尽
+(2, 35),   -- ヒマラヤン
+(2, 44),   -- CRITTERS BURGER
+(2, 45),   -- 日本橋 さか一
+(2, 46),   -- たこりき
+
+-- user2 (id=3): 観光・神社・癒し系
+(3,  7),   -- ねこ浴場＆ねこ旅籠
+(3, 12),   -- サムハラ神社
+(3, 13),   -- 難波八坂神社
+(3, 19),   -- 想 ‐SOU- SAUNA
+(3, 43),   -- 定食堂 金剛石
+(3, 47),   -- カフェ＆カレー ボタ
+(3, 51),   -- 高津公園
+
+-- user3 (id=4): エンタメ・ライブ好き
+(4,  1),   -- なんばグランド花月
+(4,  2),   -- よしもと漫才劇場
+(4, 14),   -- C-pla 大阪心斎橋筋北店
+(4, 15),   -- C-pla 大阪心斎橋筋1丁目店
+(4, 22),   -- なんばHatch
+(4, 23),   -- Zepp Namba
+(4, 24),   -- 梅田芸術劇場
+(4, 47),   -- カフェ＆カレー ボタ
+
+-- user4 (id=5): カフェ・食べ歩き好き
+(5,  8),   -- 本宮的茶
+(5,  9),   -- ハーリス なんばマルイ店
+(5, 34),   -- タワンタイ
+(5, 37),   -- 韓国料理 HANSSAM
+(5, 42),   -- 橋本屋
+(5, 47),   -- カフェ＆カレー ボタ
+(5, 50),   -- 御津公園（三角公園）
+
+-- user5 (id=6): ライブ・夜遊び系
+(6, 25),   -- 心斎橋BIGCAT
+(6, 26),   -- Music Club JANUS
+(6, 27),   -- OSAKA MUSE
+(6, 28),   -- なんばMele
+(6, 29),   -- 心斎橋SUNHALL
+(6, 20),   -- 炭火焼き鳥 鶏尽
+(6, 13);   -- 難波八坂神社
+
+-- レビュー
+-- 1ユーザーが同一スポットに投稿できるのは1件のみ（uq_reviews_user_spot 制約）
+INSERT INTO reviews (user_id, spot_id, rating, comment) VALUES
+-- なんばグランド花月 (spot_id=1)
+(2, 1, 5, '新喜劇は何度観ても笑えます！大阪に来たら絶対に外せないスポット。'),
+(3, 1, 4, '観光客向けですが、内容は本当に面白かった。チケットは事前購入がおすすめ。'),
+(4, 1, 5, '初めて行きましたが最高でした！また来たい。'),
+
+-- よしもと漫才劇場 (spot_id=2)
+(2, 2, 4, '若手芸人の勢いがすごい。NGKより安くて楽しめます。'),
+(5, 2, 3, '面白かったけど、出演者によって当たりはずれがある感じ。'),
+
+-- よしもと道頓堀シアター (spot_id=3)
+(3, 3, 4, '外国人の友達と行きました。英語対応があって助かりました。'),
+(6, 3, 3, '観光感が強いですが、初めて大阪に来た人には良いと思う。'),
+
+-- 牛かつ 富田 (spot_id=4)
+(2, 4, 5, '自分で焼くスタイルが楽しい！レアで食べるのがおすすめです。'),
+(4, 4, 4, '行列ができていましたが待った価値あり。ランチにまた来たい。'),
+(5, 4, 5, '牛かつの概念が変わりました。最高においしい。'),
+
+-- たこ焼き道楽わなか (spot_id=5)
+(2, 5, 4, '外はカリッ中はトロ、まさに大阪のたこ焼き。観光客にもおすすめ。'),
+(3, 5, 4, 'たくさん種類があって迷いましたが、定番のソースが一番好みでした。'),
+(6, 5, 3, '美味しいけど少し割高な印象。でも味は間違いない。'),
+
+-- 中華そばふじい (spot_id=6)
+(2, 6, 5, '背脂の旨みがたまらない！大阪でラーメン食べるならここ一択。'),
+(4, 6, 4, '懐かしい感じの醤油ラーメン。スープが最後まで飲める。'),
+
+-- ねこ浴場＆ねこ旅籠 (spot_id=7)
+(3, 7, 5, '猫に囲まれて至福のひとときでした。スタッフも親切で猫も人懐っこい。'),
+(5, 7, 4, '泊まれる猫カフェというのが面白い。猫好きには天国です。'),
+(6, 7, 5, '猫たちがとても元気で癒されました！また絶対来ます。'),
+
+-- 本宮的茶 タピオカ (spot_id=8)
+(2, 8, 4, 'タピオカがもちもちで美味しい。中国茶の種類も豊富。'),
+(3, 8, 3, '甘さ控えめに調整できるのが嬉しい。でも少し高め。'),
+
+-- ハーリス なんばマルイ店 (spot_id=9)
+(4, 9, 4, '朝から開いていて助かりました。コーヒーのクオリティが高い。'),
+(6, 9, 4, 'なんばマルイ内でアクセス抜群。インスタ映えする内装も良かった。'),
+
+-- 豚と炭火 こぶた家 (spot_id=10)
+(2, 10, 5, 'イベリコ豚のせいろ蒸しが絶品！野菜もたっぷり食べられます。'),
+(5, 10, 4, 'なんばパークスで食べるなら絶対おすすめ。ランチお得です。'),
+
+-- 坐摩神社 (spot_id=11)
+(3, 11, 4, 'ビジネス街の中にひっそりある神社。都会の喧騒を忘れられる。'),
+(4, 11, 3, '静かで落ち着ける場所。猫神様として有名らしい。'),
+
+-- サムハラ神社 (spot_id=12)
+(2, 12, 5, '神秘的な雰囲気に包まれた神社。指輪のお守りが人気で早めに行くべき。'),
+(5, 12, 4, '厄除けのパワーを感じました。アクセスは少し分かりにくい。'),
+
+-- 難波八坂神社 (spot_id=13)
+(3, 13, 5, '獅子殿のインパクトが圧倒的！写真映えも抜群でした。'),
+(6, 13, 4, 'ユニークな外観で一度は行く価値あり。観光スポットとして最高。'),
+
+-- ガチャポン（C-pla 北店）(spot_id=14)
+(2, 14, 4, 'ガチャの種類が豊富すぎてお金をかなり使ってしまいました笑'),
+(4, 14, 4, '心斎橋でガチャを楽しむなら外せない。限定品も多い。'),
+
+-- C-pla 1丁目店 (spot_id=15)
+(3, 15, 5, '1297種類は圧巻！見ているだけでも楽しい。'),
+(5, 15, 4, '最新のガチャがここに全部ある感じ。ついつい回しすぎてしまう。'),
+
+-- C-pla+ 心斎橋筋店 (spot_id=16)
+(2, 16, 3, '他の店舗と被ってる商品もあるが、限定品は狙い目。'),
+(6, 16, 4, '大人向けのガチャが多くて好きです。'),
+
+-- C-pla 南店1号館 (spot_id=17)
+(3, 17, 4, '広い店内でゆっくり選べる。複数フロアあって見応えあり。'),
+
+-- C-pla 南店2号館 (spot_id=18)
+(4, 18, 3, '1号館と合わせて回るといい。こちらは少し小さめ。'),
+(5, 18, 4, '1号館と2号館をはしごすると大満足できます。'),
+
+-- 想 -SOU- SAUNA (spot_id=19)
+(2, 19, 5, 'おしゃれな個室サウナで最高に整えました。また来たい！'),
+(3, 19, 4, '値段は少し高めだが、プライベート空間でゆっくりできる。'),
+(6, 19, 5, 'アロマの香りと照明が素晴らしい。完全に非日常でした。'),
+
+-- 炭火焼き鳥 鶏尽 (spot_id=20)
+(4, 20, 5, '炭火の香りがたまらない。焼き鳥のクオリティが本当に高い。'),
+(5, 20, 4, '深夜遅くまでやっているので仕事終わりに最適。'),
+
+-- 黒毛和牛焼肉ごりちゃん (spot_id=21)
+(2, 21, 5, 'A5和牛が口の中でとろけました。食べログ受賞も納得のクオリティ。'),
+(3, 21, 4, '少し高いですが、特別な日のディナーには最高の選択肢。'),
+
+-- なんばHatch (spot_id=22)
+(4, 22, 5, '音響が最高！ライブ会場としての完成度が高い。'),
+(6, 22, 4, '大好きなアーティストのライブで訪れました。見やすいし音も最高。'),
+
+-- Zepp Namba (spot_id=23)
+(2, 23, 5, '国内最大級のハコ。迫力が段違い。立ち見でも楽しめました。'),
+(5, 23, 4, 'アクセスが少し遠いが、ライブの没入感はここが一番。'),
+
+-- 梅田芸術劇場 (spot_id=24)
+(3, 24, 5, '宝塚の公演を観ました。舞台装置も衣装も豪華で感動しました。'),
+(4, 24, 5, 'ミュージカルの臨場感が素晴らしい。関西のエンタメの中心地。'),
+
+-- 心斎橋BIGCAT (spot_id=25)
+(5, 25, 4, 'BIG STEP内でアクセス良好。音響も良くてライブを楽しめた。'),
+(6, 25, 3, '定員が多いので前の方で見ないと遠く感じることも。'),
+
+-- なんばMele (spot_id=28)
+(2, 28, 4, 'ロック好きには堪らない雰囲気。小さいハコならではの一体感がある。'),
+(4, 28, 3, 'アングラ感が強いが、熱いライブが観られる貴重な場所。'),
+
+-- 玉出 (spot_id=32)
+(3, 32, 5, '24時間営業で値段が破格！深夜に買い物できるのは本当に助かる。'),
+(5, 32, 4, '品揃えが豊富で安い。大阪のスーパーといえばここ。'),
+
+-- タワンタイ (spot_id=34)
+(2, 34, 4, '本格的なタイ料理が食べられる。グリーンカレーが特においしかった。'),
+(6, 34, 4, 'スパイスが効いていてクセになる味。コスパも良い。'),
+
+-- ヒマラヤン (spot_id=35)
+(3, 35, 5, 'ナンがふわふわで絶品。カレーの種類も多くて毎回悩む。'),
+(4, 35, 4, '本場のインドカレーの味に感動。ランチセットがお得。'),
+
+-- 韓国料理 HANSSAM (spot_id=37)
+(2, 37, 4, '本格韓国料理が大阪でも食べられて嬉しい。チーズダッカルビが最高。'),
+(5, 37, 4, '量が多くてコスパ抜群。友達と来るのにちょうどいい。'),
+
+-- 橋本屋 (spot_id=42)
+(3, 42, 5, '平日ランチのみという希少性。行列ができるのも納得の美味しさ。'),
+(6, 42, 4, 'スパイスカレーとしてのクオリティが高い。早めに並ぶのが必須。'),
+
+-- CRITTERS BURGER (spot_id=44)
+(2, 44, 4, 'ジューシーなパティとフレッシュな野菜のバランスが完璧。'),
+(4, 44, 4, 'アメリカンな雰囲気で食事を楽しめる。ポテトも美味しい。'),
+
+-- カフェ＆カレー ボタ (spot_id=47)
+(3, 47, 5, 'レトロな長屋の内装がおしゃれ。カレーもチャイも絶品です。'),
+(5, 47, 4, '落ち着いた雰囲気でゆっくり食事できる。隠れ家感が好き。'),
+(6, 47, 4, 'テイクアウトのカレーを公園で食べました。最高のランチ。'),
+
+-- 御津公園（三角公園）(spot_id=50)
+(2, 50, 3, 'アメ村の待ち合わせスポットとして定番。休憩できて助かる。'),
+(4, 50, 3, '公園自体は小さいが、アメ村の中心にあるので便利。'),
+
+-- 高津公園 (spot_id=51)
+(3, 51, 4, '桜の季節に行きました。高津宮と合わせて散策するのがおすすめ。'),
+(5, 51, 4, '都会の中でほっと一息できる公園。静かで落ち着きます。'),
+
+-- 旧ヤム邸 空堀店 (spot_id=70)
+(2, 70, 5, '小麦粉なしとは思えないコクと深み！薬膳カレーなのに食べ応え満点でした。'),
+(4, 70, 5, '古民家の雰囲気が最高。スパイスの香りに包まれながら食べるカレーは格別。'),
+(6, 70, 4, '空堀商店街の雰囲気と相まって、タイムスリップした感覚になれる素敵なお店。'),
+
+-- エクチュア からほり「蔵」本店 (spot_id=71)
+(3, 71, 5, '蔵の空間が本当に特別。チョコレートスイーツの完成度が高くて感動しました。'),
+(5, 71, 4, 'レトロモダンな内装と一枚板カウンターがおしゃれ。チョコのケーキが絶品。'),
+
+-- 韓国ダイニング まにぽぽ (spot_id=72)
+(2, 72, 4, 'K-POPが流れる中で食べる韓国料理は最高の雰囲気！チーズタッカルビが特においしかった。'),
+(4, 72, 5, '韓国料理とK-POPの融合という独自コンセプトが面白い。友達と盛り上がれる店。'),
+(6, 72, 3, '料理は美味しいが、音楽が大きめなので静かに食べたい人には不向きかも。'),
+
+-- 星カフェ SPIKA (spot_id=73)
+(3, 73, 5, '完全予約制で少し敷居が高かったけど、星空演出が幻想的で来て大正解！デートに最高。'),
+(5, 73, 4, 'プラネタリウムのような空間でドリンクを楽しめる不思議な体験。予約を忘れずに。'),
+
+-- BOOK AND BED TOKYO SHINSAIBASI (spot_id=74)
+(2, 74, 4, '本に囲まれたおしゃれな空間。カフェ利用だけでも十分楽しめます。'),
+(4, 74, 5, 'ラウンジでゆっくり本を読みながら過ごす時間が最高。バーもあって夜も楽しめる。'),
+
+-- ネットカフェ・ダーツポパイ 心斎橋店 (spot_id=75)
+(3, 75, 4, 'ダーツが本格的で楽しい！友達グループで来ると盛り上がれる。料金もお手頃。'),
+(6, 75, 3, '設備はシンプルだけどコスパは良い。深夜でも使えるので急な時に助かります。');
+
+
+-- spot_photos (開発用初期データ)
+INSERT INTO spot_photos (spot_id, photo_url, display_order) VALUES
+-- 劇場
+(1,  'images/theater_image_01.jpg', 1),   -- なんばグランド花月
+(1,  'images/theater_image_01.jpg', 2),   -- なんばグランド花月
+(1,  'images/theater_image_01.jpg', 3),   -- なんばグランド花月
+(2,  'images/theater_image_02.jpg', 1),   -- よしもと漫才劇場
+(3,  'images/theater_image_01.jpg', 1),   -- よしもと道頓堀シアター
+(24, 'images/theater_image_02.jpg', 1),   -- 梅田芸術劇場
+(24, 'images/theater_image_02.jpg', 2),   -- 梅田芸術劇場
+(24, 'images/theater_image_02.jpg', 3),   -- 梅田芸術劇場
+(24, 'images/theater_image_02.jpg', 4),   -- 梅田芸術劇場
+(24, 'images/theater_image_02.jpg', 5),   -- 梅田芸術劇場
+
+-- 肉料理・居酒屋系
+(4,  'images/yakiniku_image_01.jpg', 1),  -- 牛かつ 富田
+(10, 'images/yakiniku_image_01.jpg', 1),  -- 豚と炭火 こぶた家
+(20, 'images/yakiniku_image_01.jpg', 1),  -- 炭火焼き鳥 鶏尽
+(21, 'images/yakiniku_image_01.jpg', 1),  -- 黒毛和牛ごりちゃん心斎橋店
+-- たこ焼き
+(5,  'images/takoyaki_image_01.jpg', 1),  -- たこ焼き道楽わなか
+(46, 'images/takoyaki_image_01.jpg', 1),  -- たこりき
+-- ラーメン
+(6,  'images/ramen_image_01.jpg', 1),     -- 中華そばふじい
+(40, 'images/ramen_image_01.jpg', 1),     -- 老四川紅燒牛肉麺
+(45, 'images/ramen_image_01.jpg', 1),     -- 日本橋 さか一
+-- 猫カフェ
+(7,  'images/cat_image_01.jpg', 1),       -- ねこ浴場＆ねこ旅籠
+-- カフェ・イタリアン
+(8,  'images/cafe_image_01.jpg', 1),      -- 本宮的茶
+(9,  'images/cafe_image_01.jpg', 1),      -- ハーリス なんばマルイ店
+(41, 'images/cafe_image_01.jpg', 1),      -- Naga～n cucina italiana
+(47, 'images/cafe_image_01.jpg', 1),      -- カフェ＆カレー ボタ
+(49, 'images/cafe_image_01.jpg', 1),      -- イルピアット
+-- 神社
+(11, 'images/shrine_image_01.jpg', 1),    -- 坐摩神社
+(12, 'images/shrine_image_02.jpg', 1),    -- サムハラ神社
+(13, 'images/shrine_image_03.jpg', 1),    -- 難波八坂神社
+-- ガチャポン
+(14, 'images/gacha_image_01.jpg', 1),     -- C-pla 大阪心斎橋筋北店
+(15, 'images/gacha_image_01.jpg', 1),     -- C-pla 大阪心斎橋筋1丁目店
+(16, 'images/gacha_image_01.jpg', 1),     -- C-pla+ 大阪心斎橋筋店
+(17, 'images/gacha_image_01.jpg', 1),     -- C-pla 大阪心斎橋筋南店1号館
+(18, 'images/gacha_image_01.jpg', 1),     -- C-pla 大阪心斎橋筋南店2号館
+-- サウナ
+(19, 'images/sauna_image_01.jpg', 1),     -- 想 ‐SOU- SAUNA
+-- ライブハウス
+(22, 'images/livehouse_image_01.jpg', 1), -- なんばHatch
+(23, 'images/livehouse_image_01.jpg', 1), -- Zepp Namba
+(25, 'images/livehouse_image_01.jpg', 1), -- 心斎橋BIGCAT
+(26, 'images/livehouse_image_01.jpg', 1), -- Music Club JANUS
+(27, 'images/livehouse_image_01.jpg', 1), -- OSAKA MUSE
+(28, 'images/livehouse_image_01.jpg', 1), -- なんばMele
+(29, 'images/livehouse_image_01.jpg', 1), -- 心斎橋SUNHALL
+-- ドラッグストア
+(30, 'images/pharmacy_image_01.jpg', 1),  -- KoKuMiN クリスタ長堀店
+(31, 'images/pharmacy_image_01.jpg', 1),  -- スギ薬局 南船場店
+-- スーパー
+(32, 'images/supermarget_image_01.jpg', 1), -- 玉出
+-- 雑貨屋
+(33, 'images/miscgoods_image_01.jpg', 1), -- SARISARI MAMA
+-- 外国料理
+(34, 'images/ethnicfood_image_01.jpg', 1), -- タワンタイ（タイ料理）
+(34, 'images/ethnicfood_image_01.jpg', 2), -- タワンタイ（タイ料理）
+(34, 'images/ethnicfood_image_01.jpg', 3), -- タワンタイ（タイ料理）
+(36, 'images/ethnicfood_image_01.jpg', 1), -- オーサカバインミー（ベトナム料理）
+(38, 'images/ethnicfood_image_01.jpg', 1), -- トルコ料理ナザール
+(39, 'images/ethnicfood_image_01.jpg', 1), -- EL PANCHO（メキシコ料理）
+-- カレー
+(35, 'images/curry_image_01.jpg', 1),     -- ヒマラヤン
+(42, 'images/curry_image_01.jpg', 1),     -- 橋本屋
+(43, 'images/curry_image_01.jpg', 1),     -- 定食堂 金剛石
+-- 韓国料理
+(37, 'images/koreanfood_image_01.jpg', 1), -- 韓国料理 HANSSAM
+-- 中華料理
+(48, 'images/chinesefoods_image_01.jpg', 1), -- 中国料理 艶家
+-- ハンバーガー
+(44, 'images/burgershop_image_01.jpg', 1), -- CRITTERS BURGER
+-- 公園
+(50, 'images/park_image_01.jpg', 1),      -- 御津公園（三角公園）
+(51, 'images/park_image_01.jpg', 1),      -- 高津公園
+(52, 'images/park_image_01.jpg', 1),      -- 道仁公園
+
+(53, 'images/seven_eleven_1.jpg', 1),      -- セブン
+(54, 'images/seven_eleven_1.jpg', 1),      -- セブン
+(55, 'images/seven_eleven_1.jpg', 1),      -- セブン
+(56, 'images/seven_eleven_1.jpg', 2),      -- セブン
+(57, 'images/seven_eleven_1.jpg', 2),      -- セブン
+(58, 'images/seven_eleven_1.jpg', 2),      -- セブン
+
+(59, 'images/family_mart_1.jpg', 1),      -- ファミマ
+(60, 'images/family_mart_1.jpg', 1),      -- ファミマ
+(61, 'images/family_mart_1.jpg', 1),      -- ファミマ
+(62, 'images/family_mart_1.jpg', 1),      -- ファミマ
+(63, 'images/family_mart_1.jpg', 1),      -- ファミマ
+
+(64, 'images/lawson_1.jpg', 1),      -- ローソン
+(65, 'images/lawson_1.jpg', 1),      -- ローソン
+(66, 'images/lawson_1.jpg', 1),      -- ローソン
+(67, 'images/lawson_1.jpg', 1),      -- ローソン
+(68, 'images/lawson_1.jpg', 1),      -- ローソン
+(69, 'images/lawson_1.jpg', 1),      -- ローソン
+
+-- カレー（空堀）
+(70, 'images/curry_image_01.jpg', 1),     -- 旧ヤム邸 空堀店
+
+-- カフェ（空堀）
+(71, 'images/cafe_image_01.jpg', 1),      -- エクチュア からほり「蔵」本店
+
+-- 韓国料理
+(72, 'images/koreanfood_image_01.jpg', 1), -- 韓国ダイニング まにぽぽ
+
+-- カフェ（星空）
+(73, 'images/cafe_image_01.jpg', 1),      -- 星カフェ SPIKA
+
+-- カフェ・本・バー
+(74, 'images/cafe_image_01.jpg', 1),      -- BOOK AND BED TOKYO SHINSAIBASI
+
+-- ネットカフェ・娯楽
+(75, 'images/cafe_image_01.jpg', 1);      -- ネットカフェ・ダーツポパイ 心斎橋店
+
+
+
