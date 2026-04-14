@@ -78,7 +78,7 @@
 
 	<!-- 指定された画像URLのレコードがあるか確認 --> 
 	<select id="existsByPhotoUrl" resultType="boolean">
-		SELECT EXIST (
+		SELECT EXISTS (
 			SELECT 1
 			FROM spot_photos
 			WHERE photo_url = #{photoUrl}

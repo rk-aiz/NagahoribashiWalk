@@ -24,12 +24,14 @@ import com.example.nagahoribashi_walk.service.SpotPhotoService;
 import com.example.nagahoribashi_walk.util.MyStringUtils;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * スポット画像関連サービスの実装
  *
  * @author 海津
  */
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -119,20 +121,32 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
     }
 
     /**
-     * 画像を削除する TODO : ローカルストレージからファイル自体を削除する → バッチ処理でもいい
+     * 画像を削除する
      */
     @Override
     public void delete(Long id, Long spotId) {
 
+        // ファイル情報を取得
         SpotPhoto sp = spotPhotoMapper.findEntityById(id).orElseThrow();
+
         // ファイル情報をDBから削除
         spotPhotoMapper.delete(id);
-
-        spotPhotoMapper.existsByPhotoUrl(id.toString());
 
         // 表示順を正規化する
         normalizeDisplayOrder(spotId);
 
+        // まだ同じファイルを参照しているレコードがある場合はreturn
+        if (spotPhotoMapper.existsByPhotoUrl(sp.getPhotoUrl())) {
+            return;
+        }
+
+        // ファイル実体削除
+        Path p = Paths.get(MyStringUtils.joinPath(uploadDir, sp.getPhotoUrl()));
+        try {
+            Files.deleteIfExists(p);
+        } catch (IOException e) {
+            log.error("ファイルの削除に失敗しました", e.getLocalizedMessage());
+        }
     }
 
     /**
