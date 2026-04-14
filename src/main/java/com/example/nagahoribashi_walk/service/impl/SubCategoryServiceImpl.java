@@ -6,15 +6,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.nagahoribashi_walk.dto.NavSubCategory;
-import com.example.nagahoribashi_walk.exception.CategoryAlreadyExistsException;
 import com.example.nagahoribashi_walk.dto.SidebarDTO;
 import com.example.nagahoribashi_walk.entity.SubCategory;
+import com.example.nagahoribashi_walk.exception.CategoryAlreadyExistsException;
 import com.example.nagahoribashi_walk.repository.CategoryMapper;
 import com.example.nagahoribashi_walk.repository.SubCategoryMapper;
 import com.example.nagahoribashi_walk.service.SubCategoryService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * サブカテゴリ―サービスの実装クラス
+ * 
+ * @author 大谷、海津
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -23,12 +28,14 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     private final CategoryMapper categoryMapper;
     private final SubCategoryMapper subCategoryMapper;
 
+    /** IDからサブカテゴリを取得 */
     @Override
     public NavSubCategory getById(Long subCategoryId) {
         return subCategoryMapper.findById(subCategoryId)
                 .orElseThrow();
     }
 
+    /** サイドバー用DTOを取得 */
     @Override
     public SidebarDTO getSidebarDTO(Long subCategoryId) {
 
@@ -39,6 +46,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
                 subCategoryId);
     }
 
+    /** サブカテゴリの表示順を並べ替える */
     @Override
     public void reorderSubCategory(Long id, String direction) {
         List<SubCategory> subCategoriesForReplace = switch (direction) {
@@ -54,6 +62,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         }
     }
 
+    /** 新規サブカテゴリを登録 */
     @Override
     public void insertSubCategory(SubCategory subCategory) {
         if (subCategory.getCategoryId() == null || subCategory.getCategoryId() == 0) {
@@ -66,6 +75,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         subCategoryMapper.insert(subCategory);
     }
 
+    /** サブカテゴリを更新 */
     @Override
     public void updateSubCategory(SubCategory subCategory) {
 
@@ -76,6 +86,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         subCategoryMapper.update(subCategory);
     }
 
+    /** サブカテゴリを削除 */
     @Override
     public void deleteSubCategory(Long id) {
 
@@ -85,6 +96,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         });
     }
 
+    /** カテゴリIDに対応するサブカテゴリの表示順を正規化する */
     private void normalizeDisplayOrderByCategoryId(Long categoryId) {
         List<SubCategory> subCategories = subCategoryMapper.findEntitiesByCategoryId(categoryId)
                 .stream().filter(sc -> !sc.isDefault()).toList();

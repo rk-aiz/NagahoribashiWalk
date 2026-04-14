@@ -6,18 +6,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.nagahoribashi_walk.dto.AdminCategoryRow;
-import com.example.nagahoribashi_walk.util.ColorUtils;
-import com.example.nagahoribashi_walk.exception.CategoryAlreadyExistsException;
 import com.example.nagahoribashi_walk.dto.NavCategory;
 import com.example.nagahoribashi_walk.dto.NavSubCategory;
 import com.example.nagahoribashi_walk.dto.SidebarDTO;
 import com.example.nagahoribashi_walk.entity.Category;
+import com.example.nagahoribashi_walk.exception.CategoryAlreadyExistsException;
 import com.example.nagahoribashi_walk.repository.CategoryMapper;
 import com.example.nagahoribashi_walk.repository.SubCategoryMapper;
 import com.example.nagahoribashi_walk.service.CategoryService;
+import com.example.nagahoribashi_walk.util.ColorUtils;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * カテゴリ関連サービスの実装
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -26,21 +29,19 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
     private final SubCategoryMapper subCategoryMapper;
 
-    @Override
-    public List<NavCategory> findAll() {
-        return categoryMapper.findAll();
-    }
-
-    @Override
-    public List<NavCategory> getAllNavCategories() {
-        return categoryMapper.findAllNavCategories();
-    }
-
+    /** IDからカテゴリ（閲覧系）を取得 */
     @Override
     public NavCategory getById(Long categoryId) {
         return categoryMapper.findById(categoryId).orElseThrow();
     }
 
+    /** カテゴリナビ用に全件取得する */
+    @Override
+    public List<NavCategory> getAllNavCategories() {
+        return categoryMapper.findAllNavCategories();
+    }
+
+    /** カテゴリIDから、サイドバー用のDTO取得 */
     @Override
     public SidebarDTO getSidebarDTO(Long categoryId) {
 
@@ -52,16 +53,13 @@ public class CategoryServiceImpl implements CategoryService {
                 categoryId, null);
     }
 
+    /** 管理者用全件取得 */
     @Override
-    public List<AdminCategoryRow> getAllAdminCategoryRows() {
+    public List<AdminCategoryRow> getAllForAdmin() {
         return categoryMapper.findAllForAdmin();
     }
 
-    @Override
-    public List<AdminCategoryRow> findAllForAdmin() {
-        return categoryMapper.findAllForAdmin();
-    }
-
+    /** 表示順を並べ替え */
     @Override
     public void reorderCategory(Long id, String direction) {
         List<Category> categoriesForReplace = switch (direction) {
@@ -126,5 +124,4 @@ public class CategoryServiceImpl implements CategoryService {
             categoryMapper.bulkUpdateDisplayOrder(categories);
         }
     }
-
 }

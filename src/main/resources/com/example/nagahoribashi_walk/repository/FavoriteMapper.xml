@@ -38,7 +38,7 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
-    <!-- マイページ用ページネーション件数取得 -->
+    <!-- ユーザーIDに対するお気に入り数を取得 -->
     <select id="countByUserId" resultType="long">
         SELECT COUNT(*)
         FROM favorites f
@@ -47,9 +47,6 @@
             AND s.deleted_at IS NULL
         WHERE f.user_id = #{userId}
     </select>
-
-
-    <!--おすすめ登録削除用xml （正本）-->
     
     <!-- ① お気に入り追加 -->
     <insert id="insertFavorite">

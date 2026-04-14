@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.nagahoribashi_walk.repository.CategoryMapper">
 
-    <!-- resultMap を使って1対多をマッピング -->
+    <!-- NavCategoryのresultMapを定義 -->
     <resultMap id="navCategoryResultMap" type="com.example.nagahoribashi_walk.dto.NavCategory">
         <id property="id" column="category_id" />
         <result property="name" column="category_name" />
@@ -15,6 +15,7 @@
         </collection>
     </resultMap>
 
+    <!-- AdminCategoryRowのresultMapを定義 -->
     <resultMap id="adminCategoryRowResultMap" type="com.example.nagahoribashi_walk.dto.AdminCategoryRow">
         <id property="id" column="category_id" />
         <result property="name" column="category_name" />
@@ -81,6 +82,7 @@
             c.display_order ASC NULLS LAST, sc.display_order ASC NULLS LAST
     </select>
 
+    <!-- IDからカテゴリ(閲覧系)を取得 -->
     <select id="findById" resultType="com.example.nagahoribashi_walk.dto.NavCategory">
         SELECT id, name FROM categories
         WHERE id = #{id}
@@ -98,6 +100,7 @@
             c.display_order ASC NULLS LAST
     </select>
 
+    <!-- IDから、同カテゴリ内表示昇順でlimit数だけ取得する -->
     <select id="findFromById" resultType="com.example.nagahoribashi_walk.entity.Category">
         SELECT id, name, display_order, is_default FROM categories
         WHERE
@@ -108,6 +111,7 @@
         LIMIT #{limit}
     </select>
 
+    <!-- IDから、同カテゴリ内表示降順でlimit数だけ取得する -->
     <select id="findUpToById" resultType="com.example.nagahoribashi_walk.entity.Category">
         <![CDATA[
             SELECT id, name, display_order, is_default FROM categories
@@ -120,39 +124,44 @@
         ]]>
     </select>
 
+    <!-- エンティティを全件取得 -->
     <select id="findAllEntities" resultType="com.example.nagahoribashi_walk.entity.Category">
         SELECT id, name, display_order, is_default FROM categories
         WHERE is_default = false
         ORDER BY display_order ASC NULLS LAST
     </select>
 
+    <!-- カテゴリ名が既に存在するか確認する -->
     <select id="existsByCategoryName" resultType="boolean">
         SELECT EXISTS (SELECT 1 FROM categories WHERE name = #{name})
     </select>
 
+    <!-- カテゴリ名が既に存在するか確認する(指定のIDを除く) -->
     <select id="existsByCategoryNameExcludingId" resultType="boolean">
         SELECT EXISTS (SELECT 1 FROM categories WHERE name = #{name} AND id != #{id})
     </select>
 
-    <!-- 大谷記載 -->
     <!-- 新規追加 -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO categories (name, display_order, color)
         VALUES (#{name}, (SELECT COALESCE(MAX(display_order), 0) + 1 FROM categories), #{color})
     </insert>
 
+    <!-- 更新 -->
     <update id="update">
       UPDATE categories 
       SET name = #{name}, color = #{color} 
       WHERE id = #{id}
     </update>
 
+    <!-- 表示順を更新 -->
     <update id="updateDisplayOrder">
         UPDATE categories 
         SET display_order = #{displayOrder}
         WHERE id = #{id} AND is_default = false
     </update>
 
+    <!-- 表示順を一括更新 -->
     <update id="bulkUpdateDisplayOrder">
     	UPDATE categories
 		SET display_order = 

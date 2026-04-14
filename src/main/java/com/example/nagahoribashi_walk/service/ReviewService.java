@@ -48,7 +48,7 @@ public interface ReviewService {
     /** 【管理者】レビュー一覧をページネーションで取得 */
     Page<AdminReviewRow> getAdminReviewPage(Pageable pageable, String keyword);
 
-    /** 全体のレビュー数を取得する TODO : 退会済みユーザーのレビューを除くか検討 */
+    /** 【管理者】全体のレビュー数を取得する */
     long getReviewCount();
 
 }

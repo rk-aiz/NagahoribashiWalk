@@ -62,11 +62,13 @@ public class AdminSpotServiceImpl implements AdminSpotService {
         adminSpotMapper.insert(spot);
     }
 
+    /** 【管理者】スポット情報を更新 */
     @Override
     public void updateSpot(Spot spot) {
         adminSpotMapper.update(spot);
     }
 
+    /** 【管理者】スポット情報を論理削除 */
     @Override
     public void softDelete(Long spotId) {
         adminSpotMapper.softDelete(spotId);
@@ -80,16 +82,19 @@ public class AdminSpotServiceImpl implements AdminSpotService {
         return adminSpotMapper.findEntityById(spotId).orElseThrow();
     }
 
+    /** 【管理者】スポット数を取得 */
     @Override
     public long getSpotCount() {
         return adminSpotMapper.count();
     }
 
+    /** 【管理者】スポットの平均評価を取得 */
     @Override
     public Double getAverageRatingAll() {
         return adminSpotMapper.findAverageRatingAll();
     }
 
+    /** 【管理者】最近登録されたスポットを取得 */
     @Override
     public List<AdminSpotRow> findRecent(int i) {
         return adminSpotMapper.findRecent(i);

@@ -10,11 +10,10 @@ import com.example.nagahoribashi_walk.dto.FavoriteSummary;
 /**
  * favoritesテーブルに対応したMapperのインターフェース
  * 
+ * @author 正本
  */
 @Mapper
 public interface FavoriteMapper {
-
-	//お気に入り登録削除（正本）
 
 	// ① お気に入り追加（INSERT）
 	void insertFavorite(@Param("userId") Long userId,
@@ -28,13 +27,13 @@ public interface FavoriteMapper {
 	boolean existsByUserAndSpot(@Param("userId") Long userId,
 			@Param("spotId") Long spotId);
 
-	
 	/** マイページ用にお気に入り一覧をページネーションありで取得 */
 	List<FavoriteSummary> findByUserId(
-			@Param("userId") Long userId, 
-			@Param("offset") long offset, 
+			@Param("userId") Long userId,
+			@Param("offset") long offset,
 			@Param("limit") int limit);
-	
-	long countByUserId(@Param("userId") Long userId) ;
+
+	/** ユーザーIDに対するお気に入り数を取得 */
+	long countByUserId(@Param("userId") Long userId);
 
 }

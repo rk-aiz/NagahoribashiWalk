@@ -3,6 +3,7 @@ package com.example.nagahoribashi_walk.service.impl;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -17,13 +18,17 @@ import com.example.nagahoribashi_walk.service.FavoriteService;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Value;
-
+/**
+ * お気に入り関連サービスの実装クラス
+ * 
+ * @author 正本
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class FavoriteServiceImpl implements FavoriteService {
 
+    /** おすすめスポットをお気に入り登録した際のポイント */
     @Value("${fortune.bonus-point}")
     private int fortuneBonusPoint;
 
@@ -68,6 +73,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         return 0;
     }
 
+    /** お気に入り存在確認 */
     @Override
     public boolean isFavorite(Long userId, Long spotId) {
 

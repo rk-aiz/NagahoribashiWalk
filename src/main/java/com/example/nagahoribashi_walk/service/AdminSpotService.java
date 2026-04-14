@@ -33,9 +33,12 @@ public interface AdminSpotService {
     /** 【管理者】スポット情報を論理削除 */
     void softDelete(Long id);
 
+    /** 【管理者】スポット数を取得 */
     long getSpotCount();
 
+    /** 【管理者】スポットの平均評価を取得 */
     Double getAverageRatingAll();
 
+    /** 【管理者】最近登録されたスポットを取得 */
     List<AdminSpotRow> findRecent(int i);
 }
