@@ -124,8 +124,11 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
     @Override
     public void delete(Long id, Long spotId) {
 
-        // ファイルを削除
+        SpotPhoto sp = spotPhotoMapper.findEntityById(id).orElseThrow();
+        // ファイル情報をDBから削除
         spotPhotoMapper.delete(id);
+
+        spotPhotoMapper.existsByPhotoUrl(id.toString());
 
         // 表示順を正規化する
         normalizeDisplayOrder(spotId);

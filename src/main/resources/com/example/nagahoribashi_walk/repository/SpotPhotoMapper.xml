@@ -64,6 +64,28 @@
 		ORDER BY display_order ASC
 	</select>
 
+
+	<!-- 指定されたIDから画像情報を取得 --> 
+	<select id="findEntityById">
+		SELECT 
+			id,
+			spot_id,
+			display_order,
+			photo_url
+		FROM spot_photos
+		WHERE id = #{id}
+	</select>
+
+	<!-- 指定された画像URLのレコードがあるか確認 --> 
+	<select id="existsByPhotoUrl" resultType="boolean">
+		SELECT EXIST (
+			SELECT 1
+			FROM spot_photos
+			WHERE photo_url = #{photoUrl}
+		)
+	</select>
+
+
 	<!-- display_orderを一括更新 -->
 	<update id="bulkUpdateDisplayOrder">
 		UPDATE spot_photos
@@ -81,5 +103,4 @@
 		INSERT INTO spot_photos (spot_id, display_order, photo_url)
 		VALUES (#{spotId}, #{displayOrder}, #{photoUrl})
     </insert>
-
 </mapper>
