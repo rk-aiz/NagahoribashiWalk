@@ -49,7 +49,7 @@ public class ReviewController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("errorMessage",
-                    messageSource.getMessage(bindingResult.getAllErrors().getFirst(), locale));
+                    bindingResult.getAllErrors().getFirst().getDefaultMessage());
             model.addAttribute("isFavorite",
                     favoriteService.isFavorite(loginUser.getId(), spotId));
             model.addAttribute("spotDetail",
