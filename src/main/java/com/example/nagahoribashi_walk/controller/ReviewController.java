@@ -1,6 +1,9 @@
 package com.example.nagahoribashi_walk.controller;
 
+import java.util.Locale;
+
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +32,7 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final SpotService spotService;
     private final FavoriteService favoriteService;
+    private MessageSource messageSource;
 
     /**
      * レビュー投稿処理
@@ -40,11 +44,12 @@ public class ReviewController {
             @PathVariable("spotId") Long spotId,
             @AuthenticationPrincipal LoginUser loginUser,
             RedirectAttributes redirectAttributes,
+            Locale locale,
             Model model) {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("errorMessage",
-                    bindingResult.getAllErrors().getFirst().getDefaultMessage());
+                    messageSource.getMessage(bindingResult.getAllErrors().getFirst(), locale));
             model.addAttribute("isFavorite",
                     favoriteService.isFavorite(loginUser.getId(), spotId));
             model.addAttribute("spotDetail",
