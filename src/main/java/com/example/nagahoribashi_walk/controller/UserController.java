@@ -43,7 +43,7 @@ public class UserController {
             @AuthenticationPrincipal LoginUser loginUser,
             @RequestParam(name = "tab", defaultValue = "profile") String tab,
             @RequestParam(name = "edit", defaultValue = "false") boolean edit,
-            @PageableDefault(size = 6) Pageable pageable,
+            @PageableDefault(size = 10) Pageable pageable,
             Model model) {
 
         UserProfile userProfile = userService.getProfileByUsername(loginUser.getUsername());
@@ -70,7 +70,7 @@ public class UserController {
             @AuthenticationPrincipal LoginUser loginUser,
             @Validated UserProfileEditForm form,
             BindingResult bindingResult,
-            @PageableDefault(size = 12) Pageable pageable,
+            @PageableDefault(size = 10) Pageable pageable,
             Model model) {
 
         if (bindingResult.hasErrors()) {

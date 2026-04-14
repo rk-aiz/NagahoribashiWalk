@@ -35,6 +35,7 @@
             s.id, s.spot_name, sp.photo_url,
             c.name, sc.name, s.keywords, f.created_at
         ORDER BY f.created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <!-- マイページ用ページネーション件数取得 -->

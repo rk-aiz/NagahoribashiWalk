@@ -2,8 +2,6 @@ package com.example.nagahoribashi_walk.controller;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -16,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.nagahoribashi_walk.dto.ReviewDTO;
+import com.example.nagahoribashi_walk.dto.NavSubCategory;
 import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
 import com.example.nagahoribashi_walk.form.ReviewForm;
@@ -113,8 +111,10 @@ public class SpotController {
         model.addAttribute("pagerBaseUrl", "/spot/subcategory/");
         model.addAttribute("returnUrl", "/spot/subcategory/" + subCategoryId);
 
-        model.addAttribute("categoryId", subCategoryId);
-        model.addAttribute("categoryName", subCategoryService.getById(subCategoryId).getName());
+        NavSubCategory subCategory = subCategoryService.getById(subCategoryId);
+
+        model.addAttribute("categoryId", subCategory.getCategoryId());
+        model.addAttribute("categoryName", subCategory.getName());
 
         return "spot/list";
     }
