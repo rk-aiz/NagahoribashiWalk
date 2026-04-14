@@ -12,10 +12,13 @@ public interface SpotPhotoService {
 	/** 【管理者】スポットIDに対応する画像一覧を取得する */
 	List<SpotPhoto> getAllBySpotId(Long spotId);
 
+	/** 【管理者】スポットIDに対応する画像ファイル一覧を保存する */
 	SaveImagesResult saveImages(List<MultipartFile> files, Long spotId, Integer firstDisplayOrder);
 
+	/** 【管理者】画像ファイル情報を削除する */
 	void delete(Long id, Long spotId);
 
-    void reorder(Long spotId, Integer displayOrder1, Integer displayOrder2);
+	/** 【管理者】画像情報の表示順を並べ替える */
+	void reorder(Long spotId, Integer displayOrder1, Integer displayOrder2);
 
 }

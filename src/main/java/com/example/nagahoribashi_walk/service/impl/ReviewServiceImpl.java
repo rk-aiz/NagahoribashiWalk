@@ -3,6 +3,7 @@ package com.example.nagahoribashi_walk.service.impl;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,8 +21,6 @@ import com.example.nagahoribashi_walk.service.ReviewService;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Value;
-
 /**
  * レビュー関連のサービス
  *
@@ -32,9 +31,11 @@ import org.springframework.beans.factory.annotation.Value;
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 
+    /** 投稿時に付与するポイント数 */
     @Value("${review.post-point}")
     private int reviewPostPoint;
 
+    /** 投稿からポイントを減算するウィンドウ時間（時間単位） */
     @Value("${review.delete-penalty-window-hours}")
     private int deletePenaltyWindowHours;
 
@@ -129,7 +130,7 @@ public class ReviewServiceImpl implements ReviewService {
         return 0;
     }
 
-    /**  */
+    /** 【管理者】レビュー一覧をページネーションで取得 */
     @Override
     public Page<AdminReviewRow> getAdminReviewPage(Pageable pageable, String keyword) {
 
@@ -151,6 +152,7 @@ public class ReviewServiceImpl implements ReviewService {
         reviewMapper.delete(existingReview.getUserId(), existingReview.getSpotId());
     }
 
+    /** 【管理者】全体のレビュー数を取得する */
     @Override
     public long getReviewCount() {
         return reviewMapper.count();

@@ -33,9 +33,7 @@ public class SpotServiceImpl implements SpotService {
 
     private final SpotMapper spotMapper;
 
-    /**
-     * スポット一覧(ページ)を返す
-     */
+    /** スポット一覧(ページ)を返す */
     @Override
     @Transactional(readOnly = true)
     public Page<SpotSummary> getPage(Pageable pageable) {

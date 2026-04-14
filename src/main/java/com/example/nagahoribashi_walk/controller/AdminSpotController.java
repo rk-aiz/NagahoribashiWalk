@@ -20,6 +20,11 @@ import com.example.nagahoribashi_walk.service.CategoryService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 管理者スポット編集画面用コントローラー
+ *
+ * @author 海津, 池田
+ */
 @Controller
 @RequiredArgsConstructor
 public class AdminSpotController {
@@ -57,7 +62,7 @@ public class AdminSpotController {
         }
 
         model.addAttribute("dropDownCategories",
-                categoryService.getAllAdminCategoryRows());
+                categoryService.getAllForAdmin());
         return "admin/spot/edit";
     }
 
@@ -78,7 +83,7 @@ public class AdminSpotController {
         }
 
         model.addAttribute("dropDownCategories",
-                categoryService.getAllAdminCategoryRows());
+                categoryService.getAllForAdmin());
         return "admin/spot/edit";
     }
 
@@ -95,7 +100,7 @@ public class AdminSpotController {
         // バリデーションエラー
         if (bindingResult.hasErrors()) {
             model.addAttribute("dropDownCategories",
-                    categoryService.getAllAdminCategoryRows());
+                    categoryService.getAllForAdmin());
             return "/admin/spot/edit";
         }
 
@@ -123,7 +128,7 @@ public class AdminSpotController {
         // バリデーションエラー
         if (bindingResult.hasErrors()) {
             model.addAttribute("dropDownCategories",
-                    categoryService.getAllAdminCategoryRows());
+                    categoryService.getAllForAdmin());
             return "/admin/spot/edit";
         }
 

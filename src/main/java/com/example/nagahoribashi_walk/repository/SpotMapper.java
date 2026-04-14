@@ -17,54 +17,63 @@ import com.example.nagahoribashi_walk.dto.SpotSummary;
 @Mapper
 public interface SpotMapper {
 
-    // findById
-    Optional<SpotDetail> findById(@Param("id") Long id);
+        /** IDからスポット詳細情報を取得 */
+        Optional<SpotDetail> findById(@Param("id") Long id);
 
-    /** スポット一覧を取得する(ページネーション) */
-    List<SpotSummary> findAll(@Param("offset") long offset, @Param("limit") int limit);
+        /** スポット一覧を取得する(ページネーション) */
+        List<SpotSummary> findAll(@Param("offset") long offset, @Param("limit") int limit);
 
-    /** カテゴリIDから、List<SpotSummary>を取得 */
-    List<SpotSummary> findByCategoryId(
-            @Param("categoryId") Long categoryId,
-            @Param("offset") long offset,
-            @Param("limit") int limit);
+        /** カテゴリIDから、List<SpotSummary>を取得 */
+        List<SpotSummary> findByCategoryId(
+                        @Param("categoryId") Long categoryId,
+                        @Param("offset") long offset,
+                        @Param("limit") int limit);
 
-    /** サブカテゴリIDから、List<SpotSummary>を取得 */
-    List<SpotSummary> findBySubCategoryId(
-            @Param("subCategoryId") Long subCategoryId,
-            @Param("offset") long offset,
-            @Param("limit") int limit);
+        /** サブカテゴリIDから、List<SpotSummary>を取得 */
+        List<SpotSummary> findBySubCategoryId(
+                        @Param("subCategoryId") Long subCategoryId,
+                        @Param("offset") long offset,
+                        @Param("limit") int limit);
 
-    List<SpotSummary> searchByKeywords(
-            @Param("keywordMatrix") List<List<String>> keywordMatrix,
-            @Param("offset") long offset,
-            @Param("limit") int limit);
+        /** キーワードで、スポット要約を取得する */
+        List<SpotSummary> searchByKeywords(
+                        @Param("keywordMatrix") List<List<String>> keywordMatrix,
+                        @Param("offset") long offset,
+                        @Param("limit") int limit);
 
-    // 関連スポット用
-    List<SpotSummary> findRandomByAnyKeywords(
-            @Param("spotId") Long spotId,
-            @Param("keywords") List<String> keywords,
-            @Param("limit") int limit);
+        /** 関連スポット用 */
+        List<SpotSummary> findRandomByAnyKeywords(
+                        @Param("spotId") Long spotId,
+                        @Param("keywords") List<String> keywords,
+                        @Param("limit") int limit);
 
-    List<SpotSummary> findTopByRating(@Param("limit") int limit);
+        /** 評価平均値降順でlimit数スポットを取得 */
+        List<SpotSummary> findTopByRating(@Param("limit") int limit);
 
-    List<SpotSummary> findTopByFavorite(@Param("limit") int limit);
+        /** お気に入り数降順でlimit数スポットを取得 */
+        List<SpotSummary> findTopByFavorite(@Param("limit") int limit);
 
-    List<SpotSummary> findRandomSpots(@Param("limit") int limit);
+        /** ランダムでlimit数スポットを取得 */
+        List<SpotSummary> findRandomSpots(@Param("limit") int limit);
 
-    Optional<SpotSummary> findSummaryById(@Param("id") Long id);
+        /** IDからスポット要約情報を取得 */
+        Optional<SpotSummary> findSummaryById(@Param("id") Long id);
 
-    /** スポット数をカウントする */
-    long count();
+        /** スポット数をカウントする */
+        long count();
 
-    long countByKeywords(@Param("keywordMatrix") List<List<String>> keywordMatrix);
+        /** キーワードに対応したスポットの総数を取得 */
+        long countByKeywords(@Param("keywordMatrix") List<List<String>> keywordMatrix);
 
-    long countByCategoryId(@Param("categoryId") Long categoryId);
+        /** カテゴリIDに対応したスポットの総数を取得 */
+        long countByCategoryId(@Param("categoryId") Long categoryId);
 
-    long countBySubCategoryId(@Param("subCategoryId") Long subCategoryId);
+        /** サブカテゴリIDに対応したスポットの総数を取得 */
+        long countBySubCategoryId(@Param("subCategoryId") Long subCategoryId);
 
-    boolean existsBySpotId(@Param("spotId") Long spotId);
+        /** IDに対応するスポットが存在するか確認 */
+        boolean existsBySpotId(@Param("spotId") Long spotId);
 
-    // PV数を1加算
-    void incrementPvCount(@Param("id") Long id);
+        /** PV数を1加算 */
+        void incrementPvCount(@Param("id") Long id);
 }

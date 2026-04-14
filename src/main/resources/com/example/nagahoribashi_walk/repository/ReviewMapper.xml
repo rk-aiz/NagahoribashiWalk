@@ -32,7 +32,9 @@
 
 	<!-- レビュー総数カウント -->
 	<select id="count" resultType="long">
-		SELECT COUNT(*) FROM reviews
+		SELECT COUNT(*) FROM reviews r
+		JOIN users u ON r.user_id = u.id
+		WHERE u.deleted_at IS NULL
 	</select>
 
 	<!-- レビューIDでレビューを1件取得 -->

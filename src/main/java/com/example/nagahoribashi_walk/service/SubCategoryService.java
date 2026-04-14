@@ -6,21 +6,26 @@ import com.example.nagahoribashi_walk.entity.SubCategory;
 
 /**
  * サブカテゴリ関連サービスのインターフェース
+ * 
+ * @author 大谷
  */
 public interface SubCategoryService {
 
-    //大谷記載
-    //追加
-    void insertSubCategory(SubCategory subCategory);
-    
-    //削除
-    void deleteSubCategory(Long id);
-    
+    /** 新規サブカテゴリを登録 */
     NavSubCategory getById(Long subCategoryId);
 
+    /** サイドバー用DTOを取得 */
     SidebarDTO getSidebarDTO(Long subCategoryId);
-    
-	void updateSubCategory(SubCategory subCategory);
 
-	void reorderSubCategory(Long id, String direction);
+    /** サブカテゴリの表示順を並べ替える */
+    void reorderSubCategory(Long id, String direction);
+
+    /** 新規サブカテゴリを登録 */
+    void insertSubCategory(SubCategory subCategory);
+
+    /** サブカテゴリを更新 */
+    void updateSubCategory(SubCategory subCategory);
+
+    /** サブカテゴリを削除 */
+    void deleteSubCategory(Long id);
 }

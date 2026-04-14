@@ -35,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
+    /** ユーザー名から、UserProfileインスタンスを取得する */
     @Override
     public UserProfile getProfileByUsername(String username) {
         return userMapper.findProfileByUsername(username).orElseThrow(() -> {
@@ -43,6 +44,7 @@ public class UserServiceImpl implements UserService {
         });
     }
 
+    /** Userを新規保存する */
     @Override
     public void register(User user, String rowPassword) {
 
@@ -66,6 +68,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /** プロフィールを更新する */
     @Override
     public void updateProfile(User user) {
         // 更新対象のユーザーを取得
@@ -86,13 +89,7 @@ public class UserServiceImpl implements UserService {
         userMapper.updateProfile(existingUser);
     }
 
-    @Override
-    public void toggleEnabled(Long id) {
-
-        // ユーザー取得
-        userMapper.toggleEnabled(id);
-    }
-
+    /** ユーザー自身が退会する用 */
     @Override
     public void unsubscribe(Long userId) {
         User user = userMapper.findById(userId)
@@ -101,6 +98,15 @@ public class UserServiceImpl implements UserService {
         userMapper.softDelete(userId, prefix + user.getUsername(), prefix + user.getEmail());
     }
 
+    /** (管理者用)ユーザーの有効・無効を切り替える */
+    @Override
+    public void toggleEnabled(Long id) {
+
+        // ユーザー取得
+        userMapper.toggleEnabled(id);
+    }
+
+    /** (管理者用)ユーザー一覧を取得する */
     @Override
     public Page<AdminUserRow> getAdminUserPage(Pageable pageable, String sort, String keyword, boolean includeDeleted) {
 
@@ -124,9 +130,8 @@ public class UserServiceImpl implements UserService {
         return new PageImpl<>(list, pageable, total);
     }
 
-    /**
-     * ユーザーを論理削除する
-     */
+    /** ユーザーを論理削除する */
+    @Override
     public void delete(String username, String loginUsername) {
         // ★ 自分削除禁止
         if (username.equals(loginUsername)) {
@@ -141,9 +146,7 @@ public class UserServiceImpl implements UserService {
         userMapper.softDelete(user.getId(), prefix + user.getUsername(), prefix + user.getEmail());
     }
 
-    /**
-     * Role対象ユーザー数をカウントする
-     */
+    /** Role対象ユーザー数をカウントする */
     @Override
     public long getUserCountByRole(String role) {
         return userMapper.countByRole(role);
