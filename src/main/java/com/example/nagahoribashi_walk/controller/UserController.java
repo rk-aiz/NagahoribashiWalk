@@ -38,6 +38,7 @@ public class UserController {
     private final UserService userService;
     private final FavoriteService favoriteService;
 
+    /** マイページ */
     @GetMapping("/mypage")
     public String mypage(
             @AuthenticationPrincipal LoginUser loginUser,
