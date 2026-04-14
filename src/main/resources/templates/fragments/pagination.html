@@ -126,6 +126,62 @@
         </ul>
     </nav>
 
+    <!--/* マイページ お気に入り一覧用 */-->
+    <nav th:fragment="pagerMypage(favPages, navClass)" th:if="${favPages.totalPages > 1}"
+        aria-label="ページネーション" class="d-flex justify-content-center" th:classappend="${navClass}">
+
+        <ul class="pagination pager-minimal mb-0">
+
+            <!--/* 前へ */-->
+            <li class="page-item" th:classappend="${favPages.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/mypage(tab='favorites', page=${favPages.number - 1})}">
+                    <i class="bi bi-chevron-left"></i> 前へ
+                </a>
+            </li>
+
+            <!--/* 1ページ目（常に表示） */-->
+            <li class="page-item" th:classappend="${favPages.number == 0} ? 'active'">
+                <a class="page-link" th:href="@{/mypage(tab='favorites', page=0)}">1</a>
+            </li>
+
+            <!--/* 左省略記号 */-->
+            <li th:if="${favPages.totalPages > 5 and favPages.number > 3}" class="page-item disabled">
+                <span class="page-link pager-ellipsis">…</span>
+            </li>
+
+            <!--/* 中間ページ（current ± 2、先頭/末尾を除く） */-->
+            <th:block th:if="${favPages.totalPages >= 3}">
+                <th:block th:each="i : ${#numbers.sequence(1, favPages.totalPages - 2)}"
+                    th:if="${favPages.totalPages <= 5 or (i >= favPages.number - 2 and i <= favPages.number + 2)}">
+                    <li class="page-item" th:classappend="${i == favPages.number} ? 'active'">
+                        <a class="page-link" th:href="@{/mypage(tab='favorites', page=${i})}"
+                            th:text="${i + 1}">2</a>
+                    </li>
+                </th:block>
+            </th:block>
+
+            <!--/* 右省略記号 */-->
+            <li th:if="${favPages.totalPages > 5 and favPages.number < favPages.totalPages - 4}"
+                class="page-item disabled">
+                <span class="page-link pager-ellipsis">…</span>
+            </li>
+
+            <!--/* 最終ページ（常に表示） */-->
+            <li class="page-item" th:classappend="${favPages.number == favPages.totalPages - 1} ? 'active'">
+                <a class="page-link" th:href="@{/mypage(tab='favorites', page=${favPages.totalPages - 1})}"
+                    th:text="${favPages.totalPages}">N</a>
+            </li>
+
+            <!--/* 次へ */-->
+            <li class="page-item" th:classappend="${favPages.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/mypage(tab='favorites', page=${favPages.number + 1})}">
+                    次へ <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+
     <!--/* 検索ページ用 */-->
     <nav th:fragment="pagerSearch(spotPages, keyword, navClass)" th:if="${spotPages.totalPages > 1}"
         aria-label="ページネーション" class="d-flex justify-content-center" th:classappend="${navClass}">
