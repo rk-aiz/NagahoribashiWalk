@@ -77,9 +77,6 @@ public class AuthController {
             return "/auth/register";
         }
 
-        log.info(String.format(
-                "新規会員登録がありました : %s", userRegisterForm));
-
         return "redirect:/register/complete";
     }
 
