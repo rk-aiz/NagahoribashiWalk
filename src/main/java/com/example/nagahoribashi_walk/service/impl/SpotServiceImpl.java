@@ -35,7 +35,6 @@ public class SpotServiceImpl implements SpotService {
 
     /** スポット一覧(ページ)を返す */
     @Override
-    @Transactional(readOnly = true)
     public Page<SpotSummary> getPage(Pageable pageable) {
 
         // スポットの総数を取得する
@@ -50,7 +49,6 @@ public class SpotServiceImpl implements SpotService {
 
     /** トップページおすすめ３件表示用 */
     @Override
-    @Transactional(readOnly = true)
     public List<SpotSummary> getRecommendedSpots() {
 
         int rand = ThreadLocalRandom.current().nextInt(3);
@@ -65,7 +63,6 @@ public class SpotServiceImpl implements SpotService {
 
     /** カテゴリIDに対応したスポット一覧を取得(ページ) */
     @Override
-    @Transactional(readOnly = true)
     public Page<SpotSummary> getPageByCategoryId(Long categoryId, Pageable pageable) {
 
         List<SpotSummary> content = spotMapper.findByCategoryId(
@@ -78,7 +75,6 @@ public class SpotServiceImpl implements SpotService {
 
     /** サブテゴリIDに対応したスポット一覧を取得(ページ) */
     @Override
-    @Transactional(readOnly = true)
     public Page<SpotSummary> getPageBySubCategoryId(Long subCategoryId, Pageable pageable) {
 
         List<SpotSummary> content = spotMapper.findBySubCategoryId(
@@ -120,7 +116,6 @@ public class SpotServiceImpl implements SpotService {
 
     /** スポットIDとキーワードをもとに、関連するスポットを取得する */
     @Override
-    @Transactional(readOnly = true)
     public List<SpotSummary> findRelatedSpots(Long spotId, String keywords) {
 
         if (keywords == null || keywords.isBlank()) {
@@ -138,7 +133,6 @@ public class SpotServiceImpl implements SpotService {
 
     /** ページとキーワードに対応したスポット一覧を返す */
     @Override
-    @Transactional(readOnly = true)
     public Page<SpotSummary> searchByKeywords(String keywords, Pageable pageable) {
 
         // 1. 空文字検索は全取得にフォールバック

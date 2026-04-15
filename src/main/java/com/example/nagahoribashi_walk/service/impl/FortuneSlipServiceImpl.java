@@ -56,7 +56,6 @@ public class FortuneSlipServiceImpl implements FortuneSlipService {
 
     /** ユーザーが既に当日分のおみくじを引き済みか判定する */
     @Override
-    @Transactional(readOnly = true)
     public boolean isAlreadyDrawn(LoginUser user) {
         return userMapper.findById(user.getId())
                 .map(User::getLastDrawnAt)
@@ -130,7 +129,6 @@ public class FortuneSlipServiceImpl implements FortuneSlipService {
      * おみくじ結果を取得する（ランクはシードから再現）
      */
     @Override
-    @Transactional(readOnly = true)
     public FortuneResult getFortuneResult(LoginUser loginUser) {
 
         // LoginUserはセッションキャッシュのため、DBから最新のユーザー情報を取得する

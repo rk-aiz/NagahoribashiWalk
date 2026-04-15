@@ -64,7 +64,6 @@
 		ORDER BY display_order ASC
 	</select>
 
-
 	<!-- 指定されたIDから画像情報を取得 --> 
 	<select id="findEntityById">
 		SELECT 
@@ -76,7 +75,16 @@
 		WHERE id = #{id}
 	</select>
 
-	<!-- 指定された画像URLのレコードがあるか確認 --> 
+    
+
+	<!-- 指定されたスポットIDに紐づいた画像の最大display_orderを取得（画像なしの場合は0） -->
+	<select id="findMaxDisplayOrderBySpotId" resultType="int">
+		SELECT COALESCE(MAX(display_order), 0)
+		FROM spot_photos
+		WHERE spot_id = #{spotId}
+	</select>
+
+	<!-- 指定された画像URLのレコードがあるか確認 -->
 	<select id="existsByPhotoUrl" resultType="boolean">
 		SELECT EXISTS (
 			SELECT 1
