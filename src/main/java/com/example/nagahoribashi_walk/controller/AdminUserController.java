@@ -34,7 +34,7 @@ public class AdminUserController {
      * 【管理者】ユーザー一覧画面を表示
      */
     @GetMapping("/list")
-    public String userList(
+    public String list(
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam(name = "sort", defaultValue = "desc") String sort,
             @PageableDefault(size = 10) Pageable pageable,
@@ -42,6 +42,15 @@ public class AdminUserController {
             Model model) {
 
         Page<AdminUserRow> page = userService.getAdminUserPage(pageable, sort, keyword, includeDeleted);
+
+        if (page.isEmpty() && pageable.getPageNumber() > 0) {
+            int lastPage = Math.max(0, page.getTotalPages() - 1);
+            String redirect = "redirect:/admin/user/list?page=" + lastPage
+                    + "&sort=" + sort + "&includeDeleted=" + includeDeleted;
+            if (keyword != null)
+                redirect += "&keyword=" + keyword;
+            return redirect;
+        }
 
         model.addAttribute("page", page);
         model.addAttribute("sort", sort);

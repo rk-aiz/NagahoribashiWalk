@@ -1,6 +1,7 @@
 package com.example.nagahoribashi_walk.controller;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.nagahoribashi_walk.dto.AdminSpotRow;
 import com.example.nagahoribashi_walk.entity.Spot;
 import com.example.nagahoribashi_walk.form.SpotForm;
 import com.example.nagahoribashi_walk.service.AdminSpotService;
@@ -42,7 +44,15 @@ public class AdminSpotController {
             @PageableDefault(size = 15) Pageable pageable,
             Model model) {
 
-        model.addAttribute("spotPages", adminSpotService.searchForAdmin(keyword, sort, pageable));
+        Page<AdminSpotRow> spotPages = adminSpotService.searchForAdmin(keyword, sort, pageable);
+
+        if (spotPages.isEmpty() && pageable.getPageNumber() > 0) {
+            int lastPage = Math.max(0, spotPages.getTotalPages() - 1);
+            return "redirect:/admin/spot/list?page=" + lastPage
+                    + "&keyword=" + keyword + "&sort=" + sort;
+        }
+
+        model.addAttribute("spotPages", spotPages);
         model.addAttribute("keyword", keyword);
         model.addAttribute("sort", sort);
         return "admin/spot/list";
@@ -147,7 +157,7 @@ public class AdminSpotController {
      * スポット削除
      */
     @PostMapping("/admin/spot/delete")
-    public String update(
+    public String softDelete(
             @RequestParam("spotId") Long spotId,
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam("page") Integer page,

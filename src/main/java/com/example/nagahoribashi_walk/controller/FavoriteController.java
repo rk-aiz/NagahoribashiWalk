@@ -77,9 +77,8 @@ public class FavoriteController {
     public String removeFromMypage(
             @PathVariable("spotId") Long spotId,
             @AuthenticationPrincipal LoginUser loginUser,
-            @PageableDefault(size = 12) Pageable pageable,
-            RedirectAttributes redirectAttributes,
-            Model model) {
+            @RequestParam(name = "page", defaultValue = "0") int page, // ← URLから受け取る
+            RedirectAttributes redirectAttributes) {
 
         int pointDelta = favoriteService.removeFavorite(loginUser.getId(), spotId);
         if (pointDelta < 0) {
@@ -87,6 +86,7 @@ public class FavoriteController {
         }
 
         redirectAttributes.addAttribute("tab", "favorites");
+        redirectAttributes.addAttribute("page", page);
         redirectAttributes.addAttribute("edit", false);
 
         return "redirect:/mypage";

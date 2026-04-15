@@ -32,6 +32,33 @@
     </form>
 
     <div class="container" style="max-width: 1100px;">
+
+        <!--/* ページネーション */-->
+        <nav class="mt-4" th:if="${page.totalPages > 1}">
+            <ul class="pagination justify-content-center admin-pagination">
+
+                <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+                    <a class="page-link"
+                        th:href="@{/admin/user/list(page=${page.number - 1}, sort=${sort}, keyword=${keyword}, includeDeleted=${includeDeleted})}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                    th:classappend="${i == page.number} ? 'active'"><a class="page-link"
+                        th:href="@{/admin/user/list(page=${i}, sort=${sort}, keyword=${keyword}, includeDeleted=${includeDeleted})}"
+                        th:text="${i + 1}"> </a></li>
+
+                <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+                    <a class="page-link"
+                        th:href="@{/admin/user/list(page=${page.number + 1}, sort=${sort}, keyword=${keyword}, includeDeleted=${includeDeleted})}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+
         <div class="admin-card">
             <div class="p-4">
 

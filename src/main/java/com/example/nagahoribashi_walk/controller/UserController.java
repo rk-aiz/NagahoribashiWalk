@@ -1,6 +1,7 @@
 package com.example.nagahoribashi_walk.controller;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.AccessDeniedException;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.nagahoribashi_walk.dto.FavoriteSummary;
 import com.example.nagahoribashi_walk.dto.UserProfile;
 import com.example.nagahoribashi_walk.entity.User;
 import com.example.nagahoribashi_walk.form.UserProfileEditForm;
@@ -48,15 +50,20 @@ public class UserController {
             Model model) {
 
         UserProfile userProfile = userService.getProfileByUsername(loginUser.getUsername());
+        Page<FavoriteSummary> favorites = favoriteService.getPage(loginUser.getId(), pageable);
+
+        // 指定ページが範囲外（空ページ）かつ先頭でない場合、最終ページへリダイレクト
+        if (favorites.isEmpty() && pageable.getPageNumber() > 0) {
+            int lastPage = favorites.getTotalPages() - 1;
+            return "redirect:/mypage?tab=favorites&page=" + Math.max(0, lastPage);
+        }
+
         UserProfileEditForm form = new UserProfileEditForm();
         BeanUtils.copyProperties(userProfile, form);
 
         model.addAttribute("profile", userProfile);
         model.addAttribute("userProfileEditForm", form);
-
-        model.addAttribute("favorites",
-                favoriteService.getPage(loginUser.getId(), pageable));
-
+        model.addAttribute("favorites", favorites);
         model.addAttribute("activeTab", tab);
         model.addAttribute("editMode", edit);
 
