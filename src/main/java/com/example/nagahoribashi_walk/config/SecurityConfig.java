@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -143,5 +145,13 @@ public class SecurityConfig {
                         .accessDeniedHandler((request, response, ex2) -> response.sendRedirect("/403")));
 
         return http.build();
+    }
+
+    /**
+     * SecurityContextRepotiryをDIコンテナに追加 (新規登録後の自動ログイン用)
+     */
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        return new HttpSessionSecurityContextRepository();
     }
 }
