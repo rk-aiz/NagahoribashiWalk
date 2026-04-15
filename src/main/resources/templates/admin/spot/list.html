@@ -51,13 +51,16 @@
                 </div>
 
                 <!--/* 検索バー */-->
-                <form th:action="@{/admin/spot/list}" method="get" class="mb-4" style="position: relative;">
-                    <i class="bi bi-search"
-                        style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none;"></i>
-                    <input type="text" name="keyword" th:value="${keyword}" class="form-control"
-                        style="padding-left: 2.25rem; border-color: #e2e8f0; border-radius: 0.5rem;"
-                        placeholder="スポット名、カテゴリー、住所、キーワードで検索...">
+                <form th:action="@{/admin/spot/list}" method="get" class="d-flex justify-content-center gap-2 mb-4">
                     <input type="hidden" name="sort" th:value="${sort}">
+                    <input type="text" name="keyword" th:value="${keyword}" class="form-control"
+                        style="max-width: 360px;" placeholder="スポット名、カテゴリー、住所、キーワードで検索...">
+                    <button type="submit" class="btn btn-primary px-3">
+                        <i class="bi bi-search me-1"></i>検索
+                    </button>
+                    <a th:href="@{/admin/spot/list(sort=${sort})}"
+                        th:classappend="${#strings.isEmpty(keyword)} ? 'invisible'"
+                        class="btn btn-outline-secondary">クリア</a>
                 </form>
 
                 <!--/* ソートボタン */-->

@@ -1,5 +1,8 @@
 package com.example.nagahoribashi_walk.controller;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -21,6 +24,9 @@ public class AdminReviewController {
 
     private final ReviewService reviewService;
 
+    /**
+     * 【管理者】レビュー一覧を表示する
+     */
     @GetMapping("/admin/review/list")
     public String list(
             @RequestParam(name = "keyword", required = false) String keyword,
@@ -33,18 +39,19 @@ public class AdminReviewController {
             int lastPage = Math.max(0, reviewPages.getTotalPages() - 1);
             String redirect = "redirect:/admin/review/list?page=" + lastPage;
             if (keyword != null)
-                redirect += "&keyword=" + keyword;
+                redirect += "&keyword=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8);
             return redirect;
         }
 
         model.addAttribute("reviewPages", reviewPages);
-
-        model.addAttribute("reviewPages", reviewService.getAdminReviewPage(pageable, keyword));
         model.addAttribute("keyword", keyword);
 
         return "admin/review/list";
     }
 
+    /**
+     * 【管理者】レビューを削除する
+     */
     @PostMapping("/admin/review/delete")
     public String delete(
             @RequestParam("reviewId") Long reviewId,
@@ -54,22 +61,18 @@ public class AdminReviewController {
         // レビューの削除処理
         reviewService.deleteForAdmin(reviewId);
 
+        redirectAttributes.addFlashAttribute("message",
+                String.format("レビューID %d を削除しました", reviewId));
+        redirectAttributes.addAttribute("page", page);
         if (keyword != null) {
             redirectAttributes.addAttribute("keyword", keyword);
         }
-        redirectAttributes.addFlashAttribute("message",
-                String.format("レビューID %d を削除しました", reviewId));
 
-        return "redirect:/admin/review/list?page=" + page;
+        return "redirect:/admin/review/list";
     }
 
     /**
      * 【管理者】スポット詳細画面からレビューを削除する
-     * 
-     * @param reviewId           削除対象のレビューID
-     * @param spotId             戻り先のスポットID
-     * @param redirectAttributes リダイレクトメッセージ
-     * @return スポット詳細画面へリダイレクト
      */
     @PostMapping("/admin/review/delete/form-spot")
     public String deleteFormSpot(

@@ -1,5 +1,8 @@
 package com.example.nagahoribashi_walk.controller;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,7 +52,8 @@ public class AdminSpotController {
         if (spotPages.isEmpty() && pageable.getPageNumber() > 0) {
             int lastPage = Math.max(0, spotPages.getTotalPages() - 1);
             return "redirect:/admin/spot/list?page=" + lastPage
-                    + "&keyword=" + keyword + "&sort=" + sort;
+                    + "&keyword=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8)
+                    + "&sort=" + sort;
         }
 
         model.addAttribute("spotPages", spotPages);
@@ -161,19 +165,19 @@ public class AdminSpotController {
             @RequestParam("spotId") Long spotId,
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam("page") Integer page,
-            RedirectAttributes redirectAttributes,
-            Model model) {
+            RedirectAttributes redirectAttributes) {
 
         // スポットアップデート処理
         adminSpotService.softDelete(spotId);
 
         // フラッシュメッセージを設定
         redirectAttributes.addFlashAttribute("message", "スポット情報を削除しました。");
+        redirectAttributes.addAttribute("page", page);
         if (keyword != null) {
             redirectAttributes.addAttribute("keyword", keyword);
         }
 
-        return "redirect:/admin/spot/list?page=" + page;
+        return "redirect:/admin/spot/list";
     }
 
     /**
