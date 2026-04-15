@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
         try {
             userMapper.insert(user);
         } catch (Exception e) {
-            throw new DataIntegrityViolationException(e.getLocalizedMessage());
+            throw new DataIntegrityViolationException("ユーザーの新規登録に失敗しました。", e);
         }
     }
 

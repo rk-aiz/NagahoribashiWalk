@@ -7,6 +7,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.nagahoribashi_walk.dto.SaveImagesResult;
 import com.example.nagahoribashi_walk.entity.SpotPhoto;
 
+/**
+ * スポット画像管理サービスのインターフェース
+ */
 public interface SpotPhotoService {
 
 	/** 【管理者】スポットIDに対応する画像一覧を取得する */

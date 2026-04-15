@@ -1,7 +1,5 @@
 package com.example.nagahoribashi_walk.controller;
 
-import java.util.Locale;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -42,7 +40,6 @@ public class ReviewController {
             @PathVariable("spotId") Long spotId,
             @AuthenticationPrincipal LoginUser loginUser,
             RedirectAttributes redirectAttributes,
-            Locale locale,
             Model model) {
 
         if (bindingResult.hasErrors()) {
@@ -51,7 +48,7 @@ public class ReviewController {
             model.addAttribute("isFavorite",
                     favoriteService.isFavorite(loginUser.getId(), spotId));
             model.addAttribute("spotDetail",
-                    spotService.getById(spotId, loginUser.getId()));
+                    spotService.getDetailById(spotId, loginUser.getId(), false));
             return "/spot/detail";
         }
 
@@ -85,7 +82,7 @@ public class ReviewController {
             model.addAttribute("isFavorite",
                     favoriteService.isFavorite(loginUser.getId(), existing.getSpotId()));
             model.addAttribute("spotDetail",
-                    spotService.getById(existing.getSpotId(), loginUser.getId()));
+                    spotService.getDetailById(existing.getSpotId(), loginUser.getId(), false));
             model.addAttribute("editReviewId", reviewId);
             return "/spot/detail";
         }

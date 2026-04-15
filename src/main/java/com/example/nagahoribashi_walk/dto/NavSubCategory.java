@@ -8,16 +8,16 @@ import lombok.Data;
 @Data
 public class NavSubCategory {
 
-    /** 主キー */
+    // 主キー
     private Long id;
 
-    /** カテゴリ名 */
+    // サブカテゴリ名
     private String name;
 
-    /** 属するカテゴリのID */
+    // 属するカテゴリのID
     private Long categoryId;
 
-    /** 表示順序 */
+    // 表示順序
     private Integer displayOrder;
 
 }

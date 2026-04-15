@@ -1,27 +1,18 @@
 package com.example.nagahoribashi_walk.service.impl;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.nagahoribashi_walk.dto.SaveImagesResult;
 import com.example.nagahoribashi_walk.entity.SpotPhoto;
 import com.example.nagahoribashi_walk.repository.SpotPhotoMapper;
+import com.example.nagahoribashi_walk.service.FileStorageService;
 import com.example.nagahoribashi_walk.service.SpotPhotoService;
-import com.example.nagahoribashi_walk.util.MyStringUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,12 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class SpotPhotoServiceImpl implements SpotPhotoService {
 
-    @Value("${app.upload.dir}")
-    private String uploadDir;
-
-    private String imagePrefix = "images";
-
     private final SpotPhotoMapper spotPhotoMapper;
+    private final FileStorageService fileStorageService;
 
     /** 【管理者】スポットIDに対応する画像一覧を取得する */
     @Override
@@ -50,6 +37,7 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
         return spotPhotoMapper.findAllBySpotId(spotId);
     }
 
+    /** スポットIDに対応する画像の表示順を入れ替える */
     @Override
     public void reorder(Long spotId, Integer displayOrder1, Integer displayOrder2) {
         SpotPhoto spotPhoto1 = spotPhotoMapper.findBySpotIdAndDisplayOrder(spotId, displayOrder1).orElseThrow();
@@ -62,40 +50,30 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
     /** 【管理者】画像ファイル一覧を保存する */
     @Override
     public SaveImagesResult saveImages(List<MultipartFile> files, Long spotId, Integer firstDisplayOrder) {
-        List<String> savedFilenames = new ArrayList<>();
+        List<String> savedPhotoUrls = new ArrayList<>();
         List<String> errors = new ArrayList<>();
 
-        // 保存先ディレクトリを作成（存在しない場合）
-        Path uploadPath = Paths.get(MyStringUtils.joinPath(uploadDir, imagePrefix));
-        try {
-            Files.createDirectories(uploadPath);
-        } catch (IOException e) {
-            throw new UncheckedIOException("アップロードディレクトリの作成に失敗しました", e);
-        }
-
+        // 1: ファイルを保存し、相対パス（例: images/uuid.jpg）を収集する
         for (MultipartFile file : files) {
-            if (file.isEmpty() || (!Optional.ofNullable(file.getContentType()).orElse("").startsWith("image/"))) {
-                errors.add(file.getOriginalFilename() + ": スキップ");
-                continue;
-            }
             try {
-                // ファイル名の重複を避けるためUUIDを使用
-                String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
-                String newFilename = UUID.randomUUID() + "." + extension;
-
-                // ファイルを保存
-                Files.copy(file.getInputStream(), uploadPath.resolve(newFilename), StandardCopyOption.REPLACE_EXISTING);
-
-                savedFilenames.add(newFilename);
+                String photoUrl = fileStorageService.saveImage(file);
+                if (photoUrl == null) {
+                    errors.add(file.getOriginalFilename() + ": スキップ");
+                    continue;
+                }
+                savedPhotoUrls.add(photoUrl);
             } catch (IOException e) {
                 errors.add(file.getOriginalFilename() + ": 保存失敗");
             }
         }
 
-        // 2: 既存レコードのリオーダー
-        int offset = savedFilenames.size();
-        List<SpotPhoto> existingPhotos = spotPhotoMapper.findBySpotIdAndDisplayOrderGreaterThanEqual(spotId,
-                firstDisplayOrder);
+        // 2: firstDisplayOrder を有効範囲にクランプ
+        int maxOrder = spotPhotoMapper.findMaxDisplayOrderBySpotId(spotId);
+        int insertAt = Math.min(firstDisplayOrder, maxOrder + 1);
+
+        // 3: 既存レコードのリオーダー
+        int offset = savedPhotoUrls.size();
+        List<SpotPhoto> existingPhotos = spotPhotoMapper.findBySpotIdAndDisplayOrderGreaterThanEqual(spotId, insertAt);
         if (!existingPhotos.isEmpty()) {
             for (SpotPhoto sp : existingPhotos) {
                 sp.setDisplayOrder(sp.getDisplayOrder() + offset);
@@ -103,21 +81,17 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
             spotPhotoMapper.bulkUpdateDisplayOrder(existingPhotos);
         }
 
-        // 3: 新規レコードのInsert
-        int displayOrder = firstDisplayOrder;
-        for (String filename : savedFilenames) {
+        // 4: 新規レコードのInsert
+        int displayOrder = insertAt;
+        for (String photoUrl : savedPhotoUrls) {
             spotPhotoMapper.insert(SpotPhoto.builder()
                     .spotId(spotId)
                     .displayOrder(displayOrder++)
-                    .photoUrl(MyStringUtils.joinPath(imagePrefix, filename))
+                    .photoUrl(photoUrl)
                     .build());
         }
 
-        // 表示順を正規化する
-        normalizeDisplayOrder(spotId);
-
-        return new SaveImagesResult(savedFilenames, errors);
-
+        return new SaveImagesResult(savedPhotoUrls, errors);
     }
 
     /**
@@ -127,7 +101,7 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
     public void delete(Long id, Long spotId) {
 
         // ファイル情報を取得
-        SpotPhoto sp = spotPhotoMapper.findEntityById(id).orElseThrow();
+        SpotPhoto spotPhoto = spotPhotoMapper.findEntityById(id).orElseThrow();
 
         // ファイル情報をDBから削除
         spotPhotoMapper.delete(id);
@@ -136,24 +110,17 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
         normalizeDisplayOrder(spotId);
 
         // まだ同じファイルを参照しているレコードがある場合はreturn
-        if (spotPhotoMapper.existsByPhotoUrl(sp.getPhotoUrl())) {
+        if (spotPhotoMapper.existsByPhotoUrl(spotPhoto.getPhotoUrl())) {
             return;
         }
 
-        // ファイル実体削除
-        Path p = Paths.get(MyStringUtils.joinPath(uploadDir, sp.getPhotoUrl()));
-        try {
-            Files.deleteIfExists(p);
-        } catch (IOException e) {
-            log.error("ファイルの削除に失敗しました", e.getLocalizedMessage());
-        }
+        fileStorageService.deleteImage(spotPhoto.getPhotoUrl());
     }
 
     /**
      * 表示順を正規化する
      */
     private void normalizeDisplayOrder(Long spotId) {
-        // display_orderを更新する
         List<SpotPhoto> photos = spotPhotoMapper.findAllBySpotId(spotId);
         boolean requireUpdate = false;
         if (!photos.isEmpty()) {

@@ -5,24 +5,28 @@ import java.time.LocalDateTime;
 
 import lombok.Data;
 
+/**
+ * マイページ表示用ユーザープロフィールDTO
+ */
 @Data
 public class UserProfile {
 
-    /** ユーザー名 */
+    // ユーザー名
     private String username;
 
-    /** メールアドレス */
+    // メールアドレス
     private String email;
 
     // ポイント
     private BigDecimal point;
 
-    /** 表示名 */
+    // 表示名
     private String displayName;
 
-    /** 登録日 */
+    // 登録日
     private LocalDateTime createdAt;
 
+    /** ポイントを文字列で返す */
     public String getPointStr() {
         return point.toString();
     }

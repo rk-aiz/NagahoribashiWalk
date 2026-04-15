@@ -16,11 +16,11 @@ import com.example.nagahoribashi_walk.dto.SpotSummary;
 public interface SpotService {
 
     /**
-     * 【一般 & ユーザー】スポット詳細情報を取得
+     * 【一般・ユーザー】スポット詳細情報を取得
      * ・スポットに対して投稿されたレビュー一覧も取得
      * ・ユーザーの場合は自身のレビューにフラグを付ける
      */
-    SpotDetail getById(Long id, Long loginUserId);
+    SpotDetail getDetailById(Long id, Long loginUserId, boolean countPv);
 
     /** 【一般】スポット一覧をページネーションで取得 */
     Page<SpotSummary> getPage(Pageable pageable);

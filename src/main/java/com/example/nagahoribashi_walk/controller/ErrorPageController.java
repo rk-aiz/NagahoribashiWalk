@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ErrorPageController {
 
+    /**
+     * アクセス拒否（403）画面を表示する
+     */
     @GetMapping("/403")
     public String accessDenied() {
         return "error/403";

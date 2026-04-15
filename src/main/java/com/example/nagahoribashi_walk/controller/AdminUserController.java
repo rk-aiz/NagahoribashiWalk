@@ -1,5 +1,8 @@
 package com.example.nagahoribashi_walk.controller;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -34,7 +37,7 @@ public class AdminUserController {
      * 【管理者】ユーザー一覧画面を表示
      */
     @GetMapping("/list")
-    public String userList(
+    public String list(
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam(name = "sort", defaultValue = "desc") String sort,
             @PageableDefault(size = 10) Pageable pageable,
@@ -42,6 +45,15 @@ public class AdminUserController {
             Model model) {
 
         Page<AdminUserRow> page = userService.getAdminUserPage(pageable, sort, keyword, includeDeleted);
+
+        if (page.isEmpty() && pageable.getPageNumber() > 0) {
+            int lastPage = Math.max(0, page.getTotalPages() - 1);
+            String redirect = "redirect:/admin/user/list?page=" + lastPage
+                    + "&sort=" + sort + "&includeDeleted=" + includeDeleted;
+            if (keyword != null)
+                redirect += "&keyword=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8);
+            return redirect;
+        }
 
         model.addAttribute("page", page);
         model.addAttribute("sort", sort);
@@ -64,13 +76,14 @@ public class AdminUserController {
 
         userService.toggleEnabled(id);
 
+        redirectAttributes.addAttribute("page", page);
+        redirectAttributes.addAttribute("sort", sort);
+        redirectAttributes.addAttribute("includeDeleted", includeDeleted);
         if (keyword != null) {
             redirectAttributes.addAttribute("keyword", keyword);
         }
 
-        return "redirect:/admin/user/list?page=" + page
-                + "&sort=" + sort
-                + "&includeDeleted=" + includeDeleted;
+        return "redirect:/admin/user/list";
     }
 
     /**
@@ -89,12 +102,13 @@ public class AdminUserController {
         userService.delete(username, loginUser.getUsername());
         redirectAttributes.addFlashAttribute("message", username + "を削除しました。");
 
+        redirectAttributes.addAttribute("page", page);
+        redirectAttributes.addAttribute("sort", sort);
+        redirectAttributes.addAttribute("includeDeleted", includeDeleted);
         if (keyword != null) {
             redirectAttributes.addAttribute("keyword", keyword);
         }
 
-        return "redirect:/admin/user/list?page=" + page
-                + "&sort=" + sort
-                + "&includeDeleted=" + includeDeleted;
+        return "redirect:/admin/user/list";
     }
 }

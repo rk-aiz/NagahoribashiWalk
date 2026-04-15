@@ -7,6 +7,11 @@ import java.util.function.IntUnaryOperator;
 
 import lombok.Getter;
 
+/**
+ * おみくじのランク定義。
+ * 各ランクは表示名・付与ポイント・CSSクラス・抽選の重み・一言メッセージ候補を持つ。
+ * {@link #draw(IntUnaryOperator)} で重み付き抽選を行う。
+ */
 @Getter
 public enum FortuneRank {
 
@@ -85,7 +90,13 @@ public enum FortuneRank {
         return messages.get(new Random(seed).nextInt(messages.size()));
     }
 
-    // IntUnaryOperator: int を受け取って int を返す関数型インターフェース
+    /**
+     * 重み付き抽選でランクを1件決定する。
+     *
+     * @param randomSource 乱数源。{@code bound} を受け取り {@code 0} 以上 {@code bound} 未満の整数を返す関数
+     *                     （例: {@code new Random(seed)::nextInt}）
+     * @return 抽選で選ばれたランク
+     */
     public static FortuneRank draw(IntUnaryOperator randomSource) {
         int total = Arrays.stream(values()).mapToInt(r -> r.weight).sum();
         int rand = randomSource.applyAsInt(total); // total を渡し、0〜total-1 の値を期待

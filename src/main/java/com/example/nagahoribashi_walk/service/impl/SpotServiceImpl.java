@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.nagahoribashi_walk.dto.ReviewDTO;
 import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
 import com.example.nagahoribashi_walk.exception.ResourceNotFoundException;
@@ -35,7 +36,6 @@ public class SpotServiceImpl implements SpotService {
 
     /** スポット一覧(ページ)を返す */
     @Override
-    @Transactional(readOnly = true)
     public Page<SpotSummary> getPage(Pageable pageable) {
 
         // スポットの総数を取得する
@@ -50,7 +50,6 @@ public class SpotServiceImpl implements SpotService {
 
     /** トップページおすすめ３件表示用 */
     @Override
-    @Transactional(readOnly = true)
     public List<SpotSummary> getRecommendedSpots() {
 
         int rand = ThreadLocalRandom.current().nextInt(3);
@@ -65,7 +64,6 @@ public class SpotServiceImpl implements SpotService {
 
     /** カテゴリIDに対応したスポット一覧を取得(ページ) */
     @Override
-    @Transactional(readOnly = true)
     public Page<SpotSummary> getPageByCategoryId(Long categoryId, Pageable pageable) {
 
         List<SpotSummary> content = spotMapper.findByCategoryId(
@@ -78,7 +76,6 @@ public class SpotServiceImpl implements SpotService {
 
     /** サブテゴリIDに対応したスポット一覧を取得(ページ) */
     @Override
-    @Transactional(readOnly = true)
     public Page<SpotSummary> getPageBySubCategoryId(Long subCategoryId, Pageable pageable) {
 
         List<SpotSummary> content = spotMapper.findBySubCategoryId(
@@ -95,19 +92,21 @@ public class SpotServiceImpl implements SpotService {
      * @param loginUserId は、該当スポットについたレビューの中に、自身のレビューがあるか判定する用
      */
     @Override
-    public SpotDetail getById(Long id, @Nullable Long loginUserId) {
+    public SpotDetail getDetailById(Long id, @Nullable Long loginUserId, boolean countPv) {
 
         SpotDetail spotDetail = spotMapper.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("指定したスポットが存在しません", id));
 
-        spotMapper.incrementPvCount(id);
+        if (countPv) {
+            spotMapper.incrementPvCount(id);
+        }
 
         if (loginUserId != null) {
-            spotDetail.getReviews().stream().forEach(review -> {
-                if (review.getUserId() != null && review.getUserId().equals(loginUserId)) {
-                    review.setMyReview(true);
+            for (ReviewDTO r : spotDetail.getReviews()) {
+                if (r.getUserId() != null && r.getUserId().equals(loginUserId)) {
+                    r.setMyReview(true);
                 }
-            });
+            }
         }
 
         if (spotDetail.getAverageRating() != null) {
@@ -120,7 +119,6 @@ public class SpotServiceImpl implements SpotService {
 
     /** スポットIDとキーワードをもとに、関連するスポットを取得する */
     @Override
-    @Transactional(readOnly = true)
     public List<SpotSummary> findRelatedSpots(Long spotId, String keywords) {
 
         if (keywords == null || keywords.isBlank()) {
@@ -138,7 +136,6 @@ public class SpotServiceImpl implements SpotService {
 
     /** ページとキーワードに対応したスポット一覧を返す */
     @Override
-    @Transactional(readOnly = true)
     public Page<SpotSummary> searchByKeywords(String keywords, Pageable pageable) {
 
         // 1. 空文字検索は全取得にフォールバック

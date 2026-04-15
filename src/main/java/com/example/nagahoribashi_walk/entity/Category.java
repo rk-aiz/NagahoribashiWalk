@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * カテゴリのエンティティ
+ *
  * @author 大谷
  */
 @Data
@@ -12,18 +14,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Category {
 
-    /** 主キー */
+    // 主キー
     private Long id;
 
-    /** カテゴリ名 */
+    // カテゴリ名
     private String name;
 
-    /** 表示順 */
+    // 表示順
     private Integer displayOrder;
 
-    /** 色 */
+    // 色
     private String color;
 
-    /** 「その他」扱いのカテゴリフラグ */
+    // 「その他」扱いのカテゴリフラグ
     private boolean isDefault;
 }

@@ -9,15 +9,15 @@ import java.util.List;
  */
 public record SidebarDTO(
 
-        /** カテゴリの一覧 */
+        // カテゴリの一覧
         List<NavCategory> categories,
 
-        /** 選択中のカテゴリに属するサブカテゴリの一覧 */
+        // 選択中のカテゴリに属するサブカテゴリの一覧
         List<NavSubCategory> subCategories,
 
-        /** 選択中のカテゴリのID */
+        // 選択中のカテゴリのID
         Long selectedCategoryId,
 
-        /** 選択中のサブカテゴリのID */
+        // 選択中のサブカテゴリのID
         Long selectedSubCategoryId) {
 }

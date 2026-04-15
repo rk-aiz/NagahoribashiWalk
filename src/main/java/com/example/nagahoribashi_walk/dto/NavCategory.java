@@ -14,16 +14,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class NavCategory {
 
-    /** 主キー */
+    // 主キー
     private Long id;
 
-    /** カテゴリ名 */
+    // カテゴリ名
     private String name;
 
-    /** 表示順 */
+    // 表示順
     private Integer displayOrder;
 
-    /** サブカテゴリ */
+    // サブカテゴリ
     List<NavSubCategory> subCategories;
 
 }

@@ -72,6 +72,8 @@ public class AdminSpotServiceImpl implements AdminSpotService {
     @Override
     public void softDelete(Long spotId) {
         adminSpotMapper.softDelete(spotId);
+
+        // スポットに紐づいた画像を削除する処理を直接ここで行うか、バッチ処理するか検討
     }
 
     /**

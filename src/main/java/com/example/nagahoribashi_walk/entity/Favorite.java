@@ -5,22 +5,24 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 /*
+ * お気に入りのエンティティ
+ *
  * @author 正本
  */
 
 @Data
 public class Favorite {
 
-	//主キー
-	private Long id;
+    // 主キー
+    private Long id;
 
-	//お気に入りしたユーザーのID(users.idへの参照)
-	private Long userId;
+    // お気に入りしたユーザーのID(users.idへの参照)
+    private Long userId;
 
-	//お気に入りされたスポットのID(spots.idへの参照)
-	private Long spotId;
+    // お気に入りされたスポットのID(spots.idへの参照)
+    private Long spotId;
 
-	//お気に入り登録された日時
-	private LocalDateTime createdAt;
+    // お気に入り登録された日時
+    private LocalDateTime createdAt;
 
 }

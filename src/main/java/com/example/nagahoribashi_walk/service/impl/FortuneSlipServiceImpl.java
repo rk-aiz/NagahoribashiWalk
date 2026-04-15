@@ -56,7 +56,6 @@ public class FortuneSlipServiceImpl implements FortuneSlipService {
 
     /** ユーザーが既に当日分のおみくじを引き済みか判定する */
     @Override
-    @Transactional(readOnly = true)
     public boolean isAlreadyDrawn(LoginUser user) {
         return userMapper.findById(user.getId())
                 .map(User::getLastDrawnAt)
@@ -90,7 +89,7 @@ public class FortuneSlipServiceImpl implements FortuneSlipService {
         }
 
         // 選択された気分のキーワードを取得（無効なthemeIdの場合は空文字列で続行）
-        String keywords = fortuneThemeRepository.findById(themeId).map(t -> t.getKeywords()).orElse("");
+        String keywords = fortuneThemeRepository.findById(themeId).map(FortuneTheme::getKeywords).orElse("");
 
         // キーワードのいずれかに一致するスポットをランダムに1件取得
         List<SpotSummary> recommends = spotMapper.findRandomByAnyKeywords(0L,
@@ -130,7 +129,6 @@ public class FortuneSlipServiceImpl implements FortuneSlipService {
      * おみくじ結果を取得する（ランクはシードから再現）
      */
     @Override
-    @Transactional(readOnly = true)
     public FortuneResult getFortuneResult(LoginUser loginUser) {
 
         // LoginUserはセッションキャッシュのため、DBから最新のユーザー情報を取得する

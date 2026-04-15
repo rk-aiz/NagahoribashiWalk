@@ -1,10 +1,7 @@
 package com.example.nagahoribashi_walk.controller;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -77,9 +74,8 @@ public class FavoriteController {
     public String removeFromMypage(
             @PathVariable("spotId") Long spotId,
             @AuthenticationPrincipal LoginUser loginUser,
-            @PageableDefault(size = 12) Pageable pageable,
-            RedirectAttributes redirectAttributes,
-            Model model) {
+            @RequestParam(name = "page", defaultValue = "0") int page, // ← URLから受け取る
+            RedirectAttributes redirectAttributes) {
 
         int pointDelta = favoriteService.removeFavorite(loginUser.getId(), spotId);
         if (pointDelta < 0) {
@@ -87,6 +83,7 @@ public class FavoriteController {
         }
 
         redirectAttributes.addAttribute("tab", "favorites");
+        redirectAttributes.addAttribute("page", page);
         redirectAttributes.addAttribute("edit", false);
 
         return "redirect:/mypage";

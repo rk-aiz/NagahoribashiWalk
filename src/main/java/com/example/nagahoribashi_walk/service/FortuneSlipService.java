@@ -12,12 +12,16 @@ import com.example.nagahoribashi_walk.service.userdetails.LoginUser;
  */
 public interface FortuneSlipService {
 
+    /** 気分の選択肢を取得 */
     Map<Long, String> getMoodSelection(LoginUser user);
 
+    /** ウィンドウで既におみくじを引いているか確認 */
     boolean isAlreadyDrawn(LoginUser user);
 
+    /** おみくじを引く */
     void draw(Long themeId, LoginUser loginUser);
 
+    /** おみくじ結果を取得 */
     FortuneResult getFortuneResult(LoginUser loginUser);
 
 }

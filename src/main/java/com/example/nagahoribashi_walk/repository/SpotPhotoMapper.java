@@ -30,6 +30,9 @@ public interface SpotPhotoMapper {
 	/** 指定されたIDから画像情報を取得 */
 	Optional<SpotPhoto> findEntityById(@Param("id") Long id);
 
+	/** 指定されたスポットIDに紐づいた画像の最大display_orderを取得（画像なしの場合は0） */
+	int findMaxDisplayOrderBySpotId(@Param("spotId") Long spotId);
+
 	/** 指定された画像URLのレコードがあるか確認 */
 	boolean existsByPhotoUrl(@Param("photoUrl") String photoUrl);
 

@@ -14,22 +14,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AdminSubCategoryRow {
 
-    /** 主キー */
+    // 主キー
     private long id;
 
-    /** サブカテゴリ名 */
+    // サブカテゴリ名
     private String name;
 
-    /** 属するカテゴリのID */
+    // 属するカテゴリのID
     private long categoryId;
 
-    /** 表示順序 */
+    // 表示順序
     private int displayOrder;
 
-    /** trueは未分類カテゴリ・フォールバック先・削除不可 */
+    // trueは未分類カテゴリ・フォールバック先・削除不可
     private boolean isDefault;
 
-    /** 対象スポット数 */
+    // 対象スポット数
     private int spotCount;
 
     /** Thymeleafから参照用 */

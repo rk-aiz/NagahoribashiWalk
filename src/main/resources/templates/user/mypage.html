@@ -228,7 +228,8 @@
                     <div th:replace="~{fragments/pagination :: pagerMypage(${favorites}, 'mb-3')}"></div>
                     <div class="d-flex flex-column gap-3">
                         <th:block th:each="fav : ${favorites}">
-                            <th:block th:replace="~{fragments/favorite-row :: row(${fav})}"></th:block>
+                            <th:block th:replace="~{fragments/favorite-row :: row(${fav}, ${favorites.number})}">
+                            </th:block>
                         </th:block>
                     </div>
                     <div th:replace="~{fragments/pagination :: pagerMypage(${favorites}, 'mt-4')}"></div>

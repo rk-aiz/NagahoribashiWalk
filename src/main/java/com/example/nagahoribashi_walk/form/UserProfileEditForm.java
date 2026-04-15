@@ -11,12 +11,12 @@ import lombok.Data;
 @Data
 public class UserProfileEditForm {
 
-    /** 表示名 */
+    // 表示名
     @NotBlank(message = "表示名を入力してください")
     @Size(max = 50, message = "表示名は50文字以内で入力してください")
     private String displayName;
 
-    /** メールアドレス */
+    // メールアドレス
     @NotBlank(message = "メールアドレスを入力してください")
     @Email(message = "正しいメールアドレスの形式で入力してください")
     private String email;

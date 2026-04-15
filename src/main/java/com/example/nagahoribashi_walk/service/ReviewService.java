@@ -6,6 +6,9 @@ import org.springframework.data.domain.Pageable;
 import com.example.nagahoribashi_walk.dto.AdminReviewRow;
 import com.example.nagahoribashi_walk.entity.Review;
 
+/**
+ * レビュー関連サービスのインターフェース
+ */
 public interface ReviewService {
 
     /**

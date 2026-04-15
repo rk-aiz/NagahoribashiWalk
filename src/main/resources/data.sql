@@ -15,11 +15,11 @@ INSERT INTO users (username, password, email, role, display_name, point) VALUES
 ('admin', '$2a$10$lERDBGAj7aGIPChXyUEj.OIZHO50N/9BnVn6EO6T5uOauUVkH37Ry', 'admin@nagahori.com', 'ADMIN', '管理者', 0),
 
 -- パス : User@2026
-('user1', '$2a$10$ah6tn/KV6rc34sdUGh0wF.5UEZbs0UG5ObXiW0c72MfiEhAW3ljFa', 'user1@nagahori.com', 'USER', 'ユーザー1', 1000),
-('user2', '$2a$10$ah6tn/KV6rc34sdUGh0wF.5UEZbs0UG5ObXiW0c72MfiEhAW3ljFa', 'user2@nagahori.com', 'USER', 'ユーザー2', 2000),
-('user3', '$2a$10$ah6tn/KV6rc34sdUGh0wF.5UEZbs0UG5ObXiW0c72MfiEhAW3ljFa', 'user3@nagahori.com', 'USER', 'ユーザー3', 3000),
-('user4', '$2a$10$ah6tn/KV6rc34sdUGh0wF.5UEZbs0UG5ObXiW0c72MfiEhAW3ljFa', 'user4@nagahori.com', 'USER', 'ユーザー4', 4000),
-('user5', '$2a$10$ah6tn/KV6rc34sdUGh0wF.5UEZbs0UG5ObXiW0c72MfiEhAW3ljFa', 'user5@nagahori.com', 'USER', 'ユーザー5', 5000),
+('user1', '$2a$10$ah6tn/KV6rc34sdUGh0wF.5UEZbs0UG5ObXiW0c72MfiEhAW3ljFa', 'user1@nagahori.com', 'USER', 'ぽてとさらだ', 1000),
+('user2', '$2a$10$ah6tn/KV6rc34sdUGh0wF.5UEZbs0UG5ObXiW0c72MfiEhAW3ljFa', 'user2@nagahori.com', 'USER', 'ぽんず', 2000),
+('user3', '$2a$10$ah6tn/KV6rc34sdUGh0wF.5UEZbs0UG5ObXiW0c72MfiEhAW3ljFa', 'user3@nagahori.com', 'USER', '春風', 3000),
+('user4', '$2a$10$ah6tn/KV6rc34sdUGh0wF.5UEZbs0UG5ObXiW0c72MfiEhAW3ljFa', 'user4@nagahori.com', 'USER', 'Nacht', 4000),
+('user5', '$2a$10$ah6tn/KV6rc34sdUGh0wF.5UEZbs0UG5ObXiW0c72MfiEhAW3ljFa', 'user5@nagahori.com', 'USER', 'ねむいね', 5000),
 
 -- パス : Demo@2026
 ('demouser', '$2a$10$CKcgVyyKiMiVPZS88S.EeON2w6FKEVr.1wVQVVa8d6vDi74mGKEmq', 'demouser@example.com', 'USER', 'デモユーザー', 10000);

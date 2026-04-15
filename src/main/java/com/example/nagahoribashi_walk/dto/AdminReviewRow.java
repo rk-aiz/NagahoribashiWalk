@@ -12,22 +12,22 @@ import lombok.Data;
 @Data
 public class AdminReviewRow {
 
-    /** 主キー */
+    // 主キー
     private Long id;
-    
-    /** スポット名 */
+
+    // スポット名
     private String spotName;
-    
-    /** ユーザー名 */
+
+    // ユーザー名
     private String userName;
 
-    /** 5段階評価 */
+    // 5段階評価
     private Integer rating;
 
-    /** コメント */
+    // コメント
     private String comment;
 
-    /** 投稿日時 */
+    // 投稿日時
     private LocalDateTime createdAt;
 
     private boolean isEnabled;

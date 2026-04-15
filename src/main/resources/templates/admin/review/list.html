@@ -55,13 +55,14 @@
                 </div>
 
                 <!--/* 検索フォーム */-->
-                <form th:action="@{/admin/review/list}" method="get" class="d-flex gap-2 mb-4">
+                <form th:action="@{/admin/review/list}" method="get" class="d-flex justify-content-center gap-2 mb-4">
                     <input type="text" name="keyword" th:value="${keyword}" class="form-control"
                         style="max-width: 360px;" placeholder="スポット名・投稿者・コメントで検索">
                     <button type="submit" class="btn btn-primary px-3">
                         <i class="bi bi-search me-1"></i>検索
                     </button>
-                    <a th:if="${keyword != null and !#strings.isEmpty(keyword)}" th:href="@{/admin/review/list}"
+                    <a th:href="@{/admin/review/list}"
+                        th:classappend="${keyword == null or #strings.isEmpty(keyword)} ? 'invisible'"
                         class="btn btn-outline-secondary">クリア</a>
                 </form>
 
