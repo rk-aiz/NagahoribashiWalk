@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xml:lang="ja">
 
 <head>
     <meta charset="UTF-8">
@@ -118,7 +118,7 @@
                             </span>
                             <input type="password" id="password" th:field="*{password}"
                                 class="form-control border-start-0 ps-0"
-                                style="border-color: #e5e7eb; background: #f9fafb;" placeholder="パスワードを入力"
+                                style="border-color: #e5e7eb; background: #f9fafb;" placeholder="パスワードを入力(8文字以上)"
                                 autocomplete="new-password" required>
                         </div>
                         <div th:if="${#fields.hasErrors('password')}" class="text-danger mt-1"

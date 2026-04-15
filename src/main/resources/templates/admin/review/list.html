@@ -54,6 +54,17 @@
                     </h5>
                 </div>
 
+                <!--/* 検索フォーム */-->
+                <form th:action="@{/admin/review/list}" method="get" class="d-flex gap-2 mb-4">
+                    <input type="text" name="keyword" th:value="${keyword}" class="form-control"
+                        style="max-width: 360px;" placeholder="スポット名・投稿者・コメントで検索">
+                    <button type="submit" class="btn btn-primary px-3">
+                        <i class="bi bi-search me-1"></i>検索
+                    </button>
+                    <a th:if="${keyword != null and !#strings.isEmpty(keyword)}" th:href="@{/admin/review/list}"
+                        class="btn btn-outline-secondary">クリア</a>
+                </form>
+
                 <!--/* ページネーション（上） */-->
                 <div
                     th:replace="~{fragments/pagination :: pagerSimple(${reviewPages}, '/admin/review/list', ${keyword}, '', 'my-3')}">
@@ -92,7 +103,8 @@
                                 </td>
 
                                 <!--/* コメント */-->
-                                <td class="small" style="overflow-wrap: anywhere !important;" th:text="${review.comment}">コメント内容</td>
+                                <td class="small" style="overflow-wrap: anywhere !important;"
+                                    th:text="${review.comment}">コメント内容</td>
 
                                 <!--/* 投稿日時 */-->
                                 <td class="text-secondary small"

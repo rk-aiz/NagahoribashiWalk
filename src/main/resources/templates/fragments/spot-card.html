@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xml:lang="ja">
 
 <body>
 
@@ -37,7 +37,7 @@
         </style>
     </th:block>
 
-    <!--/* カード本体（<div class="col"> などのラッパーは呼び出し側で用意） */-->
+    <!--/* カード本体などのラッパーは呼び出し側で用意） */-->
     <a th:fragment="card(spot, returnUrl)"
         th:href="${returnUrl != null} ? @{/spot/{id}(id=${spot.id}, returnUrl=${returnUrl})} : @{/spot/{id}(id=${spot.id})}"
         class="text-decoration-none">

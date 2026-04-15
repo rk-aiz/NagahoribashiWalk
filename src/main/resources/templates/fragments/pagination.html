@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xml:lang="ja">
 
 <body>
 
@@ -127,8 +127,8 @@
     </nav>
 
     <!--/* マイページ お気に入り一覧用 */-->
-    <nav th:fragment="pagerMypage(favPages, navClass)" th:if="${favPages.totalPages > 1}"
-        aria-label="ページネーション" class="d-flex justify-content-center" th:classappend="${navClass}">
+    <nav th:fragment="pagerMypage(favPages, navClass)" th:if="${favPages.totalPages > 1}" aria-label="ページネーション"
+        class="d-flex justify-content-center" th:classappend="${navClass}">
 
         <ul class="pagination pager-minimal mb-0">
 
@@ -154,8 +154,7 @@
                 <th:block th:each="i : ${#numbers.sequence(1, favPages.totalPages - 2)}"
                     th:if="${favPages.totalPages <= 5 or (i >= favPages.number - 2 and i <= favPages.number + 2)}">
                     <li class="page-item" th:classappend="${i == favPages.number} ? 'active'">
-                        <a class="page-link" th:href="@{/mypage(tab='favorites', page=${i})}"
-                            th:text="${i + 1}">2</a>
+                        <a class="page-link" th:href="@{/mypage(tab='favorites', page=${i})}" th:text="${i + 1}">2</a>
                     </li>
                 </th:block>
             </th:block>

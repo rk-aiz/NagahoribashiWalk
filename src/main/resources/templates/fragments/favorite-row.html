@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xml:lang="ja">
 
 <body>
 
-    <!--
+    <!--/*
     お気に入り行 フラグメント
     パラメータ:
       fav : FavoriteSummary オブジェクト
--->
+    */-->
 
     <!--/* CSS（ページ内で1回だけ th:replace で読み込む） */-->
     <th:block th:fragment="styles">
@@ -98,8 +98,10 @@
         <!--/* 右端: お気に入り解除ボタン */-->
         <div class="d-flex align-items-center pe-3">
             <form th:action="@{/mypage/favorite/remove/{spotId}(spotId=${fav.spotId})}" method="post">
-                <button type="submit" class="fav-row-delete text-secondary" title="お気に入りを解除">
-                    <i class="bi bi-heart-fill" style="font-size: 1.1rem; color: #f87171;"></i>
+                <button type="submit" class="fav-row-delete text-secondary d-flex align-items-center gap-1"
+                    title="お気に入りを解除">
+                    <i class="bi bi-x" style="font-size: 1.1rem; line-height: 1;"></i>
+                    <span style="font-size: 0.75rem; line-height: 1;">解除</span>
                 </button>
             </form>
         </div>

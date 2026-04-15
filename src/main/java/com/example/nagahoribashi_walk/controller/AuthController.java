@@ -3,6 +3,12 @@ package com.example.nagahoribashi_walk.controller;
 import java.security.Principal;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,6 +21,8 @@ import com.example.nagahoribashi_walk.exception.UserAlreadyExistsException;
 import com.example.nagahoribashi_walk.form.UserRegisterForm;
 import com.example.nagahoribashi_walk.service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,6 +37,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthController {
 
     private final UserService userService;
+    private final UserDetailsService userDetailsService;
+    private final SecurityContextRepository securityContextRepository;
 
     /**
      * ログイン画面を表示する
@@ -49,7 +59,7 @@ public class AuthController {
      * 新規会員登録画面を表示
      */
     @GetMapping("/register")
-    public String showRegister(UserRegisterForm userRegisterForm) {
+    public String showRegister(UserRegisterForm form) {
         return "/auth/register";
     }
 
@@ -58,8 +68,10 @@ public class AuthController {
      */
     @PostMapping("/register")
     public String register(
-            @Validated UserRegisterForm userRegisterForm,
+            @Validated UserRegisterForm form,
             BindingResult bindingResult,
+            HttpServletRequest request,
+            HttpServletResponse response,
             Model model) {
 
         if (bindingResult.hasErrors()) {
@@ -67,18 +79,29 @@ public class AuthController {
         }
 
         User newUser = new User();
-        BeanUtils.copyProperties(userRegisterForm, newUser, "password");
+        BeanUtils.copyProperties(form, newUser, "password");
         newUser.setRole("USER");
 
         try {
-            userService.register(newUser, userRegisterForm.getPassword());
+            userService.register(newUser, form.getPassword());
         } catch (UserAlreadyExistsException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "/auth/register";
         }
 
-        log.info(String.format(
-                "新規会員登録がありました : %s", userRegisterForm));
+        // ===== 新規登録後の自動ログイン処理 =====
+        // UserDetailsを取得
+        UserDetails userDetails = userDetailsService.loadUserByUsername(form.getUsername());
+        // 認証オブジェクトを作成
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities());
+        // コンテキストにセットしてセッションに保存
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(auth);
+        SecurityContextHolder.setContext(context);
+        securityContextRepository.saveContext(context, request, response);
 
         return "redirect:/register/complete";
     }

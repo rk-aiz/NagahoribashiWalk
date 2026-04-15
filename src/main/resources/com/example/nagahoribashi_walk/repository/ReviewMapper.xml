@@ -73,7 +73,7 @@
 		<if test="keyword != null and keyword != ''">
 			WHERE
 				r.comment LIKE CONCAT('%', #{keyword}, '%') OR
-				s.name LIKE CONCAT('%', #{keyword}, '%') OR
+				s.spot_name LIKE CONCAT('%', #{keyword}, '%') OR
 				u.username LIKE CONCAT('%', #{keyword}, '%') OR
 				u.display_name LIKE CONCAT('%', #{keyword}, '%')
 		</if>
@@ -91,7 +91,7 @@
 		<if test="keyword != null and keyword != ''">
 			WHERE
 				r.comment LIKE CONCAT('%', #{keyword}, '%') OR
-				s.name LIKE CONCAT('%', #{keyword}, '%') OR
+				s.spot_name LIKE CONCAT('%', #{keyword}, '%') OR
 				u.username LIKE CONCAT('%', #{keyword}, '%') OR
 				u.display_name LIKE CONCAT('%', #{keyword}, '%')
 		</if>
