@@ -26,6 +26,7 @@ public class AdminReviewController {
 			Model model) {
 
 		model.addAttribute("reviewPages", reviewService.getAdminReviewPage(pageable, keyword));
+		model.addAttribute("keyword", keyword);
 
 		return "admin/review/list";
 	}
