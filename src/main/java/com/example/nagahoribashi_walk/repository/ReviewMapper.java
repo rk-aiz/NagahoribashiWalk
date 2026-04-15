@@ -40,7 +40,7 @@ public interface ReviewMapper {
     /** レビューの総数を取得する */
     long count();
 
-    /** キーワードに対応したレビューをページネーション用に取得 TODO : ビュー側未実装 */
+    /** キーワードに対応したレビューをページネーション用に取得 */
     List<AdminReviewRow> findAllForAdminByKeyword(
             @Param("keyword") String keyword,
             @Param("offset") long offset,
