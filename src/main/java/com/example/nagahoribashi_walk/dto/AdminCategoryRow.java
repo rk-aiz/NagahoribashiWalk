@@ -16,22 +16,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AdminCategoryRow {
 
-    /** 主キー */
+    // 主キー
     private long id;
 
-    /** カテゴリ名 */
+    // カテゴリ名
     private String name;
 
-    /** 表示順 */
+    // 表示順
     private int displayOrder;
 
-    /** trueは未分類カテゴリ・フォールバック先・削除不可 */
+    // trueは未分類カテゴリ・フォールバック先・削除不可
     private boolean isDefault;
 
-    /** カテゴリ色 */
+    // カテゴリ色
     private String color;
 
-    /** 属するサブカテゴリのリスト */
+    // 属するサブカテゴリのリスト
     private List<AdminSubCategoryRow> subCategories;
 
     /** Thymeleaf参照用 */
@@ -39,8 +39,8 @@ public class AdminCategoryRow {
         return this.isDefault;
     }
 
+    /** Thymeleaf参照用 */
     public boolean isDefault() {
-        // TODO 自動生成されたメソッド・スタブ
-        return false;
+        return this.isDefault;
     }
 }

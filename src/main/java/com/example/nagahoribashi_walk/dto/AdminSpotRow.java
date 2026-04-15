@@ -12,30 +12,30 @@ import lombok.Data;
 @Data
 public class AdminSpotRow {
 
-    /** 主キー */
+    // 主キー
     private Long id;
 
-    /* スポット名 */
+    // スポット名
     private String spotName;
 
-    /** 画像URL */
+    // 画像URL
     private String photoUrl;
 
-    /** カテゴリ名 */
+    // カテゴリ名
     private String categoryName;
 
-    /** サブカテゴリ名 */
+    // サブカテゴリ名
     private String subCategoryName;
 
-    /** 平均評価 */
+    // 平均評価
     private Double averageRating;
 
-    /** 閲覧数 */
+    // 閲覧数
     private Integer pvCount;
 
-    /** カテゴリ色 */
+    // カテゴリ色
     private String categoryColor;
 
-    /** 更新日時 */
+    // 更新日時
     private LocalDateTime updatedAt;
 }

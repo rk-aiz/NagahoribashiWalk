@@ -14,18 +14,18 @@ import lombok.Data;
 @Data
 public class FortuneResult {
 
-    /** ランク (大吉、中吉、小吉、末吉、凶) */
+    // ランク (大吉、中吉、小吉、末吉、凶)
     private FortuneRank rank;
 
-    /** おみくじを引いた日時 */
+    // おみくじを引いた日時
     private LocalDateTime drawnAt;
 
-    /** おすすめスポット */
+    // おすすめスポット
     private SpotSummary recommendedSpot;
 
-    /** おすすめスポットがすでにお気に入り登録済みかどうか */
+    // おすすめスポットがすでにお気に入り登録済みかどうか
     private boolean alreadyFavorited;
 
-    /** ランクに応じた一言メッセージ */
+    // ランクに応じた一言メッセージ
     private String fortuneMessage;
 }

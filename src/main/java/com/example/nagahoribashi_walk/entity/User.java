@@ -9,7 +9,7 @@ import lombok.Data;
 /**
  * usersテーブルに対応するEntity
  * 
- * @Author 海津
+ * @author 海津
  */
 @Data
 public class User implements Serializable {

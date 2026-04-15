@@ -8,19 +8,19 @@ import lombok.Data;
 @Data
 public class UserProfile {
 
-    /** ユーザー名 */
+    // ユーザー名
     private String username;
 
-    /** メールアドレス */
+    // メールアドレス
     private String email;
 
     // ポイント
     private BigDecimal point;
 
-    /** 表示名 */
+    // 表示名
     private String displayName;
 
-    /** 登録日 */
+    // 登録日
     private LocalDateTime createdAt;
 
     public String getPointStr() {

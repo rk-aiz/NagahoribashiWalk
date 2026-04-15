@@ -14,17 +14,19 @@ import lombok.Data;
 @Data
 public class ReviewForm {
 
+    // 新規投稿かどうか（true=新規、false=編集）
     private boolean isNew;
 
+    // レビューID（編集・削除時のみ使用）
     private Integer id;
 
-    /** ５段階評価 */
+    // 5段階評価
     @Min(value = 1, message = "☆ 1～5で評価してください")
     @Max(value = 5, message = "☆ 1～5で評価してください")
     @NotNull(message = "評価を選択してください")
     private Integer rating;
 
-    /** レビュー本文 */
+    // レビュー本文（400文字以内）
     @Size(max = 400, message = "レビューは400文字以内で入力してください")
     private String comment;
 

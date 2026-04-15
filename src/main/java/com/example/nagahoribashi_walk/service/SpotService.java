@@ -16,7 +16,7 @@ import com.example.nagahoribashi_walk.dto.SpotSummary;
 public interface SpotService {
 
     /**
-     * 【一般 & ユーザー】スポット詳細情報を取得
+     * 【一般・ユーザー】スポット詳細情報を取得
      * ・スポットに対して投稿されたレビュー一覧も取得
      * ・ユーザーの場合は自身のレビューにフラグを付ける
      */
