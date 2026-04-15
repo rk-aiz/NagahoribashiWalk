@@ -9,6 +9,7 @@ import com.example.nagahoribashi_walk.dto.NavSubCategory;
 import com.example.nagahoribashi_walk.dto.SidebarDTO;
 import com.example.nagahoribashi_walk.entity.SubCategory;
 import com.example.nagahoribashi_walk.exception.CategoryAlreadyExistsException;
+import com.example.nagahoribashi_walk.exception.InvalidRequestException;
 import com.example.nagahoribashi_walk.repository.CategoryMapper;
 import com.example.nagahoribashi_walk.repository.SubCategoryMapper;
 import com.example.nagahoribashi_walk.service.SubCategoryService;
@@ -65,13 +66,16 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     /** 新規サブカテゴリを登録 */
     @Override
     public void insertSubCategory(SubCategory subCategory) {
+
         if (subCategory.getCategoryId() == null || subCategory.getCategoryId() == 0) {
-            subCategory.setCategoryId(null);
+            throw new InvalidRequestException("指定されたカテゴリIDが存在しません。");
         }
+
         if (subCategoryMapper.existsBySubCategoryNameAndCategoryId(
                 subCategory.getName(), subCategory.getCategoryId())) {
             throw new CategoryAlreadyExistsException("サブカテゴリー名が既に存在します。");
         }
+
         subCategoryMapper.insert(subCategory);
     }
 

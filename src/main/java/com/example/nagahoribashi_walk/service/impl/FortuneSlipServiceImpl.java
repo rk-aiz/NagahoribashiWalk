@@ -89,7 +89,7 @@ public class FortuneSlipServiceImpl implements FortuneSlipService {
         }
 
         // 選択された気分のキーワードを取得（無効なthemeIdの場合は空文字列で続行）
-        String keywords = fortuneThemeRepository.findById(themeId).map(t -> t.getKeywords()).orElse("");
+        String keywords = fortuneThemeRepository.findById(themeId).map(FortuneTheme::getKeywords).orElse("");
 
         // キーワードのいずれかに一致するスポットをランダムに1件取得
         List<SpotSummary> recommends = spotMapper.findRandomByAnyKeywords(0L,

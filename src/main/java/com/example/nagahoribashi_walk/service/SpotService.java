@@ -20,7 +20,7 @@ public interface SpotService {
      * ・スポットに対して投稿されたレビュー一覧も取得
      * ・ユーザーの場合は自身のレビューにフラグを付ける
      */
-    SpotDetail getById(Long id, Long loginUserId);
+    SpotDetail getDetailById(Long id, Long loginUserId, boolean countPv);
 
     /** 【一般】スポット一覧をページネーションで取得 */
     Page<SpotSummary> getPage(Pageable pageable);

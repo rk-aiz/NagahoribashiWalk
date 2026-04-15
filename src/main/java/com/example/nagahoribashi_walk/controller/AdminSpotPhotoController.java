@@ -17,6 +17,9 @@ import com.example.nagahoribashi_walk.service.SpotPhotoService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 管理者スポット画像管理用コントローラー
+ */
 @Controller
 @RequiredArgsConstructor
 public class AdminSpotPhotoController {

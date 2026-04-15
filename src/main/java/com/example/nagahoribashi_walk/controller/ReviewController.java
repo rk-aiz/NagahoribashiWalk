@@ -48,7 +48,7 @@ public class ReviewController {
             model.addAttribute("isFavorite",
                     favoriteService.isFavorite(loginUser.getId(), spotId));
             model.addAttribute("spotDetail",
-                    spotService.getById(spotId, loginUser.getId()));
+                    spotService.getDetailById(spotId, loginUser.getId(), false));
             return "/spot/detail";
         }
 
@@ -82,7 +82,7 @@ public class ReviewController {
             model.addAttribute("isFavorite",
                     favoriteService.isFavorite(loginUser.getId(), existing.getSpotId()));
             model.addAttribute("spotDetail",
-                    spotService.getById(existing.getSpotId(), loginUser.getId()));
+                    spotService.getDetailById(existing.getSpotId(), loginUser.getId(), false));
             model.addAttribute("editReviewId", reviewId);
             return "/spot/detail";
         }

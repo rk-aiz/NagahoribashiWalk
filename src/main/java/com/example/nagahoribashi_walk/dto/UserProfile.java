@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 
 import lombok.Data;
 
+/**
+ * マイページ表示用ユーザープロフィールDTO
+ */
 @Data
 public class UserProfile {
 
@@ -23,6 +26,7 @@ public class UserProfile {
     // 登録日
     private LocalDateTime createdAt;
 
+    /** ポイントを文字列で返す */
     public String getPointStr() {
         return point.toString();
     }

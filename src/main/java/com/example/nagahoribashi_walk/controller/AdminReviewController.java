@@ -18,6 +18,9 @@ import com.example.nagahoribashi_walk.service.ReviewService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 管理者レビュー管理用コントローラー
+ */
 @Controller
 @RequiredArgsConstructor
 public class AdminReviewController {

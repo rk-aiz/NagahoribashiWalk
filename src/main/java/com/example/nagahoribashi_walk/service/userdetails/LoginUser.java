@@ -1,6 +1,5 @@
 package com.example.nagahoribashi_walk.service.userdetails;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -12,7 +11,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.example.nagahoribashi_walk.entity.User;
 
-public class LoginUser implements UserDetails, Serializable {
+/**
+ * Spring Security の UserDetails 実装。
+ * ログイン中ユーザーの情報をセッションに保持するクラス。
+ */
+public class LoginUser implements UserDetails {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,65 +33,70 @@ public class LoginUser implements UserDetails, Serializable {
         this.authorities = authorities;
     }
 
+    /** 権限のコレクションを返す */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // 権限のコレクションを返す
         return authorities;
     }
 
+    /** ハッシュ化済みのパスワードを返す */
     @Override
     public String getPassword() {
-        // ハッシュ化済みのパスワードを返す
         return user.getPassword();
     }
 
+    /** ユーザーIDを返す */
     public Long getId() {
         return user.getId();
     }
 
+    /** 表示名を返す */
     public String getDisplayName() {
         return user.getDisplayName();
     }
 
+    /** 保有ポイントを返す */
     public BigDecimal getPoint() {
         return user.getPoint();
     }
 
+    /** 最後におみくじを引いた日時を返す。未設定の場合は空の Optional を返す */
     public Optional<LocalDateTime> getLastDrawnAt() {
         return Optional.ofNullable(user.getLastDrawnAt());
     }
 
+    /** おみくじでおすすめされたスポットIDを返す。未設定の場合は空の Optional を返す */
     public Optional<Long> getRecommendedSpotId() {
         return Optional.ofNullable(user.getRecommendedSpotId());
     }
 
+    /** ログインで利用するユーザー名を返す */
     @Override
     public String getUsername() {
-        // ログインで利用するユーザー名を返す
         return user.getUsername();
     }
 
+    /** アカウントが期限切れでなければ {@code true} を返す */
     @Override
     public boolean isAccountNonExpired() {
-        // ユーザーが期限切れでなければtrueを返す
         return true;
     }
 
+    /** アカウントがロックされていなければ {@code true} を返す */
     @Override
     public boolean isAccountNonLocked() {
-        // ユーザーがロックされていなければtrueを返す
         return true;
     }
 
+    /** 認証情報（パスワード）が期限切れでなければ {@code true} を返す */
     @Override
     public boolean isCredentialsNonExpired() {
-        // ユーザーのパスワードが期限切れでなければtrueを返す
         return true;
     }
 
+    /** アカウントが有効であれば {@code true} を返す */
     @Override
     public boolean isEnabled() {
-        // ユーザーが有効であればtrueを返す
         return user.isEnabled();
     }
 }

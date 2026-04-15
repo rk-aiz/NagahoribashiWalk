@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.nagahoribashi_walk.dto.ReviewDTO;
 import com.example.nagahoribashi_walk.dto.SpotDetail;
 import com.example.nagahoribashi_walk.dto.SpotSummary;
 import com.example.nagahoribashi_walk.exception.ResourceNotFoundException;
@@ -91,19 +92,21 @@ public class SpotServiceImpl implements SpotService {
      * @param loginUserId は、該当スポットについたレビューの中に、自身のレビューがあるか判定する用
      */
     @Override
-    public SpotDetail getById(Long id, @Nullable Long loginUserId) {
+    public SpotDetail getDetailById(Long id, @Nullable Long loginUserId, boolean countPv) {
 
         SpotDetail spotDetail = spotMapper.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("指定したスポットが存在しません", id));
 
-        spotMapper.incrementPvCount(id);
+        if (countPv) {
+            spotMapper.incrementPvCount(id);
+        }
 
         if (loginUserId != null) {
-            spotDetail.getReviews().stream().forEach(review -> {
-                if (review.getUserId() != null && review.getUserId().equals(loginUserId)) {
-                    review.setMyReview(true);
+            for (ReviewDTO r : spotDetail.getReviews()) {
+                if (r.getUserId() != null && r.getUserId().equals(loginUserId)) {
+                    r.setMyReview(true);
                 }
-            });
+            }
         }
 
         if (spotDetail.getAverageRating() != null) {

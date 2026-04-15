@@ -10,6 +10,9 @@ import com.example.nagahoribashi_walk.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 管理者ホーム画面・ログイン画面用コントローラー
+ */
 @Controller
 @RequiredArgsConstructor
 public class AdminHomeController {
@@ -18,6 +21,9 @@ public class AdminHomeController {
     private final UserService userService;
     private final ReviewService reviewService;
 
+    /**
+     * 管理者ホーム画面を表示する
+     */
     @GetMapping("/admin")
     public String home(Model model) {
         model.addAttribute("spotCount", adminSpotService.getSpotCount());
@@ -28,6 +34,9 @@ public class AdminHomeController {
         return "admin/admin-home";
     }
 
+    /**
+     * 管理者ログイン画面を表示する
+     */
     @GetMapping("/admin/login")
     public String login() {
         return "admin/admin-login";
