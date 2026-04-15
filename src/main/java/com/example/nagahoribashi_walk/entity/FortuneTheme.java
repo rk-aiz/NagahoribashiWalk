@@ -10,10 +10,13 @@ import lombok.Data;
 @Data
 public class FortuneTheme {
 
+    /** 主キー */
     private Long id;
 
+    /** おみくじを引く際の気分 */
     private String mood;
 
+    /** 気分に対応したテーマ */
     private String keywords;
 
 }

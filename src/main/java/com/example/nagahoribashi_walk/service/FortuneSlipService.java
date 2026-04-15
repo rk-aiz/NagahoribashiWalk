@@ -1,5 +1,6 @@
 package com.example.nagahoribashi_walk.service;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import com.example.nagahoribashi_walk.dto.FortuneResult;
@@ -19,5 +20,7 @@ public interface FortuneSlipService {
     void draw(Long themeId, LoginUser loginUser);
 
     FortuneResult getFortuneResult(LoginUser loginUser);
+
+    LocalDateTime getNextDrawTime(LoginUser loginUser);
 
 }

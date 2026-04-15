@@ -6,7 +6,9 @@ import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -48,6 +50,28 @@ public class FortuneSlipServiceImpl implements FortuneSlipService {
     @Qualifier("serverStartupSeed")
     private final Long serverSeed;
 
+    // private final Function<LocalDateTime, Boolean> drawWindowPredicate =
+    //  t -> t.toLocalDate().isEqual(LocalDate.now());
+    
+
+    @Override
+    public LocalDateTime getNextDrawTime(LoginUser loginUser) {
+        Optional<LocalDateTime> lastDrawnAt = userMapper.findById(loginUser.getId())
+                .map(User::getLastDrawnAt);
+        
+        if (lastDrawnAt.isPresent()) {
+            return lastDrawnAt.get().plusMinutes(1);
+        } else {
+            return LocalDateTime.MAX;
+        }
+    }
+
+
+    // 1分に1回おみくじが引ける
+    private final Function<LocalDateTime, Boolean> drawWindowPredicate =
+     t -> t.isBefore(LocalDateTime.now().minusMinutes(1));
+
+
     /* リポジトリを注入 */
     private final UserMapper userMapper;
     private final FavoriteMapper favoriteMapper;
@@ -60,7 +84,7 @@ public class FortuneSlipServiceImpl implements FortuneSlipService {
     public boolean isAlreadyDrawn(LoginUser user) {
         return userMapper.findById(user.getId())
                 .map(User::getLastDrawnAt)
-                .map(t -> t.toLocalDate().isEqual(LocalDate.now()))
+                .map(drawWindowPredicate)
                 .orElse(false);
     }
 
@@ -172,5 +196,4 @@ public class FortuneSlipServiceImpl implements FortuneSlipService {
     private long buildDrawSeed(String preString, LocalDateTime drawTime) {
         return preString.hashCode() + drawTime.toEpochSecond(ZoneOffset.UTC);
     }
-
 }

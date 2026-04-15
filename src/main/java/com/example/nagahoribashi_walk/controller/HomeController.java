@@ -1,5 +1,8 @@
 package com.example.nagahoribashi_walk.controller;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,11 +35,17 @@ public class HomeController {
         // SpotSummaryを3件取得してmodelにセット
         model.addAttribute("spots", spotService.getRecommendedSpots());
 
-        // 今日すでにおみくじを引いたかどうか（DBから最新値を参照）
+        // 次におみくじを引けるまでの秒数
+        LocalDateTime nextDrawTime = Optional.ofNullable(loginUser)
+                .map(u -> fortuneSlipService.getNextDrawTime(u))
+                .orElse(LocalDateTime.MAX);
+
+        //すでにおみくじを引いたかどうか（DBから最新値を参照）
         boolean drawnToday = loginUser != null && fortuneSlipService.isAlreadyDrawn(loginUser);
 
         model.addAttribute("drawnToday", drawnToday);
         model.addAttribute("loggedIn", loginUser != null);
+        model.addAttribute("nextDrawTime", nextDrawTime);
 
         // home.htmlを表示
         return "home";
