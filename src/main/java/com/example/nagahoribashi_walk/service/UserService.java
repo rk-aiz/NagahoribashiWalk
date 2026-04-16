@@ -30,7 +30,7 @@ public interface UserService {
     void delete(String userName, String loginUsername);
 
     /** (管理者用)ユーザーの有効・無効を切り替える */
-    void toggleEnabled(Long id);
+    void toggleEnabled(String username);
 
     /** ページネーション付きで管理者側がユーザー一覧を取得する */
     Page<AdminUserRow> getAdminUserPage(Pageable pageable, String sort, String keyword, boolean incluedDeleted);

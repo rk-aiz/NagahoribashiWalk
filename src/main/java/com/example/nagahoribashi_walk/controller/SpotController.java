@@ -131,12 +131,16 @@ public class SpotController {
             Model model) {
 
         Long loginUserId = null;
+        boolean countPv =  true;
 
         // ログイン状態に応じてお気に入り登録状況を確認
         if (loginUser != null) {
             loginUserId = loginUser.getId();
             model.addAttribute("isFavorite",
                     favoriteService.isFavorite(loginUserId, spotId));
+                    
+            // 管理者の場合は閲覧数をカウントしない
+            countPv = !loginUser.hasAuthority("ROLE_ADMIN");
         } else {
             // 未ログイン時は常にお気に入り未登録として扱う
             // null参照を避けるためにfalseをセット
@@ -144,7 +148,7 @@ public class SpotController {
         }
 
         // スポット詳細情報
-        SpotDetail spotDetail = spotService.getDetailById(spotId, loginUserId, true);
+        SpotDetail spotDetail = spotService.getDetailById(spotId, loginUserId, countPv);
 
         // スポット詳細情報を画面へ渡す
         model.addAttribute("spotDetail", spotDetail);

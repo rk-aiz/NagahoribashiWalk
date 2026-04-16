@@ -158,7 +158,7 @@
 	<update id="toggleEnabled">
 		UPDATE users
 		SET enabled = NOT enabled
-        WHERE id = #{id}
+        WHERE username = #{username}
     </update>
     
     <!-- 管理者用ユーザー検索 -->

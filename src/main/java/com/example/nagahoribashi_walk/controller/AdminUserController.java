@@ -7,6 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 public class AdminUserController {
 
     private final UserService userService;
+    private final SessionRegistry sessionRegistry;
 
     /**
      * 【管理者】ユーザー一覧画面を表示
@@ -67,14 +71,21 @@ public class AdminUserController {
      */
     @PostMapping("/toggle")
     public String toggle(
-            @RequestParam("id") Long id,
+            @RequestParam("username") String username, 
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam("page") Integer page,
             @RequestParam("sort") String sort,
             @RequestParam(name = "includeDeleted", defaultValue = "false") boolean includeDeleted,
             RedirectAttributes redirectAttributes) {
 
-        userService.toggleEnabled(id);
+        userService.toggleEnabled(username);
+        // 該当ユーザーの全セッションを無効化
+        sessionRegistry.getAllPrincipals().stream()
+            .filter(UserDetails.class::isInstance)
+            .filter(principal -> ((UserDetails) principal).getUsername().equals(username))
+            .flatMap(principal -> sessionRegistry.getAllSessions(principal, false).stream())
+            .forEach(SessionInformation::expireNow);
+
 
         redirectAttributes.addAttribute("page", page);
         redirectAttributes.addAttribute("sort", sort);
@@ -99,7 +110,16 @@ public class AdminUserController {
             @AuthenticationPrincipal LoginUser loginUser,
             RedirectAttributes redirectAttributes) {
 
+        // 削除対象のユーザー名と、管理者のユーザー名を渡す
         userService.delete(username, loginUser.getUsername());
+
+        // 該当ユーザーの全セッションを無効化
+        sessionRegistry.getAllPrincipals().stream()
+            .filter(UserDetails.class::isInstance)
+            .filter(principal -> ((UserDetails) principal).getUsername().equals(username))
+            .flatMap(principal -> sessionRegistry.getAllSessions(principal, false).stream())
+            .forEach(SessionInformation::expireNow);
+
         redirectAttributes.addFlashAttribute("message", username + "を削除しました。");
 
         redirectAttributes.addAttribute("page", page);

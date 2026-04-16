@@ -21,7 +21,9 @@ public interface SpotMapper {
     Optional<SpotDetail> findById(@Param("id") Long id);
 
     /** スポット一覧を取得する(ページネーション) */
-    List<SpotSummary> findAll(@Param("offset") long offset, @Param("limit") int limit);
+    List<SpotSummary> findAll(
+                @Param("offset") long offset, 
+                @Param("limit") int limit);
 
     /** カテゴリIDから、スポット要約を取得 */
     List<SpotSummary> findByCategoryId(
