@@ -70,6 +70,10 @@ public class LoginUser implements UserDetails {
         return Optional.ofNullable(user.getRecommendedSpotId());
     }
 
+    public boolean hasAuthority(String authority) {
+        return authorities.stream().anyMatch(a -> a.getAuthority().equals(authority));
+    }
+
     /** ログインで利用するユーザー名を返す */
     @Override
     public String getUsername() {

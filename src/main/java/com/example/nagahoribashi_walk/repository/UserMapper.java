@@ -55,7 +55,7 @@ public interface UserMapper {
     /**
      * ユーザーの有効・無効を切り替える
      */
-    void toggleEnabled(Long id);
+    void toggleEnabled(String username);
 
     /**
      * ページネーション付きでユーザー一覧を取得する

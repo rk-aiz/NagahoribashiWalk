@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
@@ -26,6 +28,12 @@ public class SecurityConfig {
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final CustomLogoutSuccessHandler logoutSuccessHandler;
+
+    
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
 
     // =========================================================
     // 管理者用 SecurityFilterChain
@@ -77,7 +85,14 @@ public class SecurityConfig {
 
                 // ★403処理: ADMIN以外の認証済みユーザーが /admin/** にアクセスした場合
                 .exceptionHandling(ex -> ex
-                        .accessDeniedPage("/admin/login?error=forbidden"));
+                        .accessDeniedPage("/admin/login?error=forbidden"))
+                
+                // セッション管理設定
+                .sessionManagement(session -> session
+                        .maximumSessions(-1)
+                        .sessionRegistry(sessionRegistry())
+                        .expiredUrl("/")  // トップページへリダイレクト
+                );
 
         return http.build();
     }
@@ -142,7 +157,14 @@ public class SecurityConfig {
                 // → sendRedirect でリダイレクトさせることでGETに統一する
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
-                        .accessDeniedHandler((request, response, ex2) -> response.sendRedirect("/403")));
+                        .accessDeniedHandler((request, response, ex2) -> response.sendRedirect("/403")))
+                        
+                // セッション管理設定
+                .sessionManagement(session -> session
+                        .maximumSessions(-1)
+                        .sessionRegistry(sessionRegistry())
+                        .expiredUrl("/")  // トップページへリダイレクト
+                );
 
         return http.build();
     }

@@ -100,10 +100,10 @@ public class UserServiceImpl implements UserService {
 
     /** (管理者用)ユーザーの有効・無効を切り替える */
     @Override
-    public void toggleEnabled(Long id) {
+    public void toggleEnabled(String username) {
 
         // ユーザー取得
-        userMapper.toggleEnabled(id);
+        userMapper.toggleEnabled(username);
     }
 
     /** (管理者用)ユーザー一覧を取得する */
