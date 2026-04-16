@@ -94,6 +94,7 @@ public class UserServiceImpl implements UserService {
     public void unsubscribe(Long userId) {
         User user = userMapper.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("id: " + userId));
+
         String prefix = "#del_" + LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS) + "#";
         userMapper.softDelete(userId, prefix + user.getUsername(), prefix + user.getEmail());
     }

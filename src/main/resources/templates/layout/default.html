@@ -102,6 +102,12 @@
     </header>
 
     <!--/* フラッシュメッセージ (共通) */-->
+    <div th:if="${param.sessionExpired}" class="container pt-3">
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            アカウントが無効化されたため、ログアウトしました。
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
     <div th:if="${message}" class="container pt-3">
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <span th:text="${message}"></span>

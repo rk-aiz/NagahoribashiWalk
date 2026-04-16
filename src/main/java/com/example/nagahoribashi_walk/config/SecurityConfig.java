@@ -85,14 +85,7 @@ public class SecurityConfig {
 
                 // ★403処理: ADMIN以外の認証済みユーザーが /admin/** にアクセスした場合
                 .exceptionHandling(ex -> ex
-                        .accessDeniedPage("/admin/login?error=forbidden"))
-                
-                // セッション管理設定
-                .sessionManagement(session -> session
-                        .maximumSessions(-1)
-                        .sessionRegistry(sessionRegistry())
-                        .expiredUrl("/")  // トップページへリダイレクト
-                );
+                        .accessDeniedPage("/admin/login?error=forbidden"));
 
         return http.build();
     }
@@ -163,7 +156,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .maximumSessions(-1)
                         .sessionRegistry(sessionRegistry())
-                        .expiredUrl("/")  // トップページへリダイレクト
+                        .expiredUrl("/?sessionExpired=true")
                 );
 
         return http.build();

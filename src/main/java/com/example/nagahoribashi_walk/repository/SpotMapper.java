@@ -20,6 +20,9 @@ public interface SpotMapper {
     /** IDからスポット詳細情報を取得 */
     Optional<SpotDetail> findById(@Param("id") Long id);
 
+    /** IDからスポット要約情報を取得 */
+    Optional<SpotSummary> findSummaryById(@Param("id") Long id);
+
     /** スポット一覧を取得する(ページネーション) */
     List<SpotSummary> findAll(
                 @Param("offset") long offset, 
@@ -57,9 +60,6 @@ public interface SpotMapper {
 
     /** ランダムでlimit数スポットを取得 */
     List<SpotSummary> findRandomSpots(@Param("limit") int limit);
-
-    /** IDからスポット要約情報を取得 */
-    Optional<SpotSummary> findSummaryById(@Param("id") Long id);
 
     /** スポット数をカウントする */
     long count();
