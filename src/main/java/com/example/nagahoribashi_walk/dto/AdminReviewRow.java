@@ -15,6 +15,9 @@ public class AdminReviewRow {
     // 主キー
     private Long id;
 
+    // スポットID
+    private Long spotId;
+
     // スポット名
     private String spotName;
 

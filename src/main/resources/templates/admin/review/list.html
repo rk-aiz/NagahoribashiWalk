@@ -92,7 +92,10 @@
                                 <td class="text-secondary small" th:text="${review.id}">1</td>
 
                                 <!--/* スポット名 */-->
-                                <td class="fw-medium" th:text="${review.spotName}">スポット名</td>
+                                <td class="fw-medium">
+                                    
+                                    <a class="text-secondary small" th:href="@{/spot/{id}(id=${review.spotId})}" th:text="${review.spotName}">スポット名</a>
+                                </td>
 
                                 <!--/* 投稿者 */-->
                                 <td th:text="${review.userName}">投稿者</td>
