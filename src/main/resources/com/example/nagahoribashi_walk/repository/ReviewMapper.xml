@@ -61,6 +61,7 @@
 	<select id="findAllForAdminByKeyword" resultType="com.example.nagahoribashi_walk.dto.AdminReviewRow">
 		SELECT
 			r.id, 
+			s.id AS spot_id,
 			s.spot_name,
 			u.username,
 			r.rating,
