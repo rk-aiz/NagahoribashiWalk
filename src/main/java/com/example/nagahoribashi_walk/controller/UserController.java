@@ -5,8 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,6 +43,7 @@ public class UserController {
 
     private final UserService userService;
     private final FavoriteService favoriteService;
+    private final UserDetailsService userDetailsService;
 
     /** マイページ */
     @GetMapping("/mypage")
@@ -104,6 +109,15 @@ public class UserController {
 
         // プロフィール更新処理を実行
         userService.updateProfile(user);
+
+        // セッションの認証情報を更新
+        UserDetails updatedDetails = userDetailsService.loadUserByUsername(loginUser.getUsername());
+        Authentication newAuth = new UsernamePasswordAuthenticationToken(
+                updatedDetails,
+                updatedDetails.getPassword(),
+                updatedDetails.getAuthorities()
+        );
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
 
         // 更新後はマイページへ戻す
         return "redirect:/mypage";
