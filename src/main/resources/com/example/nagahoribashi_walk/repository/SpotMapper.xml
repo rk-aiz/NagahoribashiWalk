@@ -82,6 +82,8 @@
 		LEFT JOIN (
 			SELECT spot_id, AVG(rating) AS average_rating
 			FROM reviews
+			JOIN users ON reviews.user_id = users.id
+			WHERE users.deleted_at IS NULL
 			GROUP BY spot_id
 		) r ON r.spot_id = s.id
 	</sql>

@@ -51,7 +51,7 @@ class FortuneThemeRepositoryImplTest {
     // =========================================================
 
     @Test
-    void findAll_初期データが取得できる() {
+    void findAllReturnsInitialData() {
         List<FortuneTheme> result = repository.findAll();
 
         // コンストラクタで insert() している
@@ -63,7 +63,7 @@ class FortuneThemeRepositoryImplTest {
     // =========================================================
 
     @Test
-    void findById_存在するIDを指定した場合_テーマが返る() {
+    void findByIdReturnsThemeWhenIdExists() {
         Optional<FortuneTheme> result = repository.findById(1L);
 
         // Optional の中身が存在するかチェック
@@ -72,7 +72,7 @@ class FortuneThemeRepositoryImplTest {
     }
 
     @Test
-    void findById_存在しないIDを指定した場合_空のOptionalが返る() {
+    void findByIdReturnsEmptyOptionalWhenIdNotFound() {
         Optional<FortuneTheme> result = repository.findById(9999L);
 
         // 存在しない場合は empty
@@ -84,7 +84,7 @@ class FortuneThemeRepositoryImplTest {
     // =========================================================
 
     @Test
-    void insert_新しいテーマを追加すると件数が増える() {
+    void insertIncreasesCountWhenNewThemeAdded() {
         int beforeSize = repository.findAll().size();
 
         repository.insert("テスト気分", "テスト,サンプル");
@@ -93,7 +93,7 @@ class FortuneThemeRepositoryImplTest {
     }
 
     @Test
-    void insert_追加したテーマがfindByIdで取得できる() {
+    void insertedThemeCanBeFoundByFindById() {
         repository.insert("テスト気分", "テスト,サンプル");
 
         // 初期20件の次は ID=21 になる
@@ -109,7 +109,7 @@ class FortuneThemeRepositoryImplTest {
     // =========================================================
 
     @Test
-    void save_IDなしで保存すると新規追加される() {
+    void saveWithoutIdCreatesNewEntry() {
         FortuneTheme theme = new FortuneTheme();
         theme.setMood("新規気分");
         theme.setKeywords("新規,キーワード");
@@ -122,7 +122,7 @@ class FortuneThemeRepositoryImplTest {
     }
 
     @Test
-    void save_既存IDで保存すると内容が上書きされる() {
+    void saveWithExistingIdOverwritesContent() {
         FortuneTheme theme = new FortuneTheme();
         theme.setId(1L);
         theme.setMood("上書き後の気分");
@@ -142,14 +142,14 @@ class FortuneThemeRepositoryImplTest {
     // =========================================================
 
     @Test
-    void findRandom_指定件数だけ返る() {
+    void findRandomReturnsSpecifiedCount() {
         List<FortuneTheme> result = repository.findRandom(3, new Random());
 
         assertThat(result).hasSize(3);
     }
 
     @Test
-    void findRandom_同じシードなら同じ結果が返る() {
+    void findRandomReturnsSameResultWithSameSeed() {
         // Random にシード値を固定すると、毎回同じ乱数列が生成される
         // → 乱数を使うロジックを「再現性のある」テストにできる
         long seed = 42L;
@@ -162,7 +162,7 @@ class FortuneThemeRepositoryImplTest {
     }
 
     @Test
-    void findRandom_全件数を超える件数を指定しても例外が発生しない() {
+    void findRandomDoesNotThrowWhenCountExceedsTotal() {
         // 20件しかないのに100件要求 → 最大20件返る
         List<FortuneTheme> result = repository.findRandom(100, new Random());
 

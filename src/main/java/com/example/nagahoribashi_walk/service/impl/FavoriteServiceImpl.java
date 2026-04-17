@@ -59,14 +59,14 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     public int addFavorite(Long userId, Long spotId) {
 
-        boolean wasNew = !favoriteMapper.existsByUserAndSpot(userId, spotId);
-        if (wasNew) {
+        boolean isNew = !favoriteMapper.existsByUserAndSpot(userId, spotId);
+        if (isNew) {
             favoriteMapper.insertFavorite(userId, spotId);
         }
 
         // 新規追加かつおすすめスポットかつ24時間以内のおみくじならボーナス付与
         User user = userMapper.findById(userId).orElseThrow();
-        if (wasNew && spotId.equals(user.getRecommendedSpotId()) && isWithinBonusWindow(user)) {
+        if (isNew && spotId.equals(user.getRecommendedSpotId()) && isWithinBonusWindow(user)) {
             userMapper.addPoint(userId, fortuneBonusPoint);
             return fortuneBonusPoint;
         }
