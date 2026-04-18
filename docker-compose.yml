@@ -18,7 +18,9 @@ services:
         condition: service_healthy
 
   db:
-    image: postgres:16
+    build:
+      context: ./docker/db
+      dockerfile: Dockerfile
     environment:
       POSTGRES_DB: nagahoribashi_walkdb
       POSTGRES_USER: nagahoribashi_walk
@@ -27,7 +29,6 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
-      - ./docker/db:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U nagahoribashi_walk -d nagahoribashi_walkdb"]
       interval: 2s
