@@ -248,7 +248,7 @@
 
                 <!--/* サムネイル */-->
                 <img th:if="${spot.photoUrl != null}" th:src="@{'/uploads/' + ${spot.photoUrl}}" class="recent-thumb"
-                    th:onerror="|this.onerror=null; this.src='[[@{/images/no-image.svg}]]';|" alt="">
+                    th:onerror="|this.onerror=null; this.src='@{/images/no-image.svg}';|" alt="">
                 <div th:if="${spot.photoUrl == null}" class="recent-thumb-placeholder">
                     <i class="bi bi-image" style="font-size: 1.1rem;"></i>
                 </div>
