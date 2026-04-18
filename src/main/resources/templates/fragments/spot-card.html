@@ -46,7 +46,7 @@
             <!--/* 画像 + 評価バッジ */-->
             <div class="spot-img-wrap overflow-hidden" style="border-radius: 0.5rem 0.5rem 0 0;">
                 <img th:src="${spot.photoUrl != null} ? @{/uploads/{url}(url=${spot.photoUrl})} : @{/images/no-image.svg}"
-                    th:onerror="|this.onerror=null; this.src='[[@{/images/no-image.svg}]]';|" th:alt="${spot.spotName}"
+                    th:onerror="|this.onerror=null; this.src='@{/images/no-image.svg}';|" th:alt="${spot.spotName}"
                     class="card-img-top spot-img" style="height: 240px; object-fit: cover; display: block;">
                 <span class="position-absolute d-flex align-items-center gap-1" style="top:0.65rem; right:0.65rem;
                          background:rgba(255,255,255,0.92); color:#374151;

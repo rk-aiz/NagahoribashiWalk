@@ -68,8 +68,7 @@
                                     style="background:#0e7490; color:#fff; border:none; padding:0.4rem 1.1rem; font-size:0.9rem;">
                                     <i class="bi bi-images me-1"></i>画像管理
                                 </a>
-                                <a th:href="@{/admin/spot/list}"
-                                    class="btn rounded-pill fw-semibold"
+                                <a th:href="@{/admin/spot/list}" class="btn rounded-pill fw-semibold"
                                     style="background:#be83ca; color:#fff; border:none; padding:0.4rem 1.1rem; font-size:0.9rem;">
                                     <i class="bi bi-arrow-left"></i>スポット管理画面
                                 </a>
@@ -123,7 +122,7 @@
                                 class="mt-1 mb-4">
                                 <div class="photo-frame">
                                     <img th:src="${'/uploads/' + spotDetail.images[0].photoUrl}" alt="スポット画像"
-                                        th:onerror="|this.onerror=null; this.src='[[@{/images/no-image.svg}]]';|"
+                                        th:onerror="|this.onerror=null; this.src='@{/images/no-image.svg}';|"
                                         style="width: 100%; height: 320px; object-fit: cover; border-radius: 0.5rem;">
                                 </div>
                             </div>
@@ -246,7 +245,7 @@
                     <div th:each="image, stat : ${spotDetail.images}" class="col-12 col-sm-6 col-lg-4">
                         <div class="photo-frame">
                             <img th:src="${'/uploads/' + image.photoUrl}" alt="スポット画像"
-                                th:onerror="|this.onerror=null; this.src='[[@{/images/no-image.svg}]]';|">
+                                th:onerror="|this.onerror=null; this.src='@{/images/no-image.svg}';|">
                         </div>
                     </div>
                 </div>

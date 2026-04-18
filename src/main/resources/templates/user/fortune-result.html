@@ -77,7 +77,7 @@
                             <img th:src="${fortuneResult.recommendedSpot.photoUrl != null}
                                          ? @{/uploads/{url}(url=${fortuneResult.recommendedSpot.photoUrl})}
                                          : @{/images/no-image.svg}"
-                                th:onerror="|this.onerror=null; this.src='[[@{/images/no-image.svg}]]';|"
+                                th:onerror="|this.onerror=null; this.src='@{/images/no-image.svg}';|"
                                 th:alt="${fortuneResult.recommendedSpot.spotName}" class="spot-recommend-img">
                             <div class="spot-recommend-body">
                                 <div class="spot-recommend-name" th:text="${fortuneResult.recommendedSpot.spotName}">
