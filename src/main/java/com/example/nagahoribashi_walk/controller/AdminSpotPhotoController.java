@@ -38,7 +38,7 @@ public class AdminSpotPhotoController {
         model.addAttribute("spot", adminSpotService.getByIdForAdmin(spotId));
         model.addAttribute("photos", spotPhotoService.getAllBySpotId(spotId));
 
-        return "/admin/spot/photo";
+        return "admin/spot/photo";
     }
 
     /**

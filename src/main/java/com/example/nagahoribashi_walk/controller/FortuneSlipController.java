@@ -40,7 +40,7 @@ public class FortuneSlipController {
             Model model) {
 
         if (loginUser == null) {
-            return "/user/fortune-slip";
+            return "user/fortune-slip";
         }
 
         if (fortuneSlipService.isAlreadyDrawn(loginUser)) {
@@ -52,7 +52,7 @@ public class FortuneSlipController {
         model.addAttribute("profile",
                 userService.getProfileByUsername(loginUser.getUsername()));
 
-        return "/user/fortune-slip";
+        return "user/fortune-slip";
     }
 
     /** おみくじを引く */
@@ -103,7 +103,7 @@ public class FortuneSlipController {
                 userService.getProfileByUsername(loginUser.getUsername()));
         model.addAttribute("fortuneBonusPoint", fortuneBonusPoint);
 
-        return "/user/fortune-result";
+        return "user/fortune-result";
     }
 
 }

@@ -72,7 +72,7 @@ public class UserController {
         model.addAttribute("activeTab", tab);
         model.addAttribute("editMode", edit);
 
-        return "/user/mypage";
+        return "user/mypage";
     }
 
     /**
@@ -94,7 +94,7 @@ public class UserController {
                     favoriteService.getPage(loginUser.getId(), pageable));
             model.addAttribute("activeTab", "profile");
             model.addAttribute("editMode", true);
-            return "/user/mypage";
+            return "user/mypage";
         }
 
         // 更新用エンティティを作成
@@ -128,7 +128,7 @@ public class UserController {
      */
     @GetMapping("/unsubscribe")
     public String confirmUnsubscribe() {
-        return "/user/unsubscribe";
+        return "user/unsubscribe";
     }
 
     /**
@@ -160,6 +160,6 @@ public class UserController {
      */
     @GetMapping("/unsubscribe/complete")
     public String unsubscribeComplete() {
-        return "/user/unsubscribe-complete";
+        return "user/unsubscribe-complete";
     }
 }
