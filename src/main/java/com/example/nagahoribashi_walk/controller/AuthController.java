@@ -52,7 +52,7 @@ public class AuthController {
             return "redirect:/";
         }
 
-        return "/auth/login";
+        return "auth/login";
     }
 
     /**
@@ -60,7 +60,7 @@ public class AuthController {
      */
     @GetMapping("/register")
     public String showRegister(UserRegisterForm form) {
-        return "/auth/register";
+        return "auth/register";
     }
 
     /**
@@ -75,7 +75,7 @@ public class AuthController {
             Model model) {
 
         if (bindingResult.hasErrors()) {
-            return "/auth/register";
+            return "auth/register";
         }
 
         User newUser = new User();
@@ -86,7 +86,7 @@ public class AuthController {
             userService.register(newUser, form.getPassword());
         } catch (UserAlreadyExistsException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "/auth/register";
+            return "auth/register";
         }
 
         // ===== 新規登録後の自動ログイン処理 =====
@@ -111,6 +111,6 @@ public class AuthController {
      */
     @GetMapping("/register/complete")
     public String complete() {
-        return "/auth/register-complete";
+        return "auth/register-complete";
     }
 }

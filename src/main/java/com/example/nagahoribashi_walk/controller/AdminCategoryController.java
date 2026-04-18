@@ -42,7 +42,7 @@ public class AdminCategoryController {
                 categoryService.getAllForAdmin());
         model.addAttribute("subCategoryForm", new SubCategoryForm());
         model.addAttribute("categoryForm", new CategoryForm());
-        return "/admin/category/list";
+        return "admin/category/list";
     }
 
     /**

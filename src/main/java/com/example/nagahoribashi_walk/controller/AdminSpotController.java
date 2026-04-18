@@ -115,7 +115,7 @@ public class AdminSpotController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("dropDownCategories",
                     categoryService.getAllForAdmin());
-            return "/admin/spot/edit";
+            return "admin/spot/edit";
         }
 
         // FromをEntityに詰め替え
@@ -143,7 +143,7 @@ public class AdminSpotController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("dropDownCategories",
                     categoryService.getAllForAdmin());
-            return "/admin/spot/edit";
+            return "admin/spot/edit";
         }
 
         // FromをEntityに詰め替え
