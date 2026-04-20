@@ -168,7 +168,7 @@
                             <a th:href="@{/mypage}" class="footer-link small">マイページ</a>
                         </li>
                         <li class="mb-1" sec:authorize="hasRole('USER')">
-                            <a th:href="@{/mypage/favorites}" class="footer-link small">お気に入り</a>
+                            <a th:href="@{/mypage?tab=favorites}" class="footer-link small">お気に入り</a>
                         </li>
                     </ul>
                 </div>
