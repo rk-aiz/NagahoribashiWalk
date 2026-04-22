@@ -15,32 +15,14 @@ import com.example.nagahoribashi_walk.repository.impl.FortuneThemeRepositoryImpl
 /**
  * FortuneThemeRepositoryImpl のユニットテスト
  *
- * ■ テストクラスの命名
- * テスト対象クラス名 + "Test" をつけるのが慣例
- * 例: FortuneThemeRepositoryImpl → FortuneThemeRepositoryImplTest
- *
- * ■ @BeforeEach
- * 各テストメソッドの前に実行されるセットアップ処理
- * テスト間でデータが干渉しないよう、毎回新しいインスタンスを生成する
- *
- * ■ テストメソッドの命名（日本語もOK）
+ * ■ テストメソッドの命名
  * 「何をテストするか」が一目でわかる名前をつける
- * 例: findById_存在するIDを指定した場合_テーマが返る
- *
- * ■ AssertJ（assertThat）
- * Spring Boot のテストライブラリに含まれるアサーションライブラリ
- * メソッドチェーンで直感的に検証できる
- * 例: assertThat(result).isNotNull().isEqualTo("期待値");
  */
 class FortuneThemeRepositoryImplTest {
 
     // テスト対象のインスタンス
     private FortuneThemeRepositoryImpl repository;
 
-    /**
-     * 各テストメソッドの前に実行される
-     * 毎回新しいインスタンスを作ることで、テスト間のデータ干渉を防ぐ
-     */
     @BeforeEach
     void setUp() {
         repository = new FortuneThemeRepositoryImpl();
@@ -151,7 +133,6 @@ class FortuneThemeRepositoryImplTest {
     @Test
     void findRandomReturnsSameResultWithSameSeed() {
         // Random にシード値を固定すると、毎回同じ乱数列が生成される
-        // → 乱数を使うロジックを「再現性のある」テストにできる
         long seed = 42L;
         List<FortuneTheme> result1 = repository.findRandom(5, new Random(seed));
         List<FortuneTheme> result2 = repository.findRandom(5, new Random(seed));
